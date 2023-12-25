@@ -1,0 +1,38 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strtrim.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/23 15:52:44 by reclaire          #+#    #+#             */
+/*   Updated: 2023/09/26 22:16:22 by reclaire         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include <stdlib.h>
+#include "libft.h"
+#include <stdio.h>
+#ifdef FT_STRINGS
+string	ft_strtrim(const_string s1, const_string set)
+{
+	U64		start;
+	U64		end;
+	string	new;
+
+	start = 0;
+	while (ft_strgetindex(set, s1[start]) != -1)
+		start++;
+	end = ft_strlen(s1) - 1;
+	while (ft_strgetindex(set, s1[end]) != -1)
+		end--;
+	end++;
+	if (start >= end)
+		return (ft_strdup(""));
+	new = malloc((end - start + 1) * sizeof(char));
+	if (!new)
+		return NULL;
+	ft_strlcpy(new, (char *)(s1 + start), end - start + 1);
+	return (new);
+}
+#endif
