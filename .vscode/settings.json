@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "*.h": "c",
+        "*.c": "c",
+        "*.inl": "cuda",
+        "types.h": "c",
+        "limits": "c",
+        "compare": "c",
+        "type_traits": "c"
+    }
+}

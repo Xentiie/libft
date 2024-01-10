@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:28:55 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 21:06:29 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/01/10 11:19:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void	add_to_char_buff(string buf, U8 c)
 	i++;
 }
 
-static void	convert(U64 num, U8 *out)
+static void	convert(U64 num, string out)
 {
 	string	hexa;
 
@@ -47,10 +47,10 @@ S32	handle_x(U64 i)
 
 	ft_bzero(out, sizeof(U8) * 8);
 	if (i == 0)
-		add_to_char_buff(out, '0');
+		add_to_char_buff((string)out, '0');
 	else
-		convert(i, out);
-	ret = write(1, out, ft_strlen(out));
+		convert(i, (string)out);
+	ret = write(1, out, ft_strlen((string)out));
 	add_to_char_buff(NULL, '0');
 	return (ret);
 }

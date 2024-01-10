@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 01:40:37 by reclaire          #+#    #+#             */
-/*   Updated: 2023/12/25 03:06:30 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/01/10 11:16:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ t_hash_map ft_hash_init(unsigned int (*key_hash)(void *), U64 key_len, U64 elem_
 		return NULL;
 	}
 
-	t_error_code err = 0;
 	m->keys = ft_array_new(elem_len);
 	if (ft_errno != FT_OK)
 	{
@@ -116,7 +115,7 @@ int ft_hash_find(t_hash_map in, void *key)
 		if (m->data[curr].in_use == 0)
 			return curr;
 
-		if (ft_strncmp(m->data[curr].key, key, m->key_len) == 0 && m->data[curr].in_use == 1)
+		if (ft_strncmp((string)(m->data[curr].key), key, m->key_len) == 0 && m->data[curr].in_use == 1)
 			return curr;
 
 		curr = (curr + 1) % m->table_size;
@@ -205,7 +204,6 @@ int ft_hash_put(t_hash_map in, void *key, t_hash_any value)
 	if (!m->data[index].key)
 		return FT_OMEM;
 
-	t_error_code ret = 0;
 	ft_array_append(m->keys, key);
 	if (ft_errno != FT_OK)
 		return FT_OMEM;

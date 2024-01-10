@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/09 18:22:04 by reclaire          #+#    #+#             */
-/*   Updated: 2023/12/25 03:09:47 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/01/10 11:16:47 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,6 @@ t_array	ft_array_new(U64 elem_size)
 
 t_array *ft_array_init(t_array *array, U64 elem_size)
 {
-	t_error_code err = 0;
 	*array = ft_array_new(elem_size);
 	return array;
 }

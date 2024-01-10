@@ -337,17 +337,17 @@ string clk_elapsed_ns(t_clock *clk, string buffer, U64 buflen)
 #  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 string clk_fmt_elapsed_ms(t_clock *clk)
 {
-    return clk_elapsed_ms(clk, clk->buffer, sizeof(clk->buffer));
+    return clk_elapsed_ms(clk, (string)clk->buffer, sizeof(clk->buffer));
 }
 
 string clk_fmt_elapsed_us(t_clock *clk)
 {
-    return clk_elapsed_us(clk, clk->buffer, sizeof(clk->buffer));
+    return clk_elapsed_us(clk, (string)clk->buffer, sizeof(clk->buffer));
 }
 
 string clk_fmt_elapsed_ns(t_clock *clk)
 {
-    return clk_elapsed_ns(clk, clk->buffer, sizeof(clk->buffer));
+    return clk_elapsed_ns(clk, (string)clk->buffer, sizeof(clk->buffer));
 }
 #  pragma GCC diagnostic pop
 
@@ -356,7 +356,7 @@ string clk_fmt_elapsed_str(t_clock *clk)
 {
     if (clk->buffer[0] == '\0')
         clk_fmt_elapsed_ns(clk);
-    return clk->buffer;
+    return (string)clk->buffer;
 }
 
 double clk_fmt_elapsed_dbl(t_clock *clk)

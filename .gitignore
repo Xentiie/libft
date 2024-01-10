@@ -1,0 +1,4 @@
+run_tests
+libft.a
+.editorconfig
+**/*.o

@@ -6,7 +6,7 @@
 #    By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/25 09:55:54 by reclaire          #+#    #+#              #
-#    Updated: 2023/10/11 19:28:34 by reclaire         ###   ########.fr        #
+#    Updated: 2024/01/03 18:32:40 by reclaire         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,13 +23,14 @@ OBJS		=	${SRCS:.c=.o}
 CC			=	gcc
 RM			=	rm -f
 
-INCLUDES  	=	-I./ -I./ft_printf
-CFLAGS		:=	-Wall -Wextra -Werror -Wno-unused-variable -Wno-pointer-sign -Wno-discarded-qualifiers -Wno-ignored-qualifiers -O3
+INCLUDES  	=	-I./
+CFLAGS		:=	-Wall -Wextra -Werror -O3
 ifdef MOREFLAGS
-CFLAGS		:=	$(CFLAGS) $(MOREFLAGS)
+	CFLAGS		:=	$(CFLAGS) $(MOREFLAGS)
 endif
+
 ifeq ($(filter tests, $(MAKECMDGOALS)), tests) || ($(filter tests_re, $(MAKECMDGOALS)), tests_re)
-CFLAGS		:=	$(CFLAGS) -D FT_MEMCHECK
+	CFLAGS		:=	$(CFLAGS) -D FT_MEMCHECK
 endif
 
 

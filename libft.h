@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 17:02:52 by reclaire          #+#    #+#             */
-/*   Updated: 2023/12/25 03:08:52 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/01/09 21:59:46 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,6 +286,10 @@ Usage:
 #  define	FALSE	0
 # endif
 
+# ifndef	LOCALHOST
+#  define	LOCALHOST "localhost"
+# endif
+
 typedef unsigned char		U8;
 typedef unsigned short		U16;
 typedef unsigned int 		U32;
@@ -319,8 +323,8 @@ typedef double				F64;
 # define F64_MAX ((double)1.79769313486231570814527423731704357e+308L)
 # define F64_MIN ((double)2.22507385850720138309023271733240406e-308L)
 
-typedef S8			*string;
-typedef S8 const	*const_string;
+typedef char		*string;
+typedef char const	*const_string;
 typedef S32			file;
 typedef U8			bool;
 

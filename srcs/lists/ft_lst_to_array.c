@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 01:21:21 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:06:23 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/01/10 11:18:07 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	ft_lst_to_array(t_list *lst, t_array array, U64 elem_size)
 	i = 0;
 	while (curr)
 	{
-		ft_array_append(array, (ft_memdup)(curr->content, elem_size), NULL);
+		ft_array_append(array, (ft_memdup)(curr->content, elem_size));
 		curr = curr->next;
 		i++;
 	}
