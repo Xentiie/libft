@@ -20,17 +20,73 @@ NAME	=	libft.a
 SRCS    =   $(shell find . -type f -name '*.c' -not -path "*./tests*" -not -path "*./old*")
 OBJS		=	${SRCS:.c=.o}
 
-CC			=	gcc
-RM			=	rm -f
-
-INCLUDES  	=	-I./
 CFLAGS		:=	-Wall -Wextra -Werror -O3
+
+WSLENV ?= notwsl
+ifndef WSLENV
+	CFLAGS += -D WIN32
+	CC := x86_64-w64-mingw32-gcc
+	LINK := ar -rcs $(NAME)
+
+	ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
+	    CFLAGS += -D AMD64
+	else
+	    ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
+	        CFLAGS += -D AMD64
+	    endif
+	    ifeq ($(PROCESSOR_ARCHITECTURE),x86)
+	        CFLAGS += -D IA32
+	    endif
+	endif
+else
+	ifeq ($(OS),Windows_NT)
+	    CFLAGS += -D WIN32
+		CC := x86_64-w64-mingw32-gcc
+		LINK := ar -rcs $(NAME)
+
+	    ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
+	        CFLAGS += -D AMD64
+	    else
+	        ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
+	            CFLAGS += -D AMD64
+	        endif
+	        ifeq ($(PROCESSOR_ARCHITECTURE),x86)
+	            CFLAGS += -D IA32
+	        endif
+	    endif
+	else
+	    UNAME_S := $(shell uname -s)
+		CC := gcc
+		LINK := ar -rcs $(NAME)
+
+	    ifeq ($(UNAME_S),Linux)
+	        CFLAGS += -D LINUX
+	    endif
+	    ifeq ($(UNAME_S),Darwin)
+	        CFLAGS += -D OSX
+	    endif
+	    UNAME_P := $(shell uname -p)
+	    ifeq ($(UNAME_P),x86_64)
+	        CFLAGS += -D AMD64
+	    endif
+	    ifneq ($(filter %86,$(UNAME_P)),)
+	        CFLAGS += -D IA32
+	    endif
+	    ifneq ($(filter arm%,$(UNAME_P)),)
+	        CFLAGS += -D ARM
+	    endif
+	endif
+endif
+
+RM			=	rm -f
+INCLUDES  	=	-I./
+
 ifdef MOREFLAGS
-	CFLAGS		:=	$(CFLAGS) $(MOREFLAGS)
+	CFLAGS += $(MOREFLAGS)
 endif
 
 ifeq ($(filter tests, $(MAKECMDGOALS)), tests) || ($(filter tests_re, $(MAKECMDGOALS)), tests_re)
-	CFLAGS		:=	$(CFLAGS) -D FT_MEMCHECK
+	CFLAGS += -D FT_MEMCHECK
 endif
 
 
@@ -39,7 +95,7 @@ endif
 			$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(NAME):	$(OBJS)
-			ar -rcs $(NAME) $(OBJS)
+			$(LINK) $(OBJS)
 				
 all:		$(NAME)
 

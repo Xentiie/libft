@@ -10,11 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <backtrace.h>
-#include <stdlib.h>
 #include "libft.h"
+
+//TODO: windows
+#ifndef WIN32
+
 #if defined(FT_DEBUG) && defined(FT_MEMCHECK)
 
+#include <backtrace.h>
+#include <stdlib.h>
 # include <stdio.h>
 # include <stdio.h>
 # include <signal.h>
@@ -192,5 +196,7 @@ bool	ft_check_leaks()
 	_lst = NULL;
 	return leaked;
 }
+
+#endif
 
 #endif
