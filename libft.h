@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 17:02:52 by reclaire          #+#    #+#             */
-/*   Updated: 2024/01/09 21:59:46 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/01/12 11:36:33 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,12 @@ Define FT_CONFIG to configure exactly what you need
 extern "C" {
 # endif
 
+//Silence __attribute__ errors from vscode intellisense
+# ifdef WIN32
+#  define __attribute__(x)
+# endif
 
-
-# if !defined(FT_CONFIG) || defined(FT_MACROS)
+# if (!defined(FT_CONFIG) || defined(FT_MACROS)) && !defined(FT_NO_MACROS)
 #  ifndef FT_MACROS
 #   define FT_MACROS
 #  endif
@@ -130,7 +133,7 @@ extern "C" {
 #  define FT_VOID(...)
 /* __VA_ARGS__ UTILS */
 
-#  if !defined(FT_CONFIG) || defined(FT_VA_OPT)
+#  if (!defined(FT_CONFIG) || defined(FT_VA_OPT)) && !defined(FT_NO_VA_OPT)
 #   ifndef FT_VA_OPT
 #    define FT_VA_OPT
 #   endif
@@ -358,7 +361,7 @@ extern	const_string		ft_error_lookup_table[];
 # define FT_MAP_MISSING					5			/* No such element */
 
 
-# if !defined(FT_CONFIG) || defined(FT_DEBUG)
+# if (!defined(FT_CONFIG) || defined(FT_DEBUG)) && !defined(FT_NO_DEBUG)
 #  ifndef FT_DEBUG
 #   define FT_DEBUG
 #  endif
@@ -381,7 +384,7 @@ extern void				_free(void *p, char *file, int line);
 
 # endif /*# if !defined(FT_CONFIG) || defined(FT_DEBUG)*/
 
-# if !defined(FT_CONFIG) || defined(FT_STRINGS)
+# if (!defined(FT_CONFIG) || defined(FT_STRINGS)) && !defined(FT_NO_STRINGS)
 #  ifndef FT_STRINGS
 #   define FT_STRINGS
 #  endif
@@ -539,7 +542,7 @@ __attribute__ ((deprecated)) extern U64 ft_splitlen(const_string *split);
 # endif /*#if !defined(FT_CONFIG) || defined(FT_STRINGS)*/
 
 
-# if !defined(FT_CONFIG) || defined(FT_FILE_IO)
+# if (!defined(FT_CONFIG) || defined(FT_FILE_IO)) && !defined(FT_NO_FILE_IO)
 #  ifndef FT_FILE_IO
 #   define FT_FILE_IO
 #  endif
@@ -560,7 +563,7 @@ printf !
 extern S64		ft_printf(const_string fmt, ...);
 # endif /*if !defined(FT_CONFIG) || defined(FT_FILE_IO)*/
 
-# if !defined(FT_CONFIG) || defined(FT_STD)
+# if (!defined(FT_CONFIG) || defined(FT_STD)) && !defined(FT_NO_STD)
 #  ifndef FT_STD
 #   define FT_STD
 #  endif
@@ -732,7 +735,7 @@ extern S32		ft_nrange(S32 **range, S32 min, S32 max);
 
 # endif /*# if !defined(FT_CONFIG) || defined(FT_STD)*/
 
-# if !defined(FT_CONFIG) || defined(FT_TIME)
+# if (!defined(FT_CONFIG) || defined(FT_TIME)) && !defined(FT_NO_TIME)
 #  ifndef FT_TIME
 #   define FT_TIME
 #  endif
@@ -772,7 +775,7 @@ extern double								clk_fmt_elapsed_dbl(t_clock *clk);
 # endif /*# if !defined(FT_CONFIG) || defined(FT_TIME)*/
 
 
-# if !defined(FT_CONFIG) || defined(FT_ANSI)
+# if (!defined(FT_CONFIG) || defined(FT_ANSI)) && !defined(FT_NO_ANSI)
 #  ifndef FT_ANSI
 #   define FT_ANSI
 #  endif
@@ -862,7 +865,7 @@ extern double								clk_fmt_elapsed_dbl(t_clock *clk);
 # endif /*# if !defined(FT_CONFIG) || defined(FT_ANSI)*/
 
 
-# if !defined(FT_CONFIG) || defined(FT_ARRAYS)
+# if (!defined(FT_CONFIG) || defined(FT_ARRAYS)) && !defined(FT_NO_ARRAYS)
 #  ifndef FT_ARRAYS
 #   define FT_ARRAYS
 #  endif
@@ -935,7 +938,7 @@ extern void			ft_array_clear(t_array array);
 # endif /*# if !defined(FT_CONFIG) || defined(FT_ARRAYS)*/
 
 
-# if !defined(FT_CONFIG) || defined(FT_LISTS)
+# if (!defined(FT_CONFIG) || defined(FT_LISTS)) && !defined(FT_NO_LISTS)
 #  ifndef FT_LISTS
 #   define FT_LISTS
 #  endif
@@ -1027,7 +1030,7 @@ extern t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 # endif /*# if !defined(FT_CONFIG) || defined(FT_LISTS)*/
 
 
-# if !defined(FT_CONFIG) || defined(FT_HASHMAPS)
+# if (!defined(FT_CONFIG) || defined(FT_HASHMAPS)) && !defined(FT_NO_HASHMAPS)
 #  ifndef FT_HASHMAPS
 #   define FT_HASHMAPS
 #  endif
@@ -1083,7 +1086,7 @@ extern t_hash_code ft_hash_iterate(t_hash_map in, t_hash_code (*f)(t_hash_any it
 
 
 
-# if !defined(FT_CONFIG) || defined(FT_MATHS)
+# if (!defined(FT_CONFIG) || defined(FT_MATHS)) && !defined(FT_NO_MATHS)
 #  ifndef FT_MATHS
 #   define FT_MATHS
 #  endif
