@@ -14,19 +14,19 @@
 #define FT_DEBUG
 #ifdef FT_DEBUG
 
-# ifdef WIN32
+# ifdef FT_WIN32
 #  include <debugapi.h>
 #  define SIGTRAP STATUS_BREAKPOINT
 # else
 #  include <sys/ptrace.h>
 #  include <valgrind/valgrind.h>
-# endif /* WIN32 */
+# endif /* FT_WIN32 */
 # include <stdio.h>
 # include <signal.h>
 
 static S8 __is_debugger = -1;
 
-# ifdef WIN32
+# ifdef FT_WIN32
 S8 ft_is_debugger()
 {
 	if (__is_debugger == -1)
@@ -52,7 +52,7 @@ S8 ft_is_debugger()
 	}
 	return __is_debugger;
 }
-# endif /* WIN32 */
+# endif /* FT_WIN32 */
 
 void ft_debug_break()
 {

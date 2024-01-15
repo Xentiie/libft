@@ -13,7 +13,7 @@
 #include "libft.h"
 
 //TODO: windows
-#ifndef WIN32
+#ifndef FT_WIN32
 
 #if defined(FT_DEBUG) && defined(FT_MEMCHECK)
 

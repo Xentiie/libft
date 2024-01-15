@@ -24,7 +24,7 @@ CFLAGS		:=	-Wall -Wextra -Werror -O3
 
 WSLENV ?= notwsl
 ifndef WSLENV
-	CFLAGS += -D WIN32
+	CFLAGS += -D FT_WIN32
 	CC := x86_64-w64-mingw32-gcc
 	LINK := ar -rcs $(NAME)
 
@@ -40,7 +40,7 @@ ifndef WSLENV
 	endif
 else
 	ifeq ($(OS),Windows_NT)
-	    CFLAGS += -D WIN32
+	    CFLAGS += -D FT_WIN32
 		CC := x86_64-w64-mingw32-gcc
 		LINK := ar -rcs $(NAME)
 
@@ -60,10 +60,10 @@ else
 		LINK := ar -rcs $(NAME)
 
 	    ifeq ($(UNAME_S),Linux)
-	        CFLAGS += -D LINUX
+	        CFLAGS += -D FT_LINUX
 	    endif
 	    ifeq ($(UNAME_S),Darwin)
-	        CFLAGS += -D OSX
+	        CFLAGS += -D FT_OSX
 	    endif
 	    UNAME_P := $(shell uname -p)
 	    ifeq ($(UNAME_P),x86_64)
