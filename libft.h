@@ -21,7 +21,6 @@ TOGGLES:
 	FT_STD
 	FT_ANSI
 	FT_ARRAYS
-		FT_STACKS
 	FT_LISTS
 	FT_HASHMAPS
 	FT_DEBUG
@@ -33,24 +32,87 @@ TOGGLES:
 Define FT_CONFIG to configure exactly what you need
 */
 
-#ifndef LIBFT_H
+#if !defined(LIBFT_H)
 # define LIBFT_H
 
-# ifdef __cplusplus
+# if defined(__cplusplus)
 extern "C" {
 # endif
 
 //Silence __attribute__ errors from vscode intellisense
-# ifdef WIN32
+# if defined(WIN32)
 #  define __attribute__(x)
 # endif
 
-# if (!defined(FT_CONFIG) || defined(FT_MACROS)) && !defined(FT_NO_MACROS)
-#  ifndef FT_MACROS
+
+//CONFIG
+# if !defined(FT_CONFIG)
+
+#  if !defined(FT_NO_MACROS)
 #   define FT_MACROS
+#   if !defined(FT_NO_VA_OPT)
+#    define FT_VA_OPT
+#   endif
 #  endif
+
+#  if !defined(FT_NO_STRINGS)
+#   define FT_STRINGS
+#  endif
+
+#  if !defined(FT_NO_FILE_IO)
+#   define FT_FILE_IO
+#  endif
+
+#  if !defined(FT_NO_STD)
+#   define FT_STD
+#  endif
+
+#  if !defined(FT_NO_ANSI)
+#   define FT_ANSI
+#  endif
+
+#  if !defined(FT_NO_ARRAYS)
+#   define FT_ARRAYS
+#  endif
+
+#  if !defined(FT_NO_LISTS)
+#   define FT_LISTS
+#  endif
+
+#  if !defined(FT_NO_HASHMAPS)
+#   define FT_HASHMAPS
+#  endif
+
+#  if !defined(FT_NO_DEBUG)
+#   define FT_DEBUG
+#   if !defined(FT_NO_ERRCHECK)
+#    define FT_ERRCHECK
+#   endif
+//No FT_MEMCHECK by default
+//#   if !defined(FT_NO_MEMCHECK)
+//#    define FT_MEMCHECK
+//#   endif
+#  endif
+
+#  if !defined(FT_NO_TIME)
+#   define FT_TIME
+#  endif
+
+#  if !defined(FT_NO_MATHS)
+#   define FT_MATHS
+#  endif
+
+# endif
+
+
+
+
+
+# if defined(FT_MACROS)
 //EXPENSION
 #  define	FT_EXP(x) x
+//CONCAT
+#  define	FT_CONCAT(X, Y) X##Y
 
 //REMOVE PARENTHESIS
 #  define FT_DEPAREN(X) __ESC(__ISH X)
@@ -133,7 +195,7 @@ extern "C" {
 #  define FT_VOID(...)
 /* __VA_ARGS__ UTILS */
 
-#  if (!defined(FT_CONFIG) || defined(FT_VA_OPT)) && !defined(FT_NO_VA_OPT)
+#  if defined(FT_VA_OPT)
 #   ifndef FT_VA_OPT
 #    define FT_VA_OPT
 #   endif
@@ -278,7 +340,7 @@ Usage:
 # endif /* FT_MACROS */
 
 # ifndef	NULL
-#  define	NULL 	0x0
+#  define	NULL 	((void*)0)
 # endif
 
 # ifndef	TRUE
@@ -336,16 +398,16 @@ extern	const_string	ft_argv;
 extern	const_string	*ft_env;
 #define FT_INIT_ARGV(argc, argv, env) ft_argc=argc;ft_argv=argv;ft_env=env;
 
-# define NULLABLE
+# define FUNCTION_HOT __attribute__((hot))
+# define FUNCTION_COLD __attribute__((cold))
+
+
 # define ANY_SCAL U8,U16,U32,U64,S8,S16,S32,S64,F32,F64
 # define ANY_N S32,F32
 
 
 typedef S32					t_error_code;
 //# if !defined(FT_CONFIG) || defined(FT_ERRCHECK)
-#  ifndef FT_ERRCHECK
-#   define FT_ERRCHECK
-#  endif
 extern	t_error_code		ft_errno;
 extern	const_string		ft_error_lookup_table[];
 #  define FT_ERRNO(X) ft_errno=X
@@ -361,10 +423,7 @@ extern	const_string		ft_error_lookup_table[];
 # define FT_MAP_MISSING					5			/* No such element */
 
 
-# if (!defined(FT_CONFIG) || defined(FT_DEBUG)) && !defined(FT_NO_DEBUG)
-#  ifndef FT_DEBUG
-#   define FT_DEBUG
-#  endif
+# if defined(FT_DEBUG)
 # define	FT_DEBUG_NONE		0
 # define	FT_DEBUG_VALGRIND	1
 # define	FT_DEBUG_GDB		2
@@ -384,10 +443,7 @@ extern void				_free(void *p, char *file, int line);
 
 # endif /*# if !defined(FT_CONFIG) || defined(FT_DEBUG)*/
 
-# if (!defined(FT_CONFIG) || defined(FT_STRINGS)) && !defined(FT_NO_STRINGS)
-#  ifndef FT_STRINGS
-#   define FT_STRINGS
-#  endif
+# if defined(FT_STRINGS)
 
 /*
 Append a at the end of b.
@@ -503,7 +559,7 @@ extern void		ft_striteri(string str, void (*f)(U64 index, string str));
 ft_str_build: concat all the strings passed as argument. Returned string
 is allocated on heap. Must free
 */
-# ifdef FT_VA_OPT
+# if defined(FT_VA_OPT)
 #  define		__str_build(X) \
 	__str_build_tmp = __str_build_var; \
 	__str_build_var = ft_strjoin(__str_build_var, X); \
@@ -542,11 +598,7 @@ __attribute__ ((deprecated)) extern U64 ft_splitlen(const_string *split);
 # endif /*#if !defined(FT_CONFIG) || defined(FT_STRINGS)*/
 
 
-# if (!defined(FT_CONFIG) || defined(FT_FILE_IO)) && !defined(FT_NO_FILE_IO)
-#  ifndef FT_FILE_IO
-#   define FT_FILE_IO
-#  endif
-
+# if defined(FT_FILE_IO)
 /*
 Reads the whole file
 */
@@ -563,10 +615,7 @@ printf !
 extern S64		ft_printf(const_string fmt, ...);
 # endif /*if !defined(FT_CONFIG) || defined(FT_FILE_IO)*/
 
-# if (!defined(FT_CONFIG) || defined(FT_STD)) && !defined(FT_NO_STD)
-#  ifndef FT_STD
-#   define FT_STD
-#  endif
+# if defined(FT_STD)
 /*
 Writes n zeroed bytes to the string s.
 */
@@ -733,12 +782,9 @@ Creates an array of int from min to max and returns the size of the array.
 */
 extern S32		ft_nrange(S32 **range, S32 min, S32 max);
 
-# endif /*# if !defined(FT_CONFIG) || defined(FT_STD)*/
+# endif /* FT_STD */
 
-# if (!defined(FT_CONFIG) || defined(FT_TIME)) && !defined(FT_NO_TIME)
-#  ifndef FT_TIME
-#   define FT_TIME
-#  endif
+# if defined(FT_TIME)
 //https://github.com/jleffler/soq/tree/master/src/libsoq
 
 /* Machine-independent time format */
@@ -772,13 +818,10 @@ extern string								clk_fmt_elapsed_ns(t_clock *clk);
 extern string								clk_fmt_elapsed_str(t_clock *clk);
 extern double								clk_fmt_elapsed_dbl(t_clock *clk);
 #  endif /*#  ifndef TIMER_VERSION_1*/
-# endif /*# if !defined(FT_CONFIG) || defined(FT_TIME)*/
+# endif /* FT_TIME */
 
 
-# if (!defined(FT_CONFIG) || defined(FT_ANSI)) && !defined(FT_NO_ANSI)
-#  ifndef FT_ANSI
-#   define FT_ANSI
-#  endif
+# if defined(FT_ANSI)
 #  define FT_BLACK						"\e[0;30m"
 #  define FT_RED						"\e[0;31m"
 #  define FT_GREEN						"\e[0;32m"
@@ -862,39 +905,40 @@ extern double								clk_fmt_elapsed_dbl(t_clock *clk);
 
 //Reset
 #  define FT_CRESET			"\e[0m"
-# endif /*# if !defined(FT_CONFIG) || defined(FT_ANSI)*/
+# endif /* FT_ANSI */
 
 
-# if (!defined(FT_CONFIG) || defined(FT_ARRAYS)) && !defined(FT_NO_ARRAYS)
-#  ifndef FT_ARRAYS
-#   define FT_ARRAYS
-#  endif
+# if defined(FT_ARRAYS)
 typedef struct s_array	*t_array;
 
 /*
-Init array. Returns FT_OK or FT_OMEM
+Inits and returns a new array.
+ft_perror:
+	FT_OK: Success
+	FT_OMEM: Memory allocation error
 */
 extern t_array		ft_array_new(U64 elem_size);
 
 /*
-Init array at adress 'array'
-*/
-extern t_array 		*ft_array_init(t_array *array, U64 elem_size);
-
-/*
-Init array and copy buffer into array. Returns FT_OK or FT_OMEM
+Inits a new array and copies buffer into array.
+ft_perror:
+	FT_OK: Success
+	FT_OMEM: Memory allocation error
 */
 extern void			ft_array_init_from(t_array array, U64 elem_size, void *buffer, S32 count);
 
 /*
 Free array
+ft_perror:
+	FT_OK: Success
 */
 extern void			ft_array_free(t_array array);
 
 /*
-Executes f on all elements of array
+Executes f on all elements of array.
+If function f returns FALSE, and returns FALSE. Returns TRUE otherwise
 */
-extern void			ft_array_iter(t_array array, void (*f)(void *));
+extern bool			ft_array_iter(t_array array, bool (*f)(void *));
 
 /*
 Returns a pointer to the value at index. Return NULL if not found
@@ -935,13 +979,10 @@ extern void			*ft_array_pop(t_array array);
 Clears the array
 */
 extern void			ft_array_clear(t_array array);
-# endif /*# if !defined(FT_CONFIG) || defined(FT_ARRAYS)*/
+# endif /* FT_ARRAYS */
 
 
-# if (!defined(FT_CONFIG) || defined(FT_LISTS)) && !defined(FT_NO_LISTS)
-#  ifndef FT_LISTS
-#   define FT_LISTS
-#  endif
+# if defined(FT_LISTS)
 
 typedef struct s_list
 {
@@ -962,7 +1003,7 @@ applies del to content and free the element
 */
 extern bool		ft_lstremove(t_list **lst, t_list *elem, void (*del)(void *));
 
-#  ifdef FT_ARRAYS
+#  if defined(FT_ARRAYS)
 /*
 Converts a list to an array
 */
@@ -1027,13 +1068,10 @@ element's content, puts results in a new list and returns it.
 */
 extern t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
-# endif /*# if !defined(FT_CONFIG) || defined(FT_LISTS)*/
+# endif /* FT_LISTS */
 
 
-# if (!defined(FT_CONFIG) || defined(FT_HASHMAPS)) && !defined(FT_NO_HASHMAPS)
-#  ifndef FT_HASHMAPS
-#   define FT_HASHMAPS
-#  endif
+# if defined(FT_HASHMAPS)
 typedef void 			*t_hash_any;
 typedef void 			*t_hash_map;
 typedef t_error_code	t_hash_code;
@@ -1082,20 +1120,22 @@ than FT_OK the traversal is terminated. f must
 not reenter any hashmap functions, or deadlock may arise.
 */
 extern t_hash_code ft_hash_iterate(t_hash_map in, t_hash_code (*f)(t_hash_any item, t_hash_any elem), t_hash_any item);
-# endif /*# if !defined(FT_CONFIG) || defined(FT_HASHMAPS)*/
+# endif /* FT_HASHMAPS */
 
 
 
-# if (!defined(FT_CONFIG) || defined(FT_MATHS)) && !defined(FT_NO_MATHS)
-#  ifndef FT_MATHS
-#   define FT_MATHS
-#  endif
+# if defined(FT_MATHS)
 
-#  ifndef M_PI
-#   define M_PI 3.14159265358979323846f
-#  endif /*# ifndef M_PI*/
-#  define DEG_TO_RAD 0.01745329251
-#  define RAD_TO_DEG 57.2957795131
+#  if !defined(FT_PI)
+#   define FT_PI 3.14159265358979323846f
+#  endif /* FT_PI */
+
+#  if !defined(FT_DEG_TO_RAD)
+#   define FT_DEG_TO_RAD 0.01745329251
+#  endif /* FT_DEG_TO_RAD */
+#  if !defined(FT_RAD_TO_DEG)
+#   define FT_RAD_TO_DEG 57.2957795131
+#  endif /* FT_RAD_TO_DEG */
 
 typedef struct s_v2		{ float x, y; }			t_v2;
 typedef struct s_v3		{ float x, y, z; }		t_v3;
@@ -1382,10 +1422,10 @@ extern F32 ft_frac(float v);
 // Fractional part of v
 extern t_v2 ft_frac2(t_v2 v);
 
-# endif /*# if !defined(FT_CONFIG) || defined(FT_MATHS)*/
+# endif /* FT_MATHS */
 
-# ifdef __cplusplus
+# if defined(__cplusplus)
 }
 # endif
 
-#endif /*#ifndef LIBFT_H*/
+#endif /* LIBFT_H */
