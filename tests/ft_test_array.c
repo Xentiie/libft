@@ -55,7 +55,7 @@ S32 ft_test_array()
 	clk_start(&fill);
 	for (S32 i = 0; i < ARRAY_SIZE; i++)
 	{
-		t_array_code err;
+		t_error_code err;
 		TEST((*(int *)ft_array_append(arr1, &(S32){i*10}, &err) == i*10 && err == FT_OK));
 	}
 	clk_stop(&fill);

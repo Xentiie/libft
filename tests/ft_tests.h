@@ -11,22 +11,22 @@
 /* ************************************************************************** */
 
 #ifndef FT_TESTS_H
-#define FT_TESTS_H
+# define FT_TESTS_H
 
-#ifndef FT_MEMCHECK
-# define FT_MEMCHECK
-#endif
-#ifndef FT_DEBUG
-# define FT_DEBUG
-#endif
-#include "libft.h"
-#include <stdio.h>
+# ifndef FT_MEMCHECK
+#  define FT_MEMCHECK
+# endif
+# ifndef FT_DEBUG
+#  define FT_DEBUG
+# endif
+# include "libft.h"
+# include <stdio.h>
 
-#define RED "\e[0;91m"
-#define GREEN "\e[0;92m"
-#define RESET "\e[0m"
+# define RED "\e[0;91m"
+# define GREEN "\e[0;92m"
+# define RESET "\e[0m"
 
-#define TEST(X) ({printf("%s:%d TESTING: %s: ", __FILE__, __LINE__, #X); fflush(stdout); if (X) {printf(GREEN"OK"RESET"\n");} else {printf(RED"KO"RESET"\n"); err=1;} })
+# define TEST(X) do {printf("%s:%d TESTING: %s: ", __FILE__, __LINE__, #X);fflush(stdout);if (X) {printf(GREEN"OK"RESET"\n");} else {printf(RED"KO"RESET"\n"); err=1;}} while(0);
 
 
 S32 ft_test_array();

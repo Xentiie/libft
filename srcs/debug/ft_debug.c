@@ -10,6 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+//TMP
+#ifndef WIN32
+
+
+
 #include "libft.h"
 #ifdef FT_DEBUG
 #  include <stdio.h>
@@ -54,3 +59,8 @@ void	ft_debug_break()
 }
 
 #endif
+
+
+
+
+#endif /* #ifndef WIN32 */

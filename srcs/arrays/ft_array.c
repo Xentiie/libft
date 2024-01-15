@@ -13,12 +13,7 @@
 #include <stdlib.h>
 #include "libft.h"
 #ifdef FT_ARRAYS
-# include <stdio.h>
 # include <math.h>
-
-# define T_H_GREEN "\e[0;92m"
-# define CRESET "\e[0m"
-
 
 typedef struct _s_array_segment
 {
@@ -39,10 +34,15 @@ typedef struct _s_array
 	_t_array_segment	*last;
 }	_t_array;
 
+/*
+Inits a new array segment at 'out' of size 'seg_size'.
+ft_perror:
+	FT_OK: Success
+	FT_OMEM: Memory allocation error
+*/
 void	ft_array_new_segment(U64 seg_size, _t_array_segment **out)
 {
-	_t_array_segment *new;
-	new = malloc(sizeof(_t_array_segment));
+	_t_array_segment *new = malloc(sizeof(_t_array_segment));
 
 #ifdef FT_ERRCHECK
 	if (!new)
@@ -70,8 +70,10 @@ void	ft_array_new_segment(U64 seg_size, _t_array_segment **out)
 
 void	ft_array_append_segment(_t_array *arr, _t_array_segment *seg)
 {
+#ifdef FT_ERRCHECK
 	if (!seg)
 		return;
+#endif
 	if (!arr->first)
 	{
 		arr->first = seg;
@@ -88,7 +90,7 @@ void	ft_array_append_segment(_t_array *arr, _t_array_segment *seg)
 t_array	ft_array_new(U64 elem_size)
 {
 	_t_array	*arr = malloc(sizeof(_t_array));
-#ifdef FT_MEMCHECK
+#ifdef FT_ERRCHECK
 	if (!arr)
 	{
 		ft_errno = FT_OMEM;
@@ -104,7 +106,7 @@ t_array	ft_array_new(U64 elem_size)
 
 	_t_array_segment *new_seg = NULL;
 	ft_array_new_segment(arr->curr_segment_size, &new_seg);
-#ifdef FT_MEMCHECK
+#ifdef FT_ERRCHECK
 	if (ft_errno != FT_OK || new_seg == NULL)
 	{
 		free(arr);
@@ -119,25 +121,7 @@ t_array	ft_array_new(U64 elem_size)
 	return (t_array)arr;
 }
 
-t_array *ft_array_init(t_array *array, U64 elem_size)
-{
-	*array = ft_array_new(elem_size);
-	return array;
-}
-
-//t_array_code	ft_array_init_from(t_array array, U64 elem_size, void *buffer, S32 count)
-//{
-//	_t_array	*arr = (_t_array )array;
-//	arr->count = count;
-//	arr->elem_size = elem_size;
-//	arr->array_size = elem_size * count;
-//	arr->data = ft_memdup(buffer, elem_size*count);
-//	if (!arr->data)
-//		return FT_OMEM;
-//	return FT_OK;
-//}
-
-void			ft_array_iter(t_array array, void (*f)(void *))
+bool			ft_array_iter(t_array array, bool (*f)(void *))
 {
 	_t_array	*arr = (_t_array *)array;
 
@@ -145,10 +129,12 @@ void			ft_array_iter(t_array array, void (*f)(void *))
 	while (curr)
 	{
 		_t_array_segment *next = curr->next;
-		f(curr->data);
+		if (f(curr->data) == FALSE) {
+			return FALSE;
+		}
 		curr = next;
 	}
-	free(arr);
+	return TRUE;
 }
 
 void			ft_array_free(t_array array)
@@ -181,7 +167,7 @@ void	*ft_array_append(t_array array, void *elem)
 		U64 			new_size = arr->curr_segment_size*2;
 		_t_array_segment	*new_seg = NULL;
 		ft_array_new_segment(new_size, &new_seg);
-#ifdef FT_MEMCHECK
+#ifdef FT_ERRCHECK
 		if (ft_errno != FT_OK)
 			return NULL;
 #endif
@@ -191,7 +177,7 @@ void	*ft_array_append(t_array array, void *elem)
 		arr->curr_seg = new_seg;
 	}
 
-	void *dest = arr->curr_seg->data + (arr->curr_seg->count * arr->elem_size);
+	void *dest = (U64)arr->curr_seg->data + (arr->curr_seg->count * arr->elem_size);
 	ft_memcpy(dest, elem, arr->elem_size);
 	arr->curr_seg->count++;
 	arr->count++;
@@ -211,7 +197,7 @@ void			*ft_array_pop(t_array array)
 		curr = curr->prev;
 	printf("Skipped empty: %d %p\n", skipped, curr);
 	
-#ifdef FT_MEMCHECK
+#ifdef FT_ERRCHECK
 	if (!curr)
 	{
 		ft_errno = FT_ERROR;
@@ -221,8 +207,8 @@ void			*ft_array_pop(t_array array)
 
 	printf("Count: %lld\n", curr->count);
 
-	void *content = ft_memdup(curr->data + (curr->count-1)*arr->elem_size, arr->elem_size);
-#ifdef FT_MEMCHECK
+	void *content = ft_memdup((U64)curr->data + (curr->count-1)*arr->elem_size, arr->elem_size);
+#ifdef FT_ERRCHECK
 	if (!content)
 	{
 		ft_errno = FT_OMEM;
@@ -243,7 +229,7 @@ void	*ft_array_get(t_array array, U64 index)
 	if (index == 0 || index == 1)
 	{
 		if (arr->first)
-			return arr->first->data + arr->elem_size * index;
+			return (U64)arr->first->data + arr->elem_size * index;
 		else
 			return NULL;
 	}
@@ -263,7 +249,7 @@ void	*ft_array_get(t_array array, U64 index)
 	U64 seg_index = 2 - curr->size / arr->elem_size + index;
 	if (!curr)
 		return NULL;
-	return curr->data + seg_index*arr->elem_size;
+	return (U64)curr->data + seg_index*arr->elem_size;
 }
 
 U64		ft_array_count(t_array array)
@@ -281,7 +267,7 @@ void	*ft_array_to_buff(t_array array)
 	_t_array	*arr = (_t_array *)array;
 	
 	void *out = malloc(ft_array_count_bytes(array));
-#ifdef FT_MEMCHECK
+#ifdef FT_ERRCHECK
 	if (!out)
 	{
 		ft_errno = FT_OMEM;
@@ -293,7 +279,7 @@ void	*ft_array_to_buff(t_array array)
 	U64 offs = 0;
 	while (seg)
 	{
-		ft_memcpy(out + offs, seg->data, seg->count * arr->elem_size);
+		ft_memcpy((U64)out + offs, seg->data, seg->count * arr->elem_size);
 		offs += seg->count * arr->elem_size;
 		seg = seg->next;
 	}
@@ -308,7 +294,7 @@ void ft_array_cpy_buff(t_array array, void *buff)
 	U64 offs = 0;
 	while (seg)
 	{
-		ft_memcpy(buff + offs, seg->data, seg->count * arr->elem_size);
+		ft_memcpy((U64)buff + offs, seg->data, seg->count * arr->elem_size);
 		offs += seg->count * arr->elem_size;
 		seg = seg->next;
 	}

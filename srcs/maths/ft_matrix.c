@@ -104,7 +104,7 @@ t_mat4x4 ft_matrix_perspective(F32 fov, F32 near, F32 far)
 {
 	// Camera points towards -z.  0 < near < far.
 	// Matrix maps z range [-near, -far] to [-1, 1], after homogeneous division.
-    F32 f = rcp(tanf(fov * M_PI / 360.0f));
+    F32 f = rcp(tanf(fov * FT_PI / 360.0f));
     F32 d = rcp(near - far);
 
     t_mat4x4 r;
