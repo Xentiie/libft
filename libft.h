@@ -39,8 +39,12 @@ Define FT_CONFIG to configure exactly what you need
 extern "C" {
 # endif
 
+# if !defined(FT_WIN32) && !defined(FT_OSX) && !defined(FT_LINUX)
+#  warning No platform seem to be specified, errors WILL occur.
+# endif
+
 //Silence __attribute__ errors from vscode intellisense
-# if defined(WIN32)
+# if defined(FT_WIN32)
 #  define __attribute__(x)
 # endif
 
@@ -407,11 +411,10 @@ extern	const_string	*ft_env;
 
 
 typedef S32					t_error_code;
-//# if !defined(FT_CONFIG) || defined(FT_ERRCHECK)
+//Error code returned by some ft functions if FT_ERRCHECK is defined.
 extern	t_error_code		ft_errno;
+//Returns a string for each error code possible (in ft_errno).
 extern	const_string		ft_error_lookup_table[];
-#  define FT_ERRNO(X) ft_errno=X
-//# endif
 
 
 # define FT_OK							0
@@ -1426,7 +1429,7 @@ extern t_v2 ft_frac2(t_v2 v);
 
 
 //No forget to undef otherwise std headers go crazy
-# if defined(WIN32)
+# if defined(FT_WIN32)
 #  undef __attribute__
 # endif
 
