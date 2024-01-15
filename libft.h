@@ -424,9 +424,9 @@ extern	const_string		ft_error_lookup_table[];
 
 
 # if defined(FT_DEBUG)
-# define	FT_DEBUG_NONE		0
+# define	FT_DEBUG_FALSE		0
 # define	FT_DEBUG_VALGRIND	1
-# define	FT_DEBUG_GDB		2
+# define	FT_DEBUG_TRUE		2
 
 void		ft_debug_break();
 S8			ft_is_debugger();
@@ -1423,6 +1423,12 @@ extern F32 ft_frac(float v);
 extern t_v2 ft_frac2(t_v2 v);
 
 # endif /* FT_MATHS */
+
+
+//No forget to undef otherwise std headers go crazy
+# if defined(WIN32)
+#  undef __attribute__
+# endif
 
 # if defined(__cplusplus)
 }

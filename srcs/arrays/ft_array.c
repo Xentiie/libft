@@ -177,7 +177,7 @@ void	*ft_array_append(t_array array, void *elem)
 		arr->curr_seg = new_seg;
 	}
 
-	void *dest = (U64)arr->curr_seg->data + (arr->curr_seg->count * arr->elem_size);
+	void *dest = (char*)arr->curr_seg->data + (arr->curr_seg->count * arr->elem_size);
 	ft_memcpy(dest, elem, arr->elem_size);
 	arr->curr_seg->count++;
 	arr->count++;
@@ -190,12 +190,10 @@ void			*ft_array_pop(t_array array)
 	_t_array	*arr = (_t_array *)array;
 
 	_t_array_segment *curr = arr->curr_seg;
-	printf("Curr seg: %p\n", curr);
 
 	int skipped = 0;
 	while (curr && curr->count == 0 && ++skipped)
 		curr = curr->prev;
-	printf("Skipped empty: %d %p\n", skipped, curr);
 	
 #ifdef FT_ERRCHECK
 	if (!curr)
@@ -205,9 +203,7 @@ void			*ft_array_pop(t_array array)
 	}
 #endif
 
-	printf("Count: %lld\n", curr->count);
-
-	void *content = ft_memdup((U64)curr->data + (curr->count-1)*arr->elem_size, arr->elem_size);
+	void *content = ft_memdup((char*)curr->data + (curr->count-1)*arr->elem_size, arr->elem_size);
 #ifdef FT_ERRCHECK
 	if (!content)
 	{
@@ -229,7 +225,7 @@ void	*ft_array_get(t_array array, U64 index)
 	if (index == 0 || index == 1)
 	{
 		if (arr->first)
-			return (U64)arr->first->data + arr->elem_size * index;
+			return (char*)arr->first->data + arr->elem_size * index;
 		else
 			return NULL;
 	}
@@ -249,7 +245,7 @@ void	*ft_array_get(t_array array, U64 index)
 	U64 seg_index = 2 - curr->size / arr->elem_size + index;
 	if (!curr)
 		return NULL;
-	return (U64)curr->data + seg_index*arr->elem_size;
+	return (char*)curr->data + seg_index*arr->elem_size;
 }
 
 U64		ft_array_count(t_array array)
@@ -279,7 +275,7 @@ void	*ft_array_to_buff(t_array array)
 	U64 offs = 0;
 	while (seg)
 	{
-		ft_memcpy((U64)out + offs, seg->data, seg->count * arr->elem_size);
+		ft_memcpy((char*)out + offs, seg->data, seg->count * arr->elem_size);
 		offs += seg->count * arr->elem_size;
 		seg = seg->next;
 	}
@@ -294,7 +290,7 @@ void ft_array_cpy_buff(t_array array, void *buff)
 	U64 offs = 0;
 	while (seg)
 	{
-		ft_memcpy((U64)buff + offs, seg->data, seg->count * arr->elem_size);
+		ft_memcpy((char*)buff + offs, seg->data, seg->count * arr->elem_size);
 		offs += seg->count * arr->elem_size;
 		seg = seg->next;
 	}
