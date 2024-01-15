@@ -1,4 +1,4 @@
-run_tests
+./objs/
 libft.a
+
 .editorconfig
-**/*.o
