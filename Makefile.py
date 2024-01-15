@@ -1,30 +1,92 @@
 import os
+import sys
+import subprocess
 from glob import glob
-from sys import platform, argv
 
-_preserve_file_structure = False
+def _execute(*args):
+	print(' '.join(args))
+	try:
+		process = subprocess.Popen(args, shell=False)
+	except FileNotFoundError:
+		print(f"Error: '{args[0]}' doesn't exist. Double check args sent to subprocess.Popen.")
+		exit(1)
+	process.communicate()
+	if (process.returncode != 0):
+		print(f"Error: {args[0]} exited with code {process.returncode}.")
+		exit(1)
 
-is_wsl = os.environ.get("WSLENV", default=None) != None
+def _get_platform():
+	is_wsl = os.environ.get("WSLENV", default=None) != None
 
-is_win = platform == "win32" or is_wsl
-is_linux = (platform == "linux" or platform == "linux2") and not is_wsl
-is_osx = platform == "darwin" and not is_wsl
+	is_win = sys.platform == "win32" or is_wsl
+	is_linux = (sys.platform == "linux" or sys.platform == "linux2") and not is_wsl
+	is_osx = sys.platform == "darwin" and not is_wsl
+	return "win32" if (is_win) else "linux" if (is_linux) else "osx" if (is_osx) else None
 
-LIBTOOL="ar -rcs"
-RM="rm -rf"
+def _get_target(target):
+	if target in globals() and callable(globals()[target]):
+		return globals()[target]
+	else:
+		return None
 
-INCLUDES=[]
+def _filter_files(srcs, objs):
+	srcs_out = []
+	objs_out = []
+	for s, o in zip(srcs, objs):
+		try:
+			s_mtime = os.stat(s).st_mtime
+		except FileNotFoundError as e:
+			print(f"Error: couldn't stat '{e.filename}': not found !")
+			continue
+
+		try:
+			o_mtime = os.stat(o).st_mtime
+		except:
+			srcs_out.append(s)
+			objs_out.append(o)
+			continue
+
+		if (s_mtime > o_mtime):
+			srcs_out.append(s)
+			objs_out.append(o)
+	return srcs_out, objs_out
+
+def _rebuild_lib_needed(name, objs):
+	try:
+		mtime_lib = os.stat(name).st_mtime
+	except FileNotFoundError as e:
+		return True
+	
+	_objs_mtime = []
+	for o in objs:
+		try:
+			_objs_mtime.append(os.stat(o).st_mtime)
+		except FileNotFoundError:
+			continue
+	if (mtime_lib < max(_objs_mtime)):
+		return True
+	else:
+		return False
+
+
+LIBTOOL=["ar", "-rcs"]
+RM=["rm", "-rf"]
+
+INCLUDES=["-I./"]
+LIBRARIES_PATH=[]
+LIBRARIES=[]
 CFLAGS=["-O3"]
 
-if (is_win):
+platform = _get_platform()
+if (platform == "win32"):
 	CC="x86_64-w64-mingw32-gcc"
-	CFLAGS += ["-D WIN32"]
-elif (is_linux):
+	CFLAGS += ["-D FT_WIN32"]
+elif (platform == "linux"):
 	CC="gcc"
-	CFLAGS += ["-D LINUX"]
-elif (is_osx):
-	CFLAGS += ["-D OSX"]
-if (not is_win and not is_linux and not is_osx):
+	CFLAGS += ["-D FT_LINUX"]
+elif (platform == "osx"):
+	CFLAGS += ["-D FT_OSX"]
+else:
 	print("Platform not supported")
 	exit(1)
 
@@ -37,44 +99,52 @@ OBJS_DIR="./objs"
 OBJS_EXT=".o"
 
 SRCS=glob(f'{SRCS_DIR}/**/*{SRCS_EXT}', recursive=True)
-if (_preserve_file_structure):
-	OBJS=[ o.replace(SRCS_DIR, OBJS_DIR).replace(SRCS_EXT, OBJS_EXT) for o in SRCS ]
-else:
-	OBJS=[ f'{OBJS_DIR}/{os.path.split(os.path.abspath(o))[1].replace(SRCS_EXT, OBJS_EXT)}' for o in SRCS ]
+OBJS=[ f'{OBJS_DIR}/{os.path.split(os.path.abspath(o))[1].replace(SRCS_EXT, OBJS_EXT)}' for o in SRCS ]
 
 
+
+def name():
+	if (not _rebuild_lib_needed(NAME, OBJS)):
+		print(f"Nothing to do for {NAME}")
+		return
+	_execute(*LIBTOOL, NAME, *OBJS)
 
 def all():
-	print("Configuration:")
-	print(" -> platform:")
-	print(f"   {'win32' if (is_win) else 'linux' if (is_linux) else 'osx' if (is_osx) else 'none'}")
-	print(" -> compiler:")
-	print(f"   {CC}")
-	print(" -> flags:")
-	print(f"   {CFLAGS}")
-	print(" -> compiling:")
-	__max_len = max(len(s) for s in SRCS)
-	[print(f"   [{s}]{' ' * (__max_len-len(s))} ==> [{o}]") for s, o in zip(SRCS, OBJS) ]
 
+	srcs, objs = _filter_files(SRCS, OBJS)
+	if (len(srcs) == 0 or len(objs) == 0):
+		print(f"Nothing to do for all")
+		name()
+		return
 
-	for src, obj in zip(SRCS, OBJS):
-		includes_str = ' '.join([f'-I{inc}' for inc in INCLUDES])
-		cflags_str = ' '.join(CFLAGS)
-
+	for src, obj in zip(srcs, objs):
 		out_dir = os.path.split(os.path.abspath(obj))[0]
 		if (not os.path.exists(out_dir)):
 			print(f"Ouput directory '${out_dir}' doesn't exists, creating...")
 			os.makedirs(out_dir)
-
-		command = f'{CC} {cflags_str} {includes_str} -c {src} -o {obj}'
-		print(command)
-		#os.system(command)
-
-	command = f"{LIBTOOL} {' '.join(OBJS)}"
-	print(command)
-	os.system(command)
+		_execute(CC, *CFLAGS, *INCLUDES, *LIBRARIES_PATH, '-c', src,'-o', obj, *LIBRARIES)
+	name()
 
 def clean():
-	command = f"{RM} {OBJS_DIR}/*"
-	print(command)
-	os.system(command)
+	for o in OBJS:
+		_execute(*RM, o)
+
+def fclean():
+	clean()
+	_execute(*RM, NAME)
+
+def re():
+	fclean()
+	all()
+
+
+target = None
+if (len(sys.argv) == 1):
+	target = all
+else:
+	target = _get_target(sys.argv[1])
+	if (target == None):
+		print(f"No target: {sys.argv[1]}")
+		exit(1)
+
+target()
