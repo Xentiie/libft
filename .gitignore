@@ -1,4 +1,8 @@
+#builds
 objs/
-libft.a
+*.a
+*.o
+*.exe
 
+#env
 .editorconfig
