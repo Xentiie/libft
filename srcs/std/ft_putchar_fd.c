@@ -11,10 +11,11 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#ifdef FT_STD
-# include <unistd.h>
-void	ft_putchar_fd(U8 c, int fd)
+#if defined (FT_STD) && defined(FT_FILEIO)
+void	ft_putchar_fd(U8 c, file fd)
 {
-	(void)!write(fd, &c, 1);
+	if (ft_fwrite(fd, &c, 1) == -1)
+		__FTRETURN_ERR(, ft_errno);
+	__FTRETURN_OK();
 }
 #endif

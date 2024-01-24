@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 #include <stdarg.h>
-#ifdef FT_FILE_IO
+#ifdef FT_FILEIO
 S64	ft_printf(const_string fmt, ...)
 {
 	U64			i;

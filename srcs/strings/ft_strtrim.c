@@ -28,11 +28,18 @@ string	ft_strtrim(const_string s1, const_string set)
 		end--;
 	end++;
 	if (start >= end)
-		return (ft_strdup(""));
+	{
+		new = ft_strdup("");
+		if (new == NULL)
+			__FTRETURN_ERR(NULL, ft_errno);
+		__FTRETURN_OK(new);
+	}
+
 	new = malloc((end - start + 1) * sizeof(char));
-	if (!new)
-		return NULL;
+	if (new == NULL)
+		__FTRETURN_ERR(NULL, FT_EOMEM);
+	
 	ft_strlcpy(new, (char *)(s1 + start), end - start + 1);
-	return (new);
+	__FTRETURN_OK(new);
 }
 #endif

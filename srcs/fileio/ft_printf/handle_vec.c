@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 #include <stdio.h>
-#ifdef FT_FILE_IO
+#ifdef FT_FILEIO
 #define do_vec(v, type, size, conv)					\
 	U64	total_size = 0;								\
 	ft_putchar_fd('(', 1);							\

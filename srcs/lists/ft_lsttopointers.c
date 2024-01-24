@@ -1,32 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lst_to_array.c                                  :+:      :+:    :+:   */
+/*   ft_lsttopointers.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/05 01:21:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/01/10 11:18:07 by reclaire         ###   ########.fr       */
+/*   Created: 2023/01/18 07:06:20 by estarck           #+#    #+#             */
+/*   Updated: 2023/09/27 16:43:17 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
 #include "libft.h"
-#if defined(FT_LISTS) && defined(FT_ARRAYS)
-int	ft_lst_to_array(t_list *lst, t_array array, U64 elem_size)
+#ifdef FT_LISTS
+void	**ft_lsttopointers(t_list *lst)
 {
+	int		lst_len;
+	void	**out;
 	t_list	*curr;
 	int		i;
 
-	if (!lst)
-		return -1;
+	if (lst == NULL)
+		__FTRETURN_ERR(NULL, FT_EINVPTR);
+	
+	lst_len = ft_lstsize(lst);
+	out = malloc(sizeof(void *) * (lst_len + 1));
+	if (out == NULL)
+		__FTRETURN_ERR(NULL, FT_EOMEM);
+
 	curr = lst;
 	i = 0;
 	while (curr)
 	{
-		ft_array_append(array, (ft_memdup)(curr->content, elem_size));
+		out[i] = curr->content;
 		curr = curr->next;
 		i++;
 	}
-	return 0;
+	out[i] = NULL;
+	__FTRETURN_OK(out);
 }
 #endif

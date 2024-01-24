@@ -15,6 +15,11 @@
 #ifdef FT_ARRAYS
 # include <math.h>
 
+# define RESET_ERRNO() ft_errno=FT_OK
+# define ASSERT(X, err) (!(X) && (ft_errno=err))
+# define ERRCHECK() (!ft_errno)
+
+
 typedef struct _s_array_segment
 {
 	U64						count;
@@ -35,45 +40,31 @@ typedef struct _s_array
 }	_t_array;
 
 /*
-Inits a new array segment at 'out' of size 'seg_size'.
-ft_perror:
-	FT_OK: Success
-	FT_OMEM: Memory allocation error
+ft_error: FT_OK | FT_EOMEM
 */
-void	ft_array_new_segment(U64 seg_size, _t_array_segment **out)
+static _t_array_segment	*new_segment(U64 seg_size)
 {
 	_t_array_segment *new = malloc(sizeof(_t_array_segment));
-
-#ifdef FT_ERRCHECK
-	if (!new)
-	{
-		ft_errno = FT_OMEM;
-		return;
-	}
-#endif
-
-	new->data = malloc(seg_size);
-#ifdef FT_ERRCHECK
-	if (!new->data)
-	{
-		ft_errno = FT_OMEM;
-		free(new);
-		return;
-	}
-#endif
+	if (ASSERT(new, FT_EOMEM))
+		return NULL;
 	new->count = 0;
-	new->size = seg_size;
 	new->next = NULL;
 	new->prev = NULL;
-	*out = new;
+
+	new->data = malloc(seg_size);
+	ft_bzero(new->data, seg_size);
+	if (ASSERT(new->data, FT_EOMEM))
+	{
+		free(new);
+		return NULL;
+	}
+	new->size = seg_size;
+	RESET_ERRNO();
+	return new;
 }
 
-void	ft_array_append_segment(_t_array *arr, _t_array_segment *seg)
+static void	append_segment(_t_array *arr, _t_array_segment *seg)
 {
-#ifdef FT_ERRCHECK
-	if (!seg)
-		return;
-#endif
 	if (!arr->first)
 	{
 		arr->first = seg;
@@ -87,16 +78,14 @@ void	ft_array_append_segment(_t_array *arr, _t_array_segment *seg)
 	}
 }
 
+/*
+ft_error: FT_OK | FT_EOMEM
+*/
 t_array	ft_array_new(U64 elem_size)
 {
 	_t_array	*arr = malloc(sizeof(_t_array));
-#ifdef FT_ERRCHECK
-	if (!arr)
-	{
-		ft_errno = FT_OMEM;
+	if (ASSERT(arr, FT_EOMEM))
 		return NULL;
-	}
-#endif
 
 	arr->count = 0;
 	arr->elem_size = elem_size;
@@ -104,26 +93,29 @@ t_array	ft_array_new(U64 elem_size)
 	arr->last = NULL;
 	arr->curr_segment_size = elem_size * 2;
 
-	_t_array_segment *new_seg = NULL;
-	ft_array_new_segment(arr->curr_segment_size, &new_seg);
-#ifdef FT_ERRCHECK
-	if (ft_errno != FT_OK || new_seg == NULL)
+	_t_array_segment *new_seg = new_segment(arr->curr_segment_size);
+	if (ERRCHECK())
 	{
 		free(arr);
 		return NULL;
 	}
-#endif
 
 	arr->curr_seg = new_seg;
 	arr->first = new_seg;
 	arr->last = new_seg;
 
+	RESET_ERRNO();
 	return (t_array)arr;
 }
 
+/*
+ft_error: FT_OK | FT_EINVPTR
+*/
 bool			ft_array_iter(t_array array, bool (*f)(void *))
 {
 	_t_array	*arr = (_t_array *)array;
+	if (ASSERT(arr, FT_EINVPTR) || ASSERT(f, FT_EINVPTR))
+		return FALSE;
 
 	_t_array_segment *curr = arr->first;
 	while (curr)
@@ -134,12 +126,18 @@ bool			ft_array_iter(t_array array, bool (*f)(void *))
 		}
 		curr = next;
 	}
+	RESET_ERRNO();
 	return TRUE;
 }
 
+/*
+ft_error: FT_OK | FT_EINVPTR
+*/
 void			ft_array_free(t_array array)
 {
 	_t_array	*arr = (_t_array *)array;
+	if (ASSERT(arr, FT_EINVPTR))
+		return;
 
 	_t_array_segment *curr = arr->first;
 	while (curr)
@@ -150,11 +148,19 @@ void			ft_array_free(t_array array)
 		curr = next;
 	}
 	free(arr);
+	RESET_ERRNO();
 }
 
+/*
+ft_error: FT_OK | FT_EINVPTR
+*/
 void	*ft_array_append(t_array array, void *elem)
 {
+	_t_array_segment	*new_seg = NULL;
+
 	_t_array	*arr = (_t_array *)array;
+	if (ASSERT(arr, FT_EINVPTR) || ASSERT(elem, FT_EINVPTR))
+		return;
 
 	if (arr->curr_seg->size < (arr->curr_seg->count + 1) * arr->elem_size)
 	{
@@ -165,14 +171,11 @@ void	*ft_array_append(t_array array, void *elem)
 		}
 		
 		U64 			new_size = arr->curr_segment_size*2;
-		_t_array_segment	*new_seg = NULL;
-		ft_array_new_segment(new_size, &new_seg);
-#ifdef FT_ERRCHECK
-		if (ft_errno != FT_OK)
+		new_seg = new_segment(new_size);
+		if (ERRCHECK())
 			return NULL;
-#endif
 
-		ft_array_append_segment(arr, new_seg);
+		append_segment(arr, new_seg);
 		arr->curr_segment_size = new_size;
 		arr->curr_seg = new_seg;
 	}
@@ -182,35 +185,36 @@ void	*ft_array_append(t_array array, void *elem)
 	arr->curr_seg->count++;
 	arr->count++;
 
+	RESET_ERRNO();
 	return dest;
 }
 
 void			*ft_array_pop(t_array array)
 {
 	_t_array	*arr = (_t_array *)array;
+	if (ASSERT(arr, FT_EINVPTR))
+		return NULL;
 
 	_t_array_segment *curr = arr->curr_seg;
+	if (ASSERT(curr, FT_EINVPTR))
+		return NULL;
 
 	int skipped = 0;
 	while (curr && curr->count == 0 && ++skipped)
 		curr = curr->prev;
 	
-#ifdef FT_ERRCHECK
 	if (!curr)
 	{
 		ft_errno = FT_ERROR;
 		return NULL;
 	}
-#endif
 
 	void *content = ft_memdup((char*)curr->data + (curr->count-1)*arr->elem_size, arr->elem_size);
-#ifdef FT_ERRCHECK
 	if (!content)
 	{
-		ft_errno = FT_OMEM;
+		ft_errno = FT_EOMEM;
 		return NULL;
 	}
-#endif
 
 	curr->count--;
 	if (curr->count == 0 && curr->prev)
@@ -263,13 +267,11 @@ void	*ft_array_to_buff(t_array array)
 	_t_array	*arr = (_t_array *)array;
 	
 	void *out = malloc(ft_array_count_bytes(array));
-#ifdef FT_ERRCHECK
 	if (!out)
 	{
-		ft_errno = FT_OMEM;
+		ft_errno = FT_EOMEM;
 		return NULL;
 	}
-#endif
 
 	_t_array_segment *seg = arr->first;
 	U64 offs = 0;

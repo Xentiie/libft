@@ -14,15 +14,18 @@
 #ifdef FT_LISTS
 void	ft_lstadd_front(t_list **lst, t_list *new)
 {
-	if (!lst)
-		return ;
-	if (!(*lst))
+	if (lst == NULL)
+		__FTRETURN_ERR(, FT_EINVPTR);
+	
+	if (*lst == NULL)
+		*lst = new;
+	else
 	{
-		(*lst) = new;
-		return ;
+		(*lst)->prev = new;
+		new->next = *lst;
+		*lst = new;
 	}
-	(*lst)->prev = new;
-	new->next = *lst;
-	*lst = new;
+
+	__FTRETURN_OK();
 }
 #endif

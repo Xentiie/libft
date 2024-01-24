@@ -23,8 +23,9 @@ string	ft_strjoin(const_string s1, const_string s2)
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
 	new = malloc((s1_len + s2_len + 1) * sizeof(char));
-	if (!new)
-		return NULL;
+	if (new == NULL)
+		__FTRETURN_ERR(NULL, FT_EOMEM);
+
 	i = 0;
 	while (i < s1_len)
 	{
@@ -37,6 +38,6 @@ string	ft_strjoin(const_string s1, const_string s2)
 		i++;
 	}
 	new[i] = '\0';
-	return (new);
+	__FTRETURN_OK(new);
 }
 #endif

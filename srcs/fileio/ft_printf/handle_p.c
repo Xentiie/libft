@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#ifdef FT_FILE_IO
+#ifdef FT_FILEIO
 static void	convert(U64 num, S32 *i)
 {
 	string	hexa;

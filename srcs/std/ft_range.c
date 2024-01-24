@@ -25,6 +25,9 @@ S32	*ft_range(S32 min, S32 max)
 	if (size <= 0)
 		return (NULL);
 	output = malloc(sizeof(S32) * size + 1);
+	if (output == NULL)
+		__FTRETURN_ERR(NULL, FT_EOMEM);
+
 	counter = min;
 	while (i < size)
 	{
@@ -32,6 +35,6 @@ S32	*ft_range(S32 min, S32 max)
 		counter++;
 		i++;
 	}
-	return (output);
+	__FTRETURN_OK(output);
 }
 #endif

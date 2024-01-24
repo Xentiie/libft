@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#ifdef FT_FILE_IO
+#ifdef FT_FILEIO
 S32	handle_s(string str)
 {
 	if (!str)

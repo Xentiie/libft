@@ -45,7 +45,7 @@ S8 ft_is_debugger()
 	{
 		if (RUNNING_ON_VALGRIND)
 			__is_debugger = FT_DEBUG_VALGRIND;
-		else if (ptrace(PTRACE_TRACEME, 0, 1, 0) == -1)
+		else if (ptrace(PTRACE_TRACEME, 0, 1, 0) == -1) //TODO: untrace me
 			__is_debugger = FT_DEBUG_TRUE;
 		else
 			__is_debugger = FT_DEBUG_FALSE;

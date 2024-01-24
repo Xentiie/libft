@@ -13,41 +13,34 @@
 #include "libft.h"
 #ifdef FT_LISTS
 
-static void	ft_lstremoveif2(t_list **lst, t_list *prev,
-		t_list *curr, void (*del)(void *))
+bool ft_lstremoveif(t_list **lst, void (*del)(void *),
+					bool (*f)(), void *ref)
 {
-	if (prev == NULL)
-		(*lst) = curr->next;
-	else
-	{
-		prev->next = curr->next;
-		if (ft_lstsize(prev) == 1)
-			prev->next = NULL;
-	}
-	ft_lstdelone(curr, del);
-}
+	t_list *prev;
+	t_list *curr;
+	bool found = FALSE;
 
-bool	ft_lstremoveif(t_list **lst, void (*del)(void *),
-			bool (*f)(), void *ref)
-{
-	t_list	*prev;
-	t_list	*curr;
-	bool	found = FALSE;
+	if (lst == NULL || f == NULL)
+		__FTRETURN_ERR(FALSE, FT_EINVPTR);
 
-	if (!f || !lst || !(*lst))
-		return (-1);
-	curr = (*lst);
+	curr = *lst;
 	prev = NULL;
 	while (curr)
 	{
 		if (f(curr->content, ref))
 		{
-			ft_lstremoveif2(lst, prev, curr, del);
+			if (prev == NULL)
+				(*lst) = curr->next;
+			else
+				prev->next = curr->next;
+			ft_lstdelone(curr, del);
+			if (ft_errno != FT_OK)
+				__FTRETURN_ERR(FALSE, ft_errno);
 			found = TRUE;
 		}
 		prev = curr;
 		curr = curr->next;
 	}
-	return (found);
+	__FTRETURN_OK(found);
 }
 #endif

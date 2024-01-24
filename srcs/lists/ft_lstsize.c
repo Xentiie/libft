@@ -14,16 +14,15 @@
 #ifdef FT_LISTS
 U64	ft_lstsize(t_list *lst)
 {
-	U64		r;
 	t_list	*current;
 
-	r = 0;
+	U64 size = 0;
 	current = lst;
-	while (current != NULL)
+	while (current)
 	{
-		r++;
+		size++;
 		current = current->next;
 	}
-	return (r);
+	__FTRETURN_OK(size);
 }
 #endif

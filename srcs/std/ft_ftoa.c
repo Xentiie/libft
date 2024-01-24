@@ -73,6 +73,9 @@ string ft_ftoa(float n)
 	bool	neg = FALSE;
 
 	out = malloc(sizeof(char) * (AFTERPOINT * 2 + 3));
+	if (out == NULL)
+		__FTRETURN_ERR(NULL, FT_EOMEM);
+
 	ft_bzero(out, sizeof(char) * (AFTERPOINT * 2 + 3));
 	if (n < 0) { neg = TRUE; n *= -1; }
 
@@ -88,6 +91,6 @@ string ft_ftoa(float n)
 		fpart = fpart * pow(10, AFTERPOINT);
 		int_to_str((int)fpart, out + i + 1, AFTERPOINT, neg);
 	}
-	return (out);
+	__FTRETURN_OK(out);
 }
 #endif

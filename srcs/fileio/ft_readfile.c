@@ -12,8 +12,7 @@
 
 #include <stdlib.h>
 #include "libft.h"
-#ifdef FT_FILE_IO
-# include <unistd.h>
+#ifdef FT_FILEIO
 
 static S64	read_section(file fd, U64 read_size, string *out)
 {
@@ -22,23 +21,25 @@ static S64	read_section(file fd, U64 read_size, string *out)
 	S64		bytes_read;
 
 	buffer = malloc((read_size + 1) * sizeof(char));
-	if (!buffer)
+	if (buffer == NULL)
 	{
 		*out = NULL;
-		return 0;
+		__FTRETURN_ERR(-1, FT_EOMEM);
 	}
-	bytes_read = read(fd, buffer, read_size);
+
+	bytes_read = ft_fread(fd, buffer, read_size);
 	if (bytes_read < 0)
 	{
 		free(buffer);
-		return (bytes_read);
+		__FTRETURN_ERR(-1, ft_errno);
 	}
 	buffer[bytes_read] = '\0';
+	
 	tmp = *out;
 	*out = ft_strjoin(tmp, buffer);
 	free(tmp);
 	free(buffer);
-	return (bytes_read);
+	__FTRETURN_OK(bytes_read);
 }
 
 string	ft_readfile(file fd, U64 read_size)
@@ -46,13 +47,18 @@ string	ft_readfile(file fd, U64 read_size)
 	string	out;
 	S64		bytes_read;
 
-	out = ft_strdup(""); if (!out) return NULL;
+	out = ft_strdup("");
+	if (!out)
+		__FTRETURN_ERR(NULL, ft_errno);
+
 	bytes_read = 1;
 	while (bytes_read > 0)
 	{
 		bytes_read = read_section(fd, read_size, &out);
-		if (!out) return (NULL);
+		if (!out)
+			__FTRETURN_ERR(NULL, ft_errno);
 	}
-	return (out);
+
+	__FTRETURN_OK(out);
 }
 #endif

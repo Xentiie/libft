@@ -17,14 +17,16 @@ t_list	*ft_lstlast(t_list *lst)
 	t_list	*current;
 	t_list	*previous;
 
+	if (lst == NULL)
+		__FTRETURN_ERR(NULL, FT_EINVPTR);
+
 	current = lst;
-	if (current == NULL)
-		return (NULL);
 	while (current != NULL)
 	{
 		previous = current;
 		current = current->next;
 	}
-	return (previous);
+	
+	__FTRETURN_OK(previous);
 }
 #endif

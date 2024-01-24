@@ -15,10 +15,13 @@
 #ifdef FT_LISTS
 void	ft_lstdelone(t_list *lst, void (*del)(void *))
 {
-	if (!lst)
-		return ;
+	if (lst == NULL)
+		__FTRETURN_ERR(, FT_EINVPTR);
+
 	if (del)
 		del(lst->content);
 	free(lst);
+
+	__FTRETURN_OK();
 }
 #endif

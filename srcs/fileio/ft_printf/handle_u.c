@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 #include <stdio.h>
-#ifdef FT_FILE_IO
+#ifdef FT_FILEIO
 S32	handle_u(U64 i)
 {
 	string	out;

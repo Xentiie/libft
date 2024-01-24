@@ -13,24 +13,23 @@
 #include <stdlib.h>
 #include "libft.h"
 #ifdef FT_STRINGS
-string	ft_strdup(const_string s1)
+string	ft_strdup(const_string str)
 {
-	int		l;
-	string	dup;
+	if (str == NULL)
+		__FTRETURN_ERR(NULL, FT_EINVPTR);
 
-	l = 0;
-	while (s1[l] != '\0')
-		l++;
-	dup = malloc((l + 1) * sizeof(U8));
-	if (!dup)
-		return NULL;
-	dup[l] = '\0';
-	l = 0;
-	while (s1[l] != '\0')
+	U64 l = ft_strlen(str);
+	string dup = malloc((l + 1) * sizeof(U8));
+	if (dup == NULL)
+		__FTRETURN_ERR(NULL, FT_EOMEM);
+
+	U64 c = 0;
+	while (c < l)
 	{
-		dup[l] = s1[l];
-		l++;
+		dup[c] = str[c];
+		c++;
 	}
-	return (dup);
+
+	__FTRETURN_OK(dup);
 }
 #endif

@@ -17,14 +17,12 @@ TOGGLES:
 		FT_VA_OPT
 
 	FT_STRINGS
-	FT_FILE_IO
+	FT_FILEIO
 	FT_STD
 	FT_ANSI
-	FT_ARRAYS
 	FT_LISTS
 	FT_HASHMAPS
 	FT_DEBUG
-		FT_ERRCHECK
 		FT_MEMCHECK
 	FT_TIME
 	FT_MATHS
@@ -48,6 +46,12 @@ extern "C" {
 #  define __attribute__(x)
 # endif
 
+//Temporary
+# define FT_NO_ARRAYS
+# define FT_NO_HASHMAPS
+# if defined(FT_WIN32)
+#  define FT_NO_MEMCHECK
+# endif
 
 //CONFIG
 # if !defined(FT_CONFIG)
@@ -64,7 +68,7 @@ extern "C" {
 #  endif
 
 #  if !defined(FT_NO_FILE_IO)
-#   define FT_FILE_IO
+#   define FT_FILEIO
 #  endif
 
 #  if !defined(FT_NO_STD)
@@ -89,13 +93,9 @@ extern "C" {
 
 #  if !defined(FT_NO_DEBUG)
 #   define FT_DEBUG
-#   if !defined(FT_NO_ERRCHECK)
-#    define FT_ERRCHECK
+#   if !defined(FT_NO_MEMCHECK)
+#    define FT_MEMCHECK
 #   endif
-//No FT_MEMCHECK by default
-//#   if !defined(FT_NO_MEMCHECK)
-//#    define FT_MEMCHECK
-//#   endif
 #  endif
 
 #  if !defined(FT_NO_TIME)
@@ -343,487 +343,6 @@ Usage:
 #  endif /* FT_VA_OPT */
 # endif /* FT_MACROS */
 
-# ifndef	NULL
-#  define	NULL 	((void*)0)
-# endif
-
-# ifndef	TRUE
-#  define	TRUE	1
-# endif
-
-# ifndef	FALSE
-#  define	FALSE	0
-# endif
-
-# ifndef	LOCALHOST
-#  define	LOCALHOST "localhost"
-# endif
-
-typedef unsigned char		U8;
-typedef unsigned short		U16;
-typedef unsigned int 		U32;
-typedef unsigned long long	U64;
-typedef signed char			S8;
-typedef signed short		S16;
-typedef signed int			S32;
-typedef signed long long	S64;
-typedef float				F32;
-typedef double				F64;
-
-
-# define U8_MAX  255
-# define U8_MIN  0
-# define U16_MAX 65535
-# define U16_MIN 0
-# define U32_MAX 4294967295
-# define U32_MIN 0
-# define U64_MAX 18446744073709551615UL
-# define U64_MIN 0UL
-# define S8_MAX  127
-# define S8_MIN  -128
-# define S16_MAX 32767
-# define S16_MIN -32768
-# define S32_MAX 2147483647
-# define S32_MIN -2147483648
-# define S64_MAX 9223372036854775807
-# define S64_MIN -9223372036854775808
-# define F32_MAX 3.40282346638528859811704183484516925e+38F
-# define F32_MIN 1.17549435082228750796873653722224568e-38F
-# define F64_MAX ((double)1.79769313486231570814527423731704357e+308L)
-# define F64_MIN ((double)2.22507385850720138309023271733240406e-308L)
-
-typedef char		*string;
-typedef char const	*const_string;
-typedef S32			file;
-typedef U8			bool;
-
-extern	int				ft_argc;
-extern	const_string	ft_argv;
-extern	const_string	*ft_env;
-#define FT_INIT_ARGV(argc, argv, env) ft_argc=argc;ft_argv=argv;ft_env=env;
-
-# define FUNCTION_HOT __attribute__((hot))
-# define FUNCTION_COLD __attribute__((cold))
-
-
-# define ANY_SCAL U8,U16,U32,U64,S8,S16,S32,S64,F32,F64
-# define ANY_N S32,F32
-
-
-typedef S32					t_error_code;
-//Error code returned by some ft functions if FT_ERRCHECK is defined.
-extern	t_error_code		ft_errno;
-//Returns a string for each error code possible (in ft_errno).
-extern	const_string		ft_error_lookup_table[];
-
-
-# define FT_OK							0
-# define FT_ERROR						1
-# define FT_OMEM						2
-# define FT_BAD_FD						3
-
-# define FT_MAP_FULL					4			/* Hashmap is full */
-# define FT_MAP_MISSING					5			/* No such element */
-
-
-# if defined(FT_DEBUG)
-# define	FT_DEBUG_FALSE		0
-# define	FT_DEBUG_VALGRIND	1
-# define	FT_DEBUG_TRUE		2
-
-void		ft_debug_break();
-S8			ft_is_debugger();
-
-#  if defined(FT_MEMCHECK)
-extern bool				ft_check_leaks();
-extern void				ft_memcheck_init(const_string *argv, bool threaded);
-
-extern void				*_malloc(U64 size, char *file, int line);
-extern void				_free(void *p, char *file, int line);
-#   define malloc(X)	_malloc(X, __FILE__, __LINE__)
-#   define free(X)		_free(X, __FILE__, __LINE__)
-#  endif /*# if !defined(FT_CONFIG) || defined(FT_MEMCHECK)*/
-
-# endif /*# if !defined(FT_CONFIG) || defined(FT_DEBUG)*/
-
-# if defined(FT_STRINGS)
-
-/*
-Append a at the end of b.
-Caller gets ownership of returned string.
-*/
-extern string		ft_str_append(string a, string b, bool free_a, bool free_b);
-
-/*
-Append src behind dest. Dest must have enough space, including \0
-*/
-extern string		ft_strcat(string dest, const_string src);
-
-/*
-Appends string src to the end of dst.
-It will append at most dstsize - strlen(dst) - 1 characters.
-It will then NUL-terminate the new string
-*/
-extern U64			ft_strlcat(string dest, const_string src, U64 size);
-
-/*
-Concatenate s1 and s2.
-Caller gets ownership of returned string.
-*/
-extern string		ft_strjoin(const_string s1, const_string s2);
-
-/*
-Copies up to dstsize - 1 characters from the string src to dst,
-NUL-terminating the result if dstsize is not 0.
-*/
-extern U64			ft_strlcpy(string dest, const_string src, U64 size);
-
-/*
-Duplicates the string s1 into a new char array.
-Caller gets ownership of returned string.
-*/
-extern string		ft_strdup(const_string s1);
-
-/*
-Returns a new string from s, starting at index start with size len.
-Caller gets ownership of returned string.
-*/
-extern string		ft_substr(const_string s, U64 start, U64 len);
-
-/*
-Locates the first occurrence of c in the string pointed to by s.
-The terminating null character taken into account.
-*/
-extern const_string	ft_strchr(const_string str, U8 c);
-
-/*
-Locates the first occurrence of c in the string pointed to by s, searching at most len characters.
-The terminating null character taken into account.
-*/
-extern const_string	ft_strnchr(const_string str, U8 c, U64 len);
-
-/*
-Locates the last occurrence of c in string s
-*/
-extern const_string	ft_strrchr(const_string str, U8 c);
-
-/*
-Locates the first occurrence of the null-terminated string needle in the
-string haystack, where not more than len characters are searched.
-If to_find is an empty string, str is returned; if to_find occurs
-nowhere in str, NULL is returned; otherwise a pointer to the first
-character of the first occurrence of to_find is returned.
-*/
-extern const_string	ft_strnstr(const_string haystack, const_string needle, U64 len);
-
-/*
-Returns the length of string
-*/
-extern U64		ft_strlen(const_string str);
-
-/*
-Returns the index of the first occurrence of c in str, -1 if not found.
-*/
-extern S64		ft_strgetindex(const_string str, U8 c);
-
-/*
-Compares string s1 against string s2. Returns s1 - s2
-*/
-extern S32		ft_strncmp(const_string s1, const_string s2, U64 n);
-
-/*
-Converts a lower-case letter to the corresponding upper-case letter.
-*/
-extern U8		ft_tolower(U8 c);
-
-/*
-Converts a upper-case letter to the corresponding lower-case letter.
-*/
-extern U8		ft_toupper(U8 c);
-
-/*
-Creates a copy of s1 wihout the characters in set at end and start of string.
-*/
-extern string	ft_strtrim(const_string s1, const_string set);
-
-/*
-Applies function f to each characters in string str, and returns
-a new string of all the results of f.
-Caller gets ownership of returned string.
-*/
-extern string	ft_strmapi(const_string str, U8 (*f)(U64 index, U8));
-
-/*
-Applies function f to each characters in string s.
-*/
-extern void		ft_striteri(string str, void (*f)(U64 index, string str));
-
-/*
-ft_str_build: concat all the strings passed as argument. Returned string
-is allocated on heap. Must free
-*/
-# if defined(FT_VA_OPT)
-#  define		__str_build(X) \
-	__str_build_tmp = __str_build_var; \
-	__str_build_var = ft_strjoin(__str_build_var, X); \
-	free(__str_build_tmp);
-#  define		ft_str_build(...) (string)({ \
-	string __str_build_tmp; \
-	string __str_build_var = ft_memdup('\0', sizeof(char)); \
-	FT_MACRO_FOR_EACH_sep(__str_build, ;, __VA_ARGS__) \
-	__str_build_var; \
-	})
-# endif
-
-/*
-Splits string s by separator c.
-*/
-__attribute__ ((deprecated)) extern string *ft_split(const_string str, U8 c);
-
-/*
-Duplicates a split
-Caller gets ownership of returned string.
-*/
-__attribute__ ((deprecated)) extern string *ft_dupsplit(const_string *split);
-
-/*
-Free a split
-Caller gets ownership of returned string.
-*/
-__attribute__ ((deprecated)) extern void ft_freesplit(string *split);
-
-/*
-Returns the length of a split
-Caller gets ownership of returned string.
-*/
-__attribute__ ((deprecated)) extern U64 ft_splitlen(const_string *split);
-
-# endif /*#if !defined(FT_CONFIG) || defined(FT_STRINGS)*/
-
-
-# if defined(FT_FILE_IO)
-/*
-Reads the whole file
-*/
-extern string	ft_readfile(file fd, U64 read_size);
-
-/*
-Read the next line in fd, NULL if all lines are read.
-*/
-extern string	ft_gnl(file fd);
-
-/*
-printf !
-*/
-extern S64		ft_printf(const_string fmt, ...);
-# endif /*if !defined(FT_CONFIG) || defined(FT_FILE_IO)*/
-
-# if defined(FT_STD)
-/*
-Writes n zeroed bytes to the string s.
-*/
-extern void		ft_bzero(void *s, U64 n);
-
-/*
-Locates the first occurrence of c in string s.
-*/
-extern void		*ft_memchr(void const *s, U8 c, U64 n);
-
-/*
-Compares byte string s1 against byte string s2.
-*/
-extern S32		ft_memcmp(void const *s1, void const *s2, U64 n);
-
-/*
-Copies n bytes from memory area src to memory area dst.
-The two strings may not overlap. If they do use ft_memmove instead.
-*/
-extern void		*ft_memcpy(void *dst, void const *src, U64 n);
-
-/*
-Duplicates n bytes of src.
-Caller owns returned value
-*/
-extern void		*ft_memdup(void const *src, U64 n);
-
-/*
-Copies len bytes from string src to string dst. The two strings may overlap;
-the copy is always done in a non-destructive manner.
-*/
-extern void		*ft_memmove(void *dst, void const *src, U64 len);
-
-/*
-Writes len bytes of value c.
-*/
-extern void		*ft_memset(void *b, U8 c, U64 len);
-
-/*
-Stupid hash function, may or may not work
-*/
-extern U32		ft_hash_buffer(const void *buff, U64 size);
-
-/*
-Converts a string to an int.
-*/
-extern S32		ft_atoi(const_string str, U64 *out);
-
-/*
-Converts a string to a float.
-*/
-extern F32		ft_atof(const_string str, U64 *len);
-
-/*
-Converts a hex string to a unsigned int.
-*/
-extern U32		ft_atoix(const_string str, U64 *len);
-
-/*
-Converts an int to a string.
-Caller owns returned value
-*/
-extern string	ft_itoa(S32 n);
-
-/*
-Converts an unsigned int to a string.
-Caller owns returned value
-*/
-extern string	ft_uitoa(U64 n);
-
-/*
-Converts a float to a string.
-Caller owns returned value
-*/
-extern string	ft_ftoa(F32 n);
-
-/*
-Writes character c in file descriptor fd.
-*/
-extern void 	ft_putchar_fd(U8 c, file fd);
-
-/*
-Write string s in file descriptor fd.
-*/
-extern void 	ft_putstr_fd(string s, file fd);
-
-/*
-Write s in file fd, and append a line end.
-*/
-extern void 	ft_putendl_fd(string s, file fd);
-
-/*
-Write a number in file descriptor fd.
-*/
-extern void 	ft_putnbr_fd(S32 n, file fd);
-
-/*
-Check if character is digit or alpha.
-*/
-extern bool 	ft_isalnum(U8 c);
-
-/*
-Check if character is alpha.
-*/
-extern bool 	ft_isalpha(U8 c);
-
-/*
-Check if character is ascii.
-*/
-extern bool 	ft_isascii(U8 c);
-
-/*
-Check if character is digit.
-*/
-extern bool 	ft_isdigit(U8 c);
-
-/*
-Check if character is printable.
-*/
-extern bool 	ft_isprint(U8 c);
-
-/*
-Check if character is whitespace. (' ', '\t', '\r', '\n', '\v', '\f')
-*/
-extern bool		ft_iswhitespace(U8 c);
-
-/*
-Check if null-terminated string str is digit or alpha-numerical.
-*/
-extern bool 	ft_str_isalnum(string str);
-
-/*
-Check if null-terminated string str is alpha.
-*/
-extern bool 	ft_str_isalpha(string str);
-
-/*
-Check if null-terminated string str is ascii.
-*/
-extern bool 	ft_str_isascii(string str);
-
-/*
-Check if null-terminated string str is digit-only.
-*/
-extern bool 	ft_str_isdigit(string str);
-
-/*
-Check if null-terminated string str is printable.
-*/
-extern bool 	ft_str_isprint(string str);
-
-/*
-Check if null-terminated string str is whitespace. (' ', '\\t', '\\r', '\\n', '\\v', '\\f')
-*/
-extern bool 	ft_str_iswhitespace(string str);
-
-/*
-Creates an array of int from min to max.
-*/
-extern S32		*ft_range(S32 min, S32 max);
-
-/*
-Creates an array of int from min to max and returns the size of the array.
-*/
-extern S32		ft_nrange(S32 **range, S32 min, S32 max);
-
-# endif /* FT_STD */
-
-# if defined(FT_TIME)
-//https://github.com/jleffler/soq/tree/master/src/libsoq
-
-/* Machine-independent time format */
-typedef struct s_time
-{
-	U64	seconds;		/* Time in whole seconds */
-	U64	nanoseconds;	/* Sub-seconds in nanoseconds */
-} t_time;
-
-typedef struct s_clock
-{
-	t_time	t1;			/* Start time */
-	t_time	t2;			/* Stop time */
-	U8		buffer[24];	/* Buffer for formatting elapsed time */
-} t_clock;
-
-extern void									clk_diff(t_time *t1, t_time *t2, long *sec, long *nsec);
-extern void									clk_init(t_clock *clk);
-extern void									clk_start(t_clock *clk);
-extern void									clk_stop(t_clock *clk);
-
-__attribute__ ((deprecated)) extern string	clk_elapsed_ms(t_clock *clk, string buffer, U64 buflen);
-__attribute__ ((deprecated)) extern string	clk_elapsed_us(t_clock *clk, string buffer, U64 buflen);
-__attribute__ ((deprecated)) extern string	clk_elapsed_ns(t_clock *clk, string buffer, U64 buflen);
-
-#  ifndef TIMER_VERSION_1
-/* Preferred */
-extern string								clk_fmt_elapsed_ms(t_clock *clk);
-extern string								clk_fmt_elapsed_us(t_clock *clk);
-extern string								clk_fmt_elapsed_ns(t_clock *clk);
-extern string								clk_fmt_elapsed_str(t_clock *clk);
-extern double								clk_fmt_elapsed_dbl(t_clock *clk);
-#  endif /*#  ifndef TIMER_VERSION_1*/
-# endif /* FT_TIME */
-
-
 # if defined(FT_ANSI)
 #  define FT_BLACK						"\e[0;30m"
 #  define FT_RED						"\e[0;31m"
@@ -910,6 +429,588 @@ extern double								clk_fmt_elapsed_dbl(t_clock *clk);
 #  define FT_CRESET			"\e[0m"
 # endif /* FT_ANSI */
 
+# ifndef	NULL
+#  define	NULL 	((void*)0)
+# endif
+
+# ifndef	TRUE
+#  define	TRUE	1
+# endif
+
+# ifndef	FALSE
+#  define	FALSE	0
+# endif
+
+# ifndef	LOCALHOST
+#  define	LOCALHOST "localhost"
+# endif
+
+typedef unsigned char		U8;
+typedef unsigned short		U16;
+typedef unsigned int 		U32;
+typedef unsigned long long	U64;
+typedef signed char			S8;
+typedef signed short		S16;
+typedef signed int			S32;
+typedef signed long long	S64;
+typedef float				F32;
+typedef double				F64;
+
+
+# define U8_MAX  255
+# define U8_MIN  0
+# define U16_MAX 65535
+# define U16_MIN 0
+# define U32_MAX 4294967295
+# define U32_MIN 0
+# define U64_MAX 18446744073709551615UL
+# define U64_MIN 0UL
+# define S8_MAX  127
+# define S8_MIN  -128
+# define S16_MAX 32767
+# define S16_MIN -32768
+# define S32_MAX 2147483647
+# define S32_MIN -2147483648
+# define S64_MAX 9223372036854775807
+# define S64_MIN -9223372036854775808
+# define F32_MAX 3.40282346638528859811704183484516925e+38F
+# define F32_MIN 1.17549435082228750796873653722224568e-38F
+# define F64_MAX ((double)1.79769313486231570814527423731704357e+308L)
+# define F64_MIN ((double)2.22507385850720138309023271733240406e-308L)
+
+typedef char			*string;
+typedef char const		*const_string;
+typedef U8				bool;
+# if defined(FT_WIN32)
+typedef void			*file;
+# elif defined(FT_LINUX) || defined(FT_OSX)
+typedef S32				file;
+# endif
+
+extern	int				ft_argc;
+extern	const_string	ft_argv;
+extern	const_string	*ft_env;
+# define FT_INIT_ARGV(argc, argv, env) ft_argc=argc;ft_argv=argv;ft_env=env;
+
+# define FUNCTION_HOT __attribute__((hot))
+# define FUNCTION_COLD __attribute__((cold))
+
+
+# define ANY_SCAL U8,U16,U32,U64,S8,S16,S32,S64,F32,F64
+# define ANY_N S32,F32
+
+
+typedef S32					t_error_code;
+/*Error code returned by some ft functions*/
+extern	t_error_code		ft_errno;
+/*Private usage*/
+# define __FTRETURN_OK(ret) ({ ft_errno=FT_OK; return ret; })
+# define __FTRETURN_ERR(ret, err) ({ ft_errno = err ; return ret; })
+
+# define FT_OK							0
+/*Out of memory*/
+# define FT_EOMEM						1
+/*Bad pointer*/
+# define FT_EINVPTR						2
+/*Bad value*/
+# define FT_EINVVAL						3
+/*System call failed*/
+# define FT_ESYSCALL					4	
+
+
+# if defined(FT_DEBUG)
+# define	FT_DEBUG_FALSE		0
+# define	FT_DEBUG_VALGRIND	1
+# define	FT_DEBUG_TRUE		2
+
+void		ft_debug_break();
+S8			ft_is_debugger();
+
+#  if defined(FT_MEMCHECK)
+extern bool				ft_check_leaks();
+extern void				ft_memcheck_init(const_string *argv, bool threaded);
+
+extern void				*_malloc(U64 size, char *file, int line);
+extern void				_free(void *p, char *file, int line);
+#   define malloc(X)	_malloc(X, __FILE__, __LINE__)
+#   define free(X)		_free(X, __FILE__, __LINE__)
+#  endif /* FT_MEMCHECK */
+
+# endif /* FT_DEBUG */
+
+# if defined(FT_STRINGS)
+
+/*
+Append a at the end of b.
+Caller gets ownership of returned string.
+*/
+extern string		ft_str_append(string a, string b, bool free_a, bool free_b);
+
+/*
+Append src behind dest. Dest must have enough space, including \0
+*/
+extern string		ft_strcat(string dest, const_string src);
+
+/*
+Appends string src to the end of dst.
+It will append at most dstsize - strlen(dst) - 1 characters.
+It will then NUL-terminate the new string
+*/
+extern U64			ft_strlcat(string dest, const_string src, U64 size);
+
+/*
+Concatenate s1 and s2.
+Caller gets ownership of returned string.
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory
+*/
+extern string		ft_strjoin(const_string s1, const_string s2);
+
+/*
+Copies up to dstsize - 1 characters from the string src to dst,
+NUL-terminating the result if dstsize is not 0.
+*/
+extern U64			ft_strlcpy(string dest, const_string src, U64 size);
+
+/*
+Duplicates the string str into a new char array.
+Caller gets ownership of returned string.
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EINVPTR if 'str' is NULL
+- FT_EOMEM if out of memory
+*/
+extern string		ft_strdup(const_string str);
+
+/*
+Returns a new string from s, starting at index start with size len.
+Caller gets ownership of returned string.
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory
+*/
+extern string		ft_substr(const_string s, U64 start, U64 len);
+
+/*
+Locates the first occurrence of c in the string pointed to by s.
+The terminating null character taken into account.
+*/
+extern const_string	ft_strchr(const_string str, U8 c);
+
+/*
+Locates the first occurrence of c in the string pointed to by s, searching at most len characters.
+The terminating null character taken into account.
+*/
+extern const_string	ft_strnchr(const_string str, U8 c, U64 len);
+
+/*
+Locates the last occurrence of c in string s
+*/
+extern const_string	ft_strrchr(const_string str, U8 c);
+
+/*
+Locates the first occurrence of the null-terminated string needle in the
+string haystack, where not more than len characters are searched.
+If to_find is an empty string, str is returned; if to_find occurs
+nowhere in str, NULL is returned; otherwise a pointer to the first
+character of the first occurrence of to_find is returned.
+*/
+extern const_string	ft_strnstr(const_string haystack, const_string needle, U64 len);
+
+/*
+Returns the length of string
+*/
+extern U64		ft_strlen(const_string str);
+
+/*
+Returns the index of the first occurrence of c in str, -1 if not found.
+*/
+extern S64		ft_strgetindex(const_string str, U8 c);
+
+/*
+Compares string s1 against string s2. Returns s1 - s2
+*/
+extern S32		ft_strncmp(const_string s1, const_string s2, U64 n);
+
+/*
+Converts a lower-case letter to the corresponding upper-case letter.
+*/
+extern U8		ft_tolower(U8 c);
+
+/*
+Converts a upper-case letter to the corresponding lower-case letter.
+*/
+extern U8		ft_toupper(U8 c);
+
+/*
+Creates a copy of s1 wihout the characters in set at end and start of string.
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory
+*/
+extern string	ft_strtrim(const_string s1, const_string set);
+
+/*
+Applies function f to each characters in string str, and returns
+a new string of all the results of f.
+Caller gets ownership of returned string.
+*/
+extern string	ft_strmapi(const_string str, U8 (*f)(U64 index, U8));
+
+/*
+Applies function f to each characters in string s.
+*/
+extern void		ft_striteri(string str, void (*f)(U64 index, string str));
+
+/*
+Splits string s by separator c.
+*/
+__attribute__ ((deprecated)) extern string *ft_split(const_string str, U8 c);
+
+/*
+Duplicates a split
+Caller gets ownership of returned string.
+*/
+__attribute__ ((deprecated)) extern string *ft_dupsplit(const_string *split);
+
+/*
+Free a split
+Caller gets ownership of returned string.
+*/
+__attribute__ ((deprecated)) extern void ft_freesplit(string *split);
+
+/*
+Returns the length of a split
+Caller gets ownership of returned string.
+*/
+__attribute__ ((deprecated)) extern U64 ft_splitlen(const_string *split);
+
+# endif /* FT_STRINGS */
+
+
+# if defined(FT_FILEIO)
+
+/*
+Opens a file. The string 'mode' can be one of the following:
+	r: open for reading
+	w: open for writing
+	a: open for appending
+	[r/w/a]+: read/write
+
+Modes [w/a] will create the file if it doesn't exists
+### On error
+Sets ft_errno and returns -1.
+### ft_errno
+- FT_EINVPTR if 'path' or 'mode' is NULL
+- FT_EINVVAL if 'mode' is invalid
+- FT_ESYSCALL if a syscall fails
+*/
+file	ft_fopen(string path, string mode);
+
+/*
+Closes the file descriptor 'fd'
+### On error
+Sets ft_errno and returns -1.
+### ft_errno
+- FT_EINVVAL if 'fd' is invalid
+- FT_ESYSCALL if a syscall fails
+### TODO
+Linux error check
+*/
+void	ft_fclose(file fd);
+
+/*
+Reads 'size' bytes from file 'fd' into 'buffer'.
+### On error
+Sets ft_errno and returns -1.
+### ft_errno
+- FT_ESYSCALL if a syscall fails
+*/
+U64		ft_fread(file fd, char *buffer, U64 size);
+
+/*
+Writes 'size' bytes from 'buffer' into file 'fd'.
+### On error
+Sets ft_errno and returns -1.
+### ft_errno
+- FT_ESYSCALL if a syscall fails
+*/
+U64		ft_fwrite(file fd, char *buffer, U64 size);
+
+/*
+Reads the whole file
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_ESYSCALL if a syscall fails
+- FT_EOMEM if out of memory
+*/
+extern string	ft_readfile(file fd, U64 read_size);
+
+/*
+Read the next line in fd, NULL if all lines are read.
+*/
+extern string	ft_gnl(file fd);
+
+/*
+printf !
+*/
+extern S64		ft_printf(const_string fmt, ...);
+# endif /* FT_FILEIO */
+
+# if defined(FT_STD)
+/*
+Writes n zeroed bytes to the string s.
+*/
+extern void		ft_bzero(void *s, U64 n);
+
+/*
+Locates the first occurrence of c in string s.
+*/
+extern void		*ft_memchr(void const *s, U8 c, U64 n);
+
+/*
+Compares byte string s1 against byte string s2.
+*/
+extern S32		ft_memcmp(void const *s1, void const *s2, U64 n);
+
+/*
+Copies n bytes from memory area src to memory area dst.
+The two strings may not overlap. If they do use ft_memmove instead.
+*/
+extern void		*ft_memcpy(void *dst, void const *src, U64 n);
+
+/*
+Duplicates n bytes of src.
+Caller owns returned value
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory
+*/
+extern void		*ft_memdup(void const *src, U64 n);
+
+/*
+Copies len bytes from string src to string dst. The two strings may overlap;
+the copy is always done in a non-destructive manner.
+*/
+extern void		*ft_memmove(void *dst, void const *src, U64 len);
+
+/*
+Writes len bytes of value c.
+*/
+extern void		*ft_memset(void *b, U8 c, U64 len);
+
+/*
+Stupid hash function, may or may not work
+*/
+extern U32		ft_hash_buffer(const void *buff, U64 size);
+
+/*
+Converts a string to an int.
+*/
+extern S32		ft_atoi(const_string str, U64 *out);
+
+/*
+Converts a string to a float.
+*/
+extern F32		ft_atof(const_string str, U64 *len);
+
+/*
+Converts a hex string to a unsigned int.
+*/
+extern U32		ft_atoix(const_string str, U64 *len);
+
+/*
+Converts an int to a string.
+Caller owns returned value
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory
+*/
+extern string	ft_itoa(S32 n);
+
+/*
+Converts an unsigned int to a string.
+Caller owns returned value
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory
+*/
+extern string	ft_uitoa(U64 n);
+
+/*
+Converts a float to a string.
+Caller owns returned value
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory
+*/
+extern string	ft_ftoa(F32 n);
+
+#  if defined(FT_FILEIO)
+/*
+Writes character c in file descriptor fd.
+### On error
+Sets ft_errno.
+### ft_errno
+- FT_ESYSCALL if a syscall fails
+*/
+extern void 	ft_putchar_fd(U8 c, file fd);
+
+/*
+Write string s in file descriptor fd.
+### On error
+Sets ft_errno.
+### ft_errno
+- FT_ESYSCALL if a syscall fails
+- FT_EINVPTR if 's' is NULL
+*/
+extern void 	ft_putstr_fd(string s, file fd);
+
+/*
+Write s in file fd, and append a line end.
+### On error
+Sets ft_errno.
+### ft_errno
+- FT_ESYSCALL if a syscall fails
+- FT_EINVPTR if 's' is NULL
+*/
+extern void 	ft_putendl_fd(string s, file fd);
+
+/*
+Write a number in file descriptor fd.
+### On error
+Sets ft_errno.
+### ft_errno
+- FT_ESYSCALL if a syscall fails
+*/
+extern void 	ft_putnbr_fd(S32 n, file fd);
+#  endif
+
+/*
+Check if character is digit or alpha.
+*/
+extern bool 	ft_isalnum(U8 c);
+
+/*
+Check if character is alpha.
+*/
+extern bool 	ft_isalpha(U8 c);
+
+/*
+Check if character is ascii.
+*/
+extern bool 	ft_isascii(U8 c);
+
+/*
+Check if character is digit.
+*/
+extern bool 	ft_isdigit(U8 c);
+
+/*
+Check if character is printable.
+*/
+extern bool 	ft_isprint(U8 c);
+
+/*
+Check if character is whitespace. (' ', '\t', '\r', '\n', '\v', '\f')
+*/
+extern bool		ft_iswhitespace(U8 c);
+
+/*
+Check if null-terminated string str is digit or alpha-numerical.
+*/
+extern bool 	ft_str_isalnum(string str);
+
+/*
+Check if null-terminated string str is alpha.
+*/
+extern bool 	ft_str_isalpha(string str);
+
+/*
+Check if null-terminated string str is ascii.
+*/
+extern bool 	ft_str_isascii(string str);
+
+/*
+Check if null-terminated string str is digit-only.
+*/
+extern bool 	ft_str_isdigit(string str);
+
+/*
+Check if null-terminated string str is printable.
+*/
+extern bool 	ft_str_isprint(string str);
+
+/*
+Check if null-terminated string str is whitespace. (' ', '\\t', '\\r', '\\n', '\\v', '\\f')
+*/
+extern bool 	ft_str_iswhitespace(string str);
+
+/*
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory
+Creates an array of int from min to max.
+*/
+extern S32		*ft_range(S32 min, S32 max);
+
+/*
+Creates an array of int from min to max and returns the size of the array.
+### On error
+Sets ft_errno, sets the pointer pointed by 'range' to NULL and returns -1.
+### ft_errno
+- FT_EOMEM if out of memory
+*/
+extern S32		ft_nrange(S32 **range, S32 min, S32 max);
+
+# endif /* FT_STD */
+
+# if defined(FT_TIME)
+//https://github.com/jleffler/soq/tree/master/src/libsoq
+
+/* Machine-independent time format */
+typedef struct s_time
+{
+	U64	seconds;		/* Time in whole seconds */
+	U64	nanoseconds;	/* Sub-seconds in nanoseconds */
+} t_time;
+
+typedef struct s_clock
+{
+	t_time	t1;			/* Start time */
+	t_time	t2;			/* Stop time */
+	U8		buffer[24];	/* Buffer for formatting elapsed time */
+} t_clock;
+
+extern void									clk_diff(t_time *t1, t_time *t2, long *sec, long *nsec);
+extern void									clk_init(t_clock *clk);
+extern void									clk_start(t_clock *clk);
+extern void									clk_stop(t_clock *clk);
+
+__attribute__ ((deprecated)) extern string	clk_elapsed_ms(t_clock *clk, string buffer, U64 buflen);
+__attribute__ ((deprecated)) extern string	clk_elapsed_us(t_clock *clk, string buffer, U64 buflen);
+__attribute__ ((deprecated)) extern string	clk_elapsed_ns(t_clock *clk, string buffer, U64 buflen);
+
+#  ifndef TIMER_VERSION_1
+/* Preferred */
+extern string								clk_fmt_elapsed_ms(t_clock *clk);
+extern string								clk_fmt_elapsed_us(t_clock *clk);
+extern string								clk_fmt_elapsed_ns(t_clock *clk);
+extern string								clk_fmt_elapsed_str(t_clock *clk);
+extern double								clk_fmt_elapsed_dbl(t_clock *clk);
+#  endif /*#  ifndef TIMER_VERSION_1*/
+# endif /* FT_TIME */
 
 # if defined(FT_ARRAYS)
 typedef struct s_array	*t_array;
@@ -995,14 +1096,38 @@ typedef struct s_list
 } t_list;
 
 /*
-Compares every element in lst against ref using f, removes if f returns >0
+Compares every element in lst against ref using f, removes if f returns > 0
+### On error
+Sets ft_errno and returns FALSE.
+### ft_errno
+- FT_EINVPTR if 'lst' or 'f' is NULL
+- FT_EINVPTR if ft_lstdelone fails
+### TODO
 */
 extern bool		ft_lstremoveif(t_list **lst, void (*del)(void *),
 							bool (*f)(), void *ref);
 
 /*
+Removes an element from a chained list by it's content. If del is not NULL,
+applies del to content and free the element
+### On error
+Sets ft_errno and returns FALSE.
+### ft_errno
+- FT_EINVPTR if 'lst' is NULL
+- FT_EINVPTR if ft_lstdelone fails
+### TODO
+*/
+extern bool		ft_lstremove2(t_list **lst, void *content, void (*del)(void *));
+
+/*
 Removes an element from a chained list. If del is not NULL,
 applies del to content and free the element
+### On error
+Sets ft_errno and returns FALSE.
+### ft_errno
+- FT_EINVPTR if 'lst' or 'elem' is NULL
+- FT_EINVPTR if ft_lstdelone fails
+### TODO
 */
 extern bool		ft_lstremove(t_list **lst, t_list *elem, void (*del)(void *));
 
@@ -1016,58 +1141,127 @@ extern int		ft_lst_to_array(t_list *lst, t_array array, U64 elem_size);
 /*
 Creates and returns a new array containing
 all the pointers of the chained list
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EINVPTR if 'lst' is NULL
+- FT_EOMEM if out of memory
+### TODO
 */
-extern void		**ft_lst_to_array_pointers(t_list *lst);
+extern void		**ft_lsttopointers(t_list *lst);
 
 /*
 Creates a new list element using content
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory
+### TODO
 */
 extern t_list	*ft_lstnew(void *content);
 
 /*
 Adds new at the front of lst.
+### On error
+Sets ft_errno.
+### ft_errno
+- FT_EINVPTR if 'lst' is NULL.
+### TODO
 */
 extern void		ft_lstadd_front(t_list **lst, t_list *new);
 
 /*
 Adds new at the end of lst.
+### On error
+Sets ft_errno.
+### ft_errno
+- FT_EINVPTR if 'lst' is NULL.
+### TODO
 */
 extern void		ft_lstadd_back(t_list **lst, t_list *new);
 
 /*
 Returns the size of lst.
+### On error
+No error possible
+### ft_errno
+### TODO
 */
 extern U64		ft_lstsize(t_list *lst);
 
 /*
 Returns the last element of lst.
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EINVPTR if 'lst' is NULL.
+### TODO
 */
 extern t_list	*ft_lstlast(t_list *lst);
 
 /*
 Deletes an element from lst, using del on it's content.
+### On error
+Sets ft_errno.
+### ft_errno
+- FT_EINVPTR if 'lst' is NULL.
+### TODO
 */
 extern void		ft_lstdelone(t_list *lst, void (*del)(void *));
 
 /*
 Iterates through lst, deleting every element (see ft_lstdelone).
+### On error
+Sets ft_errno.
+### ft_errno
+- FT_EINVPTR if 'lst' is NULL.
+### TODO
 */
 extern void		ft_lstclear(t_list **lst, void (*del)(void *));
 
 /*
 Iterates through lst, using f on each element's content.
+### On error
+Sets ft_errno.
+### ft_errno
+- FT_EINVPTR if 'lst' or 'f' is NULL.
+### TODO
 */
 extern void		ft_lstiter(t_list *lst, void (*f)(void *));
 
 /*
-Find the value stored in ref, using function f
+Finds an element by calling 'f' with each element's content as first argument, and 'ref' as second.
+If 'f' returns TRUE, returns the element. If no elements are found, returns NULL.
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EINVPTR if 'lst' or 'f' is NULL.
+### TODO
 */
 extern t_list	*ft_lstfind(t_list *lst, bool (*f)(void *, void *), void *ref);
 
 /*
+Finds an element where the content's address is equal to the address of 'ptr'.
+If no elements are found, returns NULL.
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EINVPTR if 'lst' is NULL.
+### TODO
+*/
+extern t_list	*ft_lstfind2(t_list *lst, void *ptr);
+
+
+/*
 Iterates through "lst", applies "f" on every
 element's content, puts results in a new list and returns it.
-"del" is used if anything goes wrong.
+"del" is used to free the new list if anything goes wrong.
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EINVPTR if 'lst' or 'f' is NULL.
+- FT_EOMEM if out of memory.
+### TODO
 */
 extern t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 

@@ -51,11 +51,14 @@ string	ft_itoa(S32 n)
 	nb = n;
 	i = num_digits(nb);
 	str = malloc((i + 1) * sizeof(U8));
+	if (str == NULL)
+		__FTRETURN_ERR(NULL, FT_EOMEM);
+
 	str[i--] = '\0';
 	if (nb == 0)
 	{
 		str[0] = '0';
-		return (str);
+		__FTRETURN_OK(str);
 	}
 	check_negative(&nb, str);
 	while (nb > 0)
@@ -64,6 +67,6 @@ string	ft_itoa(S32 n)
 		nb /= 10;
 		i--;
 	}
-	return (str);
+	__FTRETURN_OK(str);
 }
 #endif

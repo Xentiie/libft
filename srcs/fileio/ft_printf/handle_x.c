@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 #include <stdio.h>
-#ifdef FT_FILE_IO
+#ifdef FT_FILEIO
 static void	add_to_char_buff(string buf, U8 c)
 {
 	static int	i = 0;

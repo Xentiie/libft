@@ -7,11 +7,20 @@
                 "${workspaceFolder}/"
             ],
             "defines": [
-                "__RANDOM__"
+                "FT_LINUX"
             ],
             "compilerPath": "/usr/bin/gcc",
-            "cppStandard": "gnu++17",
             "intelliSenseMode": "linux-gcc-x64"
+        },
+        {
+            "name": "Windows",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "FT_WIN32"
+            ],
+            "compilerPath": "C:/Program Files/LLVM/bin/clang.exe"
         }
     ],
     "version": 4

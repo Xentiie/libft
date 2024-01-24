@@ -15,7 +15,7 @@
 
 # include <stdlib.h>
 # include "libft.h"
-# ifdef FT_FILE_IO
+# ifdef FT_FILEIO
 #  include <unistd.h>
 
 S32	handle_c(U8 c);

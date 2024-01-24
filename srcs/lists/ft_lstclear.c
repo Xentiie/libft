@@ -17,8 +17,9 @@ void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
 	t_list	*old_elem;
 
-	if (!lst || !(*lst))
-		return ;
+	if (lst == NULL || *lst == NULL)
+		__FTRETURN_ERR(, FT_EINVPTR);
+	
 	while (*lst)
 	{
 		if (del)
@@ -28,5 +29,7 @@ void	ft_lstclear(t_list **lst, void (*del)(void *))
 		free(old_elem);
 	}
 	*lst = NULL;
+
+	__FTRETURN_OK();
 }
 #endif

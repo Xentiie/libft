@@ -11,24 +11,34 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#ifdef FT_STD
-# include <unistd.h>
-void	ft_putnbr_fd(S32 n, int fd)
+#if defined (FT_STD) && defined(FT_FILEIO)
+void	ft_putnbr_fd(S32 n, file fd)
 {
 	if (n == -2147483648)
+	{
 		ft_putstr_fd("-2147483648", fd);
+		if (ft_errno != FT_OK)
+			__FTRETURN_ERR(, ft_errno);
+	}
 	else
 	{
 		if (n < 0)
 		{
 			ft_putchar_fd('-', fd);
+			if (ft_errno != FT_OK)
+				__FTRETURN_ERR(, ft_errno);
 			n = n * -1;
 		}
 		if (n > 9)
 		{
 			ft_putnbr_fd(n / 10, fd);
+			if (ft_errno != FT_OK)
+				__FTRETURN_ERR(, ft_errno);
 		}
 		ft_putchar_fd((n % 10) + '0', fd);
+		if (ft_errno != FT_OK)
+			__FTRETURN_ERR(, ft_errno);
 	}
+	__FTRETURN_OK();
 }
 #endif

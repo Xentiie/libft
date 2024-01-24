@@ -12,21 +12,40 @@
 
 #include "libft.h"
 #ifdef FT_LISTS
+
+t_list	*ft_lstfind2(t_list *lst, void *ptr)
+{
+	t_list	*curr;
+
+	if (lst == NULL)
+		__FTRETURN_ERR(NULL, FT_EINVPTR);
+
+	curr = lst;
+	while (curr)
+	{
+		if (curr->content == ptr)
+			__FTRETURN_OK(curr);
+		curr = curr->next;
+	}
+
+	__FTRETURN_OK(NULL);
+}
+
 t_list	*ft_lstfind(t_list *lst, bool (*f)(void *, void *), void *ref)
 {
 	t_list	*curr;
 
-	if (!f || !lst)
-	{
-		return (NULL);
-	}
+	if (f == NULL || lst == NULL)
+		__FTRETURN_ERR(NULL, FT_EINVPTR);
+
 	curr = lst;
 	while (curr)
 	{
 		if (f(curr->content, ref))
-			return (curr);
+			__FTRETURN_OK(curr);
 		curr = curr->next;
 	}
-	return (NULL);
+
+	__FTRETURN_OK(NULL);
 }
 #endif

@@ -1,38 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lst_to_array_pointers.c                         :+:      :+:    :+:   */
+/*   ft_close.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/18 07:06:20 by estarck           #+#    #+#             */
-/*   Updated: 2023/09/27 16:43:17 by reclaire         ###   ########.fr       */
+/*   Created: 2024/01/17 13:54:18 by reclaire          #+#    #+#             */
+/*   Updated: 2024/01/17 13:54:18 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
 #include "libft.h"
-#ifdef FT_LISTS
-void	**ft_lst_to_array_pointers(t_list *lst)
-{
-	int		lst_len;
-	void	**out;
-	t_list	*curr;
-	int		i;
+#ifdef FT_FILEIO
 
-	if (!lst)
-		return NULL;
-	lst_len = ft_lstsize(lst);
-	out = malloc(sizeof(void *) * (lst_len + 1));
-	curr = lst;
-	i = 0;
-	while (curr)
-	{
-		out[i] = curr->content;
-		curr = curr->next;
-		i++;
-	}
-	out[i] = NULL;
-	return (out);
+# if defined(FT_WIN32)
+#  include <windows.h>
+//TODO: file != HANDLE, check if everything works ok on 32/64 bits systems
+void	ft_fclose(file fd)
+{
+	if (fd == ((file)-1))
+		__FTRETURN_ERR(, FT_EINVVAL);
+
+	if (!CloseHandle(((HANDLE)fd)))
+		__FTRETURN_ERR(, FT_ESYSCALL);
+
+	__FTRETURN_OK();
 }
+# else
+#  include <unistd.h>
+void	ft_fclose(file fd)
+{
+	close(fd);
+
+	__FTRETURN_OK();
+}
+# endif
+
 #endif

@@ -16,6 +16,8 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 {
 	t_list	*current_last;
 
+	if (lst == NULL)
+		__FTRETURN_ERR(, FT_EINVPTR);
 	if (lst)
 	{
 		if (*lst == NULL)
@@ -27,5 +29,6 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 			new->prev = current_last;
 		}
 	}
+	__FTRETURN_OK();
 }
 #endif

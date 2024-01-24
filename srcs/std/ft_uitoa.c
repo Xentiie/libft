@@ -18,6 +18,9 @@ static string compute(U64 nbr, S32 len)
 	string	rtn;
 
 	rtn = malloc(sizeof(U8) * (len + 1));
+	if (rtn == NULL)
+		__FTRETURN_ERR(NULL, FT_EOMEM);
+
 	rtn[len] = '\0';
 	while (--len)
 	{
@@ -35,10 +38,15 @@ string ft_uitoa(U64 n)
 
 	nbr = n;
 	if (nbr == 0)
-		return (ft_strdup("0"));
+	{
+		rtn = ft_strdup("0");
+		if (rtn == NULL)
+			__FTRETURN_ERR(NULL, ft_errno);
+		__FTRETURN_OK(rtn);
+	}
 	rtn = compute(nbr, ft_magnitude(nbr));
-	if (!rtn)
-		return (0);
-	return (rtn);
+	if (rtn == NULL)
+		__FTRETURN_ERR(NULL, ft_errno);
+	__FTRETURN_OK(rtn);
 }
 #endif

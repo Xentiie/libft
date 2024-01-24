@@ -15,12 +15,12 @@
 #ifdef FT_LISTS
 t_list	*ft_lstnew(void *content)
 {
-	t_list	*new;
-
-	new = malloc(sizeof(t_list));
+	t_list	*new = malloc(sizeof(t_list));
+	if (new == NULL)
+		__FTRETURN_ERR(NULL, FT_EOMEM);
 	new->content = content;
 	new->prev = NULL;
 	new->next = NULL;
-	return (new);
+	__FTRETURN_OK(new);
 }
 #endif

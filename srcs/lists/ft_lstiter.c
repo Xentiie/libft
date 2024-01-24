@@ -14,12 +14,15 @@
 #ifdef FT_LISTS
 void	ft_lstiter(t_list *lst, void (*f)(void *))
 {
-	if (!f)
-		return ;
+	if (lst == NULL || f == NULL)
+		__FTRETURN_ERR(, FT_EINVPTR);
+
 	while (lst)
 	{
 		f(lst->content);
 		lst = lst->next;
 	}
+
+	__FTRETURN_OK();
 }
 #endif

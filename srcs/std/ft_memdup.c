@@ -18,9 +18,9 @@ void	*ft_memdup(const void *p, U64 n)
 	void	*data;
 
 	data = malloc(n);
-	if (!data)
-		return NULL;
+	if (data == NULL)
+		__FTRETURN_ERR(NULL, FT_EOMEM);
 	ft_memcpy(data, p, n);
-	return (data);
+	__FTRETURN_OK(data);
 }
 #endif

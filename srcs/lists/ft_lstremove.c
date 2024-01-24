@@ -12,14 +12,46 @@
 
 #include "libft.h"
 #ifdef FT_LISTS
+
+bool	ft_lstremove2(t_list **lst, void *content, void (*del)(void *))
+{
+	t_list	*prev;
+	t_list	*curr;
+
+	if (lst == NULL)
+		__FTRETURN_ERR(FALSE, FT_EINVPTR);
+
+	curr = *lst;
+	prev = NULL;
+	while (curr)
+	{
+		if (content == curr->content)
+		{
+			if (prev == NULL)
+				(*lst) = curr->next;
+			else
+				prev->next = curr->next;
+			ft_lstdelone(curr, del);
+			if (ft_errno != FT_OK)
+				__FTRETURN_ERR(FALSE, ft_errno);
+
+			__FTRETURN_OK(TRUE);
+		}
+		prev = curr;
+		curr = curr->next;
+	}
+	__FTRETURN_OK(FALSE);
+}
+
 bool	ft_lstremove(t_list **lst, t_list *elem, void (*del)(void *))
 {
 	t_list	*prev;
 	t_list	*curr;
 
-	if (!lst || !(*lst) || !elem)
-		return (-1);
-	curr = (*lst);
+	if (lst == NULL || elem == NULL)
+		__FTRETURN_ERR(FALSE, FT_EINVPTR);
+
+	curr = *lst;
 	prev = NULL;
 	while (curr)
 	{
@@ -30,11 +62,14 @@ bool	ft_lstremove(t_list **lst, t_list *elem, void (*del)(void *))
 			else
 				prev->next = curr->next;
 			ft_lstdelone(curr, del);
-			return (TRUE);
+			if (ft_errno != FT_OK)
+				__FTRETURN_ERR(FALSE, ft_errno);
+
+			__FTRETURN_OK(TRUE);
 		}
 		prev = curr;
 		curr = curr->next;
 	}
-	return (FALSE);
+	__FTRETURN_OK(FALSE);
 }
 #endif
