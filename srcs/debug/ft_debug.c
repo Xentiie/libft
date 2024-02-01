@@ -11,9 +11,8 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#define FT_DEBUG
-#ifdef FT_DEBUG
 
+#ifdef FT_DEBUG
 # ifdef FT_WIN32
 #  include <debugapi.h>
 #  define SIGTRAP STATUS_BREAKPOINT

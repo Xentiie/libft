@@ -27,7 +27,7 @@ S64	ft_printf(const_string fmt, ...)
 		if (fmt[i] == '%')
 		{
 			if (fmt[i+1] == '%')
-				c_count += write(1, "%", 1);
+				c_count += ft_fwrite(ft_stdout, "%", 1);
 			else if (fmt[i+1] == 'c')
 				c_count += handle_c(va_arg(args, U32)); //U8 pas supporté par va_args
 			else if (fmt[i+1] == 'd')
@@ -70,7 +70,7 @@ S64	ft_printf(const_string fmt, ...)
 		else
 		{
 			c_count++;
-			ft_putchar_fd(fmt[i], 1);
+			ft_putchar_fd(fmt[i], ft_stdout);
 		}
 		i++;
 	}

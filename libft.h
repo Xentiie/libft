@@ -11,6 +11,11 @@
 /* ************************************************************************** */
 
 /*
+regex to match all functions names:
+extern\s*[a-zA-Z0-9_]*\s*[\*]*?ft_([a-zA-Z0-9_]*)
+*/
+
+/*
 FT_CONFIG
 TOGGLES:
 	FT_MACROS
@@ -486,6 +491,9 @@ typedef void			*file;
 # elif defined(FT_LINUX) || defined(FT_OSX)
 typedef S32				file;
 # endif
+extern file ft_stdout;
+extern file ft_stdin;
+extern file ft_stderr;
 
 extern	int				ft_argc;
 extern	const_string	ft_argv;
@@ -710,7 +718,7 @@ Sets ft_errno and returns -1.
 - FT_EINVVAL if 'mode' is invalid
 - FT_ESYSCALL if a syscall fails
 */
-file	ft_fopen(string path, string mode);
+extern file	ft_fopen(string path, string mode);
 
 /*
 Closes the file descriptor 'fd'
@@ -722,7 +730,7 @@ Sets ft_errno and returns -1.
 ### TODO
 Linux error check
 */
-void	ft_fclose(file fd);
+extern void	ft_fclose(file fd);
 
 /*
 Reads 'size' bytes from file 'fd' into 'buffer'.
@@ -731,7 +739,7 @@ Sets ft_errno and returns -1.
 ### ft_errno
 - FT_ESYSCALL if a syscall fails
 */
-U64		ft_fread(file fd, char *buffer, U64 size);
+extern U64		ft_fread(file fd, char *buffer, U64 size);
 
 /*
 Writes 'size' bytes from 'buffer' into file 'fd'.
@@ -740,7 +748,7 @@ Sets ft_errno and returns -1.
 ### ft_errno
 - FT_ESYSCALL if a syscall fails
 */
-U64		ft_fwrite(file fd, char *buffer, U64 size);
+extern U64		ft_fwrite(file fd, char *buffer, U64 size);
 
 /*
 Reads the whole file
@@ -1316,7 +1324,7 @@ return a map status code. If it returns anything other
 than FT_OK the traversal is terminated. f must
 not reenter any hashmap functions, or deadlock may arise.
 */
-extern t_hash_code ft_hash_iterate(t_hash_map in, t_hash_code (*f)(t_hash_any item, t_hash_any elem), t_hash_any item);
+extern t_hash_code	ft_hash_iterate(t_hash_map in, t_hash_code (*f)(t_hash_any item, t_hash_any elem), t_hash_any item);
 # endif /* FT_HASHMAPS */
 
 
@@ -1401,34 +1409,34 @@ typedef struct s_mat4x4
 		0.0f, 1.0f, 0.0f, 0.0f,	\
 		0.0f, 0.0f, 1.0f, 0.0f,	\
 		0.0f, 0.0f, 0.0f, 1.0f }
-t_v4		*ft_matrix_col(t_mat4x4 *mat, int c);
-float		*ft_matrix_get(t_mat4x4 *mat, int r, int c);
-t_v4		*ft_matrix_set_col(t_mat4x4 *mat, int c, t_v4 v);
-bool		ft_matrix_set_row(t_mat4x4 *mat, int r, t_v4 v);
+extern t_v4		*ft_matrix_col(t_mat4x4 *mat, int c);
+extern float	*ft_matrix_get(t_mat4x4 *mat, int r, int c);
+extern t_v4		*ft_matrix_set_col(t_mat4x4 *mat, int c, t_v4 v);
+extern bool		ft_matrix_set_row(t_mat4x4 *mat, int r, t_v4 v);
 
-t_mat4x4	ft_matrix_transpose(t_mat4x4 mat);
-t_mat4x4	ft_matrix_invert(t_mat4x4 mat);
-float		ft_matrix_det(t_mat4x4 v);
-t_mat4x4	ft_matrix_perspective(F32 fov, F32 near, F32 far);
+extern t_mat4x4	ft_matrix_transpose(t_mat4x4 mat);
+extern t_mat4x4	ft_matrix_invert(t_mat4x4 mat);
+extern float	ft_matrix_det(t_mat4x4 v);
+extern t_mat4x4	ft_matrix_perspective(F32 fov, F32 near, F32 far);
 
-t_mat4x4	ft_matrix_mult_matrix(t_mat4x4 a, t_mat4x4 b);
-t_mat4x4	ft_matrix_mult_float(t_mat4x4 a, float b);
-t_v4		ft_matrix_mult_v4(t_mat4x4 a, t_v4 b);
+extern t_mat4x4	ft_matrix_mult_matrix(t_mat4x4 a, t_mat4x4 b);
+extern t_mat4x4	ft_matrix_mult_float(t_mat4x4 a, float b);
+extern t_v4		ft_matrix_mult_v4(t_mat4x4 a, t_v4 b);
 
 
-t_mat4x4	ft_matrix_scale_v2(t_v2 v);
-t_mat4x4	ft_matrix_scale_v3(t_v3 v);
-t_mat4x4	ft_matrix_scale_v4(t_v4 v);
-t_mat4x4	ft_matrix_scale_iv2(t_iv2 v);
-t_mat4x4	ft_matrix_scale_iv3(t_iv3 v);
-t_mat4x4	ft_matrix_scale_iv4(t_iv4 v);
+extern t_mat4x4	ft_matrix_scale_v2(t_v2 v);
+extern t_mat4x4	ft_matrix_scale_v3(t_v3 v);
+extern t_mat4x4	ft_matrix_scale_v4(t_v4 v);
+extern t_mat4x4	ft_matrix_scale_iv2(t_iv2 v);
+extern t_mat4x4	ft_matrix_scale_iv3(t_iv3 v);
+extern t_mat4x4	ft_matrix_scale_iv4(t_iv4 v);
 
-t_mat4x4	ft_matrix_translate_v2(t_v2 v);
-t_mat4x4	ft_matrix_translate_v3(t_v3 v);
-t_mat4x4	ft_matrix_translate_iv2(t_iv2 v);
-t_mat4x4	ft_matrix_translate_iv3(t_iv3 v);
+extern t_mat4x4	ft_matrix_translate_v2(t_v2 v);
+extern t_mat4x4	ft_matrix_translate_v3(t_v3 v);
+extern t_mat4x4	ft_matrix_translate_iv2(t_iv2 v);
+extern t_mat4x4	ft_matrix_translate_iv3(t_iv3 v);
 
-t_mat4x4	ft_matrix_fit_to_view(t_v2 pos, t_v2 size, t_v2 view_size);
+extern t_mat4x4	ft_matrix_fit_to_view(t_v2 pos, t_v2 size, t_v2 view_size);
 
 
 #  define		ft_cos	cos

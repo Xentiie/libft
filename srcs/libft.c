@@ -12,12 +12,27 @@
 
 #include "libft.h"
 
+#if defined(FT_WIN32)
+# include <windows.h>
+#endif
+
 t_error_code		ft_errno;
-const_string		ft_error_lookup_table[] = { //TODO
-	"SUCCESS",
-	"FT_ERROR",
-	"FT_OMEM",
-	"FT_BAD_FD",
-	"FT_MAP_FULL",
-	"FT_MAP_MISSING",
-};
+
+file ft_stdout = (file)-1;
+file ft_stdin = (file)-1;
+file ft_stderr = (file)-1;
+
+__attribute__((constructor))
+void __init_libft()
+{
+#if defined(FT_WIN32)
+	ft_stdin = GetStdHandle(STD_INPUT_HANDLE);
+	ft_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
+	ft_stderr = GetStdHandle(STD_ERROR_HANDLE);
+#elif defined(FT_LINUX) || defined(FT_OSX)
+	ft_stdin = (file)0;
+	ft_stdout = (file)1;
+	ft_stderr = (file)2;
+#endif
+
+}

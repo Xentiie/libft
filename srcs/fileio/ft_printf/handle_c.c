@@ -14,7 +14,7 @@
 #ifdef FT_FILEIO
 S32	handle_c(U8 c)
 {
-	ft_putchar_fd(c, 1);
+	ft_putchar_fd(c, ft_stdout);
 	return (1);
 }
 #endif

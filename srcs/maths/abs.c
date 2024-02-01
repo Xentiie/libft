@@ -14,7 +14,9 @@
 #include "libft.h"
 #ifdef FT_MATHS
 # include <math.h>
+# include <stdio.h>
 
+//S32		ft_abs(int n)		{ return abs(n); }
 S32		ft_abs(int n)		{ return abs(n); }
 F32		ft_fabs(float n)	{ return fabs(n); }
 t_v2	ft_abs2(t_v2 n)		{ return vec2(fabs(n.x), fabs(n.y)); }

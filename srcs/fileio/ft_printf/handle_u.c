@@ -20,7 +20,7 @@ S32	handle_u(U64 i)
 
 	out = ft_uitoa(i);
 	l = ft_strlen(out);
-	ft_putstr_fd(out, 1);
+	ft_putstr_fd(out, ft_stdout);
 	free(out);
 	return (l);
 }

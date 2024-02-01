@@ -19,12 +19,12 @@ S32	handle_i(S32 i)
 
 	if (i == 0)
 	{
-		ft_putchar_fd('0', 1);
+		ft_putchar_fd('0', ft_stdout);
 		return (1);
 	}
 	out = ft_itoa(i);
 	l = ft_strlen(out);
-	ft_putstr_fd(out, 1);
+	ft_putstr_fd(out, ft_stdout);
 	free(out);
 	return (l);
 }

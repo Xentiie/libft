@@ -55,7 +55,7 @@ file ft_fopen(string path, string mode)
 		open_mode = GENERIC_READ | GENERIC_WRITE;
 	}
 
-	HANDLE hFile = CreateFileW(path, open_mode,
+	HANDLE hFile = CreateFileW((LPCWSTR)path, open_mode,
 							  0,					 // Share mode (0 for exclusive access)
 							  NULL,					 // Security attributes (NULL for default)
 							  create_mode,			 // Creation disposition (open existing file)
@@ -76,19 +76,20 @@ file ft_fopen(string path, string mode)
 
 #  include <unistd.h>
 #  include <fcntl.h>
-inline file ft_fopen(string path, S32 flags)
+inline file ft_fopen(string path, string mode)
 {
-	S32 _flags = 0;
-	if (flags & FT_FILEIO_READ)
-		_flags |= GENERIC_READ;
-	if (flags & FT_FILEIO_WRITE)
-		_flags |= GENERIC_WRITE;
-
-	file fd = open(path, flags);
-	//TODO: check error
-	
-	ft_errno = FT_OK;
-	return fd;
+//	S32 _flags = 0;
+//	if (flags & FT_FILEIO_READ)
+//		_flags |= GENERIC_READ;
+//	if (flags & FT_FILEIO_WRITE)
+//		_flags |= GENERIC_WRITE;
+//
+//	file fd = open(path, flags);
+//	//TODO: check error
+//	
+//	ft_errno = FT_OK;
+//	return fd;
+	return 0;
 }
 # endif
 

@@ -16,10 +16,10 @@ S32	handle_s(string str)
 {
 	if (!str)
 	{
-		ft_putstr_fd("(null)", 1);
+		ft_putstr_fd("(null)", ft_stdout);
 		return (6);
 	}
-	ft_putstr_fd(str, 1);
+	ft_putstr_fd(str, ft_stdout);
 	return (ft_strlen(str));
 }
 #endif

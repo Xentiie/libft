@@ -20,14 +20,14 @@
 U64	ft_fwrite(file fd, char *buffer, U64 size)
 {
 	U64 bytes_read = 0;
-	if (WriteFile(fd, buffer, size, &bytes_read, NULL) == FALSE)
+	if (WriteFile(fd, buffer, size, (LPDWORD)&bytes_read, NULL) == FALSE)
 		__FTRETURN_ERR(-1, FT_ESYSCALL);
 
 	__FTRETURN_OK(bytes_read);
 }
 
 # elif defined(FT_LINUX) || defined(FT_OSX)
-#  include <stdio.h>
+#  include <unistd.h>
 
 U64 ft_fwrite(file fd, char *buffer, U64 size)
 {

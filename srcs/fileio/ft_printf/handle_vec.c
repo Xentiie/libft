@@ -15,17 +15,17 @@
 #ifdef FT_FILEIO
 #define do_vec(v, type, size, conv)					\
 	U64	total_size = 0;								\
-	ft_putchar_fd('(', 1);							\
+	ft_putchar_fd('(', ft_stdout);					\
 	for (int __i = 0; __i < size; __i++)			\
 	{												\
 		string __istr = conv(((type*)&v)[__i]);		\
-		ft_putstr_fd(__istr, 1);					\
+		ft_putstr_fd(__istr, ft_stdout);			\
 		total_size += ft_strlen(__istr);			\
 		free(__istr);								\
 		if (__i != size - 1)						\
-			ft_putchar_fd(',', 1);					\
+			ft_putchar_fd(',', ft_stdout);			\
 	}												\
-	ft_putchar_fd(')', 1);							\
+	ft_putchar_fd(')', ft_stdout);					\
 	return (total_size);
 
 S32	handle_vec2i(t_iv2 c)	{ do_vec(c, int, 2, ft_itoa); }

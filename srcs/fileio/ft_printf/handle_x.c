@@ -50,7 +50,7 @@ S32	handle_x(U64 i)
 		add_to_char_buff((string)out, '0');
 	else
 		convert(i, (string)out);
-	ret = write(1, out, ft_strlen((string)out));
+	ret = ft_fwrite(ft_stdout, out, ft_strlen((string)out));
 	add_to_char_buff(NULL, '0');
 	return (ret);
 }

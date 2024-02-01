@@ -25,9 +25,9 @@ static void	convert(U64 num, S32 *i)
 	else
 	{
 		if (num >= '0' && num <= '9')
-			ft_putchar_fd(hexa[num], 1);
+			ft_putchar_fd(hexa[num], ft_stdout);
 		else
-			ft_putchar_fd(hexa[num], 1);
+			ft_putchar_fd(hexa[num], ft_stdout);
 		(*i)++;
 	}
 }
@@ -37,7 +37,7 @@ S32	handle_p(U64 p)
 	S32	i;
 
 	i = 0;
-	ft_putstr_fd("0x", 1);
+	ft_putstr_fd("0x", ft_stdout);
 	convert(p, &i);
 	return (i + 2);
 }

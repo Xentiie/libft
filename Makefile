@@ -13,13 +13,13 @@
 .DEFAULT_GOAL := all
 
 all:
-	python3 ./Makefile.py all
+	python3 ./Makefile.py
 
 clean:
-	python3 ./Makefile.py clean
+	python3 ./Makefile.py -clean
 
 fclean:
-	python3 ./Makefile.py fclean
+	python3 ./Makefile.py -fclean
 
 re:
-	python3 ./Makefile.py re
+	python3 ./Makefile.py -re
