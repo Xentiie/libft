@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 17:02:52 by reclaire          #+#    #+#             */
-/*   Updated: 2024/01/12 11:36:33 by marvin           ###   ########.fr       */
+/*   Updated: 2024/02/08 21:53:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ extern\s*[a-zA-Z0-9_]*\s*[\*]*?ft_([a-zA-Z0-9_]*)
 */
 
 /*
-FT_CONFIG
 TOGGLES:
 	FT_MACROS
 		FT_VA_OPT
@@ -32,7 +31,7 @@ TOGGLES:
 	FT_TIME
 	FT_MATHS
 
-Define FT_CONFIG to configure exactly what you need
+Define FT_NO_ALL to disable all
 */
 
 #if !defined(LIBFT_H)
@@ -59,7 +58,7 @@ extern "C" {
 # endif
 
 //CONFIG
-# if !defined(FT_CONFIG)
+# if !defined(FT_NO_ALL)
 
 #  if !defined(FT_NO_MACROS)
 #   define FT_MACROS
