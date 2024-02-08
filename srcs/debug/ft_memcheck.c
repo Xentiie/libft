@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 04:09:05 by reclaire          #+#    #+#             */
-/*   Updated: 2023/12/25 00:06:30 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/08 21:51:17 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 
 #if defined(FT_DEBUG) && defined(FT_MEMCHECK)
 
-#include <backtrace.h>
-#include <stdlib.h>
+# include <backtrace.h>
+# include <stdlib.h>
 # include <stdio.h>
 # include <stdio.h>
 # include <signal.h>
