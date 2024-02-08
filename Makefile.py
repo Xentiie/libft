@@ -6,6 +6,11 @@ import subprocess
 from glob import glob
 import argparse
 
+_makefile_dir = os.path.dirname(os.path.abspath(__file__))
+_current_dir = os.getcwd()
+if _current_dir != _makefile_dir:
+    os.chdir(_makefile_dir)
+
 def _execute(*exe_args):
 	print(' '.join(exe_args))
 	try:
