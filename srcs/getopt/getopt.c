@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 14:44:13 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 23:18:06 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/14 19:42:19 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ int ft_getopt(int argc, char const **argv, char const *optstr)
 
 			ft_optopt = ret;
 			ft_optarg = argv[ft_optind];
-			ft_optind++;
+			//ft_optind++;
 			return ret;
 		}
 		else

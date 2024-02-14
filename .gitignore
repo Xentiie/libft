@@ -6,3 +6,6 @@ objs/
 
 #env
 .editorconfig
+
+tests/error_logs/
+tests/perf_logs/

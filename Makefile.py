@@ -78,6 +78,7 @@ flag_group.add_argument('-re', action='store_true', help='Rebuild everything')
 flag_group.add_argument('-clean', action='store_true', help='Cleanup')
 flag_group.add_argument('-fclean', action='store_true', help='Full cleanup')
 
+parser.add_argument('-d', '--debug', action='store_true', help='Stores debug info')
 parser.add_argument('-t', '--target', metavar='TARGET', type=str, choices=['win32', 'linux', 'osx'], help='Specify the target platform. Build for current architecture if not specified.')
 parser.add_argument('-D', metavar='DEFINE', type=str, action='append', help='Defines')
 
@@ -92,6 +93,9 @@ INCLUDES=["-I./srcs"]
 LIBRARIES_PATH=[]
 LIBRARIES=[]
 CFLAGS=["-O3"]
+
+if (args.debug):
+	CFLAGS += ["-g"]
 
 if (args.target):
 	platform = args.target

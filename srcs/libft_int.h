@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:57:38 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/14 01:51:50 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/14 19:41:44 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # include "../headers/time.h"
 # include "../headers/types.h"
 # include "../headers/getopt.h"
+# include "../headers/exec.h"
 
 /*Private usage*/
 # define __FTRETURN_OK(ret) do { ft_errno=FT_OK; return ret; } while (0)

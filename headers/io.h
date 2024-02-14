@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/14 01:18:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/14 19:40:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define LIBFT_IO_H
 
 # include "_libft.h"
+# include <sys/types.h>
 
 # if defined(__cplusplus)
 extern "C" {

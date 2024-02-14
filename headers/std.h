@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/13 15:14:34 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/14 19:41:20 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,25 @@
 # include "_libft.h"
 
 /*
+Search for the environnement variable associated with 'name' in 'ft_env'
 ### On error
 Sets ft_errno and returns NULL.
 ### ft_errno
-- FT_EINVPTR if name is NULL
+- FT_EINVPTR if 'name' is NULL
 - FT_ENOINIT if FT_INIT_ARGV has not been called
-- FT_ENOENT if no environnement variables associated with name has been found
+- FT_ENOENT if no environnement variables associated with 'name' has been found
 */
 extern const_string	ft_getenv(const_string name);
+
+/*
+Search for the environnement variable associated with 'name' in 'env'
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EINVPTR if 'name' or 'env' is NULL
+- FT_ENOENT if no environnement variables associated with 'name' has been found
+*/
+extern const_string	ft_getenv2(const_string name, const_string *env);
 
 /*
 Writes n zeroed bytes to the string s.
