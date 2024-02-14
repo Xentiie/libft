@@ -6,13 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:43:53 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/27 21:11:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:21:31 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdarg.h>
 #ifdef FT_FILEIO
+# include <stdarg.h>
+
 S64	ft_printf(const_string fmt, ...)
 {
 	U64			i;

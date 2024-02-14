@@ -6,14 +6,15 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/16 02:51:20 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/29 23:50:58 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
-#include "libft.h"
-#ifdef FT_MATHS
-# include <math.h>
+#include <math.h>
+#include "libft_int.h"
+
+
 # define get(mat, i, j) ((float *)&mat)[i*4+j]
 
 t_v4		*ft_matrix_col(t_mat4x4 *mat, int c)
@@ -277,4 +278,3 @@ t_mat4x4	ft_matrix_fit_to_view(t_v2 pos, t_v2 size, t_v2 view_size)
     
 	return ft_matrix_mult_matrix(ft_matrix_mult_matrix(s1, s2), s3);
 }
-#endif

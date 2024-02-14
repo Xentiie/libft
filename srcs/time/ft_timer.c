@@ -81,8 +81,7 @@
 
 #endif /* Various clock types */
 
-#include "libft.h"      /* Configuration independent */
-#ifdef FT_TIME
+#include "libft_int.h" /* Configuration independent */
 
 # include <stdio.h>
 # include <sys/types.h>
@@ -368,49 +367,3 @@ double clk_fmt_elapsed_dbl(t_clock *clk)
 }
 
 # endif /* !TIMER_VERSION_1 */
-
-# ifdef TEST
-
-#  include <stdlib.h>
-
-static U64 counter = 0;
-static void increment(void)
-{
-    counter += rand();
-}
-
-int
-main(void)
-{
-    t_clock       clk;
-    U64      max = 100000000;
-    char *(*fmt[3])(t_clock *clk) =
-    {
-        clk_fmt_elapsed_ms, clk_fmt_elapsed_us, clk_fmt_elapsed_ns
-    };
-
-    clk_init(&clk);
-
-    for (int i = 0; i < 20; i++)
-    {
-        clk_start(&clk);
-        for (U64 j = 0; j < max; j++)
-            increment();
-        clk_stop(&clk);
-        /* Test the old functions */
-        char buf1[32];
-        char buf2[32];
-        char buf3[32];
-        char *p1 = clk_elapsed_ms(&clk, buf1, sizeof(buf1));
-        char *p2 = clk_elapsed_us(&clk, buf2, sizeof(buf2));
-        char *p3 = clk_elapsed_ns(&clk, buf3, sizeof(buf3));
-        /* Test the new functions */
-        char *p4 = (*fmt[i % 3])(&clk);
-        double p5 = clk_fmt_elapsed_dbl(&clk);
-        char *p6 = clk_fmt_elapsed_str(&clk);
-        printf("t_clock: %s = %s = %s = %-16s %16.9lf %-16s (%zu)\n", p1, p2, p3, p4, p5, p6, counter);
-    }
-    return(0);
-}
-# endif /* TEST */
-#endif

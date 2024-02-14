@@ -6,12 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 13:51:00 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 21:51:35 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_STD
+#include "libft_int.h"
+
+
 S32	ft_atoi(const_string str, U64 *len)
 {
 	S8		neg = 1;
@@ -36,4 +37,3 @@ S32	ft_atoi(const_string str, U64 *len)
 		*len = i;
 	return (result*neg);
 }
-#endif

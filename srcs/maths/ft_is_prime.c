@@ -6,15 +6,16 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 16:32:25 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:11:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_MATHS
-int	ft_is_prime(int nb)
+#include "libft_int.h"
+
+
+S32	ft_is_prime(S32 nb)
 {
-	int	i;
+	S32	i;
 
 	if (nb <= 1)
 		return (0);
@@ -27,4 +28,3 @@ int	ft_is_prime(int nb)
 	}
 	return (1);
 }
-#endif

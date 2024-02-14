@@ -6,13 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 16:42:40 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:17:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:50:23 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
-#ifdef FT_LISTS
+#include "libft_int.h"
+
 t_list	*ft_lstnew(void *content)
 {
 	t_list	*new = malloc(sizeof(t_list));
@@ -23,4 +22,3 @@ t_list	*ft_lstnew(void *content)
 	new->next = NULL;
 	__FTRETURN_OK(new);
 }
-#endif

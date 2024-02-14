@@ -6,13 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/31 12:12:18 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:16:27 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:04:53 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
-#ifdef FT_STRINGS
+#include "libft_int.h"
+
 string	*ft_dupsplit(const_string *s)
 {
 	U64		size;
@@ -40,4 +39,3 @@ string	*ft_dupsplit(const_string *s)
 	out[i] = NULL;
 	return (out);
 }
-#endif

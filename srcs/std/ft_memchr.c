@@ -6,12 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:18:10 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 21:07:01 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:02:42 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_STD
+#include "libft_int.h"
+
 void	*ft_memchr(void const *s, U8 c, U64 n)
 {
 	U64		i;
@@ -25,4 +25,3 @@ void	*ft_memchr(void const *s, U8 c, U64 n)
 	}
 	return (NULL);
 }
-#endif

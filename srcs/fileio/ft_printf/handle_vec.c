@@ -6,13 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 14:38:23 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/27 21:09:58 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:49:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdio.h>
-#ifdef FT_FILEIO
+
 #define do_vec(v, type, size, conv)					\
 	U64	total_size = 0;								\
 	ft_putchar_fd('(', ft_stdout);					\
@@ -35,4 +34,3 @@ S32	handle_vec2(t_v2 c)		{ do_vec(c, float, 2, ft_ftoa); }
 S32	handle_vec3(t_v3 c)		{ do_vec(c, float, 3, ft_ftoa); }
 S32	handle_vec4(t_v4 c)		{ do_vec(c, float, 4, ft_ftoa); }
 
-#endif

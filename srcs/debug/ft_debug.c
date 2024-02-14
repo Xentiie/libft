@@ -6,11 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 19:57:43 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/27 22:47:14 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:21:06 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "libft_int.h"
 
 #ifdef FT_DEBUG
 # ifdef FT_WIN32

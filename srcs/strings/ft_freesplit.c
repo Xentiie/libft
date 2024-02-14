@@ -6,13 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 04:31:30 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:16:54 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:04:58 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
-#ifdef FT_STRINGS
+#include "libft_int.h"
+
 void	ft_freesplit(string *split)
 {
 	U64	i = 0;
@@ -23,4 +22,3 @@ void	ft_freesplit(string *split)
 	}
 	free(split);
 }
-#endif

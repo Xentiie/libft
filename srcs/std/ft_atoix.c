@@ -6,12 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 17:21:01 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 21:52:06 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_STD
+#include "libft_int.h"
+
 
 U32	ft_atoix(const_string ptr, U64 *len)
 {
@@ -29,4 +29,3 @@ U32	ft_atoix(const_string ptr, U64 *len)
 		*len = count;
 	return v;
 }
-#endif

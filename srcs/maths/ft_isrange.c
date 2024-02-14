@@ -6,16 +6,16 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/31 17:11:10 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:11:07 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_MATHS
-int	ft_isrange(int i, int min, int max)
+#include "libft_int.h"
+
+
+S32	ft_isrange(S32 i, S32 min, S32 max)
 {
 	if (i >= min && i <= max)
 		return (1);
 	return (0);
 }
-#endif

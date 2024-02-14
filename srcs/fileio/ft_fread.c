@@ -6,13 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 20:19:41 by reclaire          #+#    #+#             */
-/*   Updated: 2024/01/22 20:19:41 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:29:31 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
-#ifdef FT_FILEIO
+#include "libft_int.h"
 
 # if defined(FT_WIN32)
 #  include <windows.h>
@@ -42,4 +40,3 @@ U64 ft_fread(file fd, char *buffer, U64 size)
 
 # endif
 
-#endif

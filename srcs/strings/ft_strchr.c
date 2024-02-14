@@ -6,12 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 20:57:32 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 20:34:06 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:05:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_STRINGS
+#include "libft_int.h"
+
 const_string	ft_strchr(const_string s, U8 c)
 {
 	S32 i = 0;
@@ -25,4 +25,3 @@ const_string	ft_strchr(const_string s, U8 c)
 		return (s+i);
 	return (NULL);
 }
-#endif

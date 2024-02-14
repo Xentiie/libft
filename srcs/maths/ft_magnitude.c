@@ -6,16 +6,17 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 14:10:51 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:12:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_MATHS
-U64	ft_magnitude(long n)
+#include "libft_int.h"
+
+
+U64	ft_magnitude(S64 n)
 {
 	U64	estim;
-	int		isneg;
+	S32	isneg;
 
 	estim = 0;
 	isneg = 0;
@@ -32,4 +33,3 @@ U64	ft_magnitude(long n)
 	}
 	return (estim);
 }
-#endif

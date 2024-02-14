@@ -6,13 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 14:02:02 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 19:51:05 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "libft_int.h"
 
-#ifdef FT_STD
+
 void	ft_bzero(void *s, U64 n)
 {
 	U64		i;
@@ -26,4 +26,3 @@ void	ft_bzero(void *s, U64 n)
 		i++;
 	}
 }
-#endif

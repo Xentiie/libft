@@ -6,16 +6,17 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 15:54:03 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:13:07 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <math.h>
-#include "libft.h"
-#ifdef FT_MATHS
-int	ft_wrap(int n, int min, int max)
+#include "libft_int.h"
+
+
+S32	ft_wrap(S32 n, S32 min, S32 max)
 {
-	int	range;
+	S32	range;
 
 	range = max - min + 1;
 	n = ((n - min) % range);
@@ -25,9 +26,9 @@ int	ft_wrap(int n, int min, int max)
 		return (min + n);
 }
 
-float	ft_fwrap(float x, float min, float max)
+F32	ft_fwrap(F32 x, F32 min, F32 max)
 {
-	float	f;
+	F32	f;
 
 	if (x >= 0)
 		f = min;
@@ -35,4 +36,3 @@ float	ft_fwrap(float x, float min, float max)
 		f = max;
 	return (f + fmod(x, max - min));
 }
-#endif

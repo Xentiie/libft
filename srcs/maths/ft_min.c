@@ -6,12 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/30 20:55:17 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:11:43 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_MATHS
+#include "libft_int.h"
+
+
 #define MIN(a, b) a < b ? a : b
 
 S32		ft_min_2(float a, float b)						{ return  MIN(a, b);}
@@ -47,5 +48,3 @@ S32 	ft_min4i(t_iv4 a)								{ return  MIN(MIN(MIN(a.x, a.y), a.z), a.w); }
 t_iv4 	ft_min4i_2(t_iv4 a, t_iv4 b)					{ return  ivec4(MIN(a.x, b.x), MIN(a.y, b.y), MIN(a.z, b.z), MIN(a.w, b.w)); }
 t_iv4 	ft_min4i_3(t_iv4 a, t_iv4 b, t_iv4 c)			{ return  ivec4(MIN(MIN(a.x, b.x), c.x), MIN(MIN(a.y, b.y), c.y), MIN(MIN(a.z, b.z), c.z), MIN(MIN(a.w, b.w), c.w)); }
 t_iv4 	ft_min4i_4(t_iv4 a, t_iv4 b, t_iv4 c, t_iv4 d)	{ return  ivec4(MIN(MIN(MIN(a.x, b.x), c.x), d.x), MIN(MIN(MIN(a.y, b.y), c.y), d.y), MIN(MIN(MIN(a.z, b.z), c.z), d.z), MIN(MIN(MIN(a.w, b.w), c.w), d.w)); }
-
-#endif

@@ -6,14 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 22:37:50 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:10:06 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:51:27 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <math.h>
-#include "libft.h"
-#ifdef FT_MATHS
-float	ft_clampf(float min, float max, float v)
+#include "libft_int.h"
+
+F32	ft_clampf(F32 min, F32 max, F32 v)
 {
 	if (v > max)
 		return (max);
@@ -22,7 +21,7 @@ float	ft_clampf(float min, float max, float v)
 	return (v);
 }
 
-int	ft_clamp(int min, int max, int v)
+S32	ft_clamp(S32 min, S32 max, S32 v)
 {
 	if (v > max)
 		return (max);
@@ -30,4 +29,3 @@ int	ft_clamp(int min, int max, int v)
 		return (min);
 	return (v);
 }
-#endif

@@ -6,16 +6,17 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 22:44:02 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:12:27 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <math.h>
-#include "libft.h"
-#ifdef FT_MATHS
+#include "libft_int.h"
+
+
 t_v3	ft_normalize3(t_v3 v)
 {
-	float	length;
+	F32		length;
 	t_v3	cpy;
 
 	cpy = v;
@@ -30,7 +31,7 @@ t_v3	ft_normalize3(t_v3 v)
 
 t_v2	ft_normalize2(t_v2 v)
 {
-	float	length;
+	F32		length;
 	t_v2	cpy;
 
 	cpy = v;
@@ -41,4 +42,3 @@ t_v2	ft_normalize2(t_v2 v)
 	cpy.y /= length;
 	return (cpy);
 }
-#endif

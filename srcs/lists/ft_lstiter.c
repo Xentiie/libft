@@ -6,12 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 20:13:02 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:07:27 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:50:29 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_LISTS
+#include "libft_int.h"
+
 void	ft_lstiter(t_list *lst, void (*f)(void *))
 {
 	if (lst == NULL || f == NULL)
@@ -25,4 +25,3 @@ void	ft_lstiter(t_list *lst, void (*f)(void *))
 
 	__FTRETURN_OK();
 }
-#endif

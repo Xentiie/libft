@@ -6,13 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 14:51:38 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:16:34 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:05:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
-#ifdef FT_STRINGS
+#include "libft_int.h"
+
 string	ft_strdup(const_string str)
 {
 	if (str == NULL)
@@ -29,7 +28,7 @@ string	ft_strdup(const_string str)
 		dup[c] = str[c];
 		c++;
 	}
+	dup[c] = '\0';
 
 	__FTRETURN_OK(dup);
 }
-#endif

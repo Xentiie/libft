@@ -6,13 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 08:09:13 by swalter           #+#    #+#             */
-/*   Updated: 2023/09/26 22:17:11 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:05:02 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
-#ifdef FT_STRINGS
+#include "libft_int.h"
+
 static	bool	char_is_separator(char c, char charset)
 {
 	if (c == charset || c == '\0')
@@ -88,4 +87,3 @@ string	*ft_split(const_string str, U8 c)
 		return (NULL);
 	return (res);
 }
-#endif

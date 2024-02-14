@@ -6,14 +6,31 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 20:34:20 by reclaire          #+#    #+#             */
-/*   Updated: 2024/01/24 20:34:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/12 01:03:33 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_TESTS_H
 # define LIBFT_TESTS_H
 
-# include "libft.h"
+# ifdef FT_NO_ALL
+#  undef FT_NO_ALL
+# endif
+
+# define FT_NO_MEMCHECK
+
+# include "libft/ansi.h"
+# include "libft/debug.h"
+# include "libft/getopt.h"
+# include "libft/strings.h"
+# include "libft/std.h"
+# include "libft/lists.h"
+# include "libft/io.h"
+# include "libft/limits.h"
+# include "libft/macros.h"
+# include "libft/time.h"
+# include "libft/maths.h"
+
 # include <stdio.h>
 # include <stdint.h>
 # include <time.h>

@@ -6,13 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 20:02:15 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:17:31 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:50:31 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
-#ifdef FT_LISTS
+#include "libft_int.h"
+
 void	ft_lstdelone(t_list *lst, void (*del)(void *))
 {
 	if (lst == NULL)
@@ -24,4 +23,3 @@ void	ft_lstdelone(t_list *lst, void (*del)(void *))
 
 	__FTRETURN_OK();
 }
-#endif

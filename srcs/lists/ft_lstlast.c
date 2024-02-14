@@ -6,12 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 19:25:41 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:07:11 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:50:29 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_LISTS
+#include "libft_int.h"
+
 t_list	*ft_lstlast(t_list *lst)
 {
 	t_list	*current;
@@ -29,4 +29,3 @@ t_list	*ft_lstlast(t_list *lst)
 	
 	__FTRETURN_OK(previous);
 }
-#endif

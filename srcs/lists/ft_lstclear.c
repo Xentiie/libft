@@ -6,13 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 20:05:58 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:17:37 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:50:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
-#ifdef FT_LISTS
+#include "libft_int.h"
+
 void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
 	t_list	*old_elem;
@@ -32,4 +31,3 @@ void	ft_lstclear(t_list **lst, void (*del)(void *))
 
 	__FTRETURN_OK();
 }
-#endif

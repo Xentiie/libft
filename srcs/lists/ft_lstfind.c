@@ -6,12 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 23:41:52 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:07:32 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:50:30 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_LISTS
+#include "libft_int.h"
 
 t_list	*ft_lstfind2(t_list *lst, void *ptr)
 {
@@ -48,4 +47,3 @@ t_list	*ft_lstfind(t_list *lst, bool (*f)(void *, void *), void *ref)
 
 	__FTRETURN_OK(NULL);
 }
-#endif
