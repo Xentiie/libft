@@ -1,21 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_open.c                                          :+:      :+:    :+:   */
+/*   ft_fopen.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 13:47:45 by reclaire          #+#    #+#             */
-/*   Updated: 2024/01/17 13:47:45 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:48:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_FILEIO
-
-# if !defined(FT_STRINGS)
-#  error FT_STRINGS need to be defined for FT_FILEIO
-# endif
+#include "libft_int.h"
 
 # if defined(FT_WIN32)
 #  include <windows.h>
@@ -78,6 +73,7 @@ file ft_fopen(string path, string mode)
 #  include <fcntl.h>
 inline file ft_fopen(string path, string mode)
 {
+	//TODO: 
 //	S32 _flags = 0;
 //	if (flags & FT_FILEIO_READ)
 //		_flags |= GENERIC_READ;
@@ -89,8 +85,6 @@ inline file ft_fopen(string path, string mode)
 //	
 //	ft_errno = FT_OK;
 //	return fd;
-	return 0;
+	return -1;
 }
 # endif
-
-#endif

@@ -6,13 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 15:39:44 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:16:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:09:38 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
-#ifdef FT_STRINGS
+#include "libft_int.h"
+
 string ft_substr(const_string s, U64 start, U64 len)
 {
 	string	r;
@@ -31,4 +30,3 @@ string ft_substr(const_string s, U64 start, U64 len)
 	ft_strlcpy(r, (s + start), len + 1);
 	__FTRETURN_OK(r);
 }
-#endif

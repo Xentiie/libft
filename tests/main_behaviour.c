@@ -1,20 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_behaviour.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 20:32:31 by reclaire          #+#    #+#             */
-/*   Updated: 2024/01/24 20:32:31 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/12 15:46:35 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_tests.h"
 #include <stdarg.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
 #define PERF_ITER 100000
+
+int pipefd[2];
+int stdout_save;
 
 // create_behaviour_tests(&tests, t1, "name1", t2, "name2", ..., NULL)
 void create_behaviour_tests(t_test_infos *infos, ...)
@@ -74,6 +79,54 @@ uint64_t rdtsc()
 	return ((uint64_t)hi << 32) | lo;
 }
 
+void start_stdout_redirect()
+{
+	if (pipe(pipefd) == -1)
+	{
+		perror("pipe");
+		exit(1);
+	}
+	if ((stdout_save = dup(ft_stdout)) < 0)
+	{
+		perror("dup");
+		exit(1);
+	}
+	if (dup2(pipefd[1], ft_stdout) < 0)
+	{
+		perror("dup2");
+		exit(1);
+	}
+	close(pipefd[1]);
+}
+
+char *read_stdout_redirect()
+{
+	fflush(stdout);
+	char *out = ft_strdup("");
+	char buf[4096];
+	U64 br = 0;
+
+	while ((br = ft_fread(pipefd[0], buf, sizeof(char) * 4095)) > 0)
+	{
+		
+	}
+	if (br == -1)
+	{
+		
+	}
+}
+
+void end_stdout_redirect()
+{
+	close(pipefd[0]);
+	if (dup2(stdout_save, 1) < 0)
+	{
+		perror("dup2");
+		exit(1);
+	}
+    close(stdout_save);
+}
+
 int main()
 {
 	t_test_infos tests = get_test_infos();
@@ -90,6 +143,16 @@ int main()
 		if (tests.behaviour_tests[i]())
 			printf("    -> %s: PASSED\n", tests.behaviour_tests_names[i]);
 		else
-			printf("    -> %s: FAILED\n", tests.behaviour_tests_names[i]);
+		{
+			printf("    -> %s: FAILED", tests.behaviour_tests_names[i]);
+			if (ft_errno != FT_OK)
+				printf(" (ft_errno: %d)\n", ft_errno);
+			else
+				printf("\n");
+		}
 	}
+	free(tests.behaviour_tests);
+	free(tests.behaviour_tests_names);
+	free(tests.perf_tests);
+	free(tests.perf_tests_names);
 }

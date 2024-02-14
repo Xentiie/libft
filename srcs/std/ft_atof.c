@@ -6,14 +6,15 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 00:18:05 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 21:51:52 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_STD
-# include <math.h>
-# include <string.h>
+#include "libft_int.h"
+
+#include <string.h>
+#include <math.h>
+
 typedef union u_bits_to_float
 {
 	U32		bits;
@@ -91,4 +92,3 @@ F32	ft_atof(const_string str, U64 *len)
 	*len = str - save;
 	return (neg) ? -v : v;
 }
-#endif

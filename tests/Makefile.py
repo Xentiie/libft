@@ -57,7 +57,7 @@ RM=["rm", "-rf"]
 INCLUDES=["-I../", "-I./"]
 LIBRARIES_PATH=["-L../"]
 LIBRARIES=["-lft"]
-CFLAGS=["-O3"]
+CFLAGS=["-O3", "-g"]
 
 if (args.target):
 	platform = args.target
@@ -115,8 +115,8 @@ def run_behaviour_test(source_file):
 	
 	exe = f"./{NAME_BEHAVIOUR}.exe" if platform == "win32" else f"./{NAME_BEHAVIOUR}"
 	stdout, stderr, return_code = _execute(exe)
-	stdout = stdout.decode()
-	stderr = stderr.decode()
+	stdout = stdout.decode(errors='replace')
+	stderr = stderr.decode(errors='replace')
 
 	if ("FAILED" in stdout or return_code != 0):
 		print(f"{args.single}: tests failed")

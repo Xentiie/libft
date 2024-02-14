@@ -6,12 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 21:54:27 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 21:55:07 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:04:15 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_STD
+#include "libft_int.h"
+
 bool	ft_str_isalnum(string str)
 {
 	U64	i = 0;
@@ -23,4 +23,3 @@ bool	ft_str_isalnum(string str)
 	}
 	return (TRUE);
 }
-#endif

@@ -6,13 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 20:17:38 by reclaire          #+#    #+#             */
-/*   Updated: 2024/01/22 20:17:38 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:28:27 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
-#ifdef FT_FILEIO
+#include "libft_int.h"
 
 typedef struct s_save
 {
@@ -20,19 +18,8 @@ typedef struct s_save
 	string	save;
 }	t_save;
 
-# if defined(FT_WIN32)
-
 
 string	ft_gnl(file fd)
 {
 	
 }
-
-# elif defined(FT_LINUX) || defined(FT_OSX)
-
-
-
-#endif
-
-
-#endif

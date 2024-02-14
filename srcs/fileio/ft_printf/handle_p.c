@@ -6,17 +6,16 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:28:55 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 21:06:08 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:26:07 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#ifdef FT_FILEIO
+
 static void	convert(U64 num, S32 *i)
 {
-	string	hexa;
+	string	hexa = "0123456789abcdef";
 
-	hexa = "0123456789abcdef";
 	if (num >= 16)
 	{
 		convert(num / 16, i);
@@ -41,4 +40,3 @@ S32	handle_p(U64 p)
 	convert(p, &i);
 	return (i + 2);
 }
-#endif

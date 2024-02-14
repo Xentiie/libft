@@ -6,13 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 22:55:52 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:17:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:48:53 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
-#ifdef FT_FILEIO
+#include "libft_int.h"
 
 static S64	read_section(file fd, U64 read_size, string *out)
 {
@@ -61,4 +59,3 @@ string	ft_readfile(file fd, U64 read_size)
 
 	__FTRETURN_OK(out);
 }
-#endif

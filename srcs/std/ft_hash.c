@@ -6,12 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 09:51:42 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/30 10:50:15 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:52:30 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_STD
+#include "libft_int.h"
+
 //From cudaraster
 // By Bob Jenkins, 1996. bob_jenkins@burtleburtle.net.
 #define JENKINS_MIX(a, b, c)   \
@@ -25,7 +25,7 @@
     b -= c; b -= a; b ^= (a<<10); \
     c -= a; c -= b; c ^= (b>>15);
 #define HASH_MAGIC 0x9e3779b9u
-U32 hash_buffer_align(const void* ptr, int size)
+static U32 hash_buffer_align(const void* ptr, int size)
 {
     const U32*  src     = (const U32*)ptr;
     U32         a       = HASH_MAGIC;
@@ -95,4 +95,3 @@ U32 ft_hash_buffer(const void* ptr, U64 size)
     JENKINS_MIX(a, b, c);
     return c;
 }
-#endif

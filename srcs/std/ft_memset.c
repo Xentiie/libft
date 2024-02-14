@@ -6,12 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 20:08:26 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 21:51:29 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:03:23 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_STD
+#include "libft_int.h"
+
 void	*ft_memset(void *b, U8 c, U64 len)
 {
 	U64	i;
@@ -26,4 +26,3 @@ void	*ft_memset(void *b, U8 c, U64 len)
 	}
 	return (str);
 }
-#endif

@@ -6,22 +6,20 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 00:01:59 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/27 21:10:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:52:20 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
-#ifdef FT_STD
-# include <math.h>
+#include "libft_int.h"
+#include <math.h>
 
-# define AFTERPOINT 5
+#define AFTERPOINT 5
 
-static void	reverse(string str, U64 len)
+static void reverse(string str, U64 len)
 {
-	U64	i;
-	U64	j;
-	U8	temp;
+	U64 i;
+	U64 j;
+	U8 temp;
 
 	i = 0;
 	j = len - 1;
@@ -35,9 +33,9 @@ static void	reverse(string str, U64 len)
 	}
 }
 
-static S32	int_to_str(S32 x, string str, S32 d, bool is_neg)
+static S32 int_to_str(S32 x, string str, S32 d, bool is_neg)
 {
-	S32	i;
+	S32 i;
 
 	i = is_neg;
 	if (x == 0)
@@ -65,19 +63,23 @@ static S32	int_to_str(S32 x, string str, S32 d, bool is_neg)
 
 string ft_ftoa(float n)
 {
-	S32		ipart;
-	F32		fpart;
-	S32		i;
-	string	out;
+	S32 ipart;
+	F32 fpart;
+	S32 i;
+	string out;
 
-	bool	neg = FALSE;
+	bool neg = FALSE;
 
 	out = malloc(sizeof(char) * (AFTERPOINT * 2 + 3));
 	if (out == NULL)
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 
 	ft_bzero(out, sizeof(char) * (AFTERPOINT * 2 + 3));
-	if (n < 0) { neg = TRUE; n *= -1; }
+	if (n < 0)
+	{
+		neg = TRUE;
+		n *= -1;
+	}
 
 	ipart = (S32)n;
 	fpart = n - (float)ipart;
@@ -93,4 +95,3 @@ string ft_ftoa(float n)
 	}
 	__FTRETURN_OK(out);
 }
-#endif

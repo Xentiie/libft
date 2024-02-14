@@ -6,13 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 14:15:23 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:20:37 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:04:46 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
-#ifdef FT_STD
+#include "libft_int.h"
+
 static string compute(U64 nbr, S32 len)
 {
 	string	rtn;
@@ -49,4 +48,3 @@ string ft_uitoa(U64 n)
 		__FTRETURN_ERR(NULL, ft_errno);
 	__FTRETURN_OK(rtn);
 }
-#endif

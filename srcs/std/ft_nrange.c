@@ -6,13 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/23 10:28:32 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:15:00 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:03:35 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
-#ifdef FT_STD
+#include "libft_int.h"
+
 S32	ft_nrange(S32 **range, S32 min, S32 max)
 {
 	S32	size;
@@ -44,4 +43,3 @@ S32	ft_nrange(S32 **range, S32 min, S32 max)
 	*range = output;
 	__FTRETURN_OK(size);
 }
-#endif

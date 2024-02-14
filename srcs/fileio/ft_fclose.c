@@ -1,17 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_close.c                                         :+:      :+:    :+:   */
+/*   ft_fclose.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 13:54:18 by reclaire          #+#    #+#             */
-/*   Updated: 2024/01/17 13:54:18 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:28:43 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_FILEIO
+#include "libft_int.h"
 
 # if defined(FT_WIN32)
 #  include <windows.h>
@@ -35,5 +34,3 @@ void	ft_fclose(file fd)
 	__FTRETURN_OK();
 }
 # endif
-
-#endif

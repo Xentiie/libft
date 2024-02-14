@@ -6,13 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 15:42:29 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:16:16 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:08:36 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
-#ifdef FT_STRINGS
+#include "libft_int.h"
+
 string	ft_strjoin(const_string s1, const_string s2)
 {
 	U64		s1_len;
@@ -40,4 +39,3 @@ string	ft_strjoin(const_string s1, const_string s2)
 	new[i] = '\0';
 	__FTRETURN_OK(new);
 }
-#endif

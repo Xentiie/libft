@@ -6,13 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 20:49:50 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:15:56 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:02:24 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
-#ifdef FT_STD
+#include "libft_int.h"
+
 static S32	num_digits(S64 n)
 {
 	S32	r;
@@ -33,7 +32,7 @@ static S32	num_digits(S64 n)
 	return (r);
 }
 
-void	check_negative(S64 *nb, string str)
+static void	check_negative(S64 *nb, string str)
 {
 	if (*nb < 0)
 	{
@@ -69,4 +68,3 @@ string	ft_itoa(S32 n)
 	}
 	__FTRETURN_OK(str);
 }
-#endif

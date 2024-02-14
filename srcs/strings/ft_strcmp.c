@@ -6,17 +6,15 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 09:19:11 by reclaire          #+#    #+#             */
-/*   Updated: 2023/10/09 22:04:57 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/12 21:03:12 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_STRINGS
-int	ft_strcmp(char *s1, char *s2)
-{
-	int	i;
+#include "libft_int.h"
 
-	i = 0;
+S32	ft_strcmp(const_string s1, const_string s2)
+{
+	U32	i = 0;
 	while (s1[i] != '\0' && s2[i] != '\0')
 	{
 		if (s1[i] != s2[i])
@@ -29,4 +27,3 @@ int	ft_strcmp(char *s1, char *s2)
 		return (s1[i]);
 	return (0);
 }
-#endif

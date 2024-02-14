@@ -6,12 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 16:22:43 by estarck           #+#    #+#             */
-/*   Updated: 2023/09/26 19:59:08 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:08:41 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_STRINGS
+#include "libft_int.h"
+
 U64	ft_strlcat(string dest, const_string src, U64 size)
 {
 	U64	i;
@@ -36,4 +36,3 @@ U64	ft_strlcat(string dest, const_string src, U64 size)
 		dest[i + j] = '\0';
 	return (i + lsrc);
 }
-#endif

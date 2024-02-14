@@ -6,12 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 13:38:25 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 20:34:36 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:14:19 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_STRINGS
+#include "libft_int.h"
+
 U64	ft_strlen(const_string s)
 {
 	U64	n = 0;
@@ -19,4 +19,3 @@ U64	ft_strlen(const_string s)
 		n++;
 	return (n);
 }
-#endif

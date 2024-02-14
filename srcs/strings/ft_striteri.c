@@ -6,12 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 14:12:04 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 20:35:33 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:08:29 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_STRINGS
+#include "libft_int.h"
+
 void	ft_striteri(string s, void (*f)(U64, string))
 {
 	U64		i;
@@ -23,4 +23,3 @@ void	ft_striteri(string s, void (*f)(U64, string))
 		i++;
 	}
 }
-#endif

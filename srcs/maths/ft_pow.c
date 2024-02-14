@@ -6,15 +6,16 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 14:09:25 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:11:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_MATHS
-int	ft_pow(int nb, int power)
+#include "libft_int.h"
+
+
+S32	ft_pow(S32 nb, S32 power)
 {
-	int	total;
+	S32	total;
 
 	total = 1;
 	if (power < 0)
@@ -26,4 +27,3 @@ int	ft_pow(int nb, int power)
 	}
 	return (total);
 }
-#endif

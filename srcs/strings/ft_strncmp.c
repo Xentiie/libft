@@ -6,12 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 09:56:23 by estarck           #+#    #+#             */
-/*   Updated: 2023/09/26 20:34:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:09:29 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_STRINGS
+#include "libft_int.h"
+
 S32	ft_strncmp(const_string s1, const_string s2, U64 n)
 {
 	if (n == 0)
@@ -26,4 +26,3 @@ S32	ft_strncmp(const_string s1, const_string s2, U64 n)
 		i++;
 	return (s1[i] - s2[i]);
 }
-#endif

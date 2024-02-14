@@ -1,0 +1,41 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_setenv.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/12 21:05:44 by reclaire          #+#    #+#             */
+/*   Updated: 2024/02/13 17:11:51 by reclaire         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "libft_int.h"
+#include <stdio.h>
+
+const_string	ft_getenv(const_string name)
+{
+	if (name == NULL)
+		__FTRETURN_ERR(NULL, FT_EINVPTR);
+	
+	if (ft_env == NULL)
+		__FTRETURN_ERR(NULL, FT_ENOINIT);
+	
+	U64 name_len = ft_strlen(name);
+	for (U64 i = 0; ft_env[i] != NULL; i++)
+	{
+		fflush(stdout);
+		if (ft_strncmp(ft_env[i], name, name_len) == 0 && ft_env[i][name_len] == '=')
+			__FTRETURN_OK((ft_env[i] + name_len + 1));
+	}
+	__FTRETURN_ERR(NULL, FT_ENOENT);
+}
+
+void			ft_setenv(const_string name, const_string value, bool overwrite)
+{
+	if (name == NULL)
+		__FTRETURN_ERR(, FT_EINVPTR);
+
+	ft_putstr_fd("ft_setenv not implemented :p\n", ft_stdout);
+	exit(1);
+}

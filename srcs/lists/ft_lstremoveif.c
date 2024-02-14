@@ -6,12 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 02:05:10 by reclaire          #+#    #+#             */
-/*   Updated: 2023/10/09 22:03:06 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:50:22 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#ifdef FT_LISTS
+#include "libft_int.h"
 
 bool ft_lstremoveif(t_list **lst, void (*del)(void *),
 					bool (*f)(), void *ref)
@@ -43,4 +42,3 @@ bool ft_lstremoveif(t_list **lst, void (*del)(void *),
 	}
 	__FTRETURN_OK(found);
 }
-#endif

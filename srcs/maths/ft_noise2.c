@@ -6,14 +6,15 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 05:03:12 by reclaire          #+#    #+#             */
-/*   Updated: 2023/09/26 22:11:48 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <math.h>
-#include "libft.h"
-#ifdef FT_MATHS
-float	ft_noise2(t_v2 st)
+#include "libft_int.h"
+
+
+F32	ft_noise2(t_v2 st)
 {
 	t_v2	i;
 	t_v2	f;
@@ -30,4 +31,3 @@ float	ft_noise2(t_v2 st)
 	return (ft_lerp(abcd.x, abcd.y, u.x) + (abcd.z - abcd.x) * u.y * (1.0 - u.x)
 		+ (abcd.w - abcd.y) * u.x * u.y);
 }
-#endif

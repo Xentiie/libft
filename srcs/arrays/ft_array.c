@@ -6,13 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/09 18:22:04 by reclaire          #+#    #+#             */
-/*   Updated: 2024/01/10 11:16:47 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/11 20:20:25 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
+#include "libft_int.h"
 #ifdef FT_ARRAYS
+# include <stdlib.h>
 # include <math.h>
 
 # define RESET_ERRNO() ft_errno=FT_OK
