@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 18:12:39 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/14 19:30:23 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/14 20:10:50 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #define YEAR_SEC (365 * DAY_SEC)
 
 //_LEAP_YEAR_ADJUST: some leap year gets accounted twice, fix
-#define _LEAP_YEAR_ADJUST 14
+#define _LEAP_YEAR_ADJUST 17
 #define _ELAPSED_LEAP_YEARS(y) (((y - 1) / 4) - ((y - 1) / 100) + ((y + 299) / 400) - _LEAP_YEAR_ADJUST)
 /*
 divisible by 4, but not (if divisible by 100 && not divisible by 400)
@@ -40,6 +40,7 @@ t_tm ft_mktime(S64 t)
 {
 	S64 t_save = t;
 	t_tm out;
+	ft_bzero(&out, sizeof(t_tm));
 
 	// Without leap years (+/- 70 because we start at 1900 here, not 1970)
 	S64 tmpyr = (int)(t / YEAR_SEC) + 70;
@@ -56,18 +57,18 @@ t_tm ft_mktime(S64 t)
 		if (IS_LEAP_YEAR(tmpyr))
 		{
 			t += DAY_SEC;
-			is_leap_yr = 1;
+			is_leap_yr++;
 		}
 	}
 	else if (IS_LEAP_YEAR(tmpyr))
-		is_leap_yr = 1;
+		is_leap_yr++;
 
 	out.year = tmpyr;
 
 	out.year_day = (S32)(t / DAY_SEC);
 	t -= (S64)(out.year_day) * DAY_SEC;
 
-	U16 *mdays = is_leap_yr ? yday_count[1] : yday_count[0];
+	const U16 *mdays = is_leap_yr ? yday_count[1] : yday_count[0];
 
 	tmpyr = 1;
 	while (mdays[tmpyr] < out.year_day)
@@ -83,9 +84,13 @@ t_tm ft_mktime(S64 t)
 	out.minute = (S32)(t / MINUTE_SEC);
 	t -= (S64)(out.minute) * MINUTE_SEC;
 
-	out.second = (S32)(t - out.minute);
+	out.second = (S32)(t);
+
+	return out;
 }
 
 string ft_strtime(t_tm *tm)
 {
+
+	
 }
