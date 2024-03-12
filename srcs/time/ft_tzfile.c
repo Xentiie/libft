@@ -1,30 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_d.c                                         :+:      :+:    :+:   */
+/*   ft_tzfile.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/16 17:28:55 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:23:40 by reclaire         ###   ########.fr       */
+/*   Created: 2024/02/16 14:09:48 by reclaire          #+#    #+#             */
+/*   Updated: 2024/02/17 02:47:40 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "libft_int.h"
 
-S32	handle_d(S32 i)
+#define TZ_DEFAULT "/etc/timezone"
+
+string ft_local_tzfile()
 {
-	string	out;
-	U64		l;
+	static char buf[256];
 
-	if (i == 0)
-	{
-		ft_putchar_fd('0', ft_stdout);
-		return (1);
-	}
-	out = ft_itoa(i);
-	l = ft_strlen(out);
-	ft_putstr_fd(out, ft_stdout);
-	free(out);
-	return (l);
+	file fd = ft_fopen(TZ_DEFAULT, "r");
+	if (fd == -1)
+		__FTRETURN_ERR(NULL, ft_errno);
+	
+	U64 rd;
+	if ((rd = ft_fread(fd, buf, 255)) == -1);
+		__FTRETURN_ERR(NULL, ft_errno);
+	buf[rd] = '\0';
+	__FTRETURN_OK(buf);
+}
+
+void ft_parse_tzfile(string path)
+{
+	
 }

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 20:54:59 by reclaire          #+#    #+#             */
-/*   Updated: 2024/01/24 20:54:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/03/04 19:34:25 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ bool test_ft_abs4()
 	CHECK(v3.x == 10 && v3.y == 10);
 	CHECK(v4.x == 10 && v4.y == 10);
 	CHECK(v5.x == 10 && v5.y == 10);
+
 	return TRUE;
 }
 
@@ -132,18 +133,18 @@ t_test_infos get_test_infos()
 	infos.init = test_init;
 	
 	create_behaviour_tests(&infos,
-		test_ft_abs, "abs",
-		test_ft_abs2, "abs2",
-		test_ft_abs3, "abs3",
-		test_ft_abs4, "abs4",
-	NULL);
+		(t_behaviour_test){ .name = "abs", .test = test_ft_abs },
+		(t_behaviour_test){ .name = "abs2", .test = test_ft_abs2 },
+		(t_behaviour_test){ .name = "abs3", .test = test_ft_abs3 },
+		(t_behaviour_test){ .name = "abs4", .test = test_ft_abs4 },
+	(t_behaviour_test){ .name = NULL });
 
 	create_perf_tests(&infos,
-		perf_test_ft_abs, "abs",
-		perf_test_ft_abs2, "abs2",
-		perf_test_ft_abs3, "abs3",
-		perf_test_ft_abs4, "abs4",
-	NULL);
+		(t_performance_test){ .name = "abs", .test = perf_test_ft_abs, .comp_test = NULL },
+		(t_performance_test){ .name = "abs2", .test = perf_test_ft_abs2, .comp_test = NULL },
+		(t_performance_test){ .name = "abs3", .test = perf_test_ft_abs3, .comp_test = NULL },
+		(t_performance_test){ .name = "abs4", .test = perf_test_ft_abs4, .comp_test = NULL },
+	(t_performance_test){ .name = NULL });
 
 	return infos;
 }

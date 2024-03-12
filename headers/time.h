@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:15:51 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/14 19:41:34 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/16 14:14:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,17 @@ typedef struct s_tm
 	S32 year;
 }	t_tm;
 
-t_tm	ft_mktime(S64 t);
+/*
+Reads /etc/timezone and returns it's content
+Returned buffer is statically allocated, must not free
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_ESYSCALL if ft_fopen or ft_fread fails
+*/
+string ft_local_tzfile();
+
+t_tm	ft_gmtime(S64 t);
 string	ft_strtime(t_tm *tm);
 
 //https://github.com/jleffler/soq/tree/master/src/libsoq

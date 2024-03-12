@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/14 19:41:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/03/12 13:24:40 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,23 @@
 # define LIBFT_STD_H
 
 # include "_libft.h"
+
+/*
+Sets the seed for ft_rand
+*/
+void ft_srand(S32 seed);
+
+/*
+Returns a random number in range [0;S32_MAX] based on seed specified by ft_srand
+Seed defaults to 1
+*/
+S32 ft_rand();
+
+/*
+Returns a random number in range [min;max] based on seed specified by ft_srand
+Seed defaults to 1
+*/
+S32 ft_randr(S32 min, S32 max);
 
 /*
 Search for the environnement variable associated with 'name' in 'ft_env'
@@ -90,37 +107,148 @@ extern U32		ft_hash_buffer(const void *buff, U64 size);
 /*
 Converts a string to an int.
 */
-extern S32		ft_atoi(const_string str, U64 *out);
+extern S32		ft_atoi(const_string str);
+
+/*
+Converts a string to an int, and returns the number of characters parsed in 'len' if non-null.
+*/
+extern S32		ft_atoi_l(const_string str, U64 *len);
+
+/*
+Converts a string in base 'base' to an int.
+*/
+extern S32		ft_atoi_b(const_string base, const_string str);
+
+/*
+Converts a string in base 'base' to an int, and returns the number of characters parsed in 'len' if non-null.
+*/
+extern S32		ft_atoi_bl(const_string base, const_string str, U64 *len);
 
 /*
 Converts a string to a float.
 */
-extern F32		ft_atof(const_string str, U64 *len);
+extern F32		ft_atof(const_string str);
+
+/*
+Converts a string to a float, and returns the number of characters parsed in 'len' if non-null.
+*/
+extern F32		ft_atof_l(const_string str, U64 *len);
 
 /*
 Converts a hex string to a unsigned int.
 */
 extern U32		ft_atoix(const_string str, U64 *len);
 
-/*
-Converts an int to a string.
-Caller owns returned value
-### On error
-Sets ft_errno and returns NULL.
-### ft_errno
-- FT_EOMEM if out of memory
-*/
-extern string	ft_itoa(S32 n);
 
 /*
-Converts an unsigned int to a string.
-Caller owns returned value
+Internal function for itoa family of functions.
+If called with n_digits == 0 or out == NULL returns the n_digits for this number-base combination.
+Does not take maxlen into account.
+
+Output the result in the string out, no more that maxlen, and returns the number of characters placed
+*/
+extern U64		_ft_itoa(const_string base, U64 base_len, U64 n_digits, S64 nb, string out, U64 maxlen);
+
+/*
+Converts an int to a string.
+Caller owns returned value.
 ### On error
 Sets ft_errno and returns NULL.
 ### ft_errno
 - FT_EOMEM if out of memory
 */
-extern string	ft_uitoa(U64 n);
+extern string	ft_itoa(S64);
+
+/*
+Converts an int to a string, and sets 'len' to the length of the returned string.
+Caller owns returned value.
+### On error
+Sets ft_errno, sets 'len' to 0 and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory
+*/
+extern string	ft_itoa_l(S64, U64 *len);
+
+/*
+Converts an int to a string into 'str', and returns the number of characters set.
+*/
+extern U64		ft_itoa_s(S64, string str);
+
+/*
+Converts an int to a string into 'str', and returns the number of characters set.
+Copies no more than maxlen characters
+*/
+extern U64		ft_itoa_sn(S64, string str, U64 maxlen);
+
+/*
+Converts an int to a string in base 'base'.
+Caller owns returned value.
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory
+*/
+extern string	ft_itoa_b(S64, const_string base);
+
+/*
+Internal function for utoa family of functions.
+If called with n_digits == 0 or out == NULL returns the n_digits for this number-base combination.
+Does not take maxlen into account.
+
+If base is NULL, base 10 is set
+
+Output the result in the string out, no more that maxlen, and returns the number of characters placed
+
+Exemple:
+```
+U64 n_digits = _ft_utoa("0123456789abcdef", 0, p, NULL, U64_MAX);
+string str = malloc(sizeof(char) * (n_digits + 1));
+str[n_digits] = '\0';
+U64 len = _ft_utoa("0123456789abcdef", n_digits, p, str, U64_MAX);
+```
+*/
+extern U64		_ft_utoa(const_string base, U64 base_len, U64 n_digits, U64 nb, string out, U64 maxlen);
+
+/*
+Converts an unsigned long long to a string.
+Caller owns returned value.
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory
+*/
+extern string	ft_utoa(U64 n);
+
+/*
+Converts an unsigned long long to a string, and sets 'len' to the length of the returned string.
+Caller owns returned value.
+### On error
+Sets ft_errno, sets 'len' to 0 and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory
+*/
+extern string	ft_utoa_l(U64 n, U64 *len);
+
+/*
+Converts an unsigned long long to a string into 'str', and returns the number of characters set.
+*/
+extern U64		ft_utoa_s(U64 n, string str);
+
+/*
+Converts an unsigned long long to a string into 'str', and returns the number of characters set.
+Copies no more than maxlen characters
+*/
+extern U64		ft_utoa_sn(U64 n, string str, U64 maxlen);
+
+/*
+Converts an unsigned long long to a string in base 'base'.
+Caller owns returned value.
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory
+*/
+extern string	ft_utoa_b(U64 n, const_string base);
 
 /*
 Converts a float to a string.

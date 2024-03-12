@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/30 20:58:48 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/28 02:47:55 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 
 #define MAX(a, b) a > b ? a : b
 
-F32		ft_max_2(float a, float b)							{ return  MAX(a, b);}
-F32		ft_max_3(float a, float b, float c)					{ return  MAX(MAX(a, b), c);}
-F32		ft_max_4(float a, float b, float c, float d)		{ return  MAX(MAX(MAX(a, b), c), d);}
-S32		ft_imax_2(int a, int b)								{ return  MAX(a, b);}
-S32		ft_imax_3(int a, int b, int c)						{ return  MAX(MAX(a, b), c);}
-S32		ft_imax_4(int a, int b, int c, int d)				{ return  MAX(MAX(MAX(a, b), c), d);}
+F32		ft_max_2(F32 a, F32 b)								{ return  MAX(a, b);}
+F32		ft_max_3(F32 a, F32 b, F32 c)						{ return  MAX(MAX(a, b), c);}
+F32		ft_max_4(F32 a, F32 b, F32 c, F32 d)				{ return  MAX(MAX(MAX(a, b), c), d);}
+S32		ft_imax_2(S32 a, S32 b)								{ return  MAX(a, b);}
+S32		ft_imax_3(S32 a, S32 b, S32 c)						{ return  MAX(MAX(a, b), c);}
+S32		ft_imax_4(S32 a, S32 b, S32 c, S32 d)				{ return  MAX(MAX(MAX(a, b), c), d);}
 
 F32 	ft_max2(t_v2 a)										{ return  MAX(a.x, a.y); }
 t_v2 	ft_max2_2(t_v2 a, t_v2 b)							{ return  vec2(MAX(a.x, b.x), MAX(a.y, b.y)); }

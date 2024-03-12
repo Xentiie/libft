@@ -6,12 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 18:12:39 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/14 20:10:50 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/03/07 18:39:18 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 #include <time.h>
+#include <stdio.h>
 
 #define BASE_DOW 4
 
@@ -27,23 +28,23 @@
 divisible by 4, but not (if divisible by 100 && not divisible by 400)
 leapyear = year % 4 == 0 && !(year % 100 == 0 && year % 400 != 0)
 */
-#define IS_LEAP_YEAR(year) ((year & 3) && !(year % 100 == 0 && year % 400 != 0))
+#define IS_LEAP_YEAR(year) (!(year & 3) && !(year % 100 == 0 && year % 400 != 0))
 
-static const U16 yday_count[2][13] = {
-	{-1, 30, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365},
+static const S16 yday_count[2][13] = {
+	{-1, 30, 58, 89, 119, 150, 180, 211, 242, 272, 303, 333, 364},
 	/* Leap years.  */
-	{-1, 30, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366}};
+	{-1, 30, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365}};
 
 // January 1st, 1970 00:00:00 utc
 // t = time in secs
-t_tm ft_mktime(S64 t)
+t_tm ft_gmtime(S64 t)
 {
 	S64 t_save = t;
 	t_tm out;
 	ft_bzero(&out, sizeof(t_tm));
 
 	// Without leap years (+/- 70 because we start at 1900 here, not 1970)
-	S64 tmpyr = (int)(t / YEAR_SEC) + 70;
+	S32 tmpyr = (S32)(t / YEAR_SEC) + 70;
 	t -= ((S64)(tmpyr - 70) * YEAR_SEC);
 
 	// With leap years (si current year is leap year, t will overflow down and be negative)
@@ -68,11 +69,12 @@ t_tm ft_mktime(S64 t)
 	out.year_day = (S32)(t / DAY_SEC);
 	t -= (S64)(out.year_day) * DAY_SEC;
 
-	const U16 *mdays = is_leap_yr ? yday_count[1] : yday_count[0];
+	const S16 *mdays = is_leap_yr ? yday_count[1] : yday_count[0];
 
 	tmpyr = 1;
 	while (mdays[tmpyr] < out.year_day)
 		tmpyr++;
+
 	out.month = --tmpyr;
 	out.month_day = out.year_day - mdays[tmpyr];
 
@@ -91,6 +93,4 @@ t_tm ft_mktime(S64 t)
 
 string ft_strtime(t_tm *tm)
 {
-
-	
 }

@@ -1,4 +1,5 @@
 #include "libft_tests.h"
+#include <string.h>
 
 t_test_infos get_test_infos()
 {

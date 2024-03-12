@@ -104,12 +104,12 @@ else:
 
 if (platform == "win32"):
 	CC="x86_64-w64-mingw32-gcc"
-	CFLAGS += ["-D FT_WIN32"]
+	CFLAGS += ["-D FT_WIN"]
 elif (platform == "linux"):
 	CC="gcc"
 	CFLAGS += ["-D FT_LINUX"]
 elif (platform == "osx"):
-	CFLAGS += ["-D FT_OSX"]
+	CFLAGS += ["-D FT_MAX"]
 else:
 	print("Platform not supported")
 	exit(1)

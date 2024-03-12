@@ -6,14 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:47:30 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:22:49 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/03/08 16:12:47 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_TYPES_H
 # define LIBFT_TYPES_H
-
-# include "_libft.h"
 
 # ifndef	NULL
 #  define	NULL 	((void*)0)
@@ -34,21 +32,27 @@
 typedef unsigned char		U8;
 typedef unsigned short		U16;
 typedef unsigned int 		U32;
-typedef unsigned long long	U64;
+typedef unsigned long		U64;
+typedef unsigned long long	LU64;
 typedef signed char			S8;
 typedef signed short		S16;
 typedef signed int			S32;
-typedef signed long long	S64;
+typedef signed long			S64;
+typedef signed long	long	LS64;
 typedef float				F32;
 typedef double				F64;
+typedef long double			LF64;
 
 typedef char				*string;
 typedef char const			*const_string;
+typedef int					*wstring;
+typedef int const			*const_wstring;
+typedef int					wchar;
 typedef U8					bool;
 
-# if defined(FT_WIN32)
+# if defined(FT_WIN)
 typedef void				*file;
-# elif defined(FT_LINUX) || defined(FT_OSX)
+# elif defined(FT_LINUX) || defined(FT_MAX)
 typedef S32					file;
 # endif
 

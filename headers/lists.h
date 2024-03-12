@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:16:43 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/13 15:42:16 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/28 03:41:01 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ all the pointers of the chained list
 ### On error
 Sets ft_errno and returns NULL.
 ### ft_errno
-- FT_EINVPTR if 'lst' is NULL
 - FT_EOMEM if out of memory
 ### TODO
 */
@@ -107,6 +106,25 @@ Sets ft_errno.
 ### TODO
 */
 extern void		ft_lstadd_back(t_list **lst, t_list *new);
+
+/*
+Same as ft_lstadd_back, but retains a pointer to *lst, and it's last element, to avoid
+having to loop through the list again if multiples elements are added back-to-back.
+UNSAFE TO CALL WHILE DOING OPERATIONS ON *lst, SHOULD ONLY BE USED TO FILL A LIST IN ONE GO.
+Better use ft_lstadd_back_ls
+### On error
+Sets ft_errno.
+### ft_errno
+- FT_EINVPTR if 'lst' is NULL.
+### TODO
+*/
+extern void		ft_lstadd_back_chained(t_list **lst, t_list *new);
+
+/*
+Same as ft_lstadd_back, but adds the element behind last, and returns new.
+Used to avoid searching for last every time.
+*/
+extern t_list	*ft_lstadd_back_ls(t_list *last, t_list *new);
 
 /*
 Returns the size of lst.

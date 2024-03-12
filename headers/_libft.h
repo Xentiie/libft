@@ -6,15 +6,51 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/12 21:08:27 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/26 23:16:41 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef _LIBFT_H
 # define _LIBFT_H
 
-# if !defined(FT_WIN32) && !defined(FT_OSX) && !defined(FT_LINUX)
-#  warning No platform seem to be specified, errors WILL occur.
+# if !defined(FT_WIN) && !defined(FT_APPLE) && !defined(FT_LINUX)
+#  warning "No target platform, checking current platform"
+
+#  if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+#   define FT_WIN
+#   ifdef _WIN64
+#    define FT_WIN64 
+#   else
+#    define FT_WIN32
+#   endif
+
+#  elif __APPLE__
+#   define FT_APPLE
+#   include <TargetConditionals.h>
+#   if TARGET_IPHONE_SIMULATOR
+#    define FT_APPLE_SIM
+#   elif TARGET_OS_MACCATALYST
+#    define FT_APPLE_MACCATALYST
+#   elif TARGET_OS_IPHONE
+#    define FT_APPLE_IOS
+#   elif TARGET_OS_MAC
+#    define FT_APPLE_OSX
+#   else
+#    error "Unknown Apple platform"
+#   endif
+
+#  elif __ANDROID__
+#   define FT_ANDROID
+#  elif __linux__
+#   define FT_LINUX
+#  elif __unix__
+#   define FT_UNIX
+#  elif defined(_POSIX_VERSION)
+#   define FT_POSIX
+#  else
+#   error "Unknown compiler"
+#  endif
+
 # endif
 
 # include "types.h"
@@ -37,6 +73,7 @@ extern	t_error_code		ft_errno;
 
 # define FUNCTION_HOT __attribute__((hot))
 # define FUNCTION_COLD __attribute__((cold))
-
+# define IF_PREDICT(cond, expect) __builtin_expect((cond), expect)
+# define IF_PREDICT_B(cond, expect) __builtin_expect(!!(cond), expect)
 
 #endif

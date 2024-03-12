@@ -14,14 +14,14 @@
 #include "libft_int.h"
 
 
-F32	ft_rand(S32 n)
+F32	ft_frand(S32 n)
 {
 	n = (n << 13U) ^ n;
 	n = n * (n * n * 15731U + 789221U) + 1376312589U;
 	return ((F32)(n & (U32)(0x7fffffffU)) / (F32)(0x7fffffff));
 }
 
-F32	ft_rand2(t_v2 st)
+F32	ft_frand2(t_v2 st)
 {
 	return (ft_frac(sin(ft_dot2(st, vec2(12.9898, 78.233)))
 			* 43758.5453123));

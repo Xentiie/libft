@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:42:00 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/14 01:53:48 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/03/04 14:10:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,11 @@ NUL-terminating the result if dstsize is not 0.
 extern U64			ft_strlcpy(string dest, const_string src, U64 size);
 
 /*
+Copies 'src' into 'dest'.
+*/
+extern U64			ft_strcpy(string dest, const_string src);
+
+/*
 Duplicates the string str into a new char array.
 Caller gets ownership of returned string.
 ### On error
@@ -123,6 +128,29 @@ Sets ft_errno and returns NULL.
 - FT_EOMEM if out of memory
 */
 extern string		ft_strdup(const_string str);
+
+/*
+Duplicates the string 'str' into a new char array, and sets 'len' if non-null to the length of the string.
+Caller gets ownership of returned string.
+### On error
+Sets ft_errno, sets 'len' to 0 if non-null and returns NULL.
+### ft_errno
+- FT_EINVPTR if 'str' is NULL
+- FT_EOMEM if out of memory
+*/
+extern string		ft_strdup_l(const_string str, U64 *len);
+
+/*
+Duplicates the wide string str into a new wchar array.
+Caller gets ownership of returned wstring.
+DO NOT USE
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EINVPTR if 'str' is NULL
+- FT_EOMEM if out of memory
+*/
+extern wstring		ft_wstrdup(const_wstring str);
 
 /*
 Returns a new string from s, starting at index start with size len.
@@ -164,6 +192,12 @@ extern const_string	ft_strnstr(const_string haystack, const_string needle, U64 l
 Returns the length of string
 */
 extern U64		ft_strlen(const_string str);
+
+/*
+Returns the length of wide string
+DO NOT USE
+*/
+extern U64		ft_wstrlen(const_wstring s);
 
 /*
 Returns the index of the first occurrence of c in str, -1 if not found.

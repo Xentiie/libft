@@ -6,76 +6,111 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:43:53 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:21:31 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/03/07 20:17:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#ifdef FT_FILEIO
-# include <stdarg.h>
+#include <stdarg.h>
+# include <stdio.h>
+#ifdef TEST
+# include <stdio.h>
+#endif
 
-S64	ft_printf(const_string fmt, ...)
+static U64 write_interface_fd(const_string str, U64 len, void *data)
 {
-	U64			i;
-	va_list		args;
-	S64			c_count;
+	return ft_fwrite(*((file *)data), (string)str, len);
+}
+
+U64	ft_printf(const_string fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	U64 out = ft_vdprintf(ft_stdout, fmt, args);
+	va_end(args);
+	return out;
+}
+
+U64 ft_dprintf(file fd, const_string fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	U64 out = ft_vdprintf(fd, fmt, args);
+	va_end(args);
+	return out;
+}
+
+U64 ft_vprintf(const_string fmt, va_list args)
+{
+	return ft_vdprintf(ft_stdout, fmt, args);
+}
+
+U64 ft_vdprintf(file fd, const_string fmt, va_list args)
+{
+	return printf_internal(fmt, args, write_interface_fd, &fd);
+}
+
+struct s_wr_i_str_data
+{
+	U64		n;
+	string	str;
+};
+
+static U64 write_interface_str(const_string str, U64 len, void *data)
+{
+	struct s_wr_i_str_data *_data = (struct s_wr_i_str_data *)data;
+
+	U64 i = 0;
+	for (; i < len && i < _data->n; i++)
+	{
+		char c = str[i];
+		_data->str[i] = c;
+	}
+	_data->str += i;
+	_data->n -= i;
+	return i;
+}
+
+U64 ft_sprintf(string str, const_string fmt, ...)
+{
+	va_list args;
+	
+	va_start(args, fmt);
+	U64 out = ft_vsprintf(str, fmt, args);
+	va_end(args);
+	return out;
+}
+
+U64 ft_snprintf(string str, U64 n, const_string fmt, ...)
+{
+	va_list args;
 
 	va_start(args, fmt);
-	i = 0;
-	c_count = 0;
-	while (fmt[i])
-	{
-		if (fmt[i] == '%')
-		{
-			if (fmt[i+1] == '%')
-				c_count += ft_fwrite(ft_stdout, "%", 1);
-			else if (fmt[i+1] == 'c')
-				c_count += handle_c(va_arg(args, U32)); //U8 pas supporté par va_args
-			else if (fmt[i+1] == 'd')
-				c_count += handle_d(va_arg(args, S32));
-			else if (fmt[i+1] == 'i')
-				c_count += handle_i(va_arg(args, S32));
-			else if (fmt[i+1] == 'p')
-				c_count += handle_p(va_arg(args, U64));
-			else if (fmt[i+1] == 's')
-				c_count += handle_s(va_arg(args, string));
-			else if (fmt[i+1] == 'u')
-				c_count += handle_u(va_arg(args, U64));
-			else if (fmt[i+1] == 'X')
-				c_count += handle_ux(va_arg(args, U64));
-			else if (fmt[i+1] == 'x')
-				c_count += handle_x(va_arg(args, U64));
-			else if (fmt[i+1] == 'v')
-			{
-				if (fmt[i+2] && fmt[i+3] == 'i')
-				{
-					if (fmt[i+2] == '2')
-						{c_count += handle_vec2i(va_arg(args, t_iv2)); i+= 2;}
-					else if (fmt[i+2] == '3')
-						{c_count += handle_vec3i(va_arg(args, t_iv3)); i+= 2;}
-					else if (fmt[i+2] == '4')
-						{c_count += handle_vec4i(va_arg(args, t_iv4)); i+= 2;}
-				}
-				else
-				{
-					if (fmt[i+2] == '2')
-						{c_count += handle_vec2(va_arg(args, t_v2)); i+= 2;}
-					else if (fmt[i+2] == '3')
-						{c_count += handle_vec3(va_arg(args, t_v3)); i+= 2;}
-					else if (fmt[i+2] == '4')
-						{c_count += handle_vec4(va_arg(args, t_v4)); i+= 2;}
-				}
-			}
-			i++;
-		}
-		else
-		{
-			c_count++;
-			ft_putchar_fd(fmt[i], ft_stdout);
-		}
-		i++;
-	}
+	U64 out = ft_vsnprintf(str, n, fmt, args);
 	va_end(args);
-	return (c_count);
+	return out;
 }
+
+U64 ft_vsprintf(string str, const_string fmt, va_list args)
+{
+	return ft_vsnprintf(str, U64_MAX, fmt, args);
+}
+
+U64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args)
+{
+	struct s_wr_i_str_data data = {n, str};
+	U64 out = printf_internal(fmt, args, write_interface_str, &data);
+	return out;
+}
+
+
+#ifdef TEST
+
+//gcc -g  -DFT_LINUX -DTEST  -I../../ -L../../  *.c  -lft -lm
+int main()
+{
+	ft_printf("|%05c|\n", 'a');
+	printf("|%05c|\n", 'a');
+}
+
 #endif

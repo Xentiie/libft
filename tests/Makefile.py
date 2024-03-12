@@ -8,19 +8,32 @@ import argparse
 import datetime
 import re
 
+verbose = False
+def log(*args, **kwargs):
+	if (verbose):
+		print(*args, **kwargs)
+
 def _execute(*exe_args):
-	print(' '.join(exe_args))
+	log(' '.join(exe_args))
 	try:
 		process = subprocess.Popen(exe_args, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	except FileNotFoundError:
 		print(f"Error: '{exe_args[0]}' doesn't exist. Double check args sent to subprocess.Popen.")
 		exit(1)
-	
+
 	stdout, stderr = process.communicate()
 	if (process.returncode != 0):
 		print(f"Error: subprocess returned with error code: {process.returncode}")
 		print(stderr.decode())
 	return (stdout, stderr, process.returncode)
+
+def _execute_nopipe(*exe_args):
+	log(' '.join(exe_args))
+	try:
+		process = subprocess.Popen(exe_args, shell=False)
+	except FileNotFoundError:
+		print(f"Error: '{exe_args[0]}' doesn't exist. Double check args sent to subprocess.Popen.")
+		exit(1)
 
 def _get_platform():
 	is_wsl = os.environ.get("WSLENV", default=None) != None
@@ -39,6 +52,7 @@ to_run = parser.add_mutually_exclusive_group()
 to_run.add_argument('-p', '--performance', action='store_true', help="Run performance only")
 to_run.add_argument('-b', '--behaviour', action='store_true', help="Run behaviour only")
 
+parser.add_argument('-v', '--verbose', action='store_true', help="Verbose mode")
 parser.add_argument('-t', '--target', metavar='TARGET', type=str, choices=['win32', 'linux', 'osx'], help='Specify the target platform. Build for current architecture if not specified.')
 parser.add_argument('-D', metavar='DEFINE', type=str, nargs='+', help='Defines')
 
@@ -57,7 +71,8 @@ RM=["rm", "-rf"]
 INCLUDES=["-I../", "-I./"]
 LIBRARIES_PATH=["-L../"]
 LIBRARIES=["-lft"]
-CFLAGS=["-O3", "-g"]
+#CFLAGS=["-O3", "-g"]
+CFLAGS=["-g"]
 
 if (args.target):
 	platform = args.target
@@ -66,12 +81,12 @@ else:
 
 if (platform == "win32"):
 	CC="x86_64-w64-mingw32-gcc"
-	CFLAGS += ["-D FT_WIN32"]
+	CFLAGS += ["-D FT_WIN"]
 elif (platform == "linux"):
 	CC="gcc"
 	CFLAGS += ["-D FT_LINUX"]
 elif (platform == "osx"):
-	CFLAGS += ["-D FT_OSX"]
+	CFLAGS += ["-D FT_MAX"]
 else:
 	print("Platform not supported")
 	exit(1)
@@ -105,27 +120,35 @@ def write_error_log(source_file:str, test_name:str, error_code:int, stdout:str, 
 		f.write(stderr)
 		f.write("\n")
 
+def run_init(source_file):
+	with open(source_file, 'r') as f:
+		line = f.readline()
+		rmatch:re.Match[str]|None
+		rmatch = None
+		while line:
+			if (line.startswith("//")):
+				line = f.readline()
+				continue
+			rmatch = re.match(r"%%(\w+)%%=([^\n]*.*)", line)
+			if (rmatch):
+				key=rmatch.group(1)
+				value=rmatch.group(2)
+				print(key, value)
+			line = f.readline()
 
 def run_behaviour_test(source_file):
-	stdout, stderr, return_code = _execute(CC, *CFLAGS, *INCLUDES, *LIBRARIES_PATH, source_file, 'main_behaviour.c', '-o', NAME_BEHAVIOUR, *LIBRARIES)
+	run_init(source_file)
+	stdout, stderr, return_code = _execute(CC, *CFLAGS, *INCLUDES, *LIBRARIES_PATH, source_file, 'run_behaviour.c', 'create_tests.c', '-o', NAME_BEHAVIOUR, *LIBRARIES)
 	if (return_code != 0):
 		print(f"{args.single}: compilation failed")
 		write_error_log(source_file, "behaviour_compilation", return_code, stdout.decode(), stderr.decode())
 		return
 	
 	exe = f"./{NAME_BEHAVIOUR}.exe" if platform == "win32" else f"./{NAME_BEHAVIOUR}"
-	stdout, stderr, return_code = _execute(exe)
-	stdout = stdout.decode(errors='replace')
-	stderr = stderr.decode(errors='replace')
-
-	if ("FAILED" in stdout or return_code != 0):
-		print(f"{args.single}: tests failed")
-		write_error_log(source_file, "behaviour", return_code, stdout, stderr)
-	else:
-		print(f"{args.single}: tests success")
+	_execute_nopipe(exe)
 
 def run_performance_test(source_file):
-	stdout, stderr, return_code = _execute(CC, *CFLAGS, *INCLUDES, *LIBRARIES_PATH, source_file, 'main_perf.c', '-o', NAME_PERF, *LIBRARIES)
+	stdout, stderr, return_code = _execute(CC, *CFLAGS, *INCLUDES, *LIBRARIES_PATH, source_file, 'run_performance.c', 'create_tests.c', '-o', NAME_PERF, *LIBRARIES)
 	if (return_code != 0):
 		print(f"{args.single}: compilation failed")
 		write_error_log(source_file, "perf_compilation", return_code, stdout.decode(), stderr.decode())

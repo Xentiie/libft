@@ -6,13 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 04:01:02 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/12 21:07:06 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/26 23:11:52 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
-#if defined(FT_WIN32)
+#if defined(FT_WIN)
 # include <windows.h>
 #endif
 
@@ -29,11 +29,11 @@ file			ft_stderr;
 __attribute__((constructor))
 void __init_libft()
 {
-#if defined(FT_WIN32)
+#if defined(FT_WIN)
 	ft_stdin = GetStdHandle(STD_INPUT_HANDLE);
 	ft_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 	ft_stderr = GetStdHandle(STD_ERROR_HANDLE);
-#elif defined(FT_LINUX) || defined(FT_OSX)
+#elif defined(FT_LINUX) || defined(FT_MAX)
 	ft_stdin = (file)0;
 	ft_stdout = (file)1;
 	ft_stderr = (file)2;

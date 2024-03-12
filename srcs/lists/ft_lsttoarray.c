@@ -22,7 +22,10 @@ void	**ft_lsttoarray(t_list *lst, U64 *len)
 	t_list	*curr;
 
 	if (lst == NULL)
-		__FTRETURN_ERR(NULL, FT_EINVPTR);
+	{
+		*len = 0;
+		return NULL;
+	}
 	
 	lst_len = ft_lstsize(lst);
 	if (len)

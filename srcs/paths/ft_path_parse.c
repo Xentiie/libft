@@ -1,25 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_u.c                                         :+:      :+:    :+:   */
+/*   ft_path_parse.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/16 17:28:55 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:27:31 by reclaire         ###   ########.fr       */
+/*   Created: 2024/02/20 15:37:41 by reclaire          #+#    #+#             */
+/*   Updated: 2024/02/20 18:01:29 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "libft_int.h"
+#include <stdio.h>
 
-S32	handle_u(U64 i)
+void ft_path_parse(t_list **lst, string path)
 {
-	string	out;
-	U64		l;
-
-	out = ft_uitoa(i);
-	l = ft_strlen(out);
-	ft_putstr_fd(out, ft_stdout);
-	free(out); //TODO: probably a better way to do this not using the heap
-	return (l);
+	U64 i = 0;
+	U64 st = 0;
+	while (path[i])
+	{
+		while (path[i] != '/')
+		{
+			if (!path[i])
+				goto end;
+			i++;
+		}
+		ft_lstadd_back(lst, ft_lstnew(ft_substr(path, st, i - st)));
+		i++;
+		while (path[i] == '/')
+			i++;
+		st = i;
+	}
+	end:
+	
+	if (st < i)
+		ft_lstadd_back(lst, ft_lstnew(ft_substr(path, st, i - st)));
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_itoa.c                                          :+:      :+:    :+:   */
+/*   ft_utoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 20:49:50 by reclaire          #+#    #+#             */
-/*   Updated: 2024/03/12 13:48:48 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/03/12 13:48:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,12 @@
 #include <stdio.h>
 #endif
 
-static S64 num_digits(const_string base, U64 base_len, S64 n)
+static S32 num_digits(const_string base, U64 base_len, U64 n)
 {
 	S32 r = 0;
-	if (n < 0)
-	{
-		n *= -1;
-		r++;
-	}
 	if (n == 0)
 		return (1);
-	while (n != 0)
+	while (n > 0)
 	{
 		n /= base_len;
 		r++;
@@ -33,7 +28,7 @@ static S64 num_digits(const_string base, U64 base_len, S64 n)
 	return (r);
 }
 
-U64 _ft_itoa(const_string base, U64 base_len, U64 n_digits, S64 nb, string out, U64 maxlen)
+U64 _ft_utoa(const_string base, U64 base_len, U64 n_digits, U64 nb, string out, U64 maxlen)
 {
 	if (base == NULL)
 	{
@@ -55,12 +50,6 @@ U64 _ft_itoa(const_string base, U64 base_len, U64 n_digits, S64 nb, string out, 
 
 	U64 len = 0;
 	S64 i = n_digits - 1;
-	if (nb < 0)
-	{
-		nb *= -1;
-		out[0] = '-';
-		len++;
-	}
 
 	while (nb > 0)
 	{
@@ -77,56 +66,56 @@ U64 _ft_itoa(const_string base, U64 base_len, U64 n_digits, S64 nb, string out, 
 
 
 
-string ft_itoa(S64 n)
+string ft_utoa(U64 n)
 {
-	U64 n_digits = _ft_itoa(NULL, 10, 0, n, NULL, U64_MAX);
+	U64 n_digits = _ft_utoa(NULL, 0, 0, n, NULL, U64_MAX);
 	
 	string out = malloc(sizeof(char) * (n_digits + 1));
 	if (!out)
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 
-	_ft_itoa(NULL, 10, n_digits, n, out, U64_MAX);
+	_ft_utoa(NULL, 0, n_digits, n, out, U64_MAX);
 	return out;
 }
 
-string ft_itoa_l(S64 n, U64 *len)
+string ft_utoa_l(U64 n, U64 *len)
 {
-	U64 n_digits = _ft_itoa(NULL, 10, 0, n, NULL, U64_MAX);
+	U64 n_digits = _ft_utoa(NULL, 0, 0, n, NULL, U64_MAX);
 	
 	string out = malloc(sizeof(char) * (n_digits + 1));
 	if (!out)
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 
-	U64 l = _ft_itoa(NULL, 10, n_digits, n, out, U64_MAX);
+	U64 l = _ft_utoa(NULL, 0, n_digits, n, out, U64_MAX);
 	if (len)
 		*len = l;
 	return out;
 }
 
-U64 ft_itoa_s(S64 n, string str)
+U64 ft_utoa_s(U64 n, string str)
 {
-	U64 n_digits = _ft_itoa(NULL, 10, 0, n, NULL, U64_MAX);
-	return _ft_itoa(NULL, 10, n_digits, n, str, U64_MAX);
+	U64 n_digits = _ft_utoa(NULL, 0, 0, n, NULL, U64_MAX);
+	return _ft_utoa(NULL, 0, n_digits, n, str, U64_MAX);
 }
 
-U64 ft_itoa_sn(S64 n, string str, U64 maxlen)
+U64 ft_utoa_sn(U64 n, string str, U64 maxlen)
 {
-	U64 n_digits = _ft_itoa(NULL, 10, 0, n, NULL, maxlen);
-	return _ft_itoa(NULL, 10, n_digits, n, str, maxlen);
+	U64 n_digits = _ft_utoa(NULL, 0, 0, n, NULL, maxlen);
+	return _ft_utoa(NULL, 0, n_digits, n, str, maxlen);
 }
 
-string ft_itoa_b(S64 n, const_string base)
+string ft_utoa_b(U64 n, const_string base)
 {
-	U64 n_digits = _ft_itoa(base, 0, 0, n, NULL, U64_MAX);
+	U64 n_digits = _ft_utoa(base, 0, 0, n, NULL, U64_MAX);
 	
 	string out = malloc(sizeof(char) * (n_digits + 1));
 	if (!out)
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 
-	_ft_itoa(base, 0, n_digits, n, out, U64_MAX);
+	_ft_utoa(base, 0, n_digits, n, out, U64_MAX);
 	return out;
 }
 
@@ -135,18 +124,25 @@ string ft_itoa_b(S64 n, const_string base)
 
 int main()
 {
-	S32 tests[] = {
-		0,
-		1,
-		-1,
-		12,
-		1234,
-		S32_MAX,
-		S32_MIN
+	U32 tests[] = {
+		(U32)0,
+		(U32)1,
+		(U32)-1,
+		(U32)12,
+		(U32)1234,
+		(U32)S32_MAX,
+		(U32)S32_MIN
 	};
 
 	U64 l = 0;
 	string str;
+
+	printf("%d\n", 1118);
+	printf("%0#--10d", 1118);
+	printf("%i\n", 1118);
+	printf("%x\n", 1118);
+	printf("%X\n", 1118);
+	printf("%p\n", (void *)(1118));
 
 	printf("%d\n\n", sizeof(tests)/sizeof(*tests));
 	fflush(stdout);
@@ -154,8 +150,8 @@ int main()
 
 	for (int i = 0; i < sizeof(tests)/sizeof(*tests); i++)
 	{
-		str = ft_itoa(tests[i]);
-		printf("str:|%s| expected:|%d|\n", str, tests[i], l);
+		str = ft_utoa(tests[i]);
+		printf("str:|%s| expected:|%u|\n", str, tests[i], l);
 		free(str);
 	}
 
@@ -163,8 +159,8 @@ int main()
 
 	for (int i = 0; i < sizeof(tests)/sizeof(*tests); i++)
 	{
-		str = ft_itoa_l(tests[i], &l);
-		printf("str:|%s| expected:|%d| len=%lld\n", str, tests[i], l);
+		str = ft_utoa_l(tests[i], &l);
+		printf("str:|%s| expected:|%u| len=%lld\n", str, tests[i], l);
 		free(str);	
 	}
 
@@ -174,32 +170,32 @@ int main()
 	for (int i = 0; i < sizeof(tests)/sizeof(*tests); i++)
 	{
 		ft_bzero(str, sizeof(char) * (S32_MAX_MAG + 2));
-		l = ft_itoa_s(tests[i], str);
-		printf("str:|%s| expected:|%d| len=%lld\n", str, tests[i], l);
+		l = ft_utoa_s(tests[i], str);
+		printf("str:|%s| expected:|%u| len=%lld\n", str, tests[i], l);
 	}
 
 	printf("\n");
 	for (int i = 0; i < sizeof(tests)/sizeof(*tests); i++)
 	{
 		ft_bzero(str, sizeof(char) * (S32_MAX_MAG + 2));
-		l = ft_itoa_sn(tests[i], str, 3);
-		printf("str:|%s| expected:|%d| len=%lld\n", str, tests[i], l);
+		l = ft_utoa_sn(tests[i], str, 3);
+		printf("str:|%s| expected:|%u| len=%lld\n", str, tests[i], l);
 	}
 	free(str);
 
 	printf("\n");
 	for (int i = 0; i < sizeof(tests)/sizeof(*tests); i++)
 	{
-		str = ft_itoa_b(tests[i], "01");
-		printf("str:|%s| expected:|%d| len=%lld\n", str, tests[i], l);
+		str = ft_utoa_b(tests[i], "01");
+		printf("str:|%s| expected:|%u| len=%lld\n", str, tests[i], l);
 		free(str);
 	}
 
 	printf("\n");
 	for (int i = 0; i < sizeof(tests)/sizeof(*tests); i++)
 	{
-		str = ft_itoa_b(tests[i], "0123456789abcdef");
-		printf("str:|%s| expected:|%d| len=%lld\n", str, tests[i], l);
+		str = ft_utoa_b(tests[i], "0123456789abcdef");
+		printf("str:|%s| expected:|%u| len=%lld\n", str, tests[i], l);
 		free(str);
 	}
 }

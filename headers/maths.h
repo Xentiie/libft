@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:45:20 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/13 16:40:35 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/28 02:48:06 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define LIBFT_MATHS_H
 
 # include "_libft.h"
+# include <math.h>
 
 #if defined(__cplusplus)
 extern "C"
@@ -30,6 +31,73 @@ extern "C"
 #if !defined(FT_RAD_TO_DEG)
 #define FT_RAD_TO_DEG 57.2957795131
 #endif /* FT_RAD_TO_DEG */
+
+//https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html#index-_005f_005fbuiltin_005finf
+// n = 1 of the bits must be 1
+// ? = either 0 or 1
+# define FT_F32_U32(flt) ((union {F32 f; U32 b;}){.f = flt}.b)
+# define FT_U32_F32(bits) ((union {F32 f; U32 b;}){.b = bits}.f)
+
+# define FT_F32_PZERO FT_U32_F32(0x00000000)			// 0 00000000 00000000000000000000000
+# define FT_F32_NZERO FT_U32_F32(0x80000000)			// 1 00000000 00000000000000000000000
+
+# ifdef INFINITY
+#  define FT_F32_PINFINITY INFINITY						// 0 11111111 00000000000000000000000
+#  define FT_F32_NINFINITY -INFINITY					// 1 11111111 00000000000000000000000
+#  define FT_F32_INF FT_F32_PINFINITY
+# else
+#  define FT_F32_PINFINITY FT_U32_F32(0x7F800000)		// 0 11111111 00000000000000000000000
+#  define FT_F32_NINFINITY FT_U32_F32(0xFF800000)		// 1 11111111 00000000000000000000000
+#  define FT_F32_INF FT_F32_PINFINITY
+# endif
+
+# ifdef NAN
+#  define FT_F32_PQNAN NAN								// 0 11111111 1??????????????????????
+#  define FT_F32_NQNAN -NAN								// 1 11111111 1??????????????????????
+#  define FT_F32_QNAN FT_F32_PQNAN
+# else
+#  define FT_F32_PQNAN FT_U32_F32(0x7FC00001)			// 0 11111111 1??????????????????????
+#  define FT_F32_NQNAN FT_U32_F32(0xFFC00001)			// 1 11111111 1??????????????????????
+#  define FT_F32_QNAN FT_F32_PQNAN
+# endif
+
+# if defined(__has_builtin) && __has_builtin(__builtin_nans)
+#  define FT_F32_PSNAN __builtin_nansf("")				// 0 11111111 0nnnnnnnnnnnnnnnnnnnnnn
+#  define FT_F32_NSNAN -__builtin_nansf("")				// 1 11111111 0nnnnnnnnnnnnnnnnnnnnnn
+#  define FT_F32_SNAN FT_F32_PSNAN
+# else
+#  define FT_F32_PSNAN FT_U32_F32(0x7F800001)			// 0 11111111 0nnnnnnnnnnnnnnnnnnnnnn
+#  define FT_F32_NSNAN FT_U32_F32(0xFF800001)			// 1 11111111 0nnnnnnnnnnnnnnnnnnnnnn
+#  define FT_F32_SNAN FT_F32_PSNAN
+# endif
+
+# define FT_F32_PIND FT_U32_F32(0x7FC00000)				// 0 11111111 10000000000000000000000
+# define FT_F32_NIND FT_U32_F32(0xFFC00000)				// 1 11111111 10000000000000000000000
+
+
+# define FT_F32_ISZERO(flt) (FT_F32_U32(flt) == FT_F32_U32(FT_F32_PZERO))
+# define FT_F32_ISPZERO(flt) (FT_F32_U32(flt) == FT_F32_U32(FT_F32_PZERO))
+# define FT_F32_ISNZERO(flt) (FT_F32_U32(flt) == FT_F32_U32(FT_F32_NZERO))
+
+# define FT_F32_ISINF(flt) (FT_F32_U32(flt) == FT_F32_U32(FT_F32_PINFINITY))
+# define FT_F32_ISPINF(flt) (FT_F32_U32(flt) == FT_F32_U32(FT_F32_PINFINITY))
+# define FT_F32_ISNINF(flt) (FT_F32_U32(flt) == FT_F32_U32(FT_F32_NINFINITY))
+
+# if defined(__has_builtin) && __has_builtin(__builtin_isnan)
+#  define FT_F32_ISNAN(flt) (__builtin_isnan(flt))
+# else
+#  define FT_F32_ISNAN(flt) (((FT_F32_U32(flt) & 0x7F800000) == 0x7F800000) && ((FT_F32_U32(flt) & 0x007FFFFF) != 0))
+# endif
+
+# if defined(__has_builtin) && __has_builtin(__builtin_issignaling)
+#  define FT_F32_ISSNAN(flt) (FT_F32_ISNAN(flt) && __builtin_issignaling(flt))
+#  define FT_F32_ISQNAN(flt) (FT_F32_ISNAN(flt) && !__builtin_issignaling(flt))
+# else
+#  define FT_F32_ISNAN(flt) (((FT_F32_U32(flt) & 0x7F800000) == 0x7F800000) && ((FT_F32_U32(flt) & 0x007FFFFF) != 0))
+#  define FT_F32_ISSNAN(flt) (FT_F32_ISNAN(flt) && ((FT_F32_U32(flt) & 0x00400000) == 0))
+#  define FT_F32_ISQNAN(flt) (FT_F32_ISNAN(flt) && ((FT_F32_U32(flt) & 0x00400000) == 0x00400000))
+# endif
+
 
 extern t_v2 vec2(float x, float y);
 extern t_v3 vec3(float x, float y, float z);
@@ -159,10 +227,10 @@ extern t_v2 ft_rotate2(t_v2 v, float angle, t_v2 origin);
 
 // Returns a random point on a circle of r=1
 extern t_v2 ft_rand_circle(unsigned int seed);
-// Returns a random float between 1 and 0
-extern F32 ft_rand(int n);
-// Returns a random float between 1 and 0
-extern F32 ft_rand2(t_v2 st);
+// Returns a random float between 1 and 0 TODO: bad function, change
+extern F32 ft_frand(int n);
+// Returns a random float between 1 and 0 TODO: bad function, change
+extern F32 ft_frand2(t_v2 st);
 // Noise
 extern F32 ft_noise2(t_v2 st);
 
@@ -211,12 +279,12 @@ extern t_iv4 ft_min4i_2(t_iv4 a, t_iv4 b);
 extern t_iv4 ft_min4i_3(t_iv4 a, t_iv4 b, t_iv4 c);
 extern t_iv4 ft_min4i_4(t_iv4 a, t_iv4 b, t_iv4 c, t_iv4 d);
 
-extern F32 ft_max_2(float a, float b);
-extern F32 ft_max_3(float a, float b, float c);
-extern F32 ft_max_4(float a, float b, float c, float d);
-extern S32 ft_imax_2(int a, int b);
-extern S32 ft_imax_3(int a, int b, int c);
-extern S32 ft_imax_4(int a, int b, int c, int d);
+extern F32 ft_max_2(F32 a, F32 b);
+extern F32 ft_max_3(F32 a, F32 b, F32 c);
+extern F32 ft_max_4(F32 a, F32 b, F32 c, F32 d);
+extern S32 ft_imax_2(S32 a, S32 b);
+extern S32 ft_imax_3(S32 a, S32 b, S32 c);
+extern S32 ft_imax_4(S32 a, S32 b, S32 c, S32 d);
 
 extern F32 ft_max2(t_v2 a);
 extern t_v2 ft_max2_2(t_v2 a, t_v2 b);

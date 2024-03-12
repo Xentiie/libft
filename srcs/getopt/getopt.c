@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 14:44:13 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/14 19:42:19 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/18 01:22:52 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,65 +115,3 @@ int ft_getopt(int argc, char const **argv, char const *optstr)
 	ft_optopt = ret;
 	return ret;
 }
-
-#ifdef TEST
-#ifdef FT
-# define GETOPT ft_getopt
-# define OPTARG ft_optarg
-# define OPTOPT ft_optopt
-# define OPTIND ft_optind
-#else
-# define GETOPT getopt
-# define OPTARG optarg
-# define OPTOPT optopt
-# define OPTIND optind
-#endif
-
-#define xstr(s) str(s)
-#define str(s) #s
-
-int main(int argc, char **argv)
-{
-	int opt;
-
-	printf("Using: %s\n", xstr(GETOPT));
-
-	while ((opt = ft_getopt(argc, argv, "abc:")) != -1)
-	{
-		switch (opt)
-		{
-		case 'a':
-			printf("Option 'a' was specified.\n");
-			break;
-		case 'b':
-			printf("Option 'b' was specified.\n");
-			break;
-		case 'c':
-			printf("Option 'c' was specified with argument '%s'.\n", ft_optarg);
-			break;
-		case '?':
-			// Unrecognized option or missing argument
-			if (ft_optopt == 'c')
-			{
-				fprintf(stderr, "Option '-%c' requires an argument.\n", ft_optopt);
-			}
-			else
-			{
-				fprintf(stderr, "Unknown option '-%c'.\n", ft_optopt);
-			}
-			break;
-		default:
-			fprintf(stderr, "Usage: %s [-a] [-b] [-c value]\n", argv[0]);
-			return 1;
-		}
-	}
-
-	// Process remaining non-option arguments
-	for (int i = ft_optind; i < argc; i++)
-	{
-		printf("Non-option argument: %s\n", argv[i]);
-	}
-
-	return 0;
-}
-#endif

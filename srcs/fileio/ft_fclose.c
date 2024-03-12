@@ -6,13 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 13:54:18 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:28:43 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/26 23:08:52 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
-# if defined(FT_WIN32)
+# if defined(FT_WIN)
 #  include <windows.h>
 //TODO: file != HANDLE, check if everything works ok on 32/64 bits systems
 void	ft_fclose(file fd)

@@ -6,26 +6,26 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 19:57:43 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:21:06 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/02/26 23:08:52 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
 #ifdef FT_DEBUG
-# ifdef FT_WIN32
+# ifdef FT_WIN
 #  include <debugapi.h>
 #  define SIGTRAP STATUS_BREAKPOINT
 # else
 #  include <sys/ptrace.h>
 #  include <valgrind/valgrind.h>
-# endif /* FT_WIN32 */
+# endif /* FT_WIN */
 # include <stdio.h>
 # include <signal.h>
 
 static S8 __is_debugger = -1;
 
-# ifdef FT_WIN32
+# ifdef FT_WIN
 S8 ft_is_debugger()
 {
 	if (__is_debugger == -1)
@@ -51,7 +51,7 @@ S8 ft_is_debugger()
 	}
 	return __is_debugger;
 }
-# endif /* FT_WIN32 */
+# endif /* FT_WIN */
 
 void ft_debug_break()
 {

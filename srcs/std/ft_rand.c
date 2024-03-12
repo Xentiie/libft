@@ -1,42 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_p.c                                         :+:      :+:    :+:   */
+/*   ft_rand.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/16 17:28:55 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:26:07 by reclaire         ###   ########.fr       */
+/*   Created: 2024/02/16 14:31:45 by reclaire          #+#    #+#             */
+/*   Updated: 2024/02/16 16:25:01 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "libft_int.h"
+#include <math.h>
 
-static void	convert(U64 num, S32 *i)
+static S32 _irand_seed = 1;
+void ft_srand(S32 seed)
 {
-	string	hexa = "0123456789abcdef";
-
-	if (num >= 16)
-	{
-		convert(num / 16, i);
-		convert(num % 16, i);
-	}
-	else
-	{
-		if (num >= '0' && num <= '9')
-			ft_putchar_fd(hexa[num], ft_stdout);
-		else
-			ft_putchar_fd(hexa[num], ft_stdout);
-		(*i)++;
-	}
+	_irand_seed = seed;
 }
 
-S32	handle_p(U64 p)
+S32 ft_rand()
 {
-	S32	i;
+	return ((_irand_seed = _irand_seed * 1103515245 + 12345) % ((S64)S32_MAX + 1));
 
-	i = 0;
-	ft_putstr_fd("0x", ft_stdout);
-	convert(p, &i);
-	return (i + 2);
+}
+
+S32 ft_randr(S32 min, S32 max)
+{
+	return (ft_rand() - min) / (max - min);
 }

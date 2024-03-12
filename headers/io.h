@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/14 19:40:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/03/04 18:49:12 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "_libft.h"
 # include <sys/types.h>
+# include <stdarg.h>
 
 # if defined(__cplusplus)
 extern "C" {
@@ -89,7 +90,15 @@ extern string	ft_gnl(file fd);
 /*
 printf !
 */
-extern S64		ft_printf(const_string fmt, ...);
+extern U64		ft_printf(const_string fmt, ...);
+extern U64		ft_dprintf(file fd, const_string fmt, ...);
+extern U64		ft_sprintf(string str, const_string fmt, ...);
+extern U64		ft_snprintf(string str, U64 n, const_string fmt, ...);
+
+extern U64		ft_vprintf(const_string fmt, va_list args);
+extern U64		ft_vdprintf(file fd, const_string fmt, va_list args);
+extern U64		ft_vsprintf(string str, const_string fmt, va_list args);
+extern U64		ft_vsnprintf(string str, U64 n, const_string fmt, va_list args);
 
 
 /*
