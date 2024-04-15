@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 17:02:52 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/08 21:53:21 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:56:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ extern "C" {
 # endif
 
 # if !defined(FT_WIN32) && !defined(FT_OSX) && !defined(FT_LINUX)
-#  warning No platform seem to be specified, errors WILL occur.
+#  pragma message No platform seem to be specified, errors WILL occur.
 # endif
 
 //Silence __attribute__ errors from vscode intellisense
@@ -507,9 +507,9 @@ extern	const_string	*ft_env;
 # define ANY_N S32,F32
 
 
-typedef S32					t_error_code;
+typedef S32					S32;
 /*Error code returned by some ft functions*/
-extern	t_error_code		ft_errno;
+extern	S32		ft_errno;
 /*Private usage*/
 # define __FTRETURN_OK(ret) ({ ft_errno=FT_OK; return ret; })
 # define __FTRETURN_ERR(ret, err) ({ ft_errno = err ; return ret; })
@@ -1278,7 +1278,7 @@ extern t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 # if defined(FT_HASHMAPS)
 typedef void 			*t_hash_any;
 typedef void 			*t_hash_map;
-typedef t_error_code	t_hash_code;
+typedef S32	t_hash_code;
 
 /*
 Initialize new hashmap

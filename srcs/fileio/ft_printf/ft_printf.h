@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:55:27 by reclaire          #+#    #+#             */
-/*   Updated: 2024/03/12 15:41:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 19:04:36 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,6 @@
 
 #include "libft_int.h"
 #include <stdarg.h>
-
-static const_string _base16 = "0123456789abcdef";
-static const_string _base16_U = "0123456789ABCDEF";
 
 #define FL_ALT (1 << 1)
 #define FL_ZEROPAD (1 << 2)
@@ -36,6 +33,8 @@ static const_string _base16_U = "0123456789ABCDEF";
 #define FL_HEX (1 << 13)
 #define FL_HEX_M (1 << 14)
 
+#define FALLTHROUGH __attribute__ ((fallthrough))
+
 typedef struct s_printf_str
 {
 	bool			is_str;
@@ -48,7 +47,7 @@ typedef struct s_printf_spec
 {
 	bool is_str;
 	//Pointer to Format char
-	const char const *fmt;
+	const char *fmt;
 
 	// Argument index for pad, -1 if pad already found
 	S32 pad_arg_n;

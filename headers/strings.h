@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:42:00 by reclaire          #+#    #+#             */
-/*   Updated: 2024/03/04 14:10:34 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:56:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ Sets ft_errno and returns -1.
 - FT_EINVPTR if 'name' is NULL
 - FT_ENOENT if no error associated with 'name' was found
 */
-t_error_code 		ft_strtoerrno(const_string name);
+S32 		ft_strtoerrno(const_string name);
 
 /*
 Returns the name of the error number 'err'
@@ -67,7 +67,7 @@ Sets ft_errno and returns NULL.
 - FT_ERANGE if 'err' is < 0
 - FT_ENOENT if no error associated with 'err' was found
 */
-const_string		ft_errnotostr(t_error_code err);
+const_string		ft_errnotostr(S32 err);
 
 /*
 Returns the description of the error number 'err'
@@ -77,7 +77,7 @@ Sets ft_errno and returns NULL.
 - FT_ERANGE if 'err' is < 0
 - FT_ENOENT if no error associated with 'err' was found
 */
-const_string		ft_strerror(t_error_code err);
+const_string		ft_strerror(S32 err);
 
 /*
 Append a at the end of b.

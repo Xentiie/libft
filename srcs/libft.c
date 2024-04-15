@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 04:01:02 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/26 23:11:52 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:56:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int				ft_argc = -1;
 const_string	*ft_argv = NULL;
 const_string	*ft_env = NULL;
 
-t_error_code	ft_errno;
+S32	ft_errno;
 
 file			ft_stdout;
 file			ft_stdin;

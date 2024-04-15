@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 18:23:46 by reclaire          #+#    #+#             */
-/*   Updated: 2024/03/12 16:54:29 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 19:00:30 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,8 +135,6 @@ S32 parse_width(const_string *_fmt, S32 *arg_n, S32 *nextarg)
 
 S32 parse_prec(const_string *_fmt, S32 *arg_n, S32 *nextarg)
 {
-	const_string fmt;
-
 	if (**_fmt != '.')
 	{
 		*arg_n = -1;

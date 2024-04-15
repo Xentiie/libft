@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 19:32:58 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/28 14:02:12 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:57:25 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
-t_list	*ft_lstadd_back_ls(t_list *last, t_list *new)
-{
+//t_list	*ft_lstadd_back_ls(t_list *last, t_list *new)
+//{
 //	if (*last == NULL)
 //		*last = new;
 //	else
@@ -24,7 +24,7 @@ t_list	*ft_lstadd_back_ls(t_list *last, t_list *new)
 //	}
 //
 //	return new;
-}
+//}
 
 void ft_lstadd_back_chained(t_list **lst, t_list *new)
 {

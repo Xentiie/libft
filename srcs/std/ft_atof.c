@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 00:18:05 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/25 05:13:28 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:54:28 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 F32	ft_atof(const_string str)
 {
-	const_string save = str;
 	S8 neg;
 	if (*str == '+')
 	{neg = 0; str++;}

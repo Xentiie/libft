@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 14:52:06 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/20 03:21:46 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:56:58 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 struct s_error_entry
 {
-	t_error_code	err;
+	S32	err;
 	string			name;
 	string			desc;
 };
 
 # define ENT(X, desc) { X, #X, desc },
-# define ENTRIES_LEN (sizeof(entries)/sizeof(struct s_error_entry) - 1)
+# define ENTRIES_LEN ((S32)(sizeof(entries)/sizeof(struct s_error_entry) - 1))
 
 static struct s_error_entry entries[] = {
 	ENT(FT_OK, "No error")
@@ -33,7 +33,7 @@ static struct s_error_entry entries[] = {
 };
 
 
-const_string	ft_strerror(t_error_code err)
+const_string	ft_strerror(S32 err)
 {
 	if (err < 0)
 		__FTRETURN_ERR((NULL), FT_ERANGE);
@@ -42,7 +42,7 @@ const_string	ft_strerror(t_error_code err)
 	return entries[err].desc;
 }
 
-const_string	ft_errnotostr(t_error_code err)
+const_string	ft_errnotostr(S32 err)
 {
 	if (err < 0)
 		__FTRETURN_ERR((NULL), FT_ERANGE);
@@ -51,11 +51,11 @@ const_string	ft_errnotostr(t_error_code err)
 	return entries[err].name;
 }
 
-t_error_code ft_strtoerrno(const_string name)
+S32 ft_strtoerrno(const_string name)
 {
 	if (name == NULL)
 		__FTRETURN_ERR((-1), FT_EINVPTR);
-	t_error_code i = 0;
+	S32 i = 0;
 	while (i < ENTRIES_LEN)
 	{
 		if (!ft_strcmp(name, entries[i].name))

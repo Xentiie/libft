@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2024/03/12 13:24:40 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:55:13 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ Does not take maxlen into account.
 
 Output the result in the string out, no more that maxlen, and returns the number of characters placed
 */
-extern U64		_ft_itoa(const_string base, U64 base_len, U64 n_digits, S64 nb, string out, U64 maxlen);
+extern U64		_ft_itoa(const_string base, U64 base_len, U64 n_digits, S64 nb, string out, S64 maxlen);
 
 /*
 Converts an int to a string.
@@ -207,7 +207,7 @@ str[n_digits] = '\0';
 U64 len = _ft_utoa("0123456789abcdef", n_digits, p, str, U64_MAX);
 ```
 */
-extern U64		_ft_utoa(const_string base, U64 base_len, U64 n_digits, U64 nb, string out, U64 maxlen);
+extern U64		_ft_utoa(const_string base, U64 base_len, U64 n_digits, U64 nb, string out, S64 maxlen);
 
 /*
 Converts an unsigned long long to a string.

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 20:49:50 by reclaire          #+#    #+#             */
-/*   Updated: 2024/03/12 13:48:48 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:55:02 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdio.h>
 #endif
 
-static S64 num_digits(const_string base, U64 base_len, S64 n)
+static S64 num_digits(U64 base_len, S64 n)
 {
 	S32 r = 0;
 	if (n < 0)
@@ -33,7 +33,7 @@ static S64 num_digits(const_string base, U64 base_len, S64 n)
 	return (r);
 }
 
-U64 _ft_itoa(const_string base, U64 base_len, U64 n_digits, S64 nb, string out, U64 maxlen)
+U64 _ft_itoa(const_string base, U64 base_len, U64 n_digits, S64 nb, string out, S64 maxlen)
 {
 	if (base == NULL)
 	{
@@ -45,7 +45,7 @@ U64 _ft_itoa(const_string base, U64 base_len, U64 n_digits, S64 nb, string out, 
 		base_len = ft_strlen(base);
 
 	if (n_digits == 0 || out == NULL)
-		return num_digits(base, base_len, nb);
+		return num_digits(base_len, nb);
 
 	if (nb == 0)
 	{
@@ -79,27 +79,27 @@ U64 _ft_itoa(const_string base, U64 base_len, U64 n_digits, S64 nb, string out, 
 
 string ft_itoa(S64 n)
 {
-	U64 n_digits = _ft_itoa(NULL, 10, 0, n, NULL, U64_MAX);
+	U64 n_digits = _ft_itoa(NULL, 10, 0, n, NULL, S64_MAX);
 	
 	string out = malloc(sizeof(char) * (n_digits + 1));
 	if (!out)
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 
-	_ft_itoa(NULL, 10, n_digits, n, out, U64_MAX);
+	_ft_itoa(NULL, 10, n_digits, n, out, S64_MAX);
 	return out;
 }
 
 string ft_itoa_l(S64 n, U64 *len)
 {
-	U64 n_digits = _ft_itoa(NULL, 10, 0, n, NULL, U64_MAX);
+	U64 n_digits = _ft_itoa(NULL, 10, 0, n, NULL, S64_MAX);
 	
 	string out = malloc(sizeof(char) * (n_digits + 1));
 	if (!out)
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 
-	U64 l = _ft_itoa(NULL, 10, n_digits, n, out, U64_MAX);
+	U64 l = _ft_itoa(NULL, 10, n_digits, n, out, S64_MAX);
 	if (len)
 		*len = l;
 	return out;
@@ -107,8 +107,8 @@ string ft_itoa_l(S64 n, U64 *len)
 
 U64 ft_itoa_s(S64 n, string str)
 {
-	U64 n_digits = _ft_itoa(NULL, 10, 0, n, NULL, U64_MAX);
-	return _ft_itoa(NULL, 10, n_digits, n, str, U64_MAX);
+	U64 n_digits = _ft_itoa(NULL, 10, 0, n, NULL, S64_MAX);
+	return _ft_itoa(NULL, 10, n_digits, n, str, S64_MAX);
 }
 
 U64 ft_itoa_sn(S64 n, string str, U64 maxlen)
@@ -119,14 +119,14 @@ U64 ft_itoa_sn(S64 n, string str, U64 maxlen)
 
 string ft_itoa_b(S64 n, const_string base)
 {
-	U64 n_digits = _ft_itoa(base, 0, 0, n, NULL, U64_MAX);
+	U64 n_digits = _ft_itoa(base, 0, 0, n, NULL, S64_MAX);
 	
 	string out = malloc(sizeof(char) * (n_digits + 1));
 	if (!out)
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 
-	_ft_itoa(base, 0, n_digits, n, out, U64_MAX);
+	_ft_itoa(base, 0, n_digits, n, out, S64_MAX);
 	return out;
 }
 

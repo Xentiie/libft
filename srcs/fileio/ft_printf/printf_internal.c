@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 14:08:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/03/12 17:00:14 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 19:06:02 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ U64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data
 	U64 basel;
 
 	char buffer[BUF_SIZE];
-	const_string str;
-	S64 str_len;
+	const_string str = NULL;
+	S64 str_len = 0;
 
 	const_string sv = fmt;
 
@@ -117,6 +117,7 @@ U64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data
 
 		case 'D':
 			flags |= FL_T_LONG;
+			FALLTHROUGH;
 		case 'd':
 		case 'i':
 			flags |= FL_NUMBER;
@@ -133,6 +134,7 @@ U64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data
 		case 'X':
 			base = u_base16;
 			flags |= FL_HEX_M;
+			FALLTHROUGH;
 		case 'x':
 			basel = 16;
 			flags |= FL_UNSIGNED | FL_NUMBER | ((flags & FL_ALT) ? FL_HEX : 0);
@@ -140,12 +142,14 @@ U64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data
 
 		case 'U':
 			flags |= FL_T_LONGLONG;
+			FALLTHROUGH;
 		case 'u':
 			flags |= FL_UNSIGNED | FL_NUMBER;
 			break;
 
 		case 'O':
 			flags |= FL_T_LONGLONG;
+			FALLTHROUGH;
 		case 'o':
 			basel = 8;
 			flags |= FL_UNSIGNED | FL_NUMBER;

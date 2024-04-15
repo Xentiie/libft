@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 13:40:56 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/26 23:11:52 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:58:47 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 # if defined(FT_WIN)
 #  include <windows.h>
 
-U64	ft_fwrite(file fd, char *buffer, U64 size)
+S64	ft_fwrite(file fd, char *buffer, U64 size)
 {
-	U64 bytes_read = 0;
+	S64 bytes_read = 0;
 	if (WriteFile(fd, buffer, size, (LPDWORD)&bytes_read, NULL) == FALSE)
 		__FTRETURN_ERR(-1, FT_ESYSCALL);
 
@@ -27,9 +27,9 @@ U64	ft_fwrite(file fd, char *buffer, U64 size)
 # elif defined(FT_LINUX) || defined(FT_MAX)
 #  include <unistd.h>
 
-U64 ft_fwrite(file fd, char *buffer, U64 size)
+S64 ft_fwrite(file fd, char *buffer, U64 size)
 {
-	U64 bytes_read = write(fd, buffer, size);
+	S64 bytes_read = write(fd, buffer, size);
 	if (bytes_read == -1)
 	{
 		__FTRETURN_ERR(-1, FT_ESYSCALL);

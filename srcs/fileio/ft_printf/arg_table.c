@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 19:40:41 by reclaire          #+#    #+#             */
-/*   Updated: 2024/03/12 16:41:38 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 19:04:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,6 @@ enum e_arg_type
 };
 
 #define STATIC_SIZE 8
-
-#ifdef TEST
-#define _log(...) do { printf(__VA_ARGS__); } while (0)
-#else
-#define _log(...) do {} while (0)
-#endif
 
 static void growtypes(S32 **types, S32 *types_size)
 {
@@ -77,7 +71,7 @@ void build_arg_table(const_string fmt, va_list vaargs, U64 **args)
 	S32 types_max = 0;
 	S32 nextarg = 0;
 	S32 pos_nextarg;
-	S32 n, n2;
+	S32 n2;
 
 	while (*fmt)
 	{
@@ -95,36 +89,17 @@ void build_arg_table(const_string fmt, va_list vaargs, U64 **args)
 		S32 flags = 0;
 
 		pos_nextarg = parse_specifier_n(&fmt);
-		if (pos_nextarg != -1)
-			_log("Positional arg: %d\n", pos_nextarg);
+		(void)parse_flags(&fmt);
 
-		S32 _tmp = parse_flags(&fmt);
-		_log("flags:\n  alt:%d\n  zeropad:%d\n  leftjust:%d\n  spacesign:%d\n  showsign:%d\n",
-			   !!(_tmp & FL_ALT), !!(_tmp & FL_ZEROPAD), !!(_tmp & FL_LEFTJUST), !!(_tmp & FL_SPACESIGN), !!(_tmp & FL_SHOWSIGN));
-
-		n = parse_width(&fmt, &n2, &nextarg);
-		_log("width:\n");
-		if (n2 < 0)
-			_log("  %d\n", n);
-		else
-		{
-			_log("  in arg: %d\n", n2);
+		(void)parse_width(&fmt, &n2, &nextarg);
+		if (n2 >= 0)
 			addtype(&types, &types_size, &types_max, T_S32, n2);
-		}
 
-		n = parse_prec(&fmt, &n2, &nextarg);
-		_log("prec:\n");
-		if (n2 < 0)
-			_log("  %d\n", n);
-		else
-		{
-			_log("  in arg: %d\n", n2);
+		(void)parse_prec(&fmt, &n2, &nextarg);
+		if (n2 >= 0)
 			addtype(&types, &types_size, &types_max, T_S32, n2);
-		}
 
 		flags |= parse_size_flags(&fmt);
-		_log("size flags:\n  long:%d\n  longlong:%d\n  half:%d\n",
-			   !!(flags & FL_T_LONG), !!(flags & FL_T_LONGLONG), !!(flags & FL_T_SHORT));
 
 		switch (*fmt)
 		{
@@ -134,6 +109,7 @@ void build_arg_table(const_string fmt, va_list vaargs, U64 **args)
 
 		case 'D':
 			flags |= FL_T_LONG;
+			FALLTHROUGH;
 		case 'd':
 		case 'i':
 			if (flags & FL_T_LONGLONG)
@@ -156,6 +132,7 @@ void build_arg_table(const_string fmt, va_list vaargs, U64 **args)
 		case 'U':
 		case 'O':
 			flags |= FL_T_LONGLONG;
+			FALLTHROUGH;
 		case 'X':
 		case 'x':
 		case 'u':
@@ -185,7 +162,6 @@ void build_arg_table(const_string fmt, va_list vaargs, U64 **args)
 		default:
 			break;
 		}
-		_log("\n");
 	}
 
 	types_max += 1;

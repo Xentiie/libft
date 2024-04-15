@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 18:12:39 by reclaire          #+#    #+#             */
-/*   Updated: 2024/03/07 18:39:18 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:55:36 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,4 @@ t_tm ft_gmtime(S64 t)
 	out.second = (S32)(t);
 
 	return out;
-}
-
-string ft_strtime(t_tm *tm)
-{
 }

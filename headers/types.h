@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:47:30 by reclaire          #+#    #+#             */
-/*   Updated: 2024/03/08 16:12:47 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:56:13 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@ typedef void				*file;
 # elif defined(FT_LINUX) || defined(FT_MAX)
 typedef S32					file;
 # endif
-
-typedef S32					t_error_code;
 
 typedef struct s_v2
 {

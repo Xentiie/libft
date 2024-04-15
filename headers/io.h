@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2024/03/04 18:49:12 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:59:15 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ Sets ft_errno and returns -1.
 ### ft_errno
 - FT_ESYSCALL if a syscall fails
 */
-extern U64		ft_fread(file fd, char *buffer, U64 size);
+extern S64		ft_fread(file fd, char *buffer, U64 size);
 
 /*
 Writes 'size' bytes from 'buffer' into file 'fd'.
@@ -70,7 +70,7 @@ Sets ft_errno and returns -1.
 ### ft_errno
 - FT_ESYSCALL if a syscall fails
 */
-extern U64		ft_fwrite(file fd, char *buffer, U64 size);
+extern S64		ft_fwrite(file fd, char *buffer, U64 size);
 
 /*
 Reads the whole file

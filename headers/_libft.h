@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/26 23:16:41 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:56:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define _LIBFT_H
 
 # if !defined(FT_WIN) && !defined(FT_APPLE) && !defined(FT_LINUX)
-#  warning "No target platform, checking current platform"
 
 #  if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #   define FT_WIN
@@ -61,7 +60,7 @@ extern	const_string	*ft_env;
 # define FT_INIT_ARGV(argc, argv, env) ft_argc=argc;ft_argv=argv;ft_env=env;
 
 /*Error code returned by some ft functions*/
-extern	t_error_code		ft_errno;
+extern	S32		ft_errno;
 # define FT_OK				0	/*No error*/
 # define FT_EOMEM			1	/*Out of memory*/
 # define FT_EINVPTR			2	/*Invalid pointer*/
