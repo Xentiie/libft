@@ -6,21 +6,21 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/11 18:56:32 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/21 00:45:38 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef _LIBFT_H
 # define _LIBFT_H
 
-# if !defined(FT_WIN) && !defined(FT_APPLE) && !defined(FT_LINUX)
+# if defined(FT_OS_UNKNOWN) || (!defined(FT_OS_WIN) && !defined(FT_APPLE) && !defined(FT_OS_LINUX))
 
 #  if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-#   define FT_WIN
+#   define FT_OS_WIN
 #   ifdef _WIN64
-#    define FT_WIN64 
+#    define FT_OS_WIN64 
 #   else
-#    define FT_WIN32
+#    define FT_OS_WIN32
 #   endif
 
 #  elif __APPLE__
@@ -41,7 +41,7 @@
 #  elif __ANDROID__
 #   define FT_ANDROID
 #  elif __linux__
-#   define FT_LINUX
+#   define FT_OS_LINUX
 #  elif __unix__
 #   define FT_UNIX
 #  elif defined(_POSIX_VERSION)

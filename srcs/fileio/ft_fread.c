@@ -6,13 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 20:19:41 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/11 18:59:21 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/21 00:45:01 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
-# if defined(FT_WIN)
+# if defined(FT_OS_WIN)
 #  include <windows.h>
 
 S64	ft_fread(file fd, char *buffer, U64 size)
@@ -24,7 +24,7 @@ S64	ft_fread(file fd, char *buffer, U64 size)
 	__FTRETURN_OK(bytes_read);
 }
 
-# elif defined(FT_LINUX) || defined(FT_MAX)
+# elif defined(FT_OS_LINUX) || defined(FT_MAX)
 #  include <unistd.h>
 
 S64 ft_fread(file fd, char *buffer, U64 size)

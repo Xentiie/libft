@@ -119,8 +119,7 @@ extern const char jlss_id_timer_type[];
 
 TIMER_TYPE("POSIX 1003.4 clock_gettime()");
 
-static void
-clk_get(t_time *t)
+void clk_get(t_time *t)
 {
     struct timespec mt;
 
@@ -133,8 +132,7 @@ clk_get(t_time *t)
 
 TIMER_TYPE("Single Unix Specification (Unix-98) gettimeofday()");
 
-static void
-clk_get(t_time *t)
+void clk_get(t_time *t)
 {
     struct timeval mt;
 
@@ -149,8 +147,7 @@ clk_get(t_time *t)
 
 TIMER_TYPE("Version 7 Unix ftime()");
 
-static void
-clk_get(t_time *t)
+void clk_get(t_time *t)
 {
     struct timeb mt;
 
@@ -175,8 +172,7 @@ static const char kludge[] = "@(#)KLUDGE - assume CLK_TCK is 100";
 
 TIMER_TYPE("POSIX.1 times()");
 
-static void
-clk_get(t_time *t)
+void clk_get(t_time *t)
 {
     struct tms  mt;
     clock_t     sys_t;
@@ -209,8 +205,7 @@ error HAVE_CLOCK defined but CLOCKS_PER_SEC undefined
 
 TIMER_TYPE("ISO C 1990 clock()");
 
-static void
-clk_get(t_time *t)
+void clk_get(t_time *t)
 {
     long        us;
     clock_t cnt;
@@ -230,8 +225,7 @@ clk_get(t_time *t)
 TIMER_TYPE("ISO C (POSIX.1) time() -- 1 second resolution");
 
 /* No fine-resolution timing defined -- use time() */
-static void
-clk_get(t_time *t)
+void clk_get(t_time *t)
 {
     t->seconds = time((time_t)0);
     t->nanoseconds = 0;
@@ -256,6 +250,13 @@ void	clk_diff(t_time *t1, t_time *t2, long *sec, long *nsec)
     }
     *sec = s;
     *nsec = n;
+}
+
+float clk_diff_float(t_time *t1, t_time *t2)
+{
+    long lsec, lnsec;
+    clk_diff(t1, t2, &lsec, &lnsec);
+    return ((float)lsec) + ((float)(lnsec*10e-10));
 }
 
 /* Format time as seconds and subseconds */

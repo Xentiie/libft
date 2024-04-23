@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:43:53 by reclaire          #+#    #+#             */
-/*   Updated: 2024/03/07 20:17:34 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/21 00:44:46 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ U64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args)
 
 #ifdef TEST
 
-//gcc -g  -DFT_LINUX -DTEST  -I../../ -L../../  *.c  -lft -lm
+//gcc -g  -DFT_OS_LINUX -DTEST  -I../../ -L../../  *.c  -lft -lm
 int main()
 {
 	ft_printf("|%05c|\n", 'a');

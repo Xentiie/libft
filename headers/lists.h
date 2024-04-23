@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:16:43 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/28 03:41:01 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/23 04:03:03 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,8 +180,6 @@ Finds an element by calling 'f' with each element's content as first argument, a
 If 'f' returns TRUE, returns the element. If no elements are found, returns NULL.
 ### On error
 Sets ft_errno and returns NULL.
-### ft_errno
-- FT_EINVPTR if 'lst' or 'f' is NULL.
 ### TODO
 */
 extern t_list	*ft_lstfind(t_list *lst, bool (*f)(void *, void *), void *ref);
@@ -191,8 +189,6 @@ Finds an element where the content's address is equal to the address of 'ptr'.
 If no elements are found, returns NULL.
 ### On error
 Sets ft_errno and returns NULL.
-### ft_errno
-- FT_EINVPTR if 'lst' is NULL.
 ### TODO
 */
 extern t_list	*ft_lstfind2(t_list *lst, void *ptr);

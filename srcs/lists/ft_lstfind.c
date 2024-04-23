@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 23:41:52 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:50:30 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/23 04:02:51 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,6 @@
 t_list	*ft_lstfind2(t_list *lst, void *ptr)
 {
 	t_list	*curr;
-
-	if (lst == NULL)
-		__FTRETURN_ERR(NULL, FT_EINVPTR);
 
 	curr = lst;
 	while (curr)
@@ -33,9 +30,6 @@ t_list	*ft_lstfind2(t_list *lst, void *ptr)
 t_list	*ft_lstfind(t_list *lst, bool (*f)(void *, void *), void *ref)
 {
 	t_list	*curr;
-
-	if (f == NULL || lst == NULL)
-		__FTRETURN_ERR(NULL, FT_EINVPTR);
 
 	curr = lst;
 	while (curr)

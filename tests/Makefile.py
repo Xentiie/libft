@@ -81,10 +81,10 @@ else:
 
 if (platform == "win32"):
 	CC="x86_64-w64-mingw32-gcc"
-	CFLAGS += ["-D FT_WIN"]
+	CFLAGS += ["-D FT_OS_WIN"]
 elif (platform == "linux"):
 	CC="gcc"
-	CFLAGS += ["-D FT_LINUX"]
+	CFLAGS += ["-D FT_OS_LINUX"]
 elif (platform == "osx"):
 	CFLAGS += ["-D FT_MAX"]
 else:

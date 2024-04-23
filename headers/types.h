@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:47:30 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/11 18:56:13 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/21 00:45:01 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,9 @@ typedef int const			*const_wstring;
 typedef int					wchar;
 typedef U8					bool;
 
-# if defined(FT_WIN)
+# if defined(FT_OS_WIN)
 typedef void				*file;
-# elif defined(FT_LINUX) || defined(FT_MAX)
+# elif defined(FT_OS_LINUX) || defined(FT_MAX)
 typedef S32					file;
 # endif
 
