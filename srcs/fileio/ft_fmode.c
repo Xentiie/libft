@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/14 00:41:14 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/14 01:22:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/23 14:22:17 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,33 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-char ft_ftype(mode_t md)
+#ifdef FT_OS_WIN
+#define __S_IFMT   _S_IFMT
+#define __S_IFCHR  _S_IFCHR
+#define __S_IFDIR  _S_IFDIR
+#define __S_IFIFO  _S_IFIFO
+#define __S_IFREG  _S_IFREG
+#define __S_IREAD  _S_IREAD
+#define __S_IWRITE _S_IWRITE
+#define __S_IEXEC  _S_IEXEC
+char ft_ftype(S32 md)
+{
+	switch (md & __S_IFMT)
+	{
+	case __S_IFCHR:
+		return 'c';
+	case __S_IFDIR:
+		return 'd';
+	case __S_IFIFO:
+		return 'p';
+	case __S_IFREG:
+		return '-';
+	default:
+		return '?';
+	}
+}
+#else
+char ft_ftype(S32 md)
 {
 	switch (md & __S_IFMT)
 	{
@@ -61,3 +87,4 @@ void ft_fmode(mode_t md, char *buf)
 				  : (md & S_IXOTH ? 'x' : '-'));
 	buf[10] = '\0';
 }
+#endif

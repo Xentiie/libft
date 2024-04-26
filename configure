@@ -37,10 +37,10 @@ LIBS_PATHS=
 LIBS=
 
 if [ -z "$TARGET" ]; then
-    if [ -z "$WSLENV" ]; then
-        TARGET="linux"
-    else
+    if [ -f "/proc/sys/fs/binfmt_misc/WSLInterop" ]; then
         TARGET="windows"
+    else
+        TARGET="linux"
     fi
 fi
 

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:15:51 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/22 12:32:57 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/26 02:45:37 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,16 @@ extern void clk_init(t_clock *clk);
 extern void clk_start(t_clock *clk);
 extern void clk_stop(t_clock *clk);
 
+/*Deprecated*/
 __attribute__((deprecated)) extern string clk_elapsed_ms(t_clock *clk, string buffer, U64 buflen);
+
+/*Deprecated*/
 __attribute__((deprecated)) extern string clk_elapsed_us(t_clock *clk, string buffer, U64 buflen);
+
+/*Deprecated*/
 __attribute__((deprecated)) extern string clk_elapsed_ns(t_clock *clk, string buffer, U64 buflen);
 
 #ifndef TIMER_VERSION_1
-/* Preferred */
 extern string clk_fmt_elapsed_ms(t_clock *clk);
 extern string clk_fmt_elapsed_us(t_clock *clk);
 extern string clk_fmt_elapsed_ns(t_clock *clk);

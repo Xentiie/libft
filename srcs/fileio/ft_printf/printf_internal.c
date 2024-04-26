@@ -6,12 +6,16 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 14:08:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/11 19:06:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/23 14:28:44 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#ifdef FT_OS_WIN
+#include <malloc.h>
+#else
 #include <alloca.h>
+#endif
 #ifdef TEST
 #include <stdio.h>
 #include <unistd.h>
@@ -181,8 +185,9 @@ U64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data
 			break;
 
 		default:
-			char tmp[2] = {'%', *fmt};
-			cnt += wr_i(tmp, 2, data);
+			//char tmp[2] = {'%', *fmt};
+			cnt += wr_i("%", 1, data);
+			cnt += wr_i(fmt, 1, data);
 			fmt++;
 			sv = fmt;
 			continue;
