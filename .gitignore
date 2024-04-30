@@ -9,3 +9,6 @@ objs/
 
 tests/error_logs/
 tests/perf_logs/
+
+*.mk
+
