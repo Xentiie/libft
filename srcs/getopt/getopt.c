@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 14:44:13 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/30 21:30:38 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/30 22:29:09 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,11 @@
 #endif
 
 #ifdef FT_GETOPT_USEALLOCA
+#ifdef FT_OS_WIN
+#include <malloc.h>
+#else
 #include <alloca.h>
+#endif
 #endif
 
 #define ISOPT(i) (argv[i][0] == '-' && argv[i][1] != '\0')
@@ -124,7 +128,7 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, t_long_opt
 		S32 ind = 0;
 		bool ambiguous = FALSE;
 
-		string name_end = nextchar;
+		const_string name_end = nextchar;
 		while (*name_end && *name_end != '=')
 			name_end++;
 
