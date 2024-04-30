@@ -3,6 +3,22 @@ set -e
 
 POSITIONAL_ARGS=()
 
+NAME="libft"
+
+OBJS_PATH="./objs"
+SRCS_PATH="./srcs"
+
+CC_WINDOWS=x86_64-w64-mingw32-gcc
+CC_LINUX=gcc
+
+MKLIB=
+
+RM="rm -rf"
+CFLAGS=
+INCLUDES=
+LIBS_PATHS=
+LIBS=
+
 while [[ $# -gt 0 ]]; do
     case $1 in
         -t|--target)
@@ -12,6 +28,10 @@ while [[ $# -gt 0 ]]; do
             TARGET="$2"
             shift # past argument
             shift # past value
+            ;;
+        -s|--static)
+            STATIC="true"
+            shift
             ;;
         -*|--*)
             echo "Unknown option $1"
@@ -24,17 +44,14 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-OBJS_PATH="./objs"
-SRCS_PATH="./srcs"
-
-CC_WINDOWS=x86_64-w64-mingw32-gcc
-CC_LINUX=gcc
-
-RM="rm -r"
-CFLAGS=
-INCLUDES=
-LIBS_PATHS=
-LIBS=
+if [[ "$STATIC" == "true" ]]; then
+    NAME="$NAME.a"
+    MKLIB='ar -rcs $(NAME) $(OBJS)'
+else
+    NAME="$NAME.so"
+    CFLAGS="$CFLAGS -fPIC"
+    MKLIB='$(CC) -shared $(OBJS) -o $(NAME)'
+fi
 
 if [ -z "$TARGET" ]; then
     if [ -f "/proc/sys/fs/binfmt_misc/WSLInterop" ]; then
@@ -65,12 +82,14 @@ readarray -d '' OBJS < <(for i in "${!SRCS[@]}"; do printf "$OBJS_PATH/`basename
 
 echo -n > config.mk
 
+echo "NAME=$NAME" >> config.mk
 echo ".DEFAULT_GOAL := all" >> config.mk
 echo "all: objs "'$(NAME)' >> config.mk
 echo "" >> config.mk
 
 echo "RM=$RM" >> config.mk
 echo "CC=$CC" >> config.mk
+echo "MKLIB=$MKLIB" >> config.mk
 echo "CFLAGS=$CFLAGS" >> config.mk
 echo "INCLUDES=$INCLUDES" >> config.mk
 echo "LIBS_PATHS=$LIBS_PATHS" >> config.mk

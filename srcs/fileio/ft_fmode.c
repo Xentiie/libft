@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/14 00:41:14 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/23 14:22:17 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/01 00:07:25 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char ft_ftype(S32 md)
 	}
 }
 
-void ft_fmode(mode_t md, char *buf)
+void ft_fmode(S32 md, char *buf)
 {
 	buf[0] = ft_ftype(md);
 
