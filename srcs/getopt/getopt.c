@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 14:44:13 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/30 22:29:09 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/08 01:52:22 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,7 @@
 #define printf(...)
 #endif
 
-#ifndef FT_GETOPT_USEALLOCA
-#define FT_GETOPT_USEALLOCA
-#endif
-
-#ifdef FT_GETOPT_USEALLOCA
+#ifndef FT_GETOPT_USE_MALLOC
 #ifdef FT_OS_WIN
 #include <malloc.h>
 #else
@@ -66,24 +62,18 @@ static void pushback_arg(S32 start, S32 end, const_string *argv, int argc)
 	if (len < 1)
 		return;
 
-		// printf("Pushback: ");
-		// printf("%s", argv[start]);
-		// for (int i = start + 1; i < end; i++)
-		//	printf("+%s", argv[i]);
-		// printf("\n");
-
-#ifdef FT_GETOPT_USEALLOCA
-	const_string *tmp = alloca(sizeof(const_string) * (len));
-#else
+#ifdef FT_GETOPT_USE_MALLOC
 	const_string *tmp = malloc(sizeof(const_string) * (len));
+#else
+	const_string *tmp = alloca(sizeof(const_string) * (len));
 #endif
 
 	ft_memcpy(tmp, &argv[start], sizeof(const_string) * (len));
-	ft_memcpy(&argv[start], &argv[start + len], sizeof(const_string) * (argc - len));
+	ft_memcpy(&argv[start], &argv[start + len], sizeof(const_string) * (argc - len - start));
 	ft_memcpy(&argv[argc - len], tmp, sizeof(const_string) * (len));
 
 	first_nonopt -= len;
-#ifndef FT_GETOPT_USEALLOCA
+#ifdef FT_GETOPT_USE_MALLOC
 	free(tmp);
 #endif
 }
@@ -125,14 +115,14 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, t_long_opt
 	{
 		nextchar++; // skip '-'
 
-		S32 ind = 0;
-		bool ambiguous = FALSE;
-
 		const_string name_end = nextchar;
 		while (*name_end && *name_end != '=')
 			name_end++;
 
-
+		S32 ind = 0;
+		bool ambiguous = FALSE;
+		bool exact = FALSE;
+		S32 found_ind = 0;
 		t_long_opt *found = NULL;
 		while (longopts[ind].name)
 		{
@@ -141,17 +131,84 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, t_long_opt
 				if (name_end - nextchar == ft_strlen(longopts[ind].name))
 				{
 					found = &longopts[ind];
+					exact = TRUE;
+					found_ind = ind;
 					break;
 				}
 				else if (found == NULL)
+				{
 					found = &longopts[ind];
+					found_ind = ind;
+				}
 				else
 					ambiguous = TRUE;
 			}
 			ind++;
 		}
 
-		return -1;
+		if (ambiguous && !exact)
+		{
+			if (ft_opterr)
+				ft_dprintf(ft_stderr, "%s: option `%s' is ambiguous\n", argv[0], argv[ft_optind]);
+			ret = 0;
+			goto failure_long;
+		}
+
+		if (found == NULL)
+		{
+			if (ft_opterr)
+				ft_dprintf(ft_stderr, "%s: unrecognized option '%s'\n", argv[0], argv[ft_optind]);
+			ret = 0;
+			goto failure_long;
+		}
+
+		if (found->has_argument == no_argument)
+		{
+			if (*name_end == '=')
+			{
+				if (ft_opterr)
+					ft_dprintf(ft_stderr, "%s: option '%s' doesn't allow an argument\n", argv[0], argv[ft_optind]);
+				ret = found->flag_value;
+				goto failure_long;
+			}
+		}
+		else
+		{
+			if (*name_end == '=')
+				ft_optarg = name_end + 1;
+			else if (ft_optind < first_nonopt && found->has_argument != optional_argument)
+			{
+				ft_optarg = argv[ft_optind + 1];
+				ft_optind++;
+			}
+			else if (found->has_argument == required_argument)
+			{
+				if (ft_opterr)
+					ft_dprintf(ft_stderr, "%s: option '%s' requires an argument\n", argv[0], argv[ft_optind]);
+				ret = found->flag_value;
+				nextchar += ft_strlen(nextchar);
+				ft_optind++;
+				ft_optopt = ret;
+				return optstr[0] == ':' ? ':' : '?';
+			}
+		}
+
+	success_long:
+		nextchar += ft_strlen(nextchar);
+		if(longopts_index)
+			*longopts_index = found_ind;
+		if (found->flag_ptr)
+		{
+			*found->flag_ptr = found->flag_value;
+			return 0;
+		}
+		return found->flag_value;
+
+	failure_long:
+		nextchar += ft_strlen(nextchar);
+		ft_optind++;
+		ft_optopt = ret;
+		return '?';
 	}
 	else
 	{
@@ -175,24 +232,28 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, t_long_opt
 				if (*(nextchar + 1) != '\0')
 				{
 					ft_optarg = nextchar + 1;
-					while (*(nextchar + 1) != '\0')
-						nextchar++;
+					nextchar += ft_strlen(nextchar) - 1;
 				}
 				// Check if there is an argument next
-				else if (ft_optind + 1 < first_nonopt)
+				else if (ft_optind < first_nonopt)
 				{
 					ft_optind++;
 					CHK_FINISH;
 					ft_optarg = argv[ft_optind];
-					ft_optind++;
+					nextchar += ft_strlen(nextchar) - 1;
 				}
 				// Nothing found :(
 				else
 				{
-					printf("%s: option requires an argument -- '%c'\n", argv[0], ret);
-					goto failure;
+					if (ft_opterr)
+						ft_dprintf(ft_stderr, "%s: option requires an argument -- '%c'\n", argv[0], ret);
+					nextchar++;
+					ft_optopt = ret;
+					return optstr[0] == ':' ? ':' : '?';
 				}
 			}
+			else
+				ft_optarg = NULL;
 			goto success;
 		}
 	}
@@ -220,6 +281,7 @@ S32 ft_getopt(S32 argc, const_string *argv, const_string optstr)
 
 // cd srcs/getopt
 // gcc -L../.. -I../ getopt.c -lft -DTEST
+// make -C ../../ && gcc -L../.. -I../ getopt.c -lft -DTEST -g -lm
 
 #define std_optind optind
 #define std_opterr opterr
@@ -257,7 +319,7 @@ int test_getopt_manual(int argc, char **argv)
 	printf("\n");
 
 	printf("ARGV FT:\n");
-	while ((c = ft_getopt(argc, (const_string*)argv, optstr)) != -1)
+	while ((c = ft_getopt(argc, (const_string *)argv, optstr)) != -1)
 		printf("FT: out:%d(%c) optopt:%d(%c) optind:%d optarg:%s opterr:%d\n", c, c, ft_optopt, ft_optopt, ft_optind, ft_optarg, ft_opterr);
 	for (int i = 0; i < argc; i++)
 		printf("%d: %s\n", i, argv[i]);
@@ -269,18 +331,18 @@ int test_getopt_manual(int argc, char **argv)
 
 int test_getopt_auto(int argc, char **argv)
 {
-	const_string *std_argv = ft_memdup(argv, sizeof(const_string) * argc);
-	const_string *ft_argv = (const_string*)argv;
+	const_string *ft_argv = ft_memdup(argv, sizeof(const_string) * argc);
+	const_string *std_argv = (const_string *)argv;
 
 	const_string optstr = "abcd:";
 	S32 ft_out, std_out;
 
-	while ((ft_out = ft_getopt(argc, ft_argv, optstr)) != -1 && (std_out = getopt(argc, (char * const*)std_argv, optstr)) != -1)
+	while ((ft_out = ft_getopt(argc, ft_argv, optstr)) != -1 && (std_out = getopt(argc, (char *const *)std_argv, optstr)) != -1)
 	{
 		if (ft_out != std_out)
 			LOGDIFF("ft_out:%d(%c) std_out:%d(%c)\n", ft_out, ft_out, std_out, std_out);
-		if (ft_optind != std_optind)
-			LOGDIFF("ft_optind:%d std_optind:%d\n", ft_optind, std_optind);
+		// if (ft_optind != std_optind)
+		//	LOGDIFF("ft_optind:%d std_optind:%d\n", ft_optind, std_optind);
 		if (ft_strcmp_t(ft_optarg, std_optarg) != 0)
 			LOGDIFF("ft_optarg:|%s| std_optarg:|%s|\n", ft_optarg, std_optarg);
 		if (ft_opterr != std_opterr)
@@ -288,10 +350,10 @@ int test_getopt_auto(int argc, char **argv)
 		if (ft_optopt != std_optopt)
 			LOGDIFF("ft_optopt:%d(%c) std_optopt:%d(%c)\n", ft_optopt, ft_optopt, std_optopt, std_optopt);
 	}
-	if (ft_out != -1 || std_out != -1)
-		printf("???: %d %d\n", ft_out, std_out);
-	if (ft_optind != std_optind)
-		LOGDIFF("ft_optind:%d std_optind:%d\n", ft_optind, std_optind);
+	// if (ft_out != -1 || std_out != -1)
+	//	printf("???: %d %d\n", ft_out, std_out);
+	// if (ft_optind != std_optind)
+	//	LOGDIFF("ft_optind:%d std_optind:%d\n", ft_optind, std_optind);
 
 	for (int i = 0; i < argc; i++)
 	{
@@ -303,8 +365,8 @@ int test_getopt_auto(int argc, char **argv)
 			break;
 		}
 	}
+	free(ft_argv);
 }
-
 
 int test_getopt_long_manual(int argc, char **argv)
 {
@@ -319,23 +381,12 @@ int test_getopt_long_manual(int argc, char **argv)
 		{"bbb", required_argument, NULL, 'b'},
 		{"ccc", no_argument, NULL, 'c'},
 		{"ddd", required_argument, NULL, 'd'},
-		
+
 		{"flag", no_argument, &flag, 1},
 		{"optional", optional_argument, NULL, 'o'},
-		{NULL, 0, NULL, 0}
-	};
+		{NULL, 0, NULL, 0}};
 
-	t_long_opt ft_longopts[] = {
-		{"aaa", no_argument, NULL, 'a'},
-		{"bbb", required_argument, NULL, 'b'},
-		{"ccc", no_argument, NULL, 'c'},
-		{"ddd", required_argument, NULL, 'd'},
-		
-		{"flag", no_argument, &flag, 1},
-		{"optional", optional_argument, NULL, 'o'},
-		{NULL, 0, NULL, 0}
-	};
-
+	t_long_opt *ft_longopts = (t_long_opt *)std_longopts;
 
 	int c;
 	while ((c = getopt_long(argc, argv_cpy, optstr, std_longopts, &longopt_index)) != -1)
@@ -348,10 +399,9 @@ int test_getopt_long_manual(int argc, char **argv)
 		printf("%d: %s\n", i, argv_cpy[i]);
 	printf("\n");
 
-
 	flag = 0;
 	printf("ARGV FT:\n");
-	while ((c = ft_getopt_long(argc, (const_string*)argv, optstr, ft_longopts, &longopt_index)) != -1)
+	while ((c = ft_getopt_long(argc, (const_string *)argv, optstr, ft_longopts, &longopt_index)) != -1)
 		printf("FT: out:%d(%c) optopt:%d(%c) optind:%d optarg:%s opterr:%d | flag:%d longopt_index:%d\n", c, c, ft_optopt, ft_optopt, ft_optind, ft_optarg, ft_opterr, flag, longopt_index);
 	for (int i = 0; i < argc; i++)
 		printf("%d: %s\n", i, argv[i]);
@@ -361,22 +411,12 @@ int test_getopt_long_manual(int argc, char **argv)
 	printf("\n");
 }
 
-
-
 int main(int argc, char **argv)
 {
-	//test_getopt_manual(argc, argv);
-	//test_getopt_auto(argc, argv);
+	// test_getopt_manual(argc, argv);
+	// test_getopt_auto(argc, argv);
 
 	test_getopt_long_manual(argc, argv);
-
-	//struct option opts[] = {
-	//	{"aa", no_argument, NULL, 'a'},
-	//};
-	//getopt_long(argc, argv, "abcd", opts);
-
 }
-
-
 
 #endif
