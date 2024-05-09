@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:47:30 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/21 00:45:01 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/27 00:15:02 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef U8					bool;
 
 # if defined(FT_OS_WIN)
 typedef void				*file;
-# elif defined(FT_OS_LINUX) || defined(FT_MAX)
+# elif defined(FT_OS_LINUX) || defined(FT_OS_MAC)
 typedef S32					file;
 # endif
 

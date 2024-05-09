@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/14 00:41:14 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/23 14:22:17 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/26 21:46:49 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #define __S_IREAD  _S_IREAD
 #define __S_IWRITE _S_IWRITE
 #define __S_IEXEC  _S_IEXEC
-char ft_ftype(S32 md)
+char ft_ftype(U32 md)
 {
 	switch (md & __S_IFMT)
 	{
@@ -40,7 +40,7 @@ char ft_ftype(S32 md)
 	}
 }
 #else
-char ft_ftype(S32 md)
+char ft_ftype(U32 md)
 {
 	switch (md & __S_IFMT)
 	{
@@ -63,7 +63,7 @@ char ft_ftype(S32 md)
 	}
 }
 
-void ft_fmode(mode_t md, char *buf)
+void ft_fmode(U32 md, char *buf)
 {
 	buf[0] = ft_ftype(md);
 

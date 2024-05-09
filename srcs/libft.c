@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 04:01:02 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/21 00:45:01 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/27 00:16:19 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void __init_libft()
 	ft_stdin = GetStdHandle(STD_INPUT_HANDLE);
 	ft_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 	ft_stderr = GetStdHandle(STD_ERROR_HANDLE);
-#elif defined(FT_OS_LINUX) || defined(FT_MAX)
+#elif defined(FT_OS_LINUX) || defined(FT_OS_MAC)
 	ft_stdin = (file)0;
 	ft_stdout = (file)1;
 	ft_stderr = (file)2;

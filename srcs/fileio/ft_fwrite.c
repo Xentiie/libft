@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 13:40:56 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/21 00:45:01 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/27 00:15:53 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ S64	ft_fwrite(file fd, char *buffer, U64 size)
 	__FTRETURN_OK(bytes_read);
 }
 
-# elif defined(FT_OS_LINUX) || defined(FT_MAX)
+# elif defined(FT_OS_LINUX) || defined(FT_OS_MAC)
 #  include <unistd.h>
 
 S64 ft_fwrite(file fd, char *buffer, U64 size)
