@@ -1,11 +1,19 @@
 #builds
 objs/
-*.a
 *.o
 *.exe
+a.out
+*.a
+*.so
+*.dll
+
+config.mk
 
 #env
 .editorconfig
 
 tests/error_logs/
 tests/perf_logs/
+
+*.mk
+apt.sh

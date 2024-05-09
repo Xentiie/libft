@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 14:08:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/23 14:28:44 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/30 22:23:41 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 static const_string l_base16 = "0123456789abcdef";
 static const_string u_base16 = "0123456789ABCDEF";
 
-#define GET_ARG(type) *(type *)(&args[pos_nextarg == -1 ? nextarg++ : pos_nextarg])
+#define GET_ARG(type) (*(type *)(&args[pos_nextarg == -1 ? nextarg++ : pos_nextarg]))
 #define BUF_SIZE U64_MAX_MAG + 1
 
 static U64 pad(char c, S64 s, t_fmtwr_i wr_i, void *data)
@@ -114,7 +114,8 @@ U64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data
 			continue;
 
 		case 'c':
-			str = GET_ARG(const_string);
+			buffer[0] = GET_ARG(char);
+			str = buffer;
 			str_len = 1;
 			sign = '\0';
 			break;
