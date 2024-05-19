@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:57:38 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/18 18:45:23 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/19 23:16:13 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,11 @@
 # endif
 
 # ifndef LIBFT_AVOID_ALLOCA
-#  include <alloca.h>
+#  ifdef FT_OS_WIN
+#   include <malloc.h>
+#  else
+#   include <alloca.h>
+#  endif
 #  define a_malloc(...) alloca(__VA_ARGS__)
 #  define a_free(...)
 # endif

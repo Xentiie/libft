@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:47:30 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/27 00:15:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/19 23:25:39 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,26 +29,36 @@
 #  define	LOCALHOST "localhost"
 # endif
 
-typedef unsigned char		U8;
-typedef unsigned short		U16;
-typedef unsigned int 		U32;
-typedef unsigned long		U64;
-typedef unsigned long long	LU64;
-typedef signed char			S8;
-typedef signed short		S16;
-typedef signed int			S32;
-typedef signed long			S64;
-typedef signed long	long	LS64;
-typedef float				F32;
-typedef double				F64;
-typedef long double			LF64;
+typedef unsigned char			U8;
+typedef unsigned short			U16;
+typedef unsigned int 			U32;
+#ifdef FT_OS_WIN
+typedef unsigned long long		U64;
+typedef unsigned long long		LU64;
+#else
+typedef unsigned long			U64;
+typedef unsigned long long		LU64;
+#endif
+typedef signed char				S8;
+typedef signed short			S16;
+typedef signed int				S32;
+#ifdef FT_OS_WIN
+typedef signed long long		S64;
+typedef signed long long		LS64;
+#else
+typedef signed long				S64;
+typedef signed long long		LS64;
+#endif
+typedef float					F32;
+typedef double					F64;
+typedef long double				LF64;
 
-typedef char				*string;
-typedef char const			*const_string;
-typedef int					*wstring;
-typedef int const			*const_wstring;
-typedef int					wchar;
-typedef U8					bool;
+typedef char					*string;
+typedef char const				*const_string;
+typedef int						*wstring;
+typedef int const				*const_wstring;
+typedef int						wchar;
+typedef U8						bool;
 
 # if defined(FT_OS_WIN)
 typedef void				*file;

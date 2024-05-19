@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/16 03:48:35 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/19 23:32:42 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ static void reverse_endian(U32 *num)
 // png always starts with '137 80 78 71 13 10 26 10'
 static bool check_png_sig(file f)
 {
-	const char png_sig[8] = {137, 80, 78, 71, 13, 10, 26, 10};
-	char buff[8];
+	const U8 png_sig[8] = {137, 80, 78, 71, 13, 10, 26, 10};
+	U8 buff[8];
 	if (
-		ft_fread(f, buff, sizeof(buff)) != sizeof(buff) ||
+		ft_fread(f, (char *)buff, sizeof(buff)) != sizeof(buff) ||
 		ft_memcmp(buff, png_sig, sizeof(png_sig)))
 		return FALSE;
 	return TRUE;
@@ -195,7 +195,7 @@ next_chunk:
 	// Read whole chunk and validate CRC
 	{
 		U64 bytes_read = 0, total_read = 0;
-		while ((bytes_read = ft_fread(f, buffer + total_read, chunk_length - total_read)) > 0)
+		while ((bytes_read = ft_fread(f, (char*)(buffer + total_read), chunk_length - total_read)) > 0)
 			total_read += bytes_read;
 		ASSERT(total_read == chunk_length, "Error reading chunk #%d", chunk_n);
 
@@ -261,7 +261,8 @@ next_chunk:
 		
 		goto next_chunk;
 
-	case CHUNK_tEXt:
+	case CHUNK_tEXt:;
+
 		//TODO: peut etre quand meme verif la taille du keyword (entre 1 et 79 bytes)
 		string txt = malloc(sizeof(char) * (chunk_length + 1));
 		ft_memcpy(txt, buffer, chunk_length);
@@ -269,9 +270,9 @@ next_chunk:
 		ft_lstadd_front(&img->text_data, ft_lstnew(txt));
 		goto next_chunk;
 
-	case CHUNK_zTXt:
+	case CHUNK_zTXt:;
 		U8 *buffer_sv = buffer;
-		buffer += ft_strlen(buffer) + 1;
+		buffer += ft_strlen((string)buffer) + 1;
 
 		U64 compressed_size = chunk_length - (buffer - buffer_sv);
 		

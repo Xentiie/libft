@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 19:40:41 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/11 19:04:32 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/19 23:25:57 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,7 +202,7 @@ void build_arg_table(const_string fmt, va_list vaargs, U64 **args)
 			*((S64 **)&(out[i])) = va_arg(vaargs, S64 *);
 			break;
 		case T_LS64:
-			*((S64 *)&(out[i])) = va_arg(vaargs, LS64);
+			*((S64 *)&(out[i])) = va_arg(vaargs, S64);
 			break;
 		case T_LU64:
 			*((U64 *)&(out[i])) = va_arg(vaargs, LU64);

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/23 14:23:01 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/19 23:18:50 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,12 +149,12 @@ Checks the type of a file.
 's': socket
 '?': unkown
 */
-extern char		ft_ftype(S32 md);
+extern char		ft_ftype(U32 md);
 
 /*
 Parses the mode of a file (returned by stat) into buf. Buf should have 10 or more spaces allocated.
 */
-extern void		ft_fmode(S32 md, char *buf);
+extern void		ft_fmode(U32 md, char *buf);
 
 # if defined(__cplusplus)
 }

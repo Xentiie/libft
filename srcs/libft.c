@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 04:01:02 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/19 22:16:27 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/19 23:33:12 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ file			ft_stdin;
 file			ft_stderr;
 
 __attribute__((constructor))
-void __init_libft(int argc, char **argv, char **env)
+void __init_libft(int argc, const_string *argv, const_string *env)
 {
 	ft_argc = argc;
 	ft_argv = argv;

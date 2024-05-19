@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 14:44:13 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/08 01:52:22 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/19 23:30:38 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, t_long_opt
 		{
 			if (ft_strncmp(longopts[ind].name, nextchar, name_end - nextchar) == 0)
 			{
-				if (name_end - nextchar == ft_strlen(longopts[ind].name))
+				if ((U64)(name_end - nextchar) == ft_strlen(longopts[ind].name))
 				{
 					found = &longopts[ind];
 					exact = TRUE;
@@ -193,9 +193,8 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, t_long_opt
 			}
 		}
 
-	success_long:
 		nextchar += ft_strlen(nextchar);
-		if(longopts_index)
+		if (longopts_index)
 			*longopts_index = found_ind;
 		if (found->flag_ptr)
 		{

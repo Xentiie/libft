@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 20:28:48 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 23:03:15 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/19 23:35:20 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ void	*ft_memmove(void *dst, void const *src, U64 len)
 	if (dst > src)
 	{
 		while (len-- > 0)
-			*(char *)(dst + len) = *(char *)(src + len);
+			*((char *)(dst) + len) = *((char *)(src) + len);
 	}
 	else
 	{
 		while (i < len)
 		{
-			*(char *)(dst + i) = *(char *)(src + i);
+			*((char *)(dst) + i) = *((char *)(src) + i);
 			i++;
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 19:03:18 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/19 00:50:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/19 23:28:42 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,12 +179,10 @@ t_huffman_node *ft_create_huffman_tree(U8 *data, U64 len, t_huffman_node ***out_
 		free(nodes);               \
 		__FTRETURN_ERR(NULL, err); \
 	} while (0)
-	U8 n_nodes = 0;
 	while (lst && lst->next)
 	{
 		t_huffman_node *c1 = (t_huffman_node *)lst->content;
 		t_huffman_node *c2 = (t_huffman_node *)lst->next->content;
-		t_list *nxt = lst->next->next;
 
 		ft_lstremove(&lst, lst->next, NULL);
 		ft_lstremove(&lst, lst, NULL);
@@ -204,6 +202,7 @@ t_huffman_node *ft_create_huffman_tree(U8 *data, U64 len, t_huffman_node ***out_
 		{
 			t_list *ins = lst;
 		ins_next:
+			if (0) {}
 
 			t_huffman_node *tc = (t_huffman_node *)ins->content;
 			if (tc->n >= br->n)
