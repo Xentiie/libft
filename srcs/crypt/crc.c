@@ -1,37 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstadd_front.c                                  :+:      :+:    :+:   */
+/*   crc.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/01 19:08:18 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/18 18:07:58 by reclaire         ###   ########.fr       */
+/*   Created: 2024/05/15 16:46:07 by reclaire          #+#    #+#             */
+/*   Updated: 2024/05/16 18:02:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
-void	ft_lstadd_front(t_list **lst, t_list *new)
+U32 ft_crc32(U8 *data, U64 len)
 {
-	if (new == NULL && ft_errno == FT_EOMEM)
-		__FTRETURN_ERR(, ft_errno);
-	if (lst == NULL || new == NULL)
-		__FTRETURN_ERR(, FT_EINVPTR);
-	
-	if (*lst == NULL)
-		*lst = new;
-	else
-	{
-		if ((*lst)->prev)
-		{
-			new->prev = (*lst)->prev;
-			(*lst)->prev->next = new;
-		}
-		(*lst)->prev = new;
-		new->next = *lst;
-		*lst = new;
-	}
+	return ft_crc32_u(data, len, 0);
+}
 
-	__FTRETURN_OK();
+U32 ft_crc32_u(U8 *data, U64 len, U32 crc)
+{
+	U32 mask;
+
+	crc = ~crc;
+	for (U64 i = 0; i < len; i++)
+	{
+		U32 byte = data[i]; // Get next byte.
+		crc = crc ^ byte;
+		for (S8 j = 7; j >= 0; j--)
+		{ // Do eight times.
+			mask = -(crc & 1);
+			crc = (crc >> 1) ^ (0xEDB88320 & mask);
+		}
+	}
+	return ~crc;
 }

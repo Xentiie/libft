@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:57:38 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/20 15:38:23 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/18 18:45:23 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,25 @@
 # include "../headers/getopt.h"
 # include "../headers/exec.h"
 # include "../headers/path.h"
-
+# include "../headers/crypt.h"
+# include "../headers/images.h"
+# include "../headers/compression.h"
+# include "../headers/btree.h"
+# include "../headers/debug.h"
 
 /*Private usage*/
 # define __FTRETURN_OK(ret) do { ft_errno=FT_OK; return ret; } while (0)
-# define __FTRETURN_ERR(ret, err) do { ft_errno = err ; return ret; } while (0)
+
+# ifdef DEBUG
+#  define __FTRETURN_ERR(ret, err) do { ft_errno = err ; ft_debug_break(); return ret; } while (0)
+# else
+#  define __FTRETURN_ERR(ret, err) do { ft_errno = err ; return ret; } while (0)
+# endif
+
+# ifndef LIBFT_AVOID_ALLOCA
+#  include <alloca.h>
+#  define a_malloc(...) alloca(__VA_ARGS__)
+#  define a_free(...)
+# endif
 
 #endif

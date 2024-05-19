@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:16:43 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/23 04:03:03 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/18 18:23:44 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,16 @@ Sets ft_errno and returns FALSE.
 */
 extern bool		ft_lstremove(t_list **lst, t_list *elem, void (*del)(void *));
 
+/*
+Removes an element from a chained list, but does not free neither the content or the element
+### On error
+Sets ft_errno and returns FALSE.
+### ft_errno
+- FT_EINVPTR if 'lst' or 'elem' is NULL
+### TODO
+*/
+extern bool		ft_lst_softremove(t_list **lst, t_list *elem);
+
 #  if defined(FT_ARRAYS)
 /*
 Converts a list to an array
@@ -88,11 +98,22 @@ Sets ft_errno and returns NULL.
 extern t_list	*ft_lstnew(void *content);
 
 /*
+Inserts a element 'new' in front of 'at', updating *lst if needed
+### On error
+Sets ft_errno.
+### ft_errno
+- see ft_lstadd_front
+### TODO
+*/
+extern void ft_lstinsert(t_list **lst, t_list *at, t_list *new);
+
+/*
 Adds new at the front of lst.
 ### On error
 Sets ft_errno.
 ### ft_errno
-- FT_EINVPTR if 'lst' is NULL.
+- FT_EOMEM if 'new' is NULL and ft_errno == FT_EOMEM
+- FT_EINVPTR if 'lst' or 'new' is NULL.
 ### TODO
 */
 extern void		ft_lstadd_front(t_list **lst, t_list *new);
@@ -125,6 +146,11 @@ Same as ft_lstadd_back, but adds the element behind last, and returns new.
 Used to avoid searching for last every time.
 */
 extern t_list	*ft_lstadd_back_ls(t_list *last, t_list *new);
+
+/*
+Removes last element (free) and returns it's content
+*/
+extern void *ft_lstpop_back(t_list **lst);
 
 /*
 Returns the size of lst.
@@ -209,6 +235,7 @@ extern t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
 /*
 Sorts a list inplace from smallest to largest using the 'key' function.
+NOT THREAD SAFE
 ### On error
 Sets ft_errno.
 ### ft_errno

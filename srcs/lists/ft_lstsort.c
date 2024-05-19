@@ -6,11 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 17:28:10 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/22 03:02:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/16 22:10:33 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
+#include <alloca.h>
 
 void ft_lstsort(t_list **pp, S32 (*key)(void *, void *))
 {
@@ -57,4 +58,38 @@ void ft_lstsort(t_list **pp, S32 (*key)(void *, void *))
 			break;
 		}
 	}
+}
+
+static S32 (*current_key)(void *, void *);
+static S32 k(void *a, void *b)
+{
+	return current_key(a, b);
+}
+
+void ft_lstsort2(t_list **pp, S32 (*key)(void *, void *))
+{
+	current_key = key;
+	
+	U64 cnt = ft_lstsize(*pp);
+	t_list **arr = alloca(sizeof(t_list *) * cnt);
+	
+	U64 i = 0;
+	t_list *curr = *pp;
+	while (curr)
+	{
+		arr[i] = curr;
+		i++;
+		curr = curr->next;
+	}
+
+	*pp = arr[0];
+	curr = *pp;
+	curr->prev = NULL;
+	for (i = 1; i < cnt; i++)
+	{
+		curr->next = arr[i];
+		curr = arr[i];
+		curr->prev = arr[i - 1];
+	}
+	curr->next = NULL;
 }

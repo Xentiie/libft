@@ -1,56 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_magnitude.c                                     :+:      :+:    :+:   */
+/*   btree.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/17 14:10:51 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/09 14:35:17 by reclaire         ###   ########.fr       */
+/*   Created: 2024/05/17 18:42:01 by reclaire          #+#    #+#             */
+/*   Updated: 2024/05/18 18:18:55 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft_int.h"
+#ifndef LIBFT_BTREE_H
+# define LIBFT_BTREE_H
 
+# include "_libft.h"
 
-U64	ft_magnitude(S64 n)
-{
-	U64	estim;
-	S32	isneg;
+/*
+Print a binary tree
+NEEDS TO FFLUSH IN pr_val IF printf
 
-	estim = 0;
-	isneg = 0;
-	if (n < 0)
-	{
-		estim++;
-		isneg++;
-		n = -n;
-	}
-	while (n >= 1)
-	{
-		estim++;
-		n /= 10;
-	}
-	return (estim);
-}
+TODO:
+Better descr
+Doesn't check errors
+*/
+void ft_print_tree(void *tree, void *(*get_left)(void *node), void*(*get_right)(void *node), void (*pr_val)(void *node));
 
-U64	ft_umagnitude(U64 n)
-{
-	U64	estim;
-	S32	isneg;
-
-	estim = 0;
-	isneg = 0;
-	if (n < 0)
-	{
-		estim++;
-		isneg++;
-		n = -n;
-	}
-	while (n >= 1)
-	{
-		estim++;
-		n /= 10;
-	}
-	return (estim);
-}
+#endif

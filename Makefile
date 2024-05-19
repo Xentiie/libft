@@ -6,7 +6,7 @@
 #    By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/25 09:55:54 by reclaire          #+#    #+#              #
-#    Updated: 2024/05/01 00:14:48 by reclaire         ###   ########.fr        #
+#    Updated: 2024/05/18 18:46:09 by reclaire         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME		=	libft.so
 include config.mk
 
 #CFLAGS		+=	-Wall -Wextra -Werror -O3 -g
-CFLAGS		+=	-O3 -g
+CFLAGS		+=	-O3 -g -DDEBUG
 INCLUDES  	+=	-I./ -I./srcs
 
 $(NAME):	$(OBJS)

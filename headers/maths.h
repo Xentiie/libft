@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:45:20 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/23 14:19:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/09 14:35:33 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,6 +241,7 @@ extern F32 ft_fwrap(float x, float min, float max);
 extern S32 ft_isrange(int i, int min, int max);
 // Returns the magnitude of n.
 extern U64 ft_magnitude(S64 n);
+extern U64 ft_umagnitude(U64 n);
 // Check if a number is prime.
 extern S32 ft_is_prime(int nb);
 

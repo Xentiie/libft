@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 20:05:58 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:50:32 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/19 00:05:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,11 @@ void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
 	t_list	*old_elem;
 
-	if (lst == NULL || *lst == NULL)
+	if (lst == NULL)
 		__FTRETURN_ERR(, FT_EINVPTR);
-	
+	if (*lst == NULL)
+		__FTRETURN_OK();
+
 	while (*lst)
 	{
 		if (del)

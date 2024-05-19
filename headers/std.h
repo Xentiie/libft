@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/11 18:55:13 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/19 00:00:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -355,5 +355,10 @@ Sorts the array 'a' inplace, using 'key' function.
 */
 extern void		ft_sort(void *a, U64 elem_size, U64 array_len, S32 (*key)(void *, void *));
 
+/*
+Searches for 'x' in sorted array 'array'. 'x' should be a pointer to a value that will be sent to 'f' in second argument.
+'f' should compare 'elem' (from the array) and 'x' and return 0 if the elements is the same, >0 if greater and <0 if smaller.
+*/
+extern void 	*ft_bsearch(void *arr, U64 elem_size, U64 count, S32 (*f)(void *elem, void *x), void *x);
 
 #endif

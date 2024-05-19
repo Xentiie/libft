@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/"
+                "${workspaceFolder}/",
+                "/home/reclaire/Desktop/libft"
             ],
             "defines": [
                 "FT_OS_LINUX"
@@ -15,7 +16,9 @@
         {
             "name": "Windows",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/",
+                "/home/reclaire/Desktop/libft"
             ],
             "defines": [
                 "FT_OS_WIN32"

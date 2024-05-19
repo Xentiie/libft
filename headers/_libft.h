@@ -6,12 +6,17 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/21 00:45:38 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/18 17:58:20 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef _LIBFT_H
 # define _LIBFT_H
+
+/*
+#define LIBFT_AVOID_ALLOCA -> replace alloca by malloc/free
+
+*/
 
 # if defined(FT_OS_UNKNOWN) || (!defined(FT_OS_WIN) && !defined(FT_APPLE) && !defined(FT_OS_LINUX))
 
@@ -72,7 +77,10 @@ extern	S32		ft_errno;
 
 # define FUNCTION_HOT __attribute__((hot))
 # define FUNCTION_COLD __attribute__((cold))
+
 # define IF_PREDICT(cond, expect) __builtin_expect((cond), expect)
 # define IF_PREDICT_B(cond, expect) __builtin_expect(!!(cond), expect)
+#define UNLICKELY(cond) IF_PREDICT(cond, FALSE)
+#define LICKELY(cond) IF_PREDICT(cond, TRUE)
 
 #endif

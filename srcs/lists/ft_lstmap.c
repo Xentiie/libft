@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 20:20:56 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:50:24 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/18 17:53:05 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 {
-	if (lst == NULL || f == NULL)
+	if (lst == NULL)
 		__FTRETURN_ERR(NULL, FT_EINVPTR);
 
 	t_list	*new_lst = NULL;
 	while (lst)
 	{
-		t_list	*new_element = ft_lstnew(f(lst->content));
+		t_list	*new_element = ft_lstnew(f ? f(lst->content) : lst->content);
 		if (new_element == NULL)
 		{
 			ft_lstclear(&new_lst, del);
