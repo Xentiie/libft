@@ -86,7 +86,7 @@ elif (platform == "linux"):
 	CC="gcc"
 	CFLAGS += ["-D FT_OS_LINUX"]
 elif (platform == "osx"):
-	CFLAGS += ["-D FT_MAX"]
+	CFLAGS += ["-D FT_OS_MAC"]
 else:
 	print("Platform not supported")
 	exit(1)

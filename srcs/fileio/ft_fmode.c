@@ -23,7 +23,7 @@
 #define __S_IREAD  _S_IREAD
 #define __S_IWRITE _S_IWRITE
 #define __S_IEXEC  _S_IEXEC
-char ft_ftype(S32 md)
+char ft_ftype(U32 md)
 {
 	switch (md & __S_IFMT)
 	{
@@ -40,7 +40,7 @@ char ft_ftype(S32 md)
 	}
 }
 #else
-char ft_ftype(S32 md)
+char ft_ftype(U32 md)
 {
 	switch (md & __S_IFMT)
 	{

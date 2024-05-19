@@ -6,11 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 22:55:52 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:48:53 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/09 03:35:29 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
+#include <stdio.h>
 
 static S64	read_section(file fd, U64 read_size, string *out)
 {

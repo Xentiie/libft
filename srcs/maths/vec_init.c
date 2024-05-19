@@ -6,12 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 18:06:47 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/04/30 21:08:00 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
-
 
 t_v2		vec2(float x, float y)							{ return (t_v2)		{x, y};			}
 t_v3		vec3(float x, float y, float z)					{ return (t_v3)		{x, y, z};		}
