@@ -6,14 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/30 20:58:48 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/28 02:47:55 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/21 22:28:07 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
-
-
-#define MAX(a, b) a > b ? a : b
 
 F32		ft_max_2(F32 a, F32 b)								{ return  MAX(a, b);}
 F32		ft_max_3(F32 a, F32 b, F32 c)						{ return  MAX(MAX(a, b), c);}

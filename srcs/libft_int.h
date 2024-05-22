@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:57:38 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/19 23:16:13 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/21 23:05:13 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,9 @@
 # include "../headers/images.h"
 # include "../headers/compression.h"
 # include "../headers/btree.h"
+# include "../headers/bitstreams.h"
 # include "../headers/debug.h"
+# include "../headers/ht.h"
 
 /*Private usage*/
 # define __FTRETURN_OK(ret) do { ft_errno=FT_OK; return ret; } while (0)
@@ -54,5 +56,8 @@
 #  define a_malloc(...) alloca(__VA_ARGS__)
 #  define a_free(...)
 # endif
+
+# define MAX(x, y) (x > y ? x : y)
+# define MIN(x, y) (x < y ? x : y)
 
 #endif

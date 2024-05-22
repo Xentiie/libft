@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 14:08:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/19 00:39:25 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/21 22:23:43 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ static U64 pad(char c, S64 s, t_fmtwr_i wr_i, void *data)
 		return 0;
 	string tmp = alloca(s);
 	ft_memset(tmp, c, s);
-	ft_debug_break();
 	return wr_i(tmp, s, data);
 }
 

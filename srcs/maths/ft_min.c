@@ -6,14 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/30 20:55:17 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/21 22:28:03 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
-
-
-#define MIN(a, b) a < b ? a : b
 
 S32		ft_min_2(float a, float b)						{ return  MIN(a, b);}
 S32		ft_min_3(float a, float b, float c)				{ return  MIN(MIN(a, b), c);}
