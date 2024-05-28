@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 02:27:57 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/21 23:01:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/24 23:34:35 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,11 @@ void ft_lzss_compress(U8 *data, U64 len, t_bitstream *stream, U64 window_max_siz
 	U64 window = 0;
 
 	U64 n = 0;
-	//printf("[window][lookahead]\n");
 	while (n < len)
 	{
 		U64 offset = 0;
 		U64 size = 0;
 		U64 wn = 1;
-
-		//printf("[%*.*s]%c[%-*.*s]", (S32)window_max_size, (S32)window, data - window, *data, (S32)lookahead_size, (S32)MIN(lookahead_size, len - n - 1), data + 1);
 
 		while(wn < window + 1)
 		{
@@ -82,9 +79,10 @@ U64 ft_lzss_decompress(t_bitstream *stream_compressed, U8 *out, U64 len)
 {
 	U64 out_n = 0;
 
-	t_bitstream stream = (t_bitstream){.buffer = stream_compressed->buffer, .buffer_max_len = stream_compressed->buffer_max_len, .bits_read = 0, .total_bits_read = 0};
+	//t_bitstream stream = (t_bitstream){.buffer = stream_compressed->buffer, .buffer_max_len = stream_compressed->buffer_max_len, .bits_read = 0, .total_bits_read = 0};
+	t_bitstream stream = FT_BITSTREAM_INIT(stream_compressed->buffer, stream_compressed->buffer_max_len);
 
-	while (stream.bits_read < stream_compressed->bits_read)
+	while (stream.byte_offset * 8 + stream.bit_offset < stream_compressed->byte_offset * 8 + stream_compressed->bit_offset)
 	{
 		if (!ft_bstrm_read_bit(&stream))
 		{

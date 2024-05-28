@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 00:28:17 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/21 22:19:32 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/23 23:11:36 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,8 @@ void ft_lzss_compress(U8 *data, U64 len, t_bitstream *stream, U64 window_max_siz
 U64 ft_lzss_decompress(t_bitstream *stream, U8 *out, U64 len);
 
 void ft_make_gzip(U8 *data, U64 len, string out_file);
+
+void ft_deflate(U8 *data, U64 size, t_bitstream *out_stream);
+void ft_inflate(U8 *data, U64 size, U64 *output, U64 output_len);
 
 #endif
