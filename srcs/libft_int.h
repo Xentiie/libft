@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:57:38 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/23 22:18:26 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/02 23:01:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,10 @@
 # include "../headers/path.h"
 # include "../headers/crypt.h"
 # include "../headers/images.h"
-# include "../headers/compression.h"
+# include "../headers/compression/lzss.h"
+# include "../headers/compression/huffman.h"
+# include "../headers/compression/deflate.h"
+# include "../headers/compression/gzip.h"
 # include "../headers/btree.h"
 # include "../headers/bitstreams.h"
 # include "../headers/debug.h"

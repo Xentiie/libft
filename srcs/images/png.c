@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/19 23:32:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/05/28 05:03:49 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,9 +137,9 @@ t_png_img *ft_load_png(file f, bool verbose)
 	// A valid PNG image must contain an IHDR chunk, one or more IDAT chunks, and an IEND chunk.
 
 #define ASSERT(x, ...)                                                                        \
-	if (UNLICKELY(!(x)))                                                                      \
+	if (UNLIKELY(!(x)))                                                                      \
 	{                                                                                         \
-		if (UNLICKELY(verbose))                                                               \
+		if (UNLIKELY(verbose))                                                               \
 		{                                                                                     \
 			if (ft_errno != FT_OK)                                                            \
 				ft_dprintf(ft_stderr, "(ft_errno: %d:%s) ", ft_errno, ft_strerror(ft_errno)); \
@@ -174,7 +174,7 @@ next_chunk:
 	ASSERT(ft_fread(f, (char *)&chunk_length, sizeof(U32)) == sizeof(U32), "Couldn't read chunk #%d length", chunk_n);
 	reverse_endian(&chunk_length);
 	ASSERT(ft_fread(f, (char *)&chunk_type_code, sizeof(U32)) == sizeof(U32), "Couldn't read chunk #%d type code", chunk_n);
-	if (UNLICKELY(chunk_n == 1))
+	if (UNLIKELY(chunk_n == 1))
 		ASSERT(chunk_type_code == CHUNK_IHDR, "First chunk isn't IDHR");
 
 	// Grow buffer

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 14:52:06 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/11 18:56:58 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/03 15:59:37 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,31 @@
 
 struct s_error_entry
 {
-	S32	err;
-	string			name;
-	string			desc;
+	S32 err;
+	string name;
+	string desc;
 };
 
-# define ENT(X, desc) { X, #X, desc },
-# define ENTRIES_LEN ((S32)(sizeof(entries)/sizeof(struct s_error_entry) - 1))
+#define ENT(X, desc) \
+	{                \
+		X, #X, desc  \
+	}
+#define ENTRIES_LEN ((S32)(sizeof(entries) / sizeof(struct s_error_entry) - 1))
 
 static struct s_error_entry entries[] = {
-	ENT(FT_OK, "No error")
-	ENT(FT_EOMEM, "Out of memory")
-	ENT(FT_EINVPTR, "Invalid pointer")
-	ENT(FT_ESYSCALL, "System call failed")
-	ENT(FT_ENOENT, "No entries found")
-	ENT(FT_ERANGE, "Out of range")
-	ENT(FT_ENOINIT, "Libft value not initialized")
+	ENT(FT_OK, "No error"),
+	ENT(FT_EOMEM, "Out of memory"),
+	ENT(FT_EINVPTR, "Invalid pointer"),
+	ENT(FT_EINVVAL, "Invalid value"),
+	ENT(FT_EINVOP, "Invalid operation"),
+	ENT(FT_ESYSCALL, "System call failed"),
+	ENT(FT_ENOENT, "No entries found"),
+	ENT(FT_ERANGE, "Out of range"),
+	ENT(FT_ENOINIT, "Libft value not initialized"),
+	ENT(FT_EOSPACE, "Out of space"),
 };
 
-
-const_string	ft_strerror(S32 err)
+const_string ft_strerror(S32 err)
 {
 	if (err < 0)
 		__FTRETURN_ERR((NULL), FT_ERANGE);
@@ -42,7 +47,7 @@ const_string	ft_strerror(S32 err)
 	return entries[err].desc;
 }
 
-const_string	ft_errnotostr(S32 err)
+const_string ft_errnotostr(S32 err)
 {
 	if (err < 0)
 		__FTRETURN_ERR((NULL), FT_ERANGE);

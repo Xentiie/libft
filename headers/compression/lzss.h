@@ -1,36 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_fclose.c                                        :+:      :+:    :+:   */
+/*   lzss.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/17 13:54:18 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/29 01:58:58 by reclaire         ###   ########.fr       */
+/*   Created: 2024/06/02 23:01:54 by reclaire          #+#    #+#             */
+/*   Updated: 2024/06/02 23:03:09 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft_int.h"
+#ifndef LIBFT_LZSS_H
+# define LIBFT_LZSS_H
 
-# if defined(FT_OS_WIN)
-#  include <windows.h>
-//TODO: file != HANDLE, check if everything works ok on 32/64 bits systems
-void	ft_fclose(file fd)
-{
-	if (fd == ((file)-1))
-		__FTRETURN_ERR(, FT_EINVVAL);
+# include "libft/_libft.h"
+# include "libft/bitstreams.h"
 
-	if (!CloseHandle(((HANDLE)fd)))
-		__FTRETURN_ERR(, FT_ESYSCALL);
+void ft_lzss_compress(U8 *data, U64 len, t_bitstream *stream, U64 window_max_size, U64 lookahead_size);
+U64 ft_lzss_decompress(t_bitstream *stream, U8 *out, U64 len);
 
-	__FTRETURN_OK();
-}
-# else
-#  include <unistd.h>
-void	ft_fclose(file fd)
-{
-	close(fd);
-
-	__FTRETURN_OK();
-}
-# endif
+#endif
