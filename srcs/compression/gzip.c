@@ -6,16 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 22:00:12 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/03 20:34:50 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/03 23:28:04 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
-#define TEST
-#ifdef TEST
-#include <stdio.h>
-#include <zlib.h>
-#endif
 
 /*
 
@@ -216,8 +211,8 @@ U64 ft_gzip_write_header(U8 *out, U64 out_len, t_gzip_header *header)
 U64 ft_gzip_write_footer(U8 *out, U32 crc, U32 size)
 {
 	*(U32 *)out = crc;
-	*(U32 *)(out + 2) = size;
-	return 4;
+	*(U32 *)(out + 4) = size;
+	return 8;
 }
 
 U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_flags)
@@ -300,8 +295,8 @@ U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_
 			header->extra_data = ft_memdup(data, header->extra_data_len);
 			if (header->extra_data == NULL)
 				__FTRETURN_ERR(sv - data_len, FT_EOMEM);
-			data += 2 + header->extra_data_len;
-			data_len -= 2 + header->extra_data_len;
+			data += header->extra_data_len;
+			data_len -= header->extra_data_len;
 		}
 		header->state--;
 		/* fall through */
@@ -361,52 +356,3 @@ U64 ft_gzip_read_footer(U8 *out, U32 *crc, U32 *size)
 	*size = *(U32 *)(out + 2);
 	return 4;
 }
-
-
-#ifdef TEST
-
-string readfile()
-{
-	file fd = ft_fopen("./gzip.c", "r");
-	string data = ft_readfile(fd, 4096);
-	ft_fclose(fd);
-	return data;
-}
-
-void compress(t_deflate_stream *stream)
-{
-	while (stream->in_used < stream->in_size)
-	{
-		if (!ft_deflate_next_block(&stream, 2048, (stream->in_used + 2048 > stream->in_size), DEFLATE_BLOCK_TYPE_1))
-		{
-			printf("Deflate error: %s\n", ft_strerror(ft_errno));
-			exit(1);
-		}
-	}
-}
-
-int main()
-{
-	U8 buffer[8192];
-	t_gzip_header header;
-	U64 header_size;
-	t_deflate_stream stream;
-	string data;
-
-	data = readfile();
-	header = (t_gzip_header){};
-	header_size = ft_gzip_write_header(buffer, sizeof(buffer), &header);
-	stream = ft_deflate_init_stream(data, ft_strlen(data), buffer + header_size, sizeof(buffer) - header_size);
-
-	compress(&stream);
-
-	ft_gzip_write_footer(buffer + header_size + stream.out_used, stream.crc32, stream.in_used);
-
-	{
-		file fd = ft_fopen("./output.gz", "w+");
-		ft_fwrite(fd, buffer, header_size + stream.out_used + 4);
-		ft_fclose(fd);
-	}
-}
-
-#endif

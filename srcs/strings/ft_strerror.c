@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 14:52:06 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/03 15:59:37 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/03 22:14:46 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ const_string ft_strerror(S32 err)
 {
 	if (err < 0)
 		__FTRETURN_ERR((NULL), FT_ERANGE);
-	if (err >= ENTRIES_LEN)
+	if (err > ENTRIES_LEN)
 		__FTRETURN_ERR((NULL), FT_ENOENT);
 	return entries[err].desc;
 }
@@ -51,7 +51,7 @@ const_string ft_errnotostr(S32 err)
 {
 	if (err < 0)
 		__FTRETURN_ERR((NULL), FT_ERANGE);
-	if (err >= ENTRIES_LEN)
+	if (err > ENTRIES_LEN)
 		__FTRETURN_ERR((NULL), FT_ENOENT);
 	return entries[err].name;
 }

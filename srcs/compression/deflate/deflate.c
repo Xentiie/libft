@@ -6,11 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 03:49:46 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/02 23:00:52 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/04 16:06:51 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "deflate_int.h"
+
+//#define DEFLATE_VERBOSE
 
 static U8 reverse(U8 b)
 {
@@ -144,6 +146,7 @@ bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8
 		data_stream->out_used += data_stream->s.bit_offset / 8; \
 		data_stream->s.bit_offset %= 8;                         \
 	}
+
 		while (n < to_compress)
 		{
 			U16 length, distance;
@@ -178,21 +181,38 @@ bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8
 
 				// Le code entier tiens dans 32 bits (9 + 5 + 5 + 13 = 32)
 				// clang-format off
+				//U32 full_code = 0
+				//	| ll_codes[llcode + 257]
+				//	| (((U16)(length - ll_table[llcode].min)) << (llcode_size))
+				//	| ((reverse(distancecode) >> 3) << (llcode_size + ll_table[llcode].extra_bits + 1))
+				//	| ((distance - offset_table[distancecode].min) << (llcode_size + ll_table[llcode].extra_bits + 6));
 				U32 full_code = 0
 					| ll_codes[llcode + 257]
 					| (((U16)(length - ll_table[llcode].min)) << (llcode_size))
-					| ((reverse(distancecode) >> 3) << (llcode_size + ll_table[llcode].extra_bits + 1))
-					| ((distance - offset_table[distancecode].min) << (llcode_size + ll_table[llcode].extra_bits + 6));
+					| ((reverse(distancecode) >> 3) << (llcode_size + ll_table[llcode].extra_bits))
+					| ((distance - offset_table[distancecode].min) << (llcode_size + ll_table[llcode].extra_bits + 5));
 				// clang-format on
 
 				*(U64 *)(data_stream->out + data_stream->out_used) |= full_code << data_stream->s.bit_offset;
 				data_stream->s.bit_offset += code_size;
 				step_stream;
+
+#ifdef DEFLATE_VERBOSE
+				printf("backref: %u:%u\n", length, distance);
+#endif
 			}
 			else
 			{
-				*(U16 *)(data_stream->out + data_stream->out_used) |= ll_codes[*(data_stream->in + data_stream->in_used)] << data_stream->s.bit_offset;
-				data_stream->s.bit_offset += 8;
+				U8 c = *(data_stream->in + data_stream->in_used);
+#ifdef DEFLATE_VERBOSE
+				if (ft_isprint(c))
+					printf("lit: %d -> %c\n", c, c);
+				else
+					printf("lit: %d\n", c);
+#endif
+
+				*(U16 *)(data_stream->out + data_stream->out_used) |= ll_codes[c] << data_stream->s.bit_offset;
+				data_stream->s.bit_offset += ll_codes_bits[c / 8];
 				step_stream;
 			}
 
@@ -212,7 +232,6 @@ bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8
 
 	__FTRETURN_OK(TRUE);
 }
-
 
 bool ft_deflate_end(t_deflate_stream *stream)
 {

@@ -8,7 +8,8 @@
                 "/home/reclaire/Desktop/libft"
             ],
             "defines": [
-                "FT_OS_LINUX"
+                "FT_OS_LINUX",
+                "TEST"
             ],
             "compilerPath": "/usr/bin/gcc",
             "intelliSenseMode": "linux-gcc-x64"
