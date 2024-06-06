@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 20:54:22 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/04 16:10:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/05 21:39:12 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -291,6 +291,8 @@ void test_deflate()
 		return;
 	}
 
+	printf("Deflated from %lu to %lu (%f%%)\n", sizeof(data), stream.out_used, 100.0f - (stream.out_used * 100.0f / sizeof(data)));
+
 	{
 		S32 ret;
 		U8 decompressed[65536];
@@ -334,11 +336,15 @@ void test_deflate_file()
 
 	U8 out[80000] = {0};
 	t_deflate_stream stream = ft_deflate_init_stream(data, data_size, out, 80000);
-	if (!ft_deflate_next_block(&stream, 4096, 1, DEFLATE_BLOCK_TYPE_1) || !ft_deflate_end(&stream))
+	if (!ft_deflate_next_block(&stream, 79000, 1, DEFLATE_BLOCK_TYPE_1) || !ft_deflate_end(&stream))
 	{
 		printf("Deflate error: %s\n", ft_strerror(ft_errno));
 		return;
 	}
+
+	printf("Deflated from %lu to %lu (%f%%)\n", data_size, stream.out_used, 100.0f - (stream.out_used * 100.0f / data_size));
+	if (ft_argc > 1 && ft_argv[1][0] == '-' && ft_argv[1][1] == 'o')
+		deflate_write_to_file(&stream);
 
 	{
 		S32 ret;
