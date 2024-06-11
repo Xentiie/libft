@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 20:49:50 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/11 18:54:10 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/11 00:37:03 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ string ft_utoa(U64 n)
 	U64 n_digits = _ft_utoa(NULL, 0, 0, n, NULL, S64_MAX);
 	
 	string out = malloc(sizeof(char) * (n_digits + 1));
-	if (!out)
+	if (UNLIKELY(out == NULL))
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 
@@ -84,7 +84,7 @@ string ft_utoa_l(U64 n, U64 *len)
 	U64 n_digits = _ft_utoa(NULL, 0, 0, n, NULL, S64_MAX);
 	
 	string out = malloc(sizeof(char) * (n_digits + 1));
-	if (!out)
+	if (UNLIKELY(out == NULL))
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 
@@ -111,7 +111,7 @@ string ft_utoa_b(U64 n, const_string base)
 	U64 n_digits = _ft_utoa(base, 0, 0, n, NULL, S64_MAX);
 	
 	string out = malloc(sizeof(char) * (n_digits + 1));
-	if (!out)
+	if (UNLIKELY(out == NULL))
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 

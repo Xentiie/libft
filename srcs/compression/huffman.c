@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   huffman_old.c.old                                  :+:      :+:    :+:   */
+/*   huffman.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 19:03:18 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/20 00:04:54 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/08 18:06:56 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void ft_print_huffman_node(t_huffman_node *node, bool nl)
 {
 	U32 shifted = node->huffman_coding >> (32 - node->nbits);
 
+	ft_printf("(%ub)", node->nbits);
 	if (node->nbits != 0 && node->byte != 0)
 	{
 		for (int i = node->nbits - 1; i >= 0; i--)

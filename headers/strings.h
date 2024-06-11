@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:42:00 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/11 18:56:32 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/07 17:35:39 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,17 @@ Sets ft_errno and returns NULL.
 - FT_ENOENT if no error associated with 'err' was found
 */
 const_string		ft_strerror(S32 err);
+
+/*
+Returns the description of the error number 'err'.
+If `err == FT_ESYSCALL`, returns `strerror(errno)`
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_ERANGE if 'err' is < 0
+- FT_ENOENT if no error associated with 'err' was found
+*/
+const_string 		ft_strerror2(S32 err);
 
 /*
 Append a at the end of b.

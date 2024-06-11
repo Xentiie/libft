@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 03:49:46 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/07 01:18:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/07 01:21:31 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,21 @@ static U8 reverse(U8 b)
 
 static inline void write_block_header(t_deflate_stream *stream, bool last, U8 block_type)
 {
-	*(U16 *)(stream->out + stream->out_used) |= ((last | (block_type << 1)) << stream->s.bit_offset);
-	if (stream->s.bit_offset > 5)
+	*(U16 *)(stream->out + stream->out_used) |= ((last | (block_type << 1)) << stream->bit_offset);
+	if (stream->bit_offset > 5)
 	{
-		stream->s.bit_offset = (stream->s.bit_offset + 3) % 8;
+		stream->bit_offset = (stream->bit_offset + 3) % 8;
 		stream->out_used++;
 	}
 	else
-		stream->s.bit_offset += 3;
+		stream->bit_offset += 3;
 }
 
 #define LOOKAHEAD_SIZE 1024
 #define WINDOW_SIZE 32768
 
 #define out_remaining_size(stream) (stream->out_size - stream->out_used)
-#define out_remaining_bits(stream) (out_remaining_size(stream) * 8 - stream->s.bit_offset)
+#define out_remaining_bits(stream) (out_remaining_size(stream) * 8 - stream->bit_offset)
 #define in_remaining_size(stream) (stream->in_size - stream->in_used)
 
 #define min_type_0_size (                      \
@@ -105,9 +105,9 @@ bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8
 		write_block_header(data_stream, is_last, block_type);
 
 		// Skip current byte
-		if (LICKELY(data_stream->s.bit_offset != 0))
+		if (LICKELY(data_stream->bit_offset != 0))
 		{
-			data_stream->s.bit_offset = 0;
+			data_stream->bit_offset = 0;
 			data_stream->out_used++;
 		}
 
@@ -143,8 +143,8 @@ bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8
 
 #define step_stream                                             \
 	{                                                           \
-		data_stream->out_used += data_stream->s.bit_offset / 8; \
-		data_stream->s.bit_offset %= 8;                         \
+		data_stream->out_used += data_stream->bit_offset / 8; \
+		data_stream->bit_offset %= 8;                         \
 	}
 
 		while (n < to_compress)
@@ -193,8 +193,8 @@ bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8
 					| ((distance - offset_table[distancecode].min) << (llcode_size + ll_table[llcode].extra_bits + 5));
 				// clang-format on
 
-				*(U64 *)(data_stream->out + data_stream->out_used) |= full_code << data_stream->s.bit_offset;
-				data_stream->s.bit_offset += code_size;
+				*(U64 *)(data_stream->out + data_stream->out_used) |= full_code << data_stream->bit_offset;
+				data_stream->bit_offset += code_size;
 				step_stream;
 
 #ifdef DEFLATE_VERBOSE
@@ -211,8 +211,8 @@ bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8
 					printf("lit: %d\n", c);
 #endif
 
-				*(U16 *)(data_stream->out + data_stream->out_used) |= ll_codes[c] << data_stream->s.bit_offset;
-				data_stream->s.bit_offset += ll_codes_bits[c / 8];
+				*(U16 *)(data_stream->out + data_stream->out_used) |= ll_codes[c] << data_stream->bit_offset;
+				data_stream->bit_offset += ll_codes_bits[c / 8];
 				step_stream;
 			}
 
@@ -223,7 +223,7 @@ bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8
 		}
 
 		//  Code 256: 0000000, donc juste bit_offset+=7
-		data_stream->s.bit_offset += 7;
+		data_stream->bit_offset += 7;
 		step_stream;
 
 		data_stream->crc32 = ft_crc32_u(data_stream->in + in_i_sv, data_stream->in_used - in_i_sv, data_stream->crc32);
@@ -235,12 +235,12 @@ bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8
 
 bool ft_deflate_end(t_deflate_stream *stream)
 {
-	if (LICKELY(stream->s.bit_offset != 0))
+	if (LICKELY(stream->bit_offset != 0))
 	{
 		stream->out_used++;
 		if (UNLIKELY(stream->out_used > stream->out_size))
 			__FTRETURN_ERR(FALSE, FT_EINVOP);
-		stream->s.bit_offset = 0;
+		stream->bit_offset = 0;
 	}
 	__FTRETURN_OK(TRUE);
 }

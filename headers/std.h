@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/19 00:00:32 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/07 17:30:52 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -360,5 +360,10 @@ Searches for 'x' in sorted array 'array'. 'x' should be a pointer to a value tha
 'f' should compare 'elem' (from the array) and 'x' and return 0 if the elements is the same, >0 if greater and <0 if smaller.
 */
 extern void 	*ft_bsearch(void *arr, U64 elem_size, U64 count, S32 (*f)(void *elem, void *x), void *x);
+
+/*
+Formats and prints the message `fmt`, and `if (retcode > 0) exit(retcode);`
+*/
+extern void		ft_error(S32 retcode, string fmt, ...);
 
 #endif

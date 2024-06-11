@@ -6,20 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 23:02:08 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/02 23:03:34 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/07 01:21:18 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_DEFLATE_H
-# define LIBFT_DEFLATE_H
+#define LIBFT_DEFLATE_H
 
-# include "libft/_libft.h"
-
-typedef struct s_deflate_state
-{
-	U8 bit_offset;
-	U8 save;
-} t_deflate_state;
+#include "libft/_libft.h"
 
 typedef struct s_deflate_stream
 {
@@ -32,7 +26,7 @@ typedef struct s_deflate_stream
 	U64 out_used;
 
 	U32 crc32;
-	t_deflate_state s;
+	U8 bit_offset;
 } t_deflate_stream;
 
 #define DEFLATE_BLOCK_TYPE_0 0
@@ -135,8 +129,7 @@ Inits a `t_deflate_stream`. A stream shouldn't be initialized manually
 	.out_used = 0,                                                                  \
                                                                                     \
 	.crc32 = 0,                                                                     \
-	.s = {                                                                          \
-		.bit_offset = 0,                                                            \
-		.save = 0}})
+	.bit_offset = 0,                                                                \
+})
 
 #endif

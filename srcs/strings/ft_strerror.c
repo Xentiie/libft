@@ -6,11 +6,15 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 14:52:06 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/03 22:14:46 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/07 17:34:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
+#ifdef FT_OS_LINUX
+# include <errno.h>
+# include <string.h>
+#endif
 
 struct s_error_entry
 {
@@ -46,6 +50,21 @@ const_string ft_strerror(S32 err)
 		__FTRETURN_ERR((NULL), FT_ENOENT);
 	return entries[err].desc;
 }
+
+#ifdef FT_OS_LINUX
+const_string ft_strerror2(S32 err)
+{
+	if (err < 0)
+		__FTRETURN_ERR((NULL), FT_ERANGE);
+	if (err > ENTRIES_LEN)
+		__FTRETURN_ERR((NULL), FT_ENOENT);
+
+	if (err == FT_ESYSCALL)
+		return strerror(errno);
+	else
+		return entries[err].desc;
+}
+#endif
 
 const_string ft_errnotostr(S32 err)
 {

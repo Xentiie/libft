@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 20:54:22 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/05 21:39:12 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/07 18:17:37 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -359,13 +359,65 @@ void test_deflate_file()
 	}
 }
 
+
+void test_inflate()
+{
+	U64 data_size;
+	S32 err = FT_OK;
+	U8 *data, *data_sv;
+	U8 buffer[32768];
+
+	{
+		file fd = ft_fopen("./test.gz", "r");
+		if (ft_errno != FT_OK)
+			ft_error(1, "couldn't read ./test.gzip: %s\n", ft_strerror2(ft_errno));
+		data = ft_readfile(fd, &data_size);
+		data_sv = data;
+		ft_fclose(fd);
+	}
+
+	{
+		t_gzip_header header;
+		U64 header_size = ft_gzip_read_header(data, data_size, &header, 0);
+		data += header_size;
+		data_size -= header_size;
+
+		printf("==GZIP HEADER==\n");
+		printf("	flag: is text: %s\n", header.is_text ? "TRUE" : "FALSE");
+		printf("	flag: has hcrc16: %s\n", header.header_crc16 ? "TRUE" : "FALSE");
+		printf("	flag: has extra data: %s\n", header.extra_data ? "TRUE" : "FALSE");
+		printf("	modification time: %u\n", header.mtime);
+		printf("	extra flags: %u\n", header.extra_flags);
+		printf("	os: %u\n", header.os);
+		if (header.extra_data)
+			printf("	extra data len: %u\n", header.extra_data_len);
+		if (header.filename)
+			printf("	filename: %s\n", header.filename);
+		if (header.comment)
+			printf("	comment: %s\n", header.comment);
+		printf("===============\n");
+	}
+
+	t_deflate_stream stream = ft_deflate_init_stream(data, data_size, buffer, sizeof(buffer));
+	ft_inflate_next_block(&stream, &err);
+	if (err != FT_OK)
+		ft_error(1, "couldn't inflate: %s\n", ft_inflate_strerror(err));
+
+	printf("Result:\n%.*s\n", stream.out_used, stream.out);
+
+	free(data_sv);
+}
+
+
 int main()
 {
-	test_gzip_header_write();
-	test_gzip_header_read();
+	//test_gzip_header_write();
+	//test_gzip_header_read();
 
-	test_deflate();
-	test_deflate_file();
+	//test_deflate();
+	//test_deflate_file();
+
+	test_inflate();
 }
 
 #endif

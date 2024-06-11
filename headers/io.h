@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/29 01:58:58 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/07 17:24:41 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,14 +73,16 @@ Sets ft_errno and returns -1.
 extern S64		ft_fwrite(file fd, char *buffer, U64 size);
 
 /*
-Reads the whole file
+Reads the whole file.
+Returns a malloc'ed buffer containing the whole file,
+and puts the buffer size in `out_size`
 ### On error
 Sets ft_errno and returns NULL.
 ### ft_errno
 - FT_ESYSCALL if a syscall fails
 - FT_EOMEM if out of memory
 */
-extern string	ft_readfile(file fd, U64 read_size);
+U8				*ft_readfile(file fd, U64 *out_size);
 
 /*
 Read the next line in fd, NULL if all lines are read.

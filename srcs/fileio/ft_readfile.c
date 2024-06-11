@@ -6,57 +6,64 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 22:55:52 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/09 03:35:29 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/07 17:26:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
-#include <stdio.h>
 
-static S64	read_section(file fd, U64 read_size, string *out)
+U8 *ft_readfile(file fd, U64 *out_size)
 {
-	char	*buffer;
-	char	*tmp;
-	S64		bytes_read;
-
-	buffer = malloc((read_size + 1) * sizeof(char));
-	if (buffer == NULL)
+	U8 buffer[32768];
+	U64 alloc = sizeof(buffer);
+	U8 *data = malloc(sizeof(U8) * alloc);
+	if (!data)
 	{
-		*out = NULL;
-		__FTRETURN_ERR(-1, FT_EOMEM);
+		*out_size = 0;
+		__FTRETURN_ERR(NULL, FT_EOMEM);
 	}
 
-	bytes_read = ft_fread(fd, buffer, read_size);
-	if (bytes_read < 0)
+	S64 rd, total_rd = 0;
+	while ((rd = ft_fread(fd, (char *)buffer, sizeof(buffer))) > 0)
 	{
-		free(buffer);
-		__FTRETURN_ERR(-1, ft_errno);
+		if ((S64)alloc < total_rd + rd)
+		{
+			U8 *new_data = malloc(sizeof(U8) * alloc * 2);
+			if (!new_data)
+			{
+				free(data);
+				*out_size = 0;
+				__FTRETURN_ERR(NULL, FT_EOMEM);
+			}
+			ft_memcpy(new_data, data, total_rd);
+			free(data);
+			data = new_data;
+			alloc *= 2;
+		}
+		ft_memcpy(data + total_rd, buffer, rd);
+		total_rd += rd;
 	}
-	buffer[bytes_read] = '\0';
-	
-	tmp = *out;
-	*out = ft_strjoin(tmp, buffer);
-	free(tmp);
-	free(buffer);
-	__FTRETURN_OK(bytes_read);
-}
-
-string	ft_readfile(file fd, U64 read_size)
-{
-	string	out;
-	S64		bytes_read;
-
-	out = ft_strdup("");
-	if (!out)
+	if (ft_errno != FT_OK)
+	{
+		free(data);
+		*out_size = 0;
 		__FTRETURN_ERR(NULL, ft_errno);
-
-	bytes_read = 1;
-	while (bytes_read > 0)
-	{
-		bytes_read = read_section(fd, read_size, &out);
-		if (!out)
-			__FTRETURN_ERR(NULL, ft_errno);
 	}
 
-	__FTRETURN_OK(out);
+	if ((S64)alloc > total_rd)
+	{
+		U8 *new_data = malloc(sizeof(U8) * total_rd);
+		if (!new_data)
+		{
+			free(data);
+			*out_size = 0;
+			__FTRETURN_ERR(NULL, FT_EOMEM);
+		}
+		ft_memcpy(new_data, data, total_rd);
+		free(data);
+		data = new_data;
+	}
+
+	*out_size = total_rd;
+	__FTRETURN_OK(data);
 }

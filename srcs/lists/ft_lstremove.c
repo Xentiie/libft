@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 18:30:13 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/18 18:22:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/11 00:30:02 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ bool	ft_lstremove2(t_list **lst, void *content, void (*del)(void *))
 	t_list	*prev;
 	t_list	*curr;
 
-	if (lst == NULL)
+	if (UNLIKELY(lst == NULL))
 		__FTRETURN_ERR(FALSE, FT_EINVPTR);
 
 	curr = *lst;

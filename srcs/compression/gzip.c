@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 22:00:12 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/03 23:28:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/07 18:15:09 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,7 +223,7 @@ U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_
 	{                    \
 		header->state--; \
 		data += x;       \
-		data_len += x;   \
+		data_len -= x;   \
 	}
 #define CHK_SIZE(x)                                    \
 	{                                                  \

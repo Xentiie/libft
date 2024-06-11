@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 00:01:59 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/25 04:37:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/11 00:31:54 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ string ft_ftoa(float n)
 		return ft_strdup("#QNAN");
 
 	out = malloc(sizeof(char) * (AFTERPOINT * 2 + 3));
-	if (out == NULL)
+	if (UNLIKELY(out == NULL))
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 
 	ft_bzero(out, sizeof(char) * (AFTERPOINT * 2 + 3));

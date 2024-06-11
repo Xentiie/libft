@@ -31,7 +31,7 @@ void	**ft_lsttoarray(t_list *lst, U64 *len)
 	if (len)
 		*len = lst_len;
 	out = malloc(sizeof(void *) * (lst_len + 1));
-	if (out == NULL)
+	if (UNLIKELY(out == NULL))
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 
 	curr = lst;

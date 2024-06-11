@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 20:49:50 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/11 18:55:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/11 00:32:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ string ft_itoa(S64 n)
 	U64 n_digits = _ft_itoa(NULL, 10, 0, n, NULL, S64_MAX);
 	
 	string out = malloc(sizeof(char) * (n_digits + 1));
-	if (!out)
+	if (UNLIKELY(out == NULL))
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 
@@ -95,7 +95,7 @@ string ft_itoa_l(S64 n, U64 *len)
 	U64 n_digits = _ft_itoa(NULL, 10, 0, n, NULL, S64_MAX);
 	
 	string out = malloc(sizeof(char) * (n_digits + 1));
-	if (!out)
+	if (UNLIKELY(out == NULL))
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 
@@ -122,7 +122,7 @@ string ft_itoa_b(S64 n, const_string base)
 	U64 n_digits = _ft_itoa(base, 0, 0, n, NULL, S64_MAX);
 	
 	string out = malloc(sizeof(char) * (n_digits + 1));
-	if (!out)
+	if (UNLIKELY(out == NULL))
 		__FTRETURN_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 

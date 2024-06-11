@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 19:32:58 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/11 18:57:25 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/11 00:29:00 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void ft_lstadd_back(t_list **lst, t_list *new)
 {
 	t_list *current_last;
 
-	if (lst == NULL)
+	if (UNLIKELY(lst == NULL))
 		__FTRETURN_ERR(, FT_EINVPTR);
 	if (*lst == NULL)
 		*lst = new;

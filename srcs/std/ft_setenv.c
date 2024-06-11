@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 21:05:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/14 19:42:40 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/11 00:34:48 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 
 const_string	ft_getenv(const_string name)
 {
-	if (name == NULL)
+	if (UNLIKELY(name == NULL))
 		__FTRETURN_ERR(NULL, FT_EINVPTR);
 	
-	if (ft_env == NULL)
+	if (UNLIKELY(ft_env == NULL))
 		__FTRETURN_ERR(NULL, FT_ENOINIT);
 	
 	U64 name_len = ft_strlen(name);
@@ -33,7 +33,7 @@ const_string	ft_getenv(const_string name)
 
 const_string	ft_getenv2(const_string name, const_string *env)
 {
-	if (name == NULL || env == NULL)
+	if (UNLIKELY(name == NULL || env == NULL))
 		__FTRETURN_ERR(NULL, FT_EINVPTR);
 
 	U64 name_len = ft_strlen(name);
@@ -49,7 +49,7 @@ const_string	ft_getenv2(const_string name, const_string *env)
 
 void			ft_setenv(const_string name, const_string value, bool overwrite)
 {
-	if (name == NULL)
+	if (UNLIKELY(name == NULL))
 		__FTRETURN_ERR(, FT_EINVPTR);
 
 	setenv(name, value, overwrite);

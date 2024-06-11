@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:45:20 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/09 14:35:33 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/09 23:58:48 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,14 @@ extern t_v4 vec4(float x, float y, float z, float w);
 extern t_iv2 ivec2(int x, int y);
 extern t_iv3 ivec3(int x, int y, int z);
 extern t_iv4 ivec4(int x, int y, int z, int w);
+
+extern t_iv2 vec2_int(t_v2 v);
+extern t_iv3 vec3_int(t_v3 v);
+extern t_iv4 vec4_int(t_v4 v);
+
+extern t_v2 ivec2_flt(t_iv2 v);
+extern t_v3 ivec3_flt(t_iv3 v);
+extern t_v4 ivec4_flt(t_iv4 v);
 
 extern t_v2 vec2_add(t_v2 a, t_v2 b);
 extern t_v3 vec3_add(t_v3 a, t_v3 b);
@@ -322,17 +330,27 @@ extern t_iv2 ft_iceil2(t_iv2 n);
 extern t_iv3 ft_iceil3(t_iv3 n);
 extern t_iv4 ft_iceil4(t_iv4 n);
 
-extern F32 ft_lerp(float a, float b, float t);
-extern t_v2 ft_lerp2(t_v2 a, t_v2 b, float t);
-extern t_v3 ft_lerp3(t_v3 v_1, t_v3 v_2, float t);
-extern t_v4 ft_lerp4(t_v4 v_1, t_v4 v_2, float t);
+extern F32 ft_lerp(F32 a, F32 b, F32 t);
+extern t_v2 ft_lerp2(t_v2 a, t_v2 b, F32 t);
+extern t_v3 ft_lerp3(t_v3 v_1, t_v3 v_2, F32 t);
+extern t_v4 ft_lerp4(t_v4 v_1, t_v4 v_2, F32 t);
 
-extern F32 ft_invlerp(float a, float b, float t);
+extern S32 ft_lerp_i(S32 a, S32 b, F32 t);
+extern t_iv2 ft_lerp2_i(t_iv2 a, t_iv2 b, F32 t);
+extern t_iv3 ft_lerp3_i(t_iv3 v_1, t_iv3 v_2, F32 t);
+extern t_iv4 ft_lerp4_i(t_iv4 v_1, t_iv4 v_2, F32 t);
+
+extern F32 ft_invlerp(F32 a, F32 b, F32 t);
 extern t_v2 ft_invlerp2(t_v2 a, t_v2 b, t_v2 t);
 extern t_v3 ft_invlerp3(t_v3 v_1, t_v3 v_2, t_v3 t);
 extern t_v4 ft_invlerp4(t_v4 v_1, t_v4 v_2, t_v4 t);
 
-extern F32 ft_smoothstep(float a, float b, float t);
+extern F32 ft_invlerp_i(S32 a, S32 b, S32 t);
+extern t_v2 ft_invlerp2_i(t_iv2 a, t_iv2 b, t_iv2 t);
+extern t_v3 ft_invlerp3_i(t_iv3 v_1, t_iv3 v_2, t_iv3 t);
+extern t_v4 ft_invlerp4_i(t_iv4 v_1, t_iv4 v_2, t_iv4 t);
+
+extern F32 ft_smoothstep(F32 a, F32 b, F32 t);
 extern t_v2 ft_smoothstep2(t_v2 a, t_v2 b, t_v2 t);
 extern t_v3 ft_smoothstep3(t_v3 v_1, t_v3 v_2, t_v3 t);
 extern t_v4 ft_smoothstep4(t_v4 v_1, t_v4 v_2, t_v4 t);
@@ -370,6 +388,8 @@ extern t_v3 ft_cross3(t_v3 a, t_v3 b);
 extern F32 ft_frac(float v);
 // Fractional part of v
 extern t_v2 ft_frac2(t_v2 v);
+
+t_v2 ft_bezier_interp(t_v2 p1, t_v2 p2, t_v2 p3, F32 t);
 
 #if defined(__cplusplus)
 }

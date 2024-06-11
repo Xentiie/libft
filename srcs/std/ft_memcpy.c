@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 20:21:20 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 23:02:57 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/11 00:32:47 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	*ft_memcpy(void *dst, void const *src, U64 n)
 {
-	if (!dst || !src)
+	if (UNLIKELY(dst == NULL || src == NULL))
 		__FTRETURN_ERR(dst, FT_EINVPTR);
 
 	U64	i = 0;

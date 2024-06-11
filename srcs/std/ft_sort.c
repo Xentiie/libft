@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 16:23:40 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/18 18:33:03 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/11 00:36:29 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ static S64 partition(void *a, S64 low, S64 high, U64 elem_size, S32 (*key)(void 
 			ft_memcpy(tmp, INDEX(j), elem_size);
 			ft_memcpy(INDEX(j), INDEX(i), elem_size);
 			ft_memcpy(INDEX(i), tmp, elem_size);
-			a_free(tmp);
 		}
 	}
 	i++;
@@ -42,20 +41,21 @@ static S64 partition(void *a, S64 low, S64 high, U64 elem_size, S32 (*key)(void 
 	ft_memcpy(tmp, INDEX(high), elem_size);
 	ft_memcpy(INDEX(high), INDEX(i), elem_size);
 	ft_memcpy(INDEX(i), tmp, elem_size);
+	a_free(tmp);
 	return i;
 }
 
 U8 quickSort(void *a, U64 elem_size, S64 low, S64 high, S32 (*key)(void *, void *))
 {
+	bool ok = TRUE;
 	if (low < high)
 	{
-		bool ok = TRUE;
 		S64 pi = partition(a, low, high, elem_size, key, &ok);
-		if (!ok)
+		if (UNLIKELY(!ok))
 			return FALSE;
 
-		if (!quickSort(a, elem_size, low, pi - 1, key) ||
-			!quickSort(a, elem_size, pi + 1, high, key))
+		if (UNLIKELY(!quickSort(a, elem_size, low, pi - 1, key) ||
+					 !quickSort(a, elem_size, pi + 1, high, key)))
 			return FALSE;
 	}
 	return TRUE;
@@ -63,7 +63,7 @@ U8 quickSort(void *a, U64 elem_size, S64 low, S64 high, S32 (*key)(void *, void 
 
 void ft_sort(void *a, U64 elem_size, U64 array_size, S32 (*key)(void *, void *))
 {
-	if (!quickSort(a, elem_size, 0, array_size - 1, key))
+	if (UNLIKELY(!quickSort(a, elem_size, 0, array_size - 1, key)))
 		__FTRETURN_ERR(, FT_EOMEM);
 	__FTRETURN_OK();
 }
