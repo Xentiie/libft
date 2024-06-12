@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 23:01:37 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/02 23:03:13 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/12 14:27:03 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 typedef struct s_huffman_node
 {
-	U8 byte;
+	S32 symbol;
 	U32 huffman_coding;
 	U32 nbits;
 	U64 n;

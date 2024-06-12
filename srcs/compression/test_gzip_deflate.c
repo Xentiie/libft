@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 20:54:22 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/07 18:17:37 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/12 16:07:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,10 +365,10 @@ void test_inflate()
 	U64 data_size;
 	S32 err = FT_OK;
 	U8 *data, *data_sv;
-	U8 buffer[32768];
+	U8 buffer[32768] = {0};
 
 	{
-		file fd = ft_fopen("./test.gz", "r");
+		file fd = ft_fopen("./test2.gz", "r");
 		if (ft_errno != FT_OK)
 			ft_error(1, "couldn't read ./test.gzip: %s\n", ft_strerror2(ft_errno));
 		data = ft_readfile(fd, &data_size);
@@ -396,6 +396,9 @@ void test_inflate()
 		if (header.comment)
 			printf("	comment: %s\n", header.comment);
 		printf("===============\n");
+		free(header.extra_data);
+		free(header.filename);
+		free(header.comment);
 	}
 
 	t_deflate_stream stream = ft_deflate_init_stream(data, data_size, buffer, sizeof(buffer));
@@ -403,7 +406,11 @@ void test_inflate()
 	if (err != FT_OK)
 		ft_error(1, "couldn't inflate: %s\n", ft_inflate_strerror(err));
 
-	printf("Result:\n%.*s\n", stream.out_used, stream.out);
+	printf("\n\n%lu\n", stream.out_used);
+	printf("Result:\n%s\n", stream.out);
+	printf("%d\n", stream.out[4]);
+	printf("%d\n", stream.out[5]);
+	printf("%d\n", stream.out[6]);
 
 	free(data_sv);
 }

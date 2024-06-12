@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 19:03:18 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/08 18:06:56 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/11 17:39:52 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 static void pr_tree(void *n)
 {
 	t_huffman_node *node = (t_huffman_node *)n;
-	if (ft_isprint(node->byte))
+	if (ft_isprint(node->symbol))
 	{
-		ft_printf("'%c' : %ld", node->byte, node->n);
+		ft_printf("'%c' : %ld", node->symbol, node->n);
 	}
 	else
-		ft_printf("0x%02x : %ld", node->byte, node->n);
+		ft_printf("0x%02x : %ld", node->symbol, node->n);
 
 	if (node->right == NULL && node->left == NULL)
 	{
@@ -48,7 +48,7 @@ void ft_print_huffman_node(t_huffman_node *node, bool nl)
 	U32 shifted = node->huffman_coding >> (32 - node->nbits);
 
 	ft_printf("(%ub)", node->nbits);
-	if (node->nbits != 0 && node->byte != 0)
+	if (node->nbits != 0 && node->symbol != 0)
 	{
 		for (int i = node->nbits - 1; i >= 0; i--)
 			ft_printf("%d", (shifted >> i) & 1);
@@ -64,7 +64,7 @@ static t_huffman_node *make_branch(t_huffman_node *left, t_huffman_node *right)
 		return NULL;
 	branch->left = left;
 	branch->right = right;
-	branch->byte = 0;
+	branch->symbol = 0;
 	branch->n = (left ? left->n : 0) + (right ? right->n : 0);
 	branch->nbits = 0;
 	branch->huffman_coding = 0;
@@ -82,7 +82,7 @@ static S32 smallest_byte(void *a1, void *a2)
 	t_huffman_node **n1 = (t_huffman_node **)a1;
 	t_huffman_node **n2 = (t_huffman_node **)a2;
 
-	return (*n1)->byte - (*n2)->byte;
+	return (*n1)->symbol - (*n2)->symbol;
 }
 
 static S32 smallest_byte2(void *a1, void *a2)
@@ -90,7 +90,7 @@ static S32 smallest_byte2(void *a1, void *a2)
 	t_huffman_node **n1 = (t_huffman_node **)a1;
 	t_huffman_node **n2 = (t_huffman_node **)a2;
 
-	return (*n1)->byte - (*n2)->byte;
+	return (*n1)->symbol - (*n2)->symbol;
 }
 
 static void huffman_coding(t_huffman_node *node, U32 code, U32 nbits)
@@ -145,7 +145,7 @@ t_huffman_node *ft_create_huffman_tree(U8 *data, U64 len, t_huffman_node ***out_
 			nodes[j] = malloc(sizeof(t_huffman_node));
 			if (nodes[j] == NULL)
 				FAIL_CLEANUP(j, FT_EOMEM);
-			nodes[j]->byte = i;
+			nodes[j]->symbol = i;
 			nodes[j]->n = freq_table[i];
 			nodes[j]->left = NULL;
 			nodes[j]->right = NULL;
@@ -232,7 +232,7 @@ t_huffman_node *ft_create_huffman_tree(U8 *data, U64 len, t_huffman_node ***out_
 
 t_huffman_node *ft_get_huffman_node(U8 byte, t_huffman_node **nodes, U64 count)
 {
-	t_huffman_node tmp = (t_huffman_node){.byte = byte};
+	t_huffman_node tmp = (t_huffman_node){.symbol = byte};
 	t_huffman_node *tmp2 = &tmp;
 	t_huffman_node **result = ft_bsearch(nodes, sizeof(t_huffman_node *), count, smallest_byte2, &tmp2);
 	if (!result)
