@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/07 17:30:52 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/12 19:08:06 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,5 +365,11 @@ extern void 	*ft_bsearch(void *arr, U64 elem_size, U64 count, S32 (*f)(void *ele
 Formats and prints the message `fmt`, and `if (retcode > 0) exit(retcode);`
 */
 extern void		ft_error(S32 retcode, string fmt, ...);
+
+/* Formats and prints the message `fmt`, and `if (retcode > 0) exit(retcode);` */
+extern void ft_error_errno(S32 retcode, string fmt, ...);
+
+/* Formats and prints the message `fmt`, and `if (retcode > 0) exit(retcode);` */
+extern void ft_error_errno2(S32 retcode, string fmt, ...);
 
 #endif

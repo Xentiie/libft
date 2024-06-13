@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 11:07:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/12 18:39:53 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/13 15:45:08 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ static void free_huffman(t_huffman_node *root)
 	free(root);
 }
 
-void code_length_to_code_table(U16 *code_lengths, U64 code_lengths_len, U16 max_code_length, U16 **code_table_out)
+bool code_length_to_code_table(U16 *code_lengths, U64 code_lengths_len, U16 max_code_length, U16 **code_table_out)
 {
 	ft_bzero(*code_table_out, sizeof(U16) * 2 * code_lengths_len);
 
@@ -101,7 +101,7 @@ void code_length_to_code_table(U16 *code_lengths, U64 code_lengths_len, U16 max_
 		if (next_code == NULL)
 		{
 			a_free((*code_table_out));
-			__FTRETURN_ERR(NULL, FT_EOMEM);
+			return FALSE;
 		}
 		ft_bzero(next_code, sizeof(U16) * max_code_length + sizeof(U8) * max_code_length);
 
@@ -130,15 +130,14 @@ void code_length_to_code_table(U16 *code_lengths, U64 code_lengths_len, U16 max_
 		a_free(next_code);
 	}
 
-	return (*code_table_out);
+	return TRUE;
 }
 
-#define code_length_to_code_table(code_lengths, code_lengths_len, max_code_length, code_table_out)    \
-	{                                                                                                 \
-		(*code_table_out) = a_malloc(sizeof(U16) * 2 * code_lengths_len);                             \
-		if (!(*code_table_out))                                                                       \
-			__FTRETURN_ERR(FALSE, FT_EOMEM);                                                          \
-		(code_length_to_code_table)(code_lengths, code_lengths_len, max_code_length, code_table_out); \
+#define code_length_to_code_table(code_lengths, code_lengths_len, max_code_length, code_table_out)                               \
+	{                                                                                                                            \
+		(*code_table_out) = a_malloc(sizeof(U16) * 2 * code_lengths_len);                                                        \
+		if (!(*code_table_out) || !(code_length_to_code_table)(code_lengths, code_lengths_len, max_code_length, code_table_out)) \
+			__FTINFLATEERR(FALSE, FT_INFLATE_EOMEM, FT_EINVOP);                                                                  \
 	}
 
 static U16 getcode(U64 d, U8 *bit_offset)
@@ -188,6 +187,7 @@ bool ft_inflate_next_block(t_deflate_stream *data_stream, S32 *err)
 
 	{ // Read block header (block type is inverted: block type 1 <=> block type 2)
 		U8 block_header = (*(U16 *)(data_stream->in + data_stream->in_used) >> data_stream->bit_offset) & 0x7;
+		printf("%#x\n", block_header);
 		last = block_header & 0x1;
 		block_type = (block_header & 0x6) >> 1;
 
@@ -404,26 +404,13 @@ bool ft_inflate_next_block(t_deflate_stream *data_stream, S32 *err)
 
 			U16 *ll_codes;
 			code_length_to_code_table(ll_code_lengths, (sizeof(ll_code_lengths) / sizeof(ll_code_lengths[0])), dist_ll_code_lengths_max, &ll_codes);
-			for (U64 i = 0; i < sizeof(ll_code_lengths) / sizeof(ll_code_lengths[0]); i++)
-			{
-				U16 length = ll_codes[i * 2];
-				U16 bits = ll_codes[i * 2 + 1];
-				if (length == 0)
-					continue;
-			}
 
 			U16 *dist_codes;
 			code_length_to_code_table(dist_code_lengths, (sizeof(dist_code_lengths) / sizeof(dist_code_lengths[0])), dist_ll_code_lengths_max, &dist_codes);
-			for (U64 i = 0; i < (sizeof(dist_code_lengths) / sizeof(dist_code_lengths[0])); i++)
-			{
-				U16 length = dist_codes[i * 2];
-				U16 bits = dist_codes[i * 2 + 1];
-				if (length == 0)
-					continue;
-			}
 
 			t_huffman_node *ll_tree = mk_huffman(ll_codes, (sizeof(ll_code_lengths) / sizeof(ll_code_lengths[0])));
 			t_huffman_node *dist_tree = mk_huffman(dist_codes, (sizeof(dist_code_lengths) / sizeof(dist_code_lengths[0])));
+
 
 			node = ll_tree;
 			while (TRUE)
