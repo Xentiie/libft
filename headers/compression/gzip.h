@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 23:02:02 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/03 17:54:28 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/14 08:41:10 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,10 +148,10 @@ See section 'Header State Infos' for more infos.
 U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_flags);
 
 /*
-Reads the crc32 and uncompressed data size from `out`, and returns the number of bytes written.
-`out` should have enough space for 4 bytes.
+Reads the crc32 and uncompressed data size from `data`, and returns the number of bytes read.
+`data` should have enough space for 8 bytes.
 */
-U64 ft_gzip_read_footer(U8 *out, U32 *crc, U32 *size);
+U64 ft_gzip_read_footer(U8 *data, U32 *crc, U32 *size);
 
 /*
 Exemple GZIP header write-to-file function:

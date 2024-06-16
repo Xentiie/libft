@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 22:00:12 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/13 15:47:19 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/14 08:40:44 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -350,9 +350,9 @@ U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_
 	__FTRETURN_OK(sv - data_len);
 }
 
-U64 ft_gzip_read_footer(U8 *out, U32 *crc, U32 *size)
+U64 ft_gzip_read_footer(U8 *data, U32 *crc, U32 *size)
 {
-	*crc = *(U32 *)out;
-	*size = *(U32 *)(out + 2);
-	return 4;
+	*crc = *(U32 *)data;
+	*size = *(U32 *)(data + 4);
+	return 8;
 }

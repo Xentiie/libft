@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 18:46:20 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/13 17:01:41 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/14 08:50:31 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,7 @@ S32 main(S32 argc, const_string *argv)
 		U8 *data = malloc(sizeof(U8) * in_size);
 
 		{
-			t_gzip_header header = (t_gzip_header)
-			{
+			t_gzip_header header = (t_gzip_header){
 				.is_text = FALSE,
 				.header_crc16 = TRUE,
 				.mtime = st.st_mtime,
@@ -99,12 +98,10 @@ S32 main(S32 argc, const_string *argv)
 				.extra_data_len = 0,
 				.extra_data = NULL,
 				.filename = (string)in_file,
-				.comment = NULL
-			};
+				.comment = NULL};
 			U64 header_len = ft_gzip_write_header(buf, sizeof(buf), &header);
 			ft_fwrite(out, buf, header_len);
 		}
-
 
 		{
 			U64 rd = 0;
@@ -130,7 +127,7 @@ S32 main(S32 argc, const_string *argv)
 		if (ft_errno != FT_OK)
 			ft_error_errno(1, "\n");
 
-		printf("Deflated %f%%\n", 100.0f - (stream.out_used / (F32)in_size));
+		printf("Deflated %f%% (%lub -> %lub)\n", 100.0f - (stream.out_used / (F32)in_size), in_size, stream.out_used);
 
 		ft_fwrite(out, data_out, stream.out_used);
 
@@ -159,6 +156,7 @@ S32 main(S32 argc, const_string *argv)
 		U64 in_size = st.st_size;
 		U8 *data = malloc(sizeof(U8) * in_size);
 
+
 		{
 			U64 rd = 0;
 			while (rd < in_size)
@@ -172,26 +170,47 @@ S32 main(S32 argc, const_string *argv)
 			}
 			ft_fclose(in);
 		}
-		
+
 		U64 header_size;
 		{
 			t_gzip_header header = {0};
 			header_size = ft_gzip_read_header(data, in_size, &header, 0);
 			if (ft_errno != FT_OK)
 				ft_error_errno(1, "couldn't read gzip header\n");
-			printf("%lu\n", header_size);
 		}
 
-		U8 buffer[32768];
 		S32 err;
-		t_deflate_stream stream = ft_deflate_init_stream(data + header_size, in_size - header_size, buffer, sizeof(buffer));
-		if (!ft_inflate_next_block(&stream, &err) && err != FT_OK)
+		t_deflate_stream stream = {0};
+		U8 *decompressed = ft_inflate_quick(data + header_size, in_size - header_size, &stream, &err);
+		if (decompressed == NULL)
 		{
-			ft_dprintf(ft_stderr, "%s: couldn't inflate: %s\n", ft_argv[0], ft_inflate_strerror(err));
+			if (err != FT_OK)
+				ft_dprintf(ft_stderr, "%s: couldn't inflate: %s\n", ft_argv[0], ft_inflate_strerror(err));
+			else
+				ft_dprintf(ft_stderr, "%s: couldn't inflate: %s\n", ft_argv[0], ft_strerror(err));
 			exit(1);
 		}
 
-		ft_fwrite(out, buffer, stream.out_used);
+		{
+			U32 crc32 = 0;
+			U32 size = 0;
+			ft_gzip_read_footer(data + header_size + stream.in_used, &crc32, &size);
+
+			if (crc32 != stream.crc32)
+			{
+				ft_dprintf(ft_stderr, "%s: bad crc32 (in file: %#x  ft_gzip: %#x)\n", crc32, stream.crc32);
+				exit(1);	
+			}
+			
+			if (size != stream.out_used)
+			{
+				ft_dprintf(ft_stderr, "%s: bad output (in file: %u  ft_gzip: %lu)\n", size, stream.out_used);
+				exit(1);	
+			}
+		}
+
+		ft_fwrite(out, decompressed, stream.out_used);
 		ft_fclose(out);
+		free(decompressed);
 	}
 }

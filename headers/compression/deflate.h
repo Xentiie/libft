@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 23:02:08 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/07 01:21:18 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:01:42 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,39 @@
 #define LIBFT_DEFLATE_H
 
 #include "libft/_libft.h"
+
+typedef union u_deflate_stream_save_state
+{
+	struct {
+		U8 block_type; // -1 because 0 == no save state
+		U8 last;
+	} base;
+
+	struct
+	{
+		U8 block_type;
+		U8 last;
+		U16 remaining_size;
+	} type0;
+
+	struct
+	{
+		U8 block_type;
+		U8 last;
+		U64 working_bytes;
+	} type1;
+
+	struct
+	{
+		U8 block_type;
+		U8 last;
+		U8 working_byte;
+
+		U16 *ll_codes;
+		U16 *dist_codes;
+	} type2;
+
+} t_deflate_stream_save_state;
 
 typedef struct s_deflate_stream
 {
@@ -27,6 +60,8 @@ typedef struct s_deflate_stream
 
 	U32 crc32;
 	U8 bit_offset;
+
+	t_deflate_stream_save_state save_state;
 } t_deflate_stream;
 
 #define DEFLATE_BLOCK_TYPE_0 0
@@ -34,9 +69,13 @@ typedef struct s_deflate_stream
 #define DEFLATE_BLOCK_TYPE_2 2
 
 #define FT_INFLATE_EOMEM 1			  /* No enough space in out buffer */
-#define FT_INFLATE_EBLOCKSIZE 2		  /* Invalid block size/~size in a block type 1 */
+#define FT_INFLATE_EINV_BLOCK_SIZE 2  /* Invalid block size/~size in a block type 1 */
 #define FT_INFLATE_EINV_LENGTH_CODE 3 /* Invalid length code */
 #define FT_INFLATE_EINV_DISTANCE 4	  /* Invalid distance (not enough characters in buffer) */
+#define FT_INFLATE_EINV_BLOCK_TYPE 5  /* Invalid block type (should be 0/1/2) */
+#define FT_INFLATE_EINV_INPUT_BUFFER_SIZE 6  /* Not enough data in the input buffer to parse a block */
+#define FT_INFLATE_EINV_CL_CODES_TREE 7  /* An error occurred while building the cl code's huffman tree */
+#define FT_INFLATE_EINV_CL_CODES 8  /* A decoded CL code is invalid */
 
 /*
 Compresses a block of data.
@@ -81,6 +120,18 @@ Sets ft_errno, sets `err` if not NULL and returns FALSE.
 ### TODO
 */
 bool ft_inflate_next_block(t_deflate_stream *stream, S32 *err);
+
+/*
+Decompresses `data`, and returns decompressed data. The returned pointer is malloc'ed.
+
+### On error
+Sets ft_errno, sets `err` if not NULL and returns NULL.
+### ft_errno
+- FT_EOMEM if out of memory.
+- See ft_inflate_next_block
+### TODO
+*/
+U8 *ft_inflate_quick(U8 *data, U64 data_len, t_deflate_stream *out_stream, S32 *err);
 
 /*
 Returns the error description associated with error code `err`.
@@ -130,6 +181,9 @@ Inits a `t_deflate_stream`. A stream shouldn't be initialized manually
                                                                                     \
 	.crc32 = 0,                                                                     \
 	.bit_offset = 0,                                                                \
-})
+	.save_state = {.type2 = {.block_type = 0,                                       \
+							 .working_byte = 0,                                     \
+							 .ll_codes = NULL,                                      \
+							 .dist_codes = NULL}}})
 
 #endif

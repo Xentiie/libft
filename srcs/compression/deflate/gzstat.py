@@ -186,57 +186,6 @@ class HuffmanTreeNode:
         self.left = left
         self.right = right
 
-    def display(self):
-        lines, *_ = self._display_aux()
-        for line in lines:
-            print(line)
-
-    def _display_aux(self):
-        """Returns list of strings, width, height, and horizontal coordinate of the root."""
-        # No child.
-        if self.right is None and self.left is None:
-            line = '%s' % self.symbol
-            width = len(line)
-            height = 1
-            middle = width // 2
-            return [line], width, height, middle
-
-        # Only left child.
-        if self.right is None:
-            lines, n, p, x = self.left._display_aux()
-            s = '%s' % self.symbol
-            u = len(s)
-            first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s
-            second_line = x * ' ' + '/' + (n - x - 1 + u) * ' '
-            shifted_lines = [line + u * ' ' for line in lines]
-            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
-
-        # Only right child.
-        if self.left is None:
-            lines, n, p, x = self.right._display_aux()
-            s = '%s' % self.symbol
-            u = len(s)
-            first_line = s + x * '_' + (n - x) * ' '
-            second_line = (u + x) * ' ' + '\\' + (n - x - 1) * ' '
-            shifted_lines = [u * ' ' + line for line in lines]
-            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
-
-        # Two children.
-        left, n, p, x = self.left._display_aux()
-        right, m, q, y = self.right._display_aux()
-        s = '%s' % self.symbol
-        u = len(s)
-        first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s + y * '_' + (m - y) * ' '
-        second_line = x * ' ' + '/' + (n - x - 1 + u + y) * ' ' + '\\' + (m - y - 1) * ' '
-        if p < q:
-            left += [n * ' '] * (q - p)
-        elif q < p:
-            right += [m * ' '] * (p - q)
-        zipped_lines = zip(left, right)
-        lines = [first_line, second_line] + [a + u * ' ' + b for a, b in zipped_lines]
-        return lines, n + m + u, max(p, q) + 2, n + u // 2
-
-
 continue_n = 0
 node_added_n = 0
 
@@ -285,8 +234,6 @@ def print_huffman_tree(root: HuffmanTreeNode):
     print(f"tree:{root.symbol} {root.code} {len(root.code)}")
 
 def decode_huffman(stream, output_buffer, ll_tree, dist_tree):
-    print_huffman_tree(ll_tree)
-    print_huffman_tree(dist_tree)
     ll_path = []
     node = ll_tree
     if decode_blocks:
@@ -470,11 +417,8 @@ def decode_dynamic(stream,output_buffer):
     #The lengths are stored in a weird order:
     CL_code_length_encoding_order = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]
     CL_code_lengths = [0]*19
-    print("CL_code_lengths")
     for idx in CL_code_length_encoding_order[0:num_cl_codes]:
         CL_code_lengths[idx] = stream.read_bits(3)
-        print(CL_code_lengths[idx], end=" ")
-    print()
     
 
     decode_print("CL code lengths (0 - 18): " + ' '.join(str(i) for i in CL_code_lengths))
@@ -489,7 +433,6 @@ def decode_dynamic(stream,output_buffer):
     #Next bits: (num_ll_codes + num_dist_codes) code lengths for the LL and distance codes
     #(both codes are encoded together, using the CL code)
     CL_tree_root = build_huffman_tree(CL_codes)
-    print_huffman_tree(CL_tree_root)
 
     ll_code_lengths = [0]*288
     dist_code_lengths = [0]*32
@@ -558,7 +501,6 @@ def decode_dynamic(stream,output_buffer):
         if length == 0:
             continue
         decode_print("    %d: %s"%(i, binary_string_big_endian(encoded_bits, length)))
-    print(ll_codes)
 
     dist_codes = code_lengths_to_code_table(dist_code_lengths)
     decode_print("dist codes:")

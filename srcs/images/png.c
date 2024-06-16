@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/28 05:03:49 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/14 10:41:38 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,74 @@ if indexed color, can't parse if PLTE comes after data
 #include <stdio.h>
 #include <stdlib.h>
 
-static void reverse_endian(U32 *num)
-{
-	U32 cpy = *num;
-	*num = (cpy & 0x000000ff) << 24u |
-		   (cpy & 0x0000ff00) << 8u |
-		   (cpy & 0x00ff0000) >> 8u |
-		   (cpy & 0xff000000) >> 24u;
+#include <zlib.h>
+
+// Error handling macro
+#define CHECK_ERR(err, msg) { \
+    if (err != Z_OK) { \
+        fprintf(stderr, "%s error: %d\n", msg, err); \
+        return -1; \
+    } \
 }
+
+// Function to decompress data
+int decompress_data(const unsigned char *source, size_t source_len, unsigned char **dest, size_t *dest_len) {
+    int ret;
+    z_stream strm;
+    unsigned char outbuffer[32768]; // Output buffer for decompression
+    size_t total_out = 0;
+
+    // Allocate initial output buffer
+    *dest = NULL;
+    *dest_len = 0;
+
+    // Initialize the zlib stream structure
+    memset(&strm, 0, sizeof(strm));
+    strm.next_in = (unsigned char *)source;
+    strm.avail_in = source_len;
+
+    // Initialize the inflate operation
+    ret = inflateInit(&strm);
+    CHECK_ERR(ret, "inflateInit");
+
+    // Decompress until deflate stream ends or end of buffer
+    do {
+        strm.next_out = outbuffer;
+        strm.avail_out = sizeof(outbuffer);
+
+        ret = inflate(&strm, 0);
+        if (ret != Z_OK && ret != Z_STREAM_END && ret != Z_BUF_ERROR) {
+            inflateEnd(&strm);
+            return -1; // Decompression error
+        }
+
+        // Allocate or expand the output buffer
+        size_t out_size = sizeof(outbuffer) - strm.avail_out;
+        unsigned char *temp = realloc(*dest, total_out + out_size);
+        if (!temp) {
+            inflateEnd(&strm);
+            free(*dest);
+            *dest = NULL;
+            return -1; // Memory allocation error
+        }
+        *dest = temp;
+
+        // Copy the decompressed data to the output buffer
+        memcpy(*dest + total_out, outbuffer, out_size);
+        total_out += out_size;
+    } while (ret != Z_STREAM_END);
+
+    // Set the total length of decompressed data
+    *dest_len = total_out;
+
+    // Clean up and return
+    inflateEnd(&strm);
+    return 0;
+}
+
+#define reverse16(n) __builtin_bswap16(n)
+#define reverse32(n) __builtin_bswap32(n)
+#define reverse64(n) __builtin_bswap64(n)
 
 // png always starts with '137 80 78 71 13 10 26 10'
 static bool check_png_sig(file f)
@@ -45,9 +105,8 @@ static bool check_png_sig(file f)
 
 static U32 png_read_u32(U8 **buffer)
 {
-	U32 n = *(U32 *)(*buffer);
+	U32 n = reverse32(*(U32 *)(*buffer));
 	*buffer += sizeof(U32);
-	reverse_endian(&n);
 	return n;
 }
 
@@ -137,9 +196,9 @@ t_png_img *ft_load_png(file f, bool verbose)
 	// A valid PNG image must contain an IHDR chunk, one or more IDAT chunks, and an IEND chunk.
 
 #define ASSERT(x, ...)                                                                        \
-	if (UNLIKELY(!(x)))                                                                      \
+	if (UNLIKELY(!(x)))                                                                       \
 	{                                                                                         \
-		if (UNLIKELY(verbose))                                                               \
+		if (UNLIKELY(verbose))                                                                \
 		{                                                                                     \
 			if (ft_errno != FT_OK)                                                            \
 				ft_dprintf(ft_stderr, "(ft_errno: %d:%s) ", ft_errno, ft_strerror(ft_errno)); \
@@ -154,6 +213,12 @@ t_png_img *ft_load_png(file f, bool verbose)
 	U8 *buffer = NULL;
 	U8 *crc_buffer;
 	U64 buffer_alloc = 0;
+
+	string txt; // buffer for text and ztxt chunks
+	S32 err; // err variable for inflate
+	t_deflate_stream stream; // stream for inflate
+
+	U8 *data; // buffer
 
 	U32 chunk_length;
 	U32 chunk_type_code;
@@ -172,7 +237,7 @@ next_chunk:
 
 	// Chunk length/type
 	ASSERT(ft_fread(f, (char *)&chunk_length, sizeof(U32)) == sizeof(U32), "Couldn't read chunk #%d length", chunk_n);
-	reverse_endian(&chunk_length);
+	chunk_length = reverse32(chunk_length);
 	ASSERT(ft_fread(f, (char *)&chunk_type_code, sizeof(U32)) == sizeof(U32), "Couldn't read chunk #%d type code", chunk_n);
 	if (UNLIKELY(chunk_n == 1))
 		ASSERT(chunk_type_code == CHUNK_IHDR, "First chunk isn't IDHR");
@@ -195,15 +260,17 @@ next_chunk:
 	// Read whole chunk and validate CRC
 	{
 		U64 bytes_read = 0, total_read = 0;
-		while ((bytes_read = ft_fread(f, (char*)(buffer + total_read), chunk_length - total_read)) > 0)
+		while ((bytes_read = ft_fread(f, (char *)(buffer + total_read), chunk_length - total_read)) > 0)
 			total_read += bytes_read;
 		ASSERT(total_read == chunk_length, "Error reading chunk #%d", chunk_n);
 
 		ASSERT(ft_fread(f, (char *)&crc, sizeof(U32)) == sizeof(U32), "Couldn't read chunk #%d CRC", chunk_n);
-		reverse_endian(&crc);
+		crc = reverse32(crc);
 		U32 current_crc = ft_crc32(crc_buffer, chunk_length + 4);
 		ASSERT(current_crc == crc, "Invalid CRC on chunk #%d (is:%#x should be:%#x)", chunk_n, current_crc, crc);
 	}
+
+	printf("Chunk: %.4s\n", &chunk_type_code);
 
 	// Analyse chunk
 	switch (chunk_type_code)
@@ -258,13 +325,38 @@ next_chunk:
 	case CHUNK_IDAT:
 		if (img->color_type == COL_TYPE_PALETTE)
 			ASSERT(palette != NULL, "PLTE chunk not found / PLTE chunk appears after IDAT chunk");
-		
+
+		U8 *decompressed_data;
+		U64 decompressed_data_len;
+		if (decompress_data(buffer, chunk_length, &decompressed_data, &decompressed_data_len) != 0)
+		{
+			printf("nope\n");
+			exit(1);
+		}
+		printf("zlib len: %lu\n", decompressed_data_len);
+		printf("zlib data:\n");
+		for (int i = 0; i < 941; i++)
+			printf("%#x\n", decompressed_data[i]);
+
+		buffer += 2; //zlib header
+
+		err = 0;
+		ft_memset(&stream, 0, sizeof(t_deflate_stream));
+		data = ft_inflate_quick(buffer, chunk_length - 2, &stream, &err);
+
+		printf("ft data:\n");
+		for (int i = 0; i < 941; i++)
+			printf("%#x\n", stream.out[i]);
+
+		ASSERT(data != NULL, "IDAT chunk: couldn't decompress: %s", ft_inflate_strerror(err));
+
+		free(data);
 		goto next_chunk;
 
 	case CHUNK_tEXt:;
 
-		//TODO: peut etre quand meme verif la taille du keyword (entre 1 et 79 bytes)
-		string txt = malloc(sizeof(char) * (chunk_length + 1));
+		// TODO: peut etre quand meme verif la taille du keyword (entre 1 et 79 bytes)
+		txt = malloc(sizeof(char) * (chunk_length + 1));
 		ft_memcpy(txt, buffer, chunk_length);
 		txt[chunk_length] = '\0';
 		ft_lstadd_front(&img->text_data, ft_lstnew(txt));
@@ -272,10 +364,28 @@ next_chunk:
 
 	case CHUNK_zTXt:;
 		U8 *buffer_sv = buffer;
-		buffer += ft_strlen((string)buffer) + 1;
+		U64 keyword_length = ft_strlen((string)buffer);
+		buffer += keyword_length + 1;
+		ASSERT(*buffer == 0, "Unknown compression method");
+		buffer++;
+		buffer += 2; //Zlib header
 
-		U64 compressed_size = chunk_length - (buffer - buffer_sv);
-		
+		U64 compressed_size = chunk_length - (buffer - buffer_sv) - 4;
+
+		err = 0;
+		ft_memset(&stream, 0, sizeof(t_deflate_stream));
+		data = ft_inflate_quick(buffer, compressed_size, &stream, &err);
+		ASSERT(data != NULL, "zTXt chunk: couldn't decompress: %s", ft_inflate_strerror(err));
+
+		txt = malloc(sizeof(char) * (keyword_length + 1 + stream.out_used + 1));
+		ft_memcpy(txt, buffer_sv, keyword_length);
+		txt[keyword_length] = '\0';
+		ft_memcpy(txt + keyword_length + 1, data, stream.out_used);
+		txt[keyword_length + 1 + stream.out_used] = '\0';
+
+		free(data);
+
+		ft_lstadd_front(&img->text_data, ft_lstnew(txt));
 
 		goto next_chunk;
 
