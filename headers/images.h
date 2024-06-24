@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 23:26:42 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/18 18:18:43 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/17 13:16:40 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_png_img
 	U8 sample_depth;
 
 	/* Pixels data */
-    char *data;
+    U8 *data;
 
 	/*
 	Each element of the list contains 2 strings, one behind another.

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:16:38 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/14 11:30:45 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/17 01:36:12 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,16 @@ U8 *ft_inflate_quick(U8 *data, U64 data_len, t_deflate_stream *out_stream, S32 *
 	while (TRUE)
 	{
 		printf("%lu\n", out_stream->in_used);
-		if (!ft_inflate_next_block(out_stream, &_err))
+		if (!ft_inflate(out_stream, &_err))
 		{
 			if (_err == FT_OK) // Done
 				break;
 			else
 			{
-				if (_err == FT_INFLATE_EOMEM)
+				if (_err == FT_INFLATE_E_OUT_OMEM)
 				{
 					//printf("Realloc: %lu->%lu (%lu/%lu)\n", buffer_alloc, buffer_alloc * 2, out_stream->in_used, out_stream->out_used);
-					//Le soucis c'est que quand on retourne dans ft_inflate_next_block apres ca, le block est reset
+					//Le soucis c'est que quand on retourne dans ft_inflate apres ca, le block est reset
 					U8 *buffer_new = malloc(sizeof(U8) * (buffer_alloc * 2));
 					if (UNLIKELY(buffer_new == NULL))
 					{

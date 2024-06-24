@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/03 15:58:55 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/17 01:42:43 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,6 @@ extern	S32		ft_errno;
 # define IF_PREDICT(cond, expect) __builtin_expect((cond), expect)
 # define IF_PREDICT_B(cond, expect) __builtin_expect(!!(cond), expect)
 #define UNLIKELY(cond) IF_PREDICT(cond, FALSE)
-#define LICKELY(cond) IF_PREDICT(cond, TRUE)
+#define LIKELY(cond) IF_PREDICT(cond, TRUE)
 
 #endif

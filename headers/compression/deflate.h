@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 23:02:08 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/14 16:01:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/20 17:19:56 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,29 +17,18 @@
 
 typedef union u_deflate_stream_save_state
 {
-	struct {
-		U8 block_type; // -1 because 0 == no save state
-		U8 last;
-	} base;
-
 	struct
 	{
-		U8 block_type;
-		U8 last;
 		U16 remaining_size;
 	} type0;
 
 	struct
 	{
-		U8 block_type;
-		U8 last;
 		U64 working_bytes;
 	} type1;
 
 	struct
 	{
-		U8 block_type;
-		U8 last;
 		U8 working_byte;
 
 		U16 *ll_codes;
@@ -61,21 +50,31 @@ typedef struct s_deflate_stream
 	U32 crc32;
 	U8 bit_offset;
 
+	S8 block_type;
+	U8 last;
+
+	U8 *window;
+	U64 window_size;
+
+	S8 state;
+
 	t_deflate_stream_save_state save_state;
 } t_deflate_stream;
 
-#define DEFLATE_BLOCK_TYPE_0 0
-#define DEFLATE_BLOCK_TYPE_1 1
-#define DEFLATE_BLOCK_TYPE_2 2
+#define FT_DEFLATE_WINDOW_SIZE 32768
 
-#define FT_INFLATE_EOMEM 1			  /* No enough space in out buffer */
-#define FT_INFLATE_EINV_BLOCK_SIZE 2  /* Invalid block size/~size in a block type 1 */
-#define FT_INFLATE_EINV_LENGTH_CODE 3 /* Invalid length code */
-#define FT_INFLATE_EINV_DISTANCE 4	  /* Invalid distance (not enough characters in buffer) */
-#define FT_INFLATE_EINV_BLOCK_TYPE 5  /* Invalid block type (should be 0/1/2) */
-#define FT_INFLATE_EINV_INPUT_BUFFER_SIZE 6  /* Not enough data in the input buffer to parse a block */
-#define FT_INFLATE_EINV_CL_CODES_TREE 7  /* An error occurred while building the cl code's huffman tree */
-#define FT_INFLATE_EINV_CL_CODES 8  /* A decoded CL code is invalid */
+#define FT_DEFLATE_BLOCK_TYPE_0 0
+#define FT_DEFLATE_BLOCK_TYPE_1 1
+#define FT_DEFLATE_BLOCK_TYPE_2 2
+
+#define FT_INFLATE_E_OUT_OMEM 1			/* No enough space in out buffer */
+#define FT_INFLATE_E_IN_OMEM 2			/* Not enough data in the input buffer to parse a block */
+#define FT_INFLATE_EINV_BLOCK_SIZE 3	/* Invalid block size/~size in a block type 1 */
+#define FT_INFLATE_EINV_LENGTH_CODE 4	/* Invalid length code */
+#define FT_INFLATE_EINV_DISTANCE 5		/* Invalid distance (not enough characters in buffer) */
+#define FT_INFLATE_EINV_BLOCK_TYPE 6	/* Invalid block type (should be 0/1/2) */
+#define FT_INFLATE_EINV_CL_CODES_TREE 7 /* An error occurred while building the cl code's huffman tree */
+#define FT_INFLATE_EINV_CL_CODES 8		/* A decoded CL code is invalid */
 
 /*
 Compresses a block of data.
@@ -113,13 +112,18 @@ and decompressed data is put in `data_stream.out`
 
 Returns TRUE if there is more data to decompress, FALSE otherwise
 
+
+Minimum values:
+Any block: 2 bytes (block header)
+type 0: 4 bytes (block type 0 size/nsize)
+
 ### On error
 Sets ft_errno, sets `err` if not NULL and returns FALSE.
 ### ft_errno
 - FT_EINVOP if there has been an error while decompressing. More information can be retrieved from `err`
 ### TODO
 */
-bool ft_inflate_next_block(t_deflate_stream *stream, S32 *err);
+bool ft_inflate(t_deflate_stream *stream, S32 *err);
 
 /*
 Decompresses `data`, and returns decompressed data. The returned pointer is malloc'ed.
@@ -181,9 +185,88 @@ Inits a `t_deflate_stream`. A stream shouldn't be initialized manually
                                                                                     \
 	.crc32 = 0,                                                                     \
 	.bit_offset = 0,                                                                \
-	.save_state = {.type2 = {.block_type = 0,                                       \
-							 .working_byte = 0,                                     \
-							 .ll_codes = NULL,                                      \
-							 .dist_codes = NULL}}})
+                                                                                    \
+	.block_type = -1,                                                               \
+	.last = FALSE,                                                                  \
+                                                                                    \
+	.window = NULL,                                                                 \
+	.window_size = 0,                                                               \
+                                                                                    \
+	.save_state = {0}})
+
+
+
+struct s_code
+{
+	U16 code;
+	U8 nbits;
+};
+
+struct s_inflate_data
+{
+	U64 hold;
+
+	S8 block_type;
+	U8 last;
+
+	U8 *window;
+	U8 *win_next;
+	U64 window_size;
+
+	S32 state;
+
+	union
+	{
+		struct
+		{
+			U16 length;
+		} type0;
+
+		struct
+		{
+			struct s_code *ll_codes;
+
+			U16 length_code_i;
+			U16 extra_length;
+			U16 dist_code;
+			U16 extra_dist;
+		} type12;
+
+	} blk_data;
+};
+
+typedef struct s_deflate_stream2
+{
+	U8 *in;
+	U64 in_size;
+	U64 in_used;
+
+	U8 *out;
+	U64 out_size;
+	U64 out_used;
+
+	U8 bits;
+	U32 crc32;
+
+	union
+	{
+		struct s_inflate_data inflate;
+
+		struct
+		{
+
+		} deflate;
+	};
+
+} t_deflate_stream2;
+
+void ft_inflate_init(t_deflate_stream2 *stream);
+S32 ft_inflate2(t_deflate_stream2 *stream);
+
+#define FT_INFLATE_RET_NOT_DONE 1
+#define FT_INFLATE_RET_DONE 0
+#define FT_INFLATE_RET_OMEM -1
+#define FT_INFLATE_RET_INVALID_IN_SIZE -2
+#define FT_INFLATE_RET_INVALID_OUT_SIZE -3
 
 #endif

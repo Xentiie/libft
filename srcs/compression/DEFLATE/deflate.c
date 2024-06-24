@@ -6,13 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 03:49:46 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/07 01:21:31 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/24 18:05:19 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "deflate_int.h"
 
-//#define DEFLATE_VERBOSE
+#define DEFLATE_VERBOSE
 
 static U8 reverse(U8 b)
 {
@@ -82,75 +82,75 @@ static void find_backref_linear(t_deflate_stream *stream, U64 n, U64 to_compress
 	}
 }
 
-bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8 is_last, U8 block_type)
+bool ft_deflate_next_block(t_deflate_stream *stream, U64 block_max_size, U8 is_last, U8 block_type)
 {
-	if (UNLIKELY(in_remaining_size(data_stream) == 0) || UNLIKELY(out_remaining_size(data_stream) == 0))
+	if (UNLIKELY(in_remaining_size(stream) == 0) || UNLIKELY(out_remaining_size(stream) == 0))
 		__FTRETURN_ERR(FALSE, FT_EINVOP);
 
-	U64 to_compress = UNLIKELY(in_remaining_size(data_stream) < block_max_size) ? in_remaining_size(data_stream) : block_max_size;
+	U64 to_compress = UNLIKELY(in_remaining_size(stream) < block_max_size) ? in_remaining_size(stream) : block_max_size;
 	switch (block_type)
 	{
-	case DEFLATE_BLOCK_TYPE_0:; // TODO: 65,535 max size
-		to_compress = MIN(to_compress, (out_remaining_bits(data_stream) - (min_type_0_size - 8)) / 8);
+	case FT_DEFLATE_BLOCK_TYPE_0:;
+		to_compress = MIN(to_compress, (out_remaining_bits(stream) - (min_type_0_size - 8)) / 8);
 
 		{ // Error checks
 			if (UNLIKELY(to_compress > U16_MAX))
 				__FTRETURN_ERR(FALSE, FT_EINVVAL); // ERROR: BLOCK SIZE OVERFLOW
-			if (UNLIKELY(min_type_0_size > out_remaining_bits(data_stream)))
+			if (UNLIKELY(min_type_0_size > out_remaining_bits(stream)))
 				__FTRETURN_ERR(FALSE, FT_EINVOP); // ERROR: PAS ASSEZ DE PLACE PR UN BLOCK
 			if (UNLIKELY(to_compress == 0))
 				__FTRETURN_ERR(FALSE, FT_EINVOP); // ERROR: BLOCK DE 0 DE SIZE
 		}
 
-		write_block_header(data_stream, is_last, block_type);
+		write_block_header(stream, is_last, block_type);
 
 		// Skip current byte
-		if (LICKELY(data_stream->bit_offset != 0))
+		if (LIKELY(stream->bit_offset != 0))
 		{
-			data_stream->bit_offset = 0;
-			data_stream->out_used++;
+			stream->bit_offset = 0;
+			stream->out_used++;
 		}
 
 		{ // Write size ~size
 			U16 size = to_compress;
-			*(U16 *)(data_stream->out + data_stream->out_used) = size;
-			*(U16 *)(data_stream->out + data_stream->out_used + 2) = ~size;
-			data_stream->out_used += 4;
+			*(U16 *)(stream->out + stream->out_used) = size;
+			*(U16 *)(stream->out + stream->out_used + 2) = ~size;
+			stream->out_used += 4;
 		}
 
 		ft_memcpy(
-			data_stream->out + data_stream->out_used,
-			data_stream->in + data_stream->in_used,
+			stream->out + stream->out_used,
+			stream->in + stream->in_used,
 			to_compress);
 
-		data_stream->crc32 = ft_crc32_u(data_stream->in + data_stream->in_used, to_compress, data_stream->crc32);
-		data_stream->out_used += to_compress;
-		data_stream->in_used += to_compress;
+		stream->crc32 = ft_crc32_u(stream->in + stream->in_used, to_compress, stream->crc32);
+		stream->out_used += to_compress;
+		stream->in_used += to_compress;
 		break;
 
-	case DEFLATE_BLOCK_TYPE_1:;
-		if (UNLIKELY(min_type_1_size > out_remaining_bits(data_stream)))
+	case FT_DEFLATE_BLOCK_TYPE_1:;
+		if (UNLIKELY(min_type_1_size > out_remaining_bits(stream)))
 			__FTRETURN_ERR(FALSE, FT_EINVOP); // ERROR: PAS ASSEZ DE PLACE PR UN BLOCK
 
-		to_compress = MIN(to_compress, (out_remaining_bits(data_stream) - (min_type_1_size - 8)) / 8);
+		to_compress = MIN(to_compress, (out_remaining_bits(stream) - (min_type_1_size - 8)) / 8);
 		if (UNLIKELY(to_compress == 0))
 			__FTRETURN_ERR(FALSE, FT_EINVOP); // ERROR: BLOCK DE 0 DE SIZE
 
-		write_block_header(data_stream, is_last, block_type);
+		write_block_header(stream, is_last, block_type);
 
-		U64 in_i_sv = data_stream->in_used;
+		U64 in_i_sv = stream->in_used;
 		U64 window = 0, n = 0;
 
 #define step_stream                                             \
 	{                                                           \
-		data_stream->out_used += data_stream->bit_offset / 8; \
-		data_stream->bit_offset %= 8;                         \
+		stream->out_used += stream->bit_offset / 8; \
+		stream->bit_offset %= 8;                         \
 	}
 
 		while (n < to_compress)
 		{
 			U16 length, distance;
-			find_backref_linear(data_stream, n, to_compress, window, &length, &distance);
+			find_backref_linear(stream, n, to_compress, window, &length, &distance);
 
 			U64 incr = 1;
 			if (distance > 0 && length >= 3)
@@ -176,16 +176,11 @@ bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8
 					offset_table[distancecode].extra_bits; // offset code extra bits	max 13
 
 				// + 7 pour le code de fin de block (256)
-				if ((U8)(code_size + 7) > out_remaining_bits(data_stream))
+				if ((U8)(code_size + 7) > out_remaining_bits(stream))
 					__FTRETURN_ERR(FALSE, FT_EINVOP); // ERROR: PLUS DE PLACE
 
 				// Le code entier tiens dans 32 bits (9 + 5 + 5 + 13 = 32)
 				// clang-format off
-				//U32 full_code = 0
-				//	| ll_codes[llcode + 257]
-				//	| (((U16)(length - ll_table[llcode].min)) << (llcode_size))
-				//	| ((reverse(distancecode) >> 3) << (llcode_size + ll_table[llcode].extra_bits + 1))
-				//	| ((distance - offset_table[distancecode].min) << (llcode_size + ll_table[llcode].extra_bits + 6));
 				U32 full_code = 0
 					| ll_codes[llcode + 257]
 					| (((U16)(length - ll_table[llcode].min)) << (llcode_size))
@@ -193,8 +188,8 @@ bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8
 					| ((distance - offset_table[distancecode].min) << (llcode_size + ll_table[llcode].extra_bits + 5));
 				// clang-format on
 
-				*(U64 *)(data_stream->out + data_stream->out_used) |= full_code << data_stream->bit_offset;
-				data_stream->bit_offset += code_size;
+				*(U64 *)(stream->out + stream->out_used) |= full_code << stream->bit_offset;
+				stream->bit_offset += code_size;
 				step_stream;
 
 #ifdef DEFLATE_VERBOSE
@@ -203,7 +198,7 @@ bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8
 			}
 			else
 			{
-				U8 c = *(data_stream->in + data_stream->in_used);
+				U8 c = *(stream->in + stream->in_used);
 #ifdef DEFLATE_VERBOSE
 				if (ft_isprint(c))
 					printf("lit: %d -> %c\n", c, c);
@@ -211,22 +206,22 @@ bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8
 					printf("lit: %d\n", c);
 #endif
 
-				*(U16 *)(data_stream->out + data_stream->out_used) |= ll_codes[c] << data_stream->bit_offset;
-				data_stream->bit_offset += ll_codes_bits[c / 8];
+				*(U16 *)(stream->out + stream->out_used) |= ll_codes[c] << stream->bit_offset;
+				stream->bit_offset += ll_codes_bits[c / 8];
 				step_stream;
 			}
 
 			if (window < WINDOW_SIZE)
 				window = MIN(WINDOW_SIZE, incr + window);
-			data_stream->in_used += incr;
+			stream->in_used += incr;
 			n += incr;
 		}
 
 		//  Code 256: 0000000, donc juste bit_offset+=7
-		data_stream->bit_offset += 7;
+		stream->bit_offset += 7;
 		step_stream;
 
-		data_stream->crc32 = ft_crc32_u(data_stream->in + in_i_sv, data_stream->in_used - in_i_sv, data_stream->crc32);
+		stream->crc32 = ft_crc32_u(stream->in + in_i_sv, stream->in_used - in_i_sv, stream->crc32);
 		break;
 	}
 
@@ -235,7 +230,7 @@ bool ft_deflate_next_block(t_deflate_stream *data_stream, U64 block_max_size, U8
 
 bool ft_deflate_end(t_deflate_stream *stream)
 {
-	if (LICKELY(stream->bit_offset != 0))
+	if (LIKELY(stream->bit_offset != 0))
 	{
 		stream->out_used++;
 		if (UNLIKELY(stream->out_used > stream->out_size))

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/14 10:41:38 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/17 13:23:15 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,6 +306,8 @@ next_chunk:
 		}
 
 		img->data = malloc(sizeof(U8) * img->width * img->height * img->bit_depth);
+		if (!img->data)
+			__FTRETURN_ERR(NULL, FT_EOMEM);
 		img->text_data = NULL;
 
 		goto next_chunk;
@@ -326,29 +328,12 @@ next_chunk:
 		if (img->color_type == COL_TYPE_PALETTE)
 			ASSERT(palette != NULL, "PLTE chunk not found / PLTE chunk appears after IDAT chunk");
 
-		U8 *decompressed_data;
-		U64 decompressed_data_len;
-		if (decompress_data(buffer, chunk_length, &decompressed_data, &decompressed_data_len) != 0)
-		{
-			printf("nope\n");
-			exit(1);
-		}
-		printf("zlib len: %lu\n", decompressed_data_len);
-		printf("zlib data:\n");
-		for (int i = 0; i < 941; i++)
-			printf("%#x\n", decompressed_data[i]);
-
 		buffer += 2; //zlib header
 
 		err = 0;
 		ft_memset(&stream, 0, sizeof(t_deflate_stream));
-		data = ft_inflate_quick(buffer, chunk_length - 2, &stream, &err);
-
-		printf("ft data:\n");
-		for (int i = 0; i < 941; i++)
-			printf("%#x\n", stream.out[i]);
-
-		ASSERT(data != NULL, "IDAT chunk: couldn't decompress: %s", ft_inflate_strerror(err));
+		t_deflate_stream stream = ft_deflate_init_stream(buffer, chunk_length, img->data, sizeof(U8) * img->width * img->height * img->bit_depth);
+		ASSERT(ft_inflate(&stream, &err) == TRUE, "Inflate error: %s\n", ft_inflate_strerror(err));
 
 		free(data);
 		goto next_chunk;
