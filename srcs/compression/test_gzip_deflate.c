@@ -6,13 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:15:36 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/27 12:08:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/27 14:41:53 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/compression/deflate.h"
 #include "libft/compression/gzip.h"
 #include "libft/io.h"
+#include "libft/ansi.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <zlib.h>
@@ -62,7 +63,7 @@ int decompress_deflate(const unsigned char *compressed_data, size_t compressed_s
 }
 
 
-U64 compress_data(U8 *data_out, U64 out_size)
+U64 compress_data(U8 *data_out, U64 out_size, U32 *crc)
 {
 	U8 buff_in[2048];
 	U64 in_size;
@@ -75,6 +76,8 @@ U64 compress_data(U8 *data_out, U64 out_size)
 	t_deflate_stream deflate_stream = ft_deflate_init_stream(buff_in, in_size, data_out, out_size);
 	ft_deflate_next_block(&deflate_stream, 4096, 1, 1);
 
+	*crc = deflate_stream.crc32;
+
 	{
 		U8 buff[1024];
 		t_gzip_header header = {0};
@@ -84,6 +87,10 @@ U64 compress_data(U8 *data_out, U64 out_size)
 		file fd = ft_fopen("./test2.gz", "w+");
 		ft_fwrite(fd, (char *)buff, header_size);
 		ft_fwrite(fd, (char *)data_out, deflate_stream.out_used);
+
+		ft_gzip_write_footer(buff, deflate_stream.crc32, deflate_stream.in_used);
+		ft_fwrite(fd, (char *)buff, 8);
+
 		ft_fclose(fd);
 	}
 	
@@ -92,9 +99,10 @@ U64 compress_data(U8 *data_out, U64 out_size)
 
 int main()
 {
-	U8 buff_in[4096] = {0};
-	U64 in_size = compress_data(buff_in, sizeof(buff_in));
-	U8 buff_out[4096] = {0};
+	U8 buff_in[10000] = {0};
+	U32 crc32;
+	U64 in_size = compress_data(buff_in, sizeof(buff_in), &crc32);
+	U8 buff_out[10000] = {0};
 
 	printf("\n\n");
 
@@ -106,13 +114,12 @@ int main()
 	ft_inflate_init(&stream);
 
 	stream.in = buff_in;
-	stream.in_size = 100;
+	stream.in_size = 3;
 	stream.out = buff_out;
-	stream.out_size = 100;
+	stream.out_size = 1;
 
 	U64 in_used = 0;
 	U64 out_used = 0;
-
 
 	while (1)
 	{
@@ -139,9 +146,13 @@ int main()
 			printf("inflate done\n");
 			break;
 		}
+		printf(FT_GREEN"INFLATE RETURNED\n"FT_CRESET);
 	}
 
 	printf("IN USED: %lu\n", in_used);
 	printf("OUT USED: %lu\n", out_used);
 	printf("%.*s\n", (int)out_used, buff_out);
+
+	printf("\ncrc32 deflate: %#x\n", crc32);
+	printf("crc32 inflate: %#x\n", 1);
 }

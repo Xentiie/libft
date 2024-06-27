@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 03:49:46 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/26 13:08:45 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/27 12:24:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,6 @@ static inline void write_block_header(t_deflate_stream *stream, bool last, U8 bl
 static void find_backref_linear(t_deflate_stream *stream, U64 n, U64 to_compress, U64 window_size, U16 *out_length, U16 *out_distance)
 {
 	U64 wn = 1;
-
-	to_compress = 1024;
-	n = 0;
 
 	*out_length = 0;
 	*out_distance = 0;

@@ -6,11 +6,79 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 21:08:00 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/17 21:50:19 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/27 14:49:38 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "inflate_int.h"
+#include "libft/std.h"
+#include "libft/compression/huffman.h"
+#include "../deflate_int.h"
+
+#ifdef DEBUG
+#include <stdio.h>
+#define IFDEBUG(...) \
+	do               \
+	{                \
+		__VA_ARGS__; \
+	} while (0);
+#else
+#define IFDEBUG(...)
+#endif
+
+#define FT_INFLATE_E_OUT_OMEM 1			/* No enough space in out buffer */
+#define FT_INFLATE_E_IN_OMEM 2			/* Not enough data in the input buffer to parse a block */
+#define FT_INFLATE_EINV_BLOCK_SIZE 3	/* Invalid block size/~size in a block type 1 */
+#define FT_INFLATE_EINV_LENGTH_CODE 4	/* Invalid length code */
+#define FT_INFLATE_EINV_DISTANCE 5		/* Invalid distance (not enough characters in buffer) */
+#define FT_INFLATE_EINV_BLOCK_TYPE 6	/* Invalid block type (should be 0/1/2) */
+#define FT_INFLATE_EINV_CL_CODES_TREE 7 /* An error occurred while building the cl code's huffman tree */
+#define FT_INFLATE_EINV_CL_CODES 8		/* A decoded CL code is invalid */
+
+typedef union u_deflate_stream_save_state
+{
+	struct
+	{
+		U16 remaining_size;
+	} type0;
+
+	struct
+	{
+		U64 working_bytes;
+	} type1;
+
+	struct
+	{
+		U8 working_byte;
+
+		U16 *ll_codes;
+		U16 *dist_codes;
+	} type2;
+
+} t_deflate_stream_save_state;
+
+typedef struct s_deflate_stream
+{
+	U8 *in;
+	U64 in_size;
+	U64 in_used;
+
+	U8 *out;
+	U64 out_size;
+	U64 out_used;
+
+	U32 crc32;
+	U8 bit_offset;
+
+	S8 block_type;
+	U8 last;
+
+	U8 *window;
+	U64 window_size;
+
+	S8 state;
+
+	t_deflate_stream_save_state save_state;
+} t_deflate_stream;
 
 #define code_length_to_code_table(code_lengths, code_lengths_len, max_code_length, code_table_out)                               \
 	{                                                                                                                            \

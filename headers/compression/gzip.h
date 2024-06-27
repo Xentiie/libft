@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 23:02:02 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/14 08:41:10 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/27 14:34:53 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ U64 ft_gzip_write_header(U8 *out, U64 out_len, t_gzip_header *header);
 
 /*
 Writes the crc32 and uncompressed data size to `out`, and returns the number of bytes written.
-`out` should have enough space for 4 bytes.
+`out` should have enough space for 8 bytes.
 */
 U64 ft_gzip_write_footer(U8 *out, U32 crc, U32 size);
 

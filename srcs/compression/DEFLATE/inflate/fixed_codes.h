@@ -1,12 +1,6 @@
 #ifndef FT_INFLATE_FIXED_CODES_H
 #define FT_INFLATE_FIXED_CODES_H
-#include "libft/std.h"
-
-struct s_code {
-	U8 op;
-	U8 nbits;
-	U16 val;
-};
+#include "libft/compression/deflate.h"
 
 static const struct s_code fixed_ll_codes[] = {
 	{32, 7, 0}, {128, 8, 80}, {128, 8, 16}, {68, 8, 115}, {66, 7, 31}, {128, 8, 112}, {128, 8, 48}, {128, 9, 192}, {64, 7, 10}, {128, 8, 96}, 

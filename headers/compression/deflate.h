@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 23:02:08 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/26 12:56:58 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/27 14:48:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,27 +15,34 @@
 
 #include "libft/_libft.h"
 
-typedef union u_deflate_stream_save_state
+struct s_code
 {
-	struct
-	{
-		U16 remaining_size;
-	} type0;
+	U8 op;
+	U8 nbits;
+	U16 val;
+};
 
-	struct
-	{
-		U64 working_bytes;
-	} type1;
+struct s_inflate_data
+{
+	U64 hold;
 
-	struct
-	{
-		U8 working_byte;
+	S8 block_type;
+	U8 last;
 
-		U16 *ll_codes;
-		U16 *dist_codes;
-	} type2;
+	U8 *window;
+	U8 *win_next;
+	U64 window_size;
 
-} t_deflate_stream_save_state;
+	S32 state;
+
+	struct s_code *ll_codes;
+	struct s_code *dist_codes;
+	struct s_code code;
+	U8 ll_codes_bits;
+	U8 dist_codes_bits;
+	U16 length;
+	U16 dist;
+};
 
 typedef struct s_deflate_stream
 {
@@ -47,18 +54,19 @@ typedef struct s_deflate_stream
 	U64 out_size;
 	U64 out_used;
 
+	U8 bits;
 	U32 crc32;
-	U8 bit_offset;
 
-	S8 block_type;
-	U8 last;
+	union
+	{
+		struct s_inflate_data inflate;
 
-	U8 *window;
-	U64 window_size;
+		struct
+		{
 
-	S8 state;
+		} deflate;
+	};
 
-	t_deflate_stream_save_state save_state;
 } t_deflate_stream;
 
 #define FT_DEFLATE_WINDOW_SIZE 32768
@@ -66,15 +74,6 @@ typedef struct s_deflate_stream
 #define FT_DEFLATE_BLOCK_TYPE_0 0
 #define FT_DEFLATE_BLOCK_TYPE_1 1
 #define FT_DEFLATE_BLOCK_TYPE_2 2
-
-#define FT_INFLATE_E_OUT_OMEM 1			/* No enough space in out buffer */
-#define FT_INFLATE_E_IN_OMEM 2			/* Not enough data in the input buffer to parse a block */
-#define FT_INFLATE_EINV_BLOCK_SIZE 3	/* Invalid block size/~size in a block type 1 */
-#define FT_INFLATE_EINV_LENGTH_CODE 4	/* Invalid length code */
-#define FT_INFLATE_EINV_DISTANCE 5		/* Invalid distance (not enough characters in buffer) */
-#define FT_INFLATE_EINV_BLOCK_TYPE 6	/* Invalid block type (should be 0/1/2) */
-#define FT_INFLATE_EINV_CL_CODES_TREE 7 /* An error occurred while building the cl code's huffman tree */
-#define FT_INFLATE_EINV_CL_CODES 8		/* A decoded CL code is invalid */
 
 /*
 Compresses a block of data.
@@ -105,156 +104,32 @@ Sets ft_errno and returns FALSE.
 */
 bool ft_deflate_end(t_deflate_stream *stream);
 
+
 /*
-Decompresses a block of data.
-Compressed data is taken from `data_stream.in`, with at most `data_stream.in_size` bytes available,
-and decompressed data is put in `data_stream.out`
+Inits a t_deflate_stream for decompression
+*/
+void ft_inflate_init(t_deflate_stream *stream);
 
-Returns TRUE if there is more data to decompress, FALSE otherwise
+/*
+Decompresses data in the DEFLATE format.
+Compressed data is taken from `stream.in`, and decompressed data is put in `stream.out`.
 
-
-Minimum values:
-Any block: 2 bytes (block header)
-type 0: 4 bytes (block type 0 size/nsize)
-
+### Return values
+- `FT_INFLATE_RET_NOT_DONE` if there is more data to process
+- `FT_INFLATE_RET_DONE` if there is no more data to process
+- `FT_INFLATE_RET_OMEM` if there was an error allocating the window buffer
+- `FT_INFLATE_RET_INVALID_IN_SIZE` if `stream.in_used < stream.in_size`
+- `FT_INFLATE_RET_INVALID_OUT_SIZE` if `stream.out_used < stream.out_size`
 ### On error
-Sets ft_errno, sets `err` if not NULL and returns FALSE.
-### ft_errno
-- FT_EINVOP if there has been an error while decompressing. More information can be retrieved from `err`
+Returns a negative value, corresponding to the error.
 ### TODO
 */
-bool ft_inflate(t_deflate_stream *stream, S32 *err);
+S32 ft_inflate(t_deflate_stream *stream);
 
 /*
-Decompresses `data`, and returns decompressed data. The returned pointer is malloc'ed.
-
-### On error
-Sets ft_errno, sets `err` if not NULL and returns NULL.
-### ft_errno
-- FT_EOMEM if out of memory.
-- See ft_inflate_next_block
-### TODO
+Cleanup
 */
-U8 *ft_inflate_quick(U8 *data, U64 data_len, t_deflate_stream *out_stream, S32 *err);
-
-/*
-Returns the error description associated with error code `err`.
-
-### On error
-Sets ft_errno and returns NULL.
-### ft_errno
-- FT_ERANGE if `err < 0` or `err > max_error`
-### TODO
-*/
-const_string ft_inflate_strerror(S32 err);
-
-/*
-Returns the error name associated with error code `err`.
-
-### On error
-Sets ft_errno and returns NULL.
-### ft_errno
-- FT_ERANGE if `err < 0` or `err > max_error`
-### TODO
-*/
-const_string ft_inflate_errortostr(S32 err);
-
-/*
-Returns the error code associated with error name `name`.
-
-### On error
-Sets ft_errno and returns -1.
-### ft_errno
-- FT_EINVPTR if `name` is NULL
-- FT_ENOENT if no error code was found
-### TODO
-*/
-S32 ft_inflate_strtoerror(const_string name);
-
-/*
-Inits a `t_deflate_stream`. A stream shouldn't be initialized manually
-*/
-#define ft_deflate_init_stream(_in, _in_size, _out, _out_size) ((t_deflate_stream){ \
-	.in = _in,                                                                      \
-	.in_size = _in_size,                                                            \
-	.in_used = 0,                                                                   \
-                                                                                    \
-	.out = _out,                                                                    \
-	.out_size = _out_size,                                                          \
-	.out_used = 0,                                                                  \
-                                                                                    \
-	.crc32 = 0,                                                                     \
-	.bit_offset = 0,                                                                \
-                                                                                    \
-	.block_type = -1,                                                               \
-	.last = FALSE,                                                                  \
-                                                                                    \
-	.window = NULL,                                                                 \
-	.window_size = 0,                                                               \
-                                                                                    \
-	.save_state = {0}})
-
-
-struct s_inflate_data
-{
-	U64 hold;
-
-	S8 block_type;
-	U8 last;
-
-	U8 *window;
-	U8 *win_next;
-	U64 window_size;
-
-	S32 state;
-
-	union
-	{
-		struct
-		{
-			U16 length;
-		} type0;
-
-		struct
-		{
-			struct s_code *ll_codes;
-			struct s_code *dist_codes;
-			U8 ll_codes_bits;
-			U8 dist_codes_bits;
-			U16 length;
-			U16 dist;
-		} type12;
-
-	} blk_data;
-};
-
-typedef struct s_deflate_stream2
-{
-	U8 *in;
-	U64 in_size;
-	U64 in_used;
-
-	U8 *out;
-	U64 out_size;
-	U64 out_used;
-
-	U8 bits;
-	U32 crc32;
-
-	union
-	{
-		struct s_inflate_data inflate;
-
-		struct
-		{
-
-		} deflate;
-	};
-
-} t_deflate_stream2;
-
-void ft_inflate_init(t_deflate_stream2 *stream);
-S32 ft_inflate2(t_deflate_stream2 *stream);
+void ft_inflate_end(t_deflate_stream *stream);
 
 #define FT_INFLATE_RET_NOT_DONE 1
 #define FT_INFLATE_RET_DONE 0
