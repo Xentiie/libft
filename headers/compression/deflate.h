@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 23:02:08 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/20 17:19:56 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/26 12:56:58 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,13 +195,6 @@ Inits a `t_deflate_stream`. A stream shouldn't be initialized manually
 	.save_state = {0}})
 
 
-
-struct s_code
-{
-	U16 code;
-	U8 nbits;
-};
-
 struct s_inflate_data
 {
 	U64 hold;
@@ -225,11 +218,11 @@ struct s_inflate_data
 		struct
 		{
 			struct s_code *ll_codes;
-
-			U16 length_code_i;
-			U16 extra_length;
-			U16 dist_code;
-			U16 extra_dist;
+			struct s_code *dist_codes;
+			U8 ll_codes_bits;
+			U8 dist_codes_bits;
+			U16 length;
+			U16 dist;
 		} type12;
 
 	} blk_data;

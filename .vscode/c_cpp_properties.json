@@ -9,7 +9,8 @@
             ],
             "defines": [
                 "FT_OS_LINUX",
-                "TEST"
+                "TEST",
+				"FT_INFLATE_CODES_GENERATOR"
             ],
             "compilerPath": "/usr/bin/gcc",
             "intelliSenseMode": "linux-gcc-x64"

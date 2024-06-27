@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:53:23 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:15:06 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/27 12:01:22 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@
 # define FT_NO_STRIKE				"\e[29m"
 # define FT_FOREGROUND_COLOR(r,g,b)	"\e[38;2;"r";"g";"b"m"
 # define FT_NO_FOREGROUND			"\e[39m"
-# define FT_BACKGROUND_COLOR(r,g,b)	"\e[48;2;"r";"g";"b"m"
+# define FT_BACKGROUND_COLOR(r,g,b)	"\e[48;2;"#r";"#g";"#b"m"
 # define FT_NO_BACKGROUND			"\e[49m"
 # define FT_FRAMED					"\e[51m"
 # define FT_ENCIRCLED				"\e[52m"

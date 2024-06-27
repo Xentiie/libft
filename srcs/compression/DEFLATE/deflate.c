@@ -6,13 +6,22 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 03:49:46 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/24 18:05:19 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/26 13:08:45 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "deflate_int.h"
 
-#define DEFLATE_VERBOSE
+#ifdef DEBUG
+#include <stdio.h>
+#define IFDEBUG(...) \
+	do               \
+	{                \
+		__VA_ARGS__; \
+	} while (0);
+#else
+#define IFDEBUG(...)
+#endif
 
 static U8 reverse(U8 b)
 {
@@ -87,10 +96,13 @@ bool ft_deflate_next_block(t_deflate_stream *stream, U64 block_max_size, U8 is_l
 	if (UNLIKELY(in_remaining_size(stream) == 0) || UNLIKELY(out_remaining_size(stream) == 0))
 		__FTRETURN_ERR(FALSE, FT_EINVOP);
 
+	IFDEBUG(printf("Writing block:\n	last: %s\n", is_last ? "yes" : "no"))
+
 	U64 to_compress = UNLIKELY(in_remaining_size(stream) < block_max_size) ? in_remaining_size(stream) : block_max_size;
 	switch (block_type)
 	{
 	case FT_DEFLATE_BLOCK_TYPE_0:;
+		IFDEBUG(printf("	block type: uncompressed\n"))
 		to_compress = MIN(to_compress, (out_remaining_bits(stream) - (min_type_0_size - 8)) / 8);
 
 		{ // Error checks
@@ -129,6 +141,7 @@ bool ft_deflate_next_block(t_deflate_stream *stream, U64 block_max_size, U8 is_l
 		break;
 
 	case FT_DEFLATE_BLOCK_TYPE_1:;
+		IFDEBUG(printf("	block type: fixed\n"))
 		if (UNLIKELY(min_type_1_size > out_remaining_bits(stream)))
 			__FTRETURN_ERR(FALSE, FT_EINVOP); // ERROR: PAS ASSEZ DE PLACE PR UN BLOCK
 
@@ -141,10 +154,10 @@ bool ft_deflate_next_block(t_deflate_stream *stream, U64 block_max_size, U8 is_l
 		U64 in_i_sv = stream->in_used;
 		U64 window = 0, n = 0;
 
-#define step_stream                                             \
-	{                                                           \
+#define step_stream                                 \
+	{                                               \
 		stream->out_used += stream->bit_offset / 8; \
-		stream->bit_offset %= 8;                         \
+		stream->bit_offset %= 8;                    \
 	}
 
 		while (n < to_compress)
@@ -166,6 +179,12 @@ bool ft_deflate_next_block(t_deflate_stream *stream, U64 block_max_size, U8 is_l
 						if (offset_table[distancecode].min <= distance && offset_table[distancecode].max >= distance)
 							break;
 				}
+
+				IFDEBUG(printf("	Backref:\n		base length: %u\n", ll_table[llcode].min))
+				IFDEBUG(printf("		extra length: %u\n", length - ll_table[llcode].min))
+				IFDEBUG(printf("		base dist: %u\n", offset_table[distancecode].min))
+				IFDEBUG(printf("		extra dist: %u\n", distance - offset_table[distancecode].min))
+				IFDEBUG(printf("		FULL: %u:%u\n", length, distance))
 
 				U8 llcode_size = ll_codes_bits[(llcode + 257) / 8];
 
@@ -191,20 +210,14 @@ bool ft_deflate_next_block(t_deflate_stream *stream, U64 block_max_size, U8 is_l
 				*(U64 *)(stream->out + stream->out_used) |= full_code << stream->bit_offset;
 				stream->bit_offset += code_size;
 				step_stream;
-
-#ifdef DEFLATE_VERBOSE
-				printf("backref: %u:%u\n", length, distance);
-#endif
 			}
 			else
 			{
 				U8 c = *(stream->in + stream->in_used);
-#ifdef DEFLATE_VERBOSE
-				if (ft_isprint(c))
-					printf("lit: %d -> %c\n", c, c);
-				else
-					printf("lit: %d\n", c);
-#endif
+				IFDEBUG(
+					if (ft_isprint(c))
+						printf("	lit: %c\n", c, c);
+					else printf("	lit: %#x\n", c);)
 
 				*(U16 *)(stream->out + stream->out_used) |= ll_codes[c] << stream->bit_offset;
 				stream->bit_offset += ll_codes_bits[c / 8];
