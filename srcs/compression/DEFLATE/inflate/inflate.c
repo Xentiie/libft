@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 11:07:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/28 13:55:58 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/28 23:38:43 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@
 #else
 #define IFDEBUG(...)
 #endif
-
-#define MAX(a, b) (a > b ? a : b)
 
 const U8 cl_code_length_encoding_i[] = {16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
 
@@ -77,7 +75,6 @@ enum e_inf_state {
 	do                                                                    \
 	{                                                                     \
 		stream->in_used += (stream->in_size - stream->in_used) - have;    \
-		stream->out_used += (stream->out_size - stream->out_used) - left; \
 		inf_data->hold = hold;                                            \
 		stream->bits = bits;                                              \
 		inf_data->code = code;                                            \
@@ -224,22 +221,24 @@ S32 ft_inflate(t_deflate_stream *stream)
 	U8 *next;
 	U16 to_cpy;
 	S32 ret; // return value on quit
+	U64 out_st;
 	struct s_code code;
 	struct s_inflate_data *inf_data = stream->inflate;
 
 	LOAD();
+	out_st = stream->out_used;
 
-	if (inf_data->window == NULL)
-	{
-		inf_data->window = malloc(sizeof(U8) * FT_DEFLATE_WINDOW_SIZE);
-		if (UNLIKELY(inf_data->window == NULL))
-			return FT_INFLATE_RET_OMEM;
-		ft_memset(inf_data->window, 0, sizeof(U8) * FT_DEFLATE_WINDOW_SIZE);
-		inf_data->window_size = 0;
-		inf_data->win_next = inf_data->window;
-
-		inf_data->hold = 0;
-	}
+//	if (inf_data->window == NULL)
+//	{
+//		inf_data->window = malloc(sizeof(U8) * FT_DEFLATE_WINDOW_SIZE);
+//		if (UNLIKELY(inf_data->window == NULL))
+//			return FT_INFLATE_RET_OMEM;
+//		ft_memset(inf_data->window, 0, sizeof(U8) * FT_DEFLATE_WINDOW_SIZE);
+//		inf_data->window_size = 0;
+//		inf_data->win_next = inf_data->window;
+//
+//		inf_data->hold = 0;
+//	}
 
 	while (TRUE)
 	{
@@ -669,6 +668,9 @@ S32 ft_inflate(t_deflate_stream *stream)
 	}
 
 inflate_leave:
+
+	if (ret >= 0)
+		stream->crc32 = ft_crc32_u(stream->out + out_st, stream->out_used - out_st, stream->crc32);
 	RESTORE();
 	return ret;
 }
@@ -677,9 +679,18 @@ bool ft_inflate_init(t_deflate_stream *stream)
 {
 	ft_memset(stream, 0, sizeof(t_deflate_stream));
 	stream->inflate = malloc(sizeof(struct s_inflate_data));
-	if (stream->inflate == NULL)
+	if (UNLIKELY(stream->inflate == NULL))
 		return FALSE;
 	ft_memset(stream->inflate, 0, sizeof(struct s_inflate_data));
+
+	stream->inflate->window = malloc(sizeof(U8) * FT_DEFLATE_WINDOW_SIZE);
+	if (UNLIKELY(stream->inflate->window == NULL))
+		return FALSE;
+	stream->inflate->window_size = 0;
+	stream->inflate->win_next = stream->inflate->window;
+
+	stream->inflate->hold = 0;
+
 	return TRUE;
 }
 

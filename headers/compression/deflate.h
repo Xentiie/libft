@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 23:02:08 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/28 12:06:31 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/28 23:10:23 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,20 @@ struct s_inflate_data
 	U16 dist;
 };
 
+struct s_deflate_data
+{
+	U64 hold;
+	
+	S8 block_type;
+	U8 last;
+
+	U8 *window;
+	U8 *win_next;
+	U64 window_size;
+
+	S32 state;
+};
+
 typedef struct s_deflate_stream
 {
 	U8 *in;
@@ -74,10 +88,7 @@ typedef struct s_deflate_stream
 	{
 		struct s_inflate_data *inflate;
 
-		struct
-		{
-
-		} deflate;
+		struct s_deflate_data *deflate;
 	};
 
 } t_deflate_stream;

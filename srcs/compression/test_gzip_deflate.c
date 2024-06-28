@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:15:36 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/28 14:02:53 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/28 23:33:15 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ int main()
 		ft_fclose(fd);
 	}
 
-	U8 buff_out[10000] = {0};
+	U8 buff_out[15000] = {0};
 
 
 	//U8 tmp[10000];
@@ -208,6 +208,14 @@ int main()
 	while (1)
 	{
 		S32 ret = ft_inflate(&stream);
+
+			in_used += stream.in_used;
+			out_used += stream.out_used;
+			printf("inflate done\n");
+			break;
+
+
+
 		if (ret == FT_INFLATE_RET_NOT_DONE)
 		{
 			out_used += stream.out_used;
@@ -235,10 +243,17 @@ int main()
 
 	ft_inflate_end(&stream);
 
+	U32 file_crc;
+	U32 file_size;
+	ft_gzip_read_footer(buff_in + in_used + header_size, &file_crc, &file_size);
+
+	printf("%.*s\n", (int)out_used, buff_out);
 	printf("IN USED: %lu\n", in_used);
 	printf("OUT USED: %lu\n", out_used);
-	printf("%.*s\n", (int)out_used, buff_out);
 
-	printf("\ncrc32 deflate: %#x\n", crc32);
-	printf("crc32 inflate: %#x\n", 1);
+	printf("\nfile size: %u\n", file_size);
+	printf("inflate size: %u\n", stream.out_used);
+
+	printf("\ncrc32 deflate: %#x\n", file_crc);
+	printf("crc32 inflate: %#x\n", stream.crc32);
 }

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 03:49:46 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/27 14:55:58 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/28 23:38:39 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,33 @@ static void find_backref_linear(t_deflate_stream *stream, U64 n, U64 to_compress
 		wn++;
 	}
 }
+
+S32 ft_deflate(t_deflate_stream *stream)
+{
+
+
+}
+
+bool ft_deflate_init(t_deflate_stream *stream)
+{
+	ft_memset(stream, 0, sizeof(t_deflate_stream));
+	stream->deflate = malloc(sizeof(struct s_deflate_data));
+	if (UNLIKELY(stream->deflate == NULL))
+		return FALSE;
+	ft_memset(stream->deflate, 0, sizeof(struct s_deflate_data));
+
+	stream->deflate->window = malloc(sizeof(U8) * FT_DEFLATE_WINDOW_SIZE);
+	if (UNLIKELY(stream->deflate->window == NULL))
+		return FALSE;
+	stream->deflate->window_size = 0;
+	stream->deflate->win_next = stream->deflate->window;
+
+	stream->deflate->hold = 0;
+
+	return TRUE;
+}
+
+
 
 bool ft_deflate_next_block(t_deflate_stream *stream, U64 block_max_size, U8 is_last, U8 block_type)
 {
