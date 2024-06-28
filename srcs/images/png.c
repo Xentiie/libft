@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/17 13:23:15 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/27 15:06:35 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,66 +25,72 @@ if indexed color, can't parse if PLTE comes after data
 #include <zlib.h>
 
 // Error handling macro
-#define CHECK_ERR(err, msg) { \
-    if (err != Z_OK) { \
-        fprintf(stderr, "%s error: %d\n", msg, err); \
-        return -1; \
-    } \
-}
+#define CHECK_ERR(err, msg)                              \
+	{                                                    \
+		if (err != Z_OK)                                 \
+		{                                                \
+			fprintf(stderr, "%s error: %d\n", msg, err); \
+			return -1;                                   \
+		}                                                \
+	}
 
 // Function to decompress data
-int decompress_data(const unsigned char *source, size_t source_len, unsigned char **dest, size_t *dest_len) {
-    int ret;
-    z_stream strm;
-    unsigned char outbuffer[32768]; // Output buffer for decompression
-    size_t total_out = 0;
+int decompress_data(const unsigned char *source, size_t source_len, unsigned char **dest, size_t *dest_len)
+{
+	int ret;
+	z_stream strm;
+	unsigned char outbuffer[32768]; // Output buffer for decompression
+	size_t total_out = 0;
 
-    // Allocate initial output buffer
-    *dest = NULL;
-    *dest_len = 0;
+	// Allocate initial output buffer
+	*dest = NULL;
+	*dest_len = 0;
 
-    // Initialize the zlib stream structure
-    memset(&strm, 0, sizeof(strm));
-    strm.next_in = (unsigned char *)source;
-    strm.avail_in = source_len;
+	// Initialize the zlib stream structure
+	ft_memset(&strm, 0, sizeof(strm));
+	strm.next_in = (unsigned char *)source;
+	strm.avail_in = source_len;
 
-    // Initialize the inflate operation
-    ret = inflateInit(&strm);
-    CHECK_ERR(ret, "inflateInit");
+	// Initialize the inflate operation
+	ret = inflateInit(&strm);
+	CHECK_ERR(ret, "inflateInit");
 
-    // Decompress until deflate stream ends or end of buffer
-    do {
-        strm.next_out = outbuffer;
-        strm.avail_out = sizeof(outbuffer);
+	// Decompress until deflate stream ends or end of buffer
+	do
+	{
+		strm.next_out = outbuffer;
+		strm.avail_out = sizeof(outbuffer);
 
-        ret = inflate(&strm, 0);
-        if (ret != Z_OK && ret != Z_STREAM_END && ret != Z_BUF_ERROR) {
-            inflateEnd(&strm);
-            return -1; // Decompression error
-        }
+		ret = inflate(&strm, 0);
+		if (ret != Z_OK && ret != Z_STREAM_END && ret != Z_BUF_ERROR)
+		{
+			inflateEnd(&strm);
+			return -1; // Decompression error
+		}
 
-        // Allocate or expand the output buffer
-        size_t out_size = sizeof(outbuffer) - strm.avail_out;
-        unsigned char *temp = realloc(*dest, total_out + out_size);
-        if (!temp) {
-            inflateEnd(&strm);
-            free(*dest);
-            *dest = NULL;
-            return -1; // Memory allocation error
-        }
-        *dest = temp;
+		// Allocate or expand the output buffer
+		size_t out_size = sizeof(outbuffer) - strm.avail_out;
+		unsigned char *temp = realloc(*dest, total_out + out_size);
+		if (!temp)
+		{
+			inflateEnd(&strm);
+			free(*dest);
+			*dest = NULL;
+			return -1; // Memory allocation error
+		}
+		*dest = temp;
 
-        // Copy the decompressed data to the output buffer
-        memcpy(*dest + total_out, outbuffer, out_size);
-        total_out += out_size;
-    } while (ret != Z_STREAM_END);
+		// Copy the decompressed data to the output buffer
+		ft_memcpy(*dest + total_out, outbuffer, out_size);
+		total_out += out_size;
+	} while (ret != Z_STREAM_END);
 
-    // Set the total length of decompressed data
-    *dest_len = total_out;
+	// Set the total length of decompressed data
+	*dest_len = total_out;
 
-    // Clean up and return
-    inflateEnd(&strm);
-    return 0;
+	// Clean up and return
+	inflateEnd(&strm);
+	return 0;
 }
 
 #define reverse16(n) __builtin_bswap16(n)
@@ -214,8 +220,8 @@ t_png_img *ft_load_png(file f, bool verbose)
 	U8 *crc_buffer;
 	U64 buffer_alloc = 0;
 
-	string txt; // buffer for text and ztxt chunks
-	S32 err; // err variable for inflate
+	string txt;				 // buffer for text and ztxt chunks
+	S32 err;				 // err variable for inflate
 	t_deflate_stream stream; // stream for inflate
 
 	U8 *data; // buffer
@@ -270,7 +276,7 @@ next_chunk:
 		ASSERT(current_crc == crc, "Invalid CRC on chunk #%d (is:%#x should be:%#x)", chunk_n, current_crc, crc);
 	}
 
-	printf("Chunk: %.4s\n", &chunk_type_code);
+	printf("Chunk: %.4s\n", (char *)&chunk_type_code);
 
 	// Analyse chunk
 	switch (chunk_type_code)
@@ -328,12 +334,16 @@ next_chunk:
 		if (img->color_type == COL_TYPE_PALETTE)
 			ASSERT(palette != NULL, "PLTE chunk not found / PLTE chunk appears after IDAT chunk");
 
-		buffer += 2; //zlib header
+		buffer += 2; // zlib header
 
 		err = 0;
 		ft_memset(&stream, 0, sizeof(t_deflate_stream));
-		t_deflate_stream stream = ft_deflate_init_stream(buffer, chunk_length, img->data, sizeof(U8) * img->width * img->height * img->bit_depth);
-		ASSERT(ft_inflate(&stream, &err) == TRUE, "Inflate error: %s\n", ft_inflate_strerror(err));
+		t_deflate_stream stream = {0};
+		stream.in = buffer;
+		stream.in_size = chunk_length;
+		stream.out = img->data;
+		stream.out_size = sizeof(U8) * img->width * img->height * img->bit_depth;
+		//ASSERT(ft_inflate(&stream, &err) == TRUE, "Inflate error: %s\n", ft_inflate_strerror(err));
 
 		free(data);
 		goto next_chunk;
@@ -353,14 +363,16 @@ next_chunk:
 		buffer += keyword_length + 1;
 		ASSERT(*buffer == 0, "Unknown compression method");
 		buffer++;
-		buffer += 2; //Zlib header
+		buffer += 2; // Zlib header
 
 		U64 compressed_size = chunk_length - (buffer - buffer_sv) - 4;
 
 		err = 0;
 		ft_memset(&stream, 0, sizeof(t_deflate_stream));
-		data = ft_inflate_quick(buffer, compressed_size, &stream, &err);
-		ASSERT(data != NULL, "zTXt chunk: couldn't decompress: %s", ft_inflate_strerror(err));
+
+		//TODO:
+		//data = ft_inflate_quick(buffer, compressed_size, &stream, &err);
+		//ASSERT(data != NULL, "zTXt chunk: couldn't decompress: %s", ft_inflate_strerror(err));
 
 		txt = malloc(sizeof(char) * (keyword_length + 1 + stream.out_used + 1));
 		ft_memcpy(txt, buffer_sv, keyword_length);
@@ -368,7 +380,7 @@ next_chunk:
 		ft_memcpy(txt + keyword_length + 1, data, stream.out_used);
 		txt[keyword_length + 1 + stream.out_used] = '\0';
 
-		free(data);
+		//free(data);
 
 		ft_lstadd_front(&img->text_data, ft_lstnew(txt));
 

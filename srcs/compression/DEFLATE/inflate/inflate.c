@@ -6,15 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 11:07:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/27 14:49:47 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/28 13:55:58 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/std.h"
-#include "libft/compression/deflate.h"
-#include "libft/maths.h"
-#include "libft/ansi.h"
+#include "libft_int.h"
 #include "fixed_codes.h"
+#include "../deflate_int.h"
 #include <stdlib.h>
 
 #ifdef DEBUG
@@ -28,12 +26,23 @@
 #define IFDEBUG(...)
 #endif
 
+#define MAX(a, b) (a > b ? a : b)
+
+const U8 cl_code_length_encoding_i[] = {16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
+
 // clang-format off
 enum e_inf_state {
 	INV = -1,
 	BLK_HEAD,
 		RD_UNCOMPRESS,
 			UNCOMPRESS_CPY,
+
+		N_LL_CODES,
+		N_DIST_CODES,
+		N_CL_CODES,
+		CL_CODES,
+		RD_CL_CODE,
+		LEN_CODES,
 
 		RD_CODE,
 
@@ -60,7 +69,7 @@ enum e_inf_state {
 		next = stream->in + stream->in_used;               \
 		hold = inf_data->hold;                             \
 		bits = stream->bits;                               \
-		code = inf_data->code;             \
+		code = inf_data->code;                             \
 	} while (0)
 
 /* Restore stream from registers in inflate() */
@@ -71,7 +80,7 @@ enum e_inf_state {
 		stream->out_used += (stream->out_size - stream->out_used) - left; \
 		inf_data->hold = hold;                                            \
 		stream->bits = bits;                                              \
-		inf_data->code = code;                            \
+		inf_data->code = code;                                            \
 	} while (0)
 
 /* Clear the input bit accumulator */
@@ -88,7 +97,10 @@ enum e_inf_state {
 	do                                            \
 	{                                             \
 		if (have == 0)                            \
+		{                                         \
+			ret = FT_INFLATE_RET_NOT_DONE;        \
 			goto inflate_leave;                   \
+		}                                         \
 		have--;                                   \
 		hold += (unsigned long)(*next++) << bits; \
 		bits += 8;                                \
@@ -123,15 +135,97 @@ enum e_inf_state {
 		bits -= bits & 7;  \
 	} while (0)
 
-S32 ft_inflate2(t_deflate_stream *stream)
+enum code_length_type
+{
+	CL,
+	LL,
+	DIST,
+};
+
+static bool code_length_to_code_table(U16 *code_lengths, U64 code_lengths_len, struct s_code *code_table_out, U16 max_code_length, enum code_length_type type)
+{
+	U16 *next_code = a_malloc(sizeof(U16) * max_code_length + sizeof(U8) * max_code_length);
+	if (next_code == NULL)
+		return FALSE;
+	ft_bzero(next_code, sizeof(U16) * max_code_length + sizeof(U8) * max_code_length);
+
+	U8 *lengths_count = ((U8 *)next_code) + sizeof(U16) * max_code_length;
+	for (U64 i = 0; i < code_lengths_len; i++)
+		lengths_count[code_lengths[i]]++;
+
+	U32 code = 0;
+	lengths_count[0] = 0;
+	for (U8 bits = 1; bits < (max_code_length + 1); bits++)
+	{
+		code = (code + lengths_count[bits - 1]) << 1;
+		next_code[bits] = code;
+	}
+
+	IFDEBUG(if (type == CL) printf("	CL codes:\n"); else if (type == LL) printf("	LL codes:\n"); else printf("	Dist codes:\n");)
+
+	for (U64 i = 0; i < code_lengths_len; i++)
+	{
+		U16 length = code_lengths[i];
+		if (length != 0)
+		{
+			IFDEBUG(
+				printf("		%lu: ", i);
+				for (U16 j = 0; j < length; j++)
+					printf("%d", (next_code[length] >> (length - j - 1)) & 1);
+				printf("\n"))
+
+			U8 op;
+			U16 val;
+			switch (type)
+			{
+			case CL:
+				op = 0;
+				val = i;
+				break;
+			case LL:
+				if (i <= 255)
+					op = 0x80;
+				else if (i == 256)
+					op = 0x20;
+				else
+					op = 0x40 | ll_table[i - 257].extra_bits;
+
+				if (i <= 256)
+					val = i;
+				else
+					val = ll_table[i - 257].min;
+				break;
+			case DIST:
+				op = 0x40 | offset_table[i].extra_bits;
+				val = offset_table[i].min;
+				break;
+			}
+
+			U16 n1 = next_code[length];
+			U16 n = 0;
+			for (U8 j = 0; j < length; j++)
+				n |= ((n1 >> j) & 0x1) << (length - j - 1);
+
+			for (U64 j = 0; j <= ((1U << max_code_length) - 1) >> (length); j++)
+				code_table_out[n | (j << length)] = (struct s_code){.nbits = length, .val = val, .op = op};
+			next_code[length]++;
+		}
+	}
+	a_free(next_code);
+
+	return TRUE;
+}
+
+S32 ft_inflate(t_deflate_stream *stream)
 {
 	U64 hold;		// bit accumulator
 	U64 have, left; // remaining in, remaining out
 	U8 bits;		// bit counter
 	U8 *next;
 	U16 to_cpy;
+	S32 ret; // return value on quit
 	struct s_code code;
-	struct s_inflate_data *inf_data = &stream->inflate;
+	struct s_inflate_data *inf_data = stream->inflate;
 
 	LOAD();
 
@@ -177,13 +271,14 @@ S32 ft_inflate2(t_deflate_stream *stream)
 
 			case 2:
 				IFDEBUG(printf("	block type: dynamic\n"))
-				inf_data->state = 0; // TODO
+				inf_data->state = N_LL_CODES;
 				break;
 
 			case 3:
 				IFDEBUG(printf("	block type: INVALID\n"))
-				// TODO
 				DROPBITS(2);
+				inf_data->state = INV;
+				ret = FT_INFLATE_RET_ERROR;
 				goto inflate_leave;
 			}
 			DROPBITS(2);
@@ -195,8 +290,9 @@ S32 ft_inflate2(t_deflate_stream *stream)
 
 			if ((hold & 0xFFFF) != ((hold >> 16) ^ 0xFFFF))
 			{
-				// TODO
 				IFDEBUG(printf("	invalid size/~size\n"))
+				inf_data->state = INV;
+				ret = FT_INFLATE_RET_ERROR;
 				goto inflate_leave;
 			}
 			inf_data->length = hold & 0xFFFF;
@@ -213,7 +309,10 @@ S32 ft_inflate2(t_deflate_stream *stream)
 				if (to_cpy > left)
 					to_cpy = left;
 				if (to_cpy == 0)
+				{
+					ret = FT_INFLATE_RET_NOT_DONE;
 					goto inflate_leave;
+				}
 				IFDEBUG(printf("	copying %u bytes\n", to_cpy))
 				ft_memcpy(stream->out + stream->out_used, next, to_cpy);
 
@@ -229,6 +328,199 @@ S32 ft_inflate2(t_deflate_stream *stream)
 			inf_data->state = BLK_HEAD;
 			break;
 
+		case N_LL_CODES:
+			NEEDBITS(5);
+			inf_data->n_ll_codes = BITS(5) + 257;
+			DROPBITS(5);
+			IFDEBUG(printf("	Num ll codes: %u\n", inf_data->n_ll_codes))
+			inf_data->state = N_DIST_CODES;
+			/* fallthrough */
+
+		case N_DIST_CODES:
+			NEEDBITS(5);
+			inf_data->n_dist_codes = BITS(5) + 1;
+			DROPBITS(5);
+			IFDEBUG(printf("	Num dist codes: %u\n", inf_data->n_dist_codes))
+			inf_data->state = N_CL_CODES;
+			/* fallthrough */
+
+		case N_CL_CODES:
+			NEEDBITS(4);
+			inf_data->n_cl_codes = BITS(4) + 4;
+			DROPBITS(4);
+			IFDEBUG(printf("	Num CL codes: %u\n", inf_data->n_cl_codes))
+			inf_data->have = 0;
+			inf_data->state = CL_CODES;
+			/* fallthrough */
+
+		case CL_CODES:
+			while (inf_data->have < inf_data->n_cl_codes)
+			{
+				NEEDBITS(3);
+				inf_data->cl_code_length[cl_code_length_encoding_i[inf_data->have++]] = (U16)BITS(3);
+				DROPBITS(3);
+			}
+			while (inf_data->have < 19)
+				inf_data->cl_code_length[cl_code_length_encoding_i[inf_data->have++]] = 0;
+			IFDEBUG(
+				printf("	CL code lengths (0 - 18):");
+				for (U8 i = 0; i < 19; i++)
+					printf(" %u", inf_data->cl_code_length[i]);
+				printf("\n");)
+
+			inf_data->max_code_length = 0;
+			for (U64 i = 0; i < 19; i++)
+				inf_data->max_code_length = MAX(inf_data->max_code_length, inf_data->cl_code_length[i]);
+
+			inf_data->cl_codes = malloc(sizeof(struct s_code) * ((1U << (inf_data->max_code_length + 1)) - 1));
+			if (inf_data->cl_codes == NULL)
+			{
+				ret = FT_INFLATE_RET_OMEM;
+				inf_data->state = INV;
+				goto inflate_leave;
+			}
+			ft_memset(inf_data->cl_codes, 1, sizeof(inf_data->cl_codes));
+			if (!code_length_to_code_table(inf_data->cl_code_length, 19, inf_data->cl_codes, inf_data->max_code_length, CL))
+			{
+				ret = FT_INFLATE_RET_OMEM;
+				inf_data->state = INV;
+				goto inflate_leave;
+			}
+
+			inf_data->have = 0;
+			inf_data->last_symbol = -1;
+			inf_data->state = RD_CL_CODE;
+			/* fallthrough */
+
+		case RD_CL_CODE:
+			while (TRUE)
+			{
+				code = inf_data->cl_codes[BITS(inf_data->max_code_length)];
+				if (code.nbits <= bits)
+					break;
+				PULLBYTE();
+			}
+			DROPBITS(code.nbits);
+			inf_data->state = LEN_CODES;
+			/* fallthrough */
+
+		case LEN_CODES:
+			switch (code.val)
+			{
+			case 16:;
+				NEEDBITS(2);
+
+				IFDEBUG(printf("	Symbol 16 (repeat count: %u)\n", BITS(2) + 3))
+
+				for (U8 i = 0; i < BITS(2) + 3; i++)
+				{
+					if (inf_data->have >= inf_data->n_ll_codes)
+						inf_data->dist_code_length[inf_data->have - inf_data->n_ll_codes] = inf_data->last_symbol;
+					else
+						inf_data->ll_code_length[inf_data->have] = inf_data->last_symbol;
+					inf_data->have++;
+				}
+				DROPBITS(2);
+				break;
+			case 17:;
+				NEEDBITS(3);
+
+				IFDEBUG(printf("	Symbol 17 (repeat count: %u)\n", BITS(3) + 3))
+
+				for (U8 i = 0; i < BITS(3) + 3; i++)
+				{
+					if (inf_data->have >= inf_data->n_ll_codes)
+						inf_data->dist_code_length[inf_data->have - inf_data->n_ll_codes] = 0;
+					else
+						inf_data->ll_code_length[inf_data->have] = 0;
+					inf_data->have++;
+				}
+				inf_data->last_symbol = 0;
+				DROPBITS(3);
+				break;
+			case 18:;
+				NEEDBITS(7);
+
+				IFDEBUG(printf("	Symbol 18 (repeat count: %u)\n", BITS(7) + 11))
+
+				for (U8 i = 0; i < BITS(7) + 11; i++)
+				{
+					if (inf_data->have >= inf_data->n_ll_codes)
+						inf_data->dist_code_length[inf_data->have - inf_data->n_ll_codes] = 0;
+					else
+						inf_data->ll_code_length[inf_data->have] = 0;
+					inf_data->have++;
+				}
+				inf_data->last_symbol = 0;
+				DROPBITS(7);
+				break;
+			default:
+
+				// IFDEBUG(printf("	Symbol %u (%u)\n", code.val, code.nbits))
+
+				if (inf_data->have >= inf_data->n_ll_codes)
+					inf_data->dist_code_length[inf_data->have - inf_data->n_ll_codes] = code.val;
+				else
+					inf_data->ll_code_length[inf_data->have] = code.val;
+				inf_data->have++;
+				inf_data->last_symbol = code.val;
+				break;
+			}
+
+			if (inf_data->have < inf_data->n_ll_codes + inf_data->n_dist_codes)
+			{
+				inf_data->state = RD_CL_CODE;
+				break;
+			}
+
+			free(inf_data->cl_codes);
+
+			{
+				inf_data->ll_codes_bits = 0;
+				for (U16 i = 0; i < 288; i++)
+					inf_data->ll_codes_bits = MAX(inf_data->ll_codes_bits, inf_data->ll_code_length[i]);
+
+				inf_data->ll_codes = malloc(sizeof(struct s_code) * ((1U << (inf_data->ll_codes_bits + 1)) - 1));
+				if (inf_data->ll_codes == NULL)
+				{
+					ret = FT_INFLATE_RET_OMEM;
+					inf_data->state = INV;
+					goto inflate_leave;
+				}
+				ft_memset(inf_data->ll_codes, 1, sizeof(inf_data->ll_codes));
+				if (!code_length_to_code_table(inf_data->ll_code_length, 288, inf_data->ll_codes, inf_data->ll_codes_bits, LL))
+				{
+					ret = FT_INFLATE_RET_OMEM;
+					inf_data->state = INV;
+					goto inflate_leave;
+				}
+			}
+
+			{
+				inf_data->dist_codes_bits = 0;
+				for (U16 i = 0; i < 32; i++)
+					inf_data->dist_codes_bits = MAX(inf_data->dist_codes_bits, inf_data->dist_code_length[i]);
+
+				inf_data->dist_codes = malloc(sizeof(struct s_code) * ((1U << (inf_data->dist_codes_bits + 1)) - 1));
+				if (inf_data->dist_codes == NULL)
+				{
+					ret = FT_INFLATE_RET_OMEM;
+					inf_data->state = INV;
+					goto inflate_leave;
+				}
+				ft_memset(inf_data->dist_codes, 0, sizeof(inf_data->dist_codes));
+				if (!code_length_to_code_table(inf_data->dist_code_length, 32, inf_data->dist_codes, inf_data->dist_codes_bits, DIST))
+				{
+					ret = FT_INFLATE_RET_OMEM;
+					inf_data->state = INV;
+					goto inflate_leave;
+				}
+			}
+
+			inf_data->state = RD_CODE;
+
+			/* fallthrough */
+
 		case RD_CODE:
 			while (TRUE)
 			{
@@ -238,6 +530,7 @@ S32 ft_inflate2(t_deflate_stream *stream)
 				PULLBYTE();
 			}
 			DROPBITS(code.nbits);
+			// printf("%u %u %u\n", code.val, code.op, code.nbits);
 
 			switch (code.op >> 4)
 			{
@@ -259,7 +552,8 @@ S32 ft_inflate2(t_deflate_stream *stream)
 			default:
 				IFDEBUG(printf("	Error: invalid code\n"))
 				inf_data->state = INV;
-				break;
+				ret = FT_INFLATE_RET_ERROR;
+				goto inflate_leave;
 			}
 			break;
 
@@ -301,15 +595,14 @@ S32 ft_inflate2(t_deflate_stream *stream)
 			{
 				IFDEBUG(printf("	INVALID BACKREF: too far back\n"))
 				inf_data->state = INV;
-				break;
+				ret = FT_INFLATE_RET_ERROR;
+				goto inflate_leave;
 			}
 			if (inf_data->length == 0)
 			{
 				inf_data->state = RD_CODE;
 				break;
 			}
-			if (left == 0)
-				goto inflate_leave;
 
 			to_cpy = inf_data->length;
 
@@ -323,8 +616,10 @@ S32 ft_inflate2(t_deflate_stream *stream)
 			if (to_cpy > left)
 				to_cpy = left;
 			if (to_cpy == 0)
+			{
+				ret = FT_INFLATE_RET_NOT_DONE;
 				goto inflate_leave;
-
+			}
 
 			for (U64 i = 0; i < to_cpy; i++)
 			{
@@ -343,7 +638,10 @@ S32 ft_inflate2(t_deflate_stream *stream)
 
 		case LIT:
 			if (left == 0)
+			{
+				ret = FT_INFLATE_RET_NOT_DONE;
 				goto inflate_leave;
+			}
 
 			if (inf_data->win_next - inf_data->window >= FT_DEFLATE_WINDOW_SIZE)
 				inf_data->win_next = inf_data->window;
@@ -361,30 +659,36 @@ S32 ft_inflate2(t_deflate_stream *stream)
 				else printf("	lit: %#x\n", code.val);)
 			inf_data->state = RD_CODE;
 			break;
-
-		case INV:
-			RESTORE();
-			return FT_INFLATE_RET_DONE; // TODO: change
 		}
 
 		if (inf_data->state == BLK_HEAD && inf_data->last)
 		{
-			RESTORE();
-			return FT_INFLATE_RET_DONE;
+			ret = FT_INFLATE_RET_DONE;
+			goto inflate_leave;
 		}
 	}
 
 inflate_leave:
 	RESTORE();
-	return FT_INFLATE_RET_NOT_DONE;
+	return ret;
 }
 
-void ft_inflate_init(t_deflate_stream *stream)
+bool ft_inflate_init(t_deflate_stream *stream)
 {
 	ft_memset(stream, 0, sizeof(t_deflate_stream));
+	stream->inflate = malloc(sizeof(struct s_inflate_data));
+	if (stream->inflate == NULL)
+		return FALSE;
+	ft_memset(stream->inflate, 0, sizeof(struct s_inflate_data));
+	return TRUE;
 }
 
 void ft_inflate_end(t_deflate_stream *stream)
 {
-	free(stream->inflate.window);
+	free(stream->inflate->window);
+	if (stream->inflate->ll_codes != fixed_ll_codes)
+		free(stream->inflate->ll_codes);
+	if (stream->inflate->dist_codes != fixed_dist_codes)
+		free(stream->inflate->dist_codes);
+	free(stream->inflate);
 }

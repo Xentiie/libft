@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 22:00:12 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/14 08:40:44 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/28 14:01:13 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,19 +301,20 @@ U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_
 		header->state--;
 		/* fall through */
 	case -8:
+		U64 i = 0;
+		while (i < data_len && data[i] != '\0')
+			i++;
+		if (data[i] != '\0')
+			__FTRETURN_ERR(sv - data_len, FT_EOSPACE);
 		if (header->filename)
 		{
-			U64 i = 0;
-			while (i < data_len && data[i] != '\0')
-				i++;
-			if (data[i] != '\0')
-				__FTRETURN_ERR(sv - data_len, FT_EOSPACE);
 			header->filename = ft_strdup((const_string)data);
 			if (header->filename == NULL)
 				__FTRETURN_ERR(sv - data_len, FT_EOMEM);
-			data += i + 1;
-			data_len -= i + 1;
 		}
+		data += i + 1;
+		data_len -= i + 1;
+
 		header->state--;
 		/* fall through */
 	case -9:

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 23:02:08 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/27 14:48:34 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/28 12:06:31 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,19 @@ struct s_inflate_data
 
 	S32 state;
 
+	U16 n_ll_codes;
+	U8 n_dist_codes;
+	U8 n_cl_codes;
+	U16 have;
+	U16 max_code_length;
+	U16 cl_code_length[19];
+	U16 ll_code_length[288];
+	U16 dist_code_length[32];
+	S32 last_symbol;
+
+	//struct s_code cl_codes[0x7FFF];
+	struct s_code *cl_codes;
+
 	struct s_code *ll_codes;
 	struct s_code *dist_codes;
 	struct s_code code;
@@ -59,7 +72,7 @@ typedef struct s_deflate_stream
 
 	union
 	{
-		struct s_inflate_data inflate;
+		struct s_inflate_data *inflate;
 
 		struct
 		{
@@ -107,8 +120,9 @@ bool ft_deflate_end(t_deflate_stream *stream);
 
 /*
 Inits a t_deflate_stream for decompression
+Returns `FALSE` if there was an error, `TRUE` otherwise
 */
-void ft_inflate_init(t_deflate_stream *stream);
+bool ft_inflate_init(t_deflate_stream *stream);
 
 /*
 Decompresses data in the DEFLATE format.
@@ -120,6 +134,7 @@ Compressed data is taken from `stream.in`, and decompressed data is put in `stre
 - `FT_INFLATE_RET_OMEM` if there was an error allocating the window buffer
 - `FT_INFLATE_RET_INVALID_IN_SIZE` if `stream.in_used < stream.in_size`
 - `FT_INFLATE_RET_INVALID_OUT_SIZE` if `stream.out_used < stream.out_size`
+- `FT_INFLATE_RET_ERR` if an unspecified error occurred
 ### On error
 Returns a negative value, corresponding to the error.
 ### TODO
@@ -136,5 +151,6 @@ void ft_inflate_end(t_deflate_stream *stream);
 #define FT_INFLATE_RET_OMEM -1
 #define FT_INFLATE_RET_INVALID_IN_SIZE -2
 #define FT_INFLATE_RET_INVALID_OUT_SIZE -3
+#define FT_INFLATE_RET_ERROR -4
 
 #endif
