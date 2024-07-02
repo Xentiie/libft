@@ -1,0 +1,532 @@
+        -:    0:Source:srcs/images/png.c
+        -:    0:Graph:./srcs/images/png.gcno
+        -:    0:Data:./srcs/images/png.gcda
+        -:    0:Runs:1
+        -:    1:/* ************************************************************************** */
+        -:    2:/*                                                                            */
+        -:    3:/*                                                        :::      ::::::::   */
+        -:    4:/*   png.c                                              :+:      :+:    :+:   */
+        -:    5:/*                                                    +:+ +:+         +:+     */
+        -:    6:/*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
+        -:    7:/*                                                +#+#+#+#+#+   +#+           */
+        -:    8:/*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
+        -:    9:/*   Updated: 2024/07/02 22:40:00 by reclaire         ###   ########.fr       */
+        -:   10:/*                                                                            */
+        -:   11:/* ************************************************************************** */
+        -:   12:
+        -:   13:/*
+        -:   14:TODO:
+        -:   15:
+        -:   16:if indexed color, can't parse if PLTE comes after data
+        -:   17:
+        -:   18:*/
+        -:   19:
+        -:   20:#include "libft_int.h"
+        -:   21:
+        -:   22:#include <stdio.h>
+        -:   23:#include <stdlib.h>
+        -:   24:
+        -:   25:#define reverse16(n) __builtin_bswap16(n)
+        -:   26:#define reverse32(n) __builtin_bswap32(n)
+        -:   27:#define reverse64(n) __builtin_bswap64(n)
+        -:   28:
+        -:   29:// png always starts with '137 80 78 71 13 10 26 10'
+        1:   30:static bool check_png_sig(file f)
+        -:   31:{
+        1:   32:	const U8 png_sig[8] = {137, 80, 78, 71, 13, 10, 26, 10};
+        -:   33:	U8 buff[8];
+        1:   34:	if (
+        2:   35:		ft_fread(f, (char *)buff, sizeof(buff)) != sizeof(buff) ||
+        1:   36:		ft_memcmp(buff, png_sig, sizeof(png_sig)))
+    #####:   37:		return FALSE;
+        1:   38:	return TRUE;
+        -:   39:}
+        -:   40:
+        2:   41:static U32 png_read_u32(U8 **buffer)
+        -:   42:{
+        2:   43:	U32 n = reverse32(*(U32 *)(*buffer));
+        2:   44:	*buffer += sizeof(U32);
+        2:   45:	return n;
+        -:   46:}
+        -:   47:
+        -:   48:/*
+        -:   49:trucs droles:
+        -:   50:
+        -:   51:la taille est stocké sur un U32, mais le bit de signe n'est pas utilisé
+        -:   52:(donc normalement limité sur S32_MAX), du coup il se passe quoi si je rentre une image
+        -:   53:plus grande ?
+        -:   54:
+        -:   55:
+        -:   56:
+        -:   57:*/
+        -:   58:
+        -:   59:#define COL_TYPE_GRAYSCALE 0
+        -:   60:#define COL_TYPE_RGB 2
+        -:   61:#define COL_TYPE_PALETTE 3
+        -:   62:#define COL_TYPE_GRAYSCALE_ALPHA 4
+        -:   63:#define COL_TYPE_RGB_ALPHA 6
+        -:   64:
+        -:   65:#define CHUNK_IHDR 1380206665
+        -:   66:#define CHUNK_IEND 1145980233
+        -:   67:#define CHUNK_PLTE 1163152464
+        -:   68:#define CHUNK_IDAT 1413563465
+        -:   69:
+        -:   70:#define CHUNK_tEXt 1951942004
+        -:   71:#define CHUNK_zTXt 1951945850
+        -:   72:#define CHUNK_gAMA 1095582055
+        -:   73:#define CHUNK_iCCP 1346585449
+        -:   74:#define CHUNK_bKGD 1145523042
+        -:   75:#define CHUNK_pHYs 1935231088
+        -:   76:#define CHUNK_tIME 1162692980
+        -:   77:
+        -:   78:/*
+        -:   79:Chunks that are not strictly necessary in order to meaningfully
+        -:   80:display the contents of the file are known as "ancillary"
+        -:   81:chunks.  A decoder encountering an unknown chunk in which the
+        -:   82:ancillary bit is 1 can safely ignore the chunk and proceed to
+        -:   83:display the image. The time chunk (tIME) is an example of an
+        -:   84:ancillary chunk.
+        -:   85:
+        -:   86:Chunks that are necessary for successful display of the file's
+        -:   87:contents are called "critical" chunks. A decoder encountering
+        -:   88:an unknown chunk in which the ancillary bit is 0 must indicate
+        -:   89:to the user that the image contains information it cannot
+        -:   90:safely interpret.  The image header chunk (IHDR) is an example
+        -:   91:of a critical chunk.
+        -:   92:*/
+        -:   93:#define CHUNK_ANCILLARY(type_code) ((type_code >> 5) & 1)
+        -:   94:/*
+        -:   95:A public chunk is one that is part of the PNG specification or
+        -:   96:is registered in the list of PNG special-purpose public chunk
+        -:   97:types.  Applications can also define private (unregistered)
+        -:   98:chunks for their own purposes.  The names of private chunks
+        -:   99:must have a lowercase second letter, while public chunks will
+        -:  100:always be assigned names with uppercase second letters.  Note
+        -:  101:that decoders do not need to test the private-chunk property
+        -:  102:bit, since it has no functional significance; it is simply an
+        -:  103:administrative convenience to ensure that public and private
+        -:  104:chunk names will not conflict.
+        -:  105:*/
+        -:  106:#define CHUNK_PRIVATE(type_code) ((type_code >> 13) & 1)
+        -:  107:/*
+        -:  108:The significance of the case of the third letter of the chunk
+        -:  109:name is reserved for possible future expansion.  At the present
+        -:  110:time all chunk names must have uppercase third letters.
+        -:  111:(Decoders should not complain about a lowercase third letter,
+        -:  112:however, as some future version of the PNG specification could
+        -:  113:define a meaning for this bit.  It is sufficient to treat a
+        -:  114:chunk with a lowercase third letter in the same way as any
+        -:  115:other unknown chunk type.)
+        -:  116:*/
+        -:  117:#define CHUNK_RESERVED(type_code) ((type_code >> 21) & 1)
+        -:  118:/*
+        -:  119:If a chunk's safe-to-copy bit is 0, it indicates that the chunk
+        -:  120:depends on the image data.  If the program has made any changes
+        -:  121:to critical chunks, including addition, modification, deletion,
+        -:  122:or reordering of critical chunks, then unrecognized unsafe
+        -:  123:chunks must not be copied to the output PNG file.  (Of course,
+        -:  124:if the program does recognize the chunk, it can choose to
+        -:  125:output an appropriately modified version.)
+        -:  126:*/
+        -:  127:#define CHUNK_SAFE(type_code) ((type_code >> 29) & 1)
+        -:  128:
+ 71073024:  129:S32 sh_png_paeth_predict(S32 a, S32 b, S32 c)
+        -:  130:{
+ 71073024:  131:	S32 p = a + b - c;
+ 71073024:  132:	S32 pa = ft_abs(p - a);
+ 71073024:  133:	S32 pb = ft_abs(p - b);
+ 71073024:  134:	S32 pc = ft_abs(p - c);
+        -:  135:
+ 71073024:  136:	if (LIKELY(pa <= pb && pa <= pc))
+ 59253254:  137:		return a;
+ 11819770:  138:	if (LIKELY(pb <= pc))
+  9908773:  139:		return b;
+  1910997:  140:	return c;
+        -:  141:}
+        -:  142:
+        1:  143:FUNCTION_HOT t_png_img *ft_load_png(file f, bool verbose)
+        -:  144:{
+        -:  145:	// A valid PNG image must contain an IHDR chunk, one or more IDAT chunks, and an IEND chunk.
+        -:  146:
+        -:  147:#define ERROR(critical, ...)                                                                  \
+        -:  148:	do                                                                                        \
+        -:  149:	{                                                                                         \
+        -:  150:		if (UNLIKELY(verbose))                                                                \
+        -:  151:		{                                                                                     \
+        -:  152:			if (ft_errno != FT_OK)                                                            \
+        -:  153:				ft_dprintf(ft_stderr, "(ft_errno: %d:%s) ", ft_errno, ft_strerror(ft_errno)); \
+        -:  154:			ft_dprintf(ft_stderr, "png error: ");                                             \
+        -:  155:			ft_dprintf(ft_stderr, __VA_ARGS__);                                               \
+        -:  156:			ft_dprintf(ft_stderr, "\n");                                                      \
+        -:  157:		}                                                                                     \
+        -:  158:		if (critical)                                                                         \
+        -:  159:			goto png_error;                                                                   \
+        -:  160:	} while (0)
+        -:  161:
+        -:  162:#define ASSERT(critical, x, ...) \
+        -:  163:	if (UNLIKELY(!(x)))          \
+        -:  164:	ERROR(critical, __VA_ARGS__)
+        -:  165:
+        1:  166:	U8 *__buffer = NULL;   // address returned by malloc for the chunk's buffer
+        1:  167:	U8 *buffer = NULL;	   // start position for the chunk's data
+        1:  168:	U8 *crc_buffer = NULL; // start position for reading a chunk's CRC32
+        1:  169:	U64 buffer_alloc = 0;
+        -:  170:
+        -:  171:	string txt;				 // buffer for text and ztxt chunks
+        -:  172:	S32 ret;				 // return from inflate
+        -:  173:	t_deflate_stream stream; // stream for inflate
+        -:  174:
+        1:  175:	U64 data_i = 0;		 // pixels data index
+        -:  176:	U8 *work_area;		 // IDAT decompress output
+        1:  177:	U8 reading_IDAT = 0; // IDAT chunks must appear consecutively
+        -:  178:
+        -:  179:	U32 chunk_length;
+        -:  180:	U32 chunk_type_code;
+        -:  181:	U32 crc;
+        1:  182:	t_png_img *img = NULL;
+        -:  183:
+        1:  184:	U8 *palette = NULL;
+        1:  185:	U64 palette_size = 0;
+        -:  186:
+       1*:  187:	ASSERT(TRUE, check_png_sig(f), "Bad PNG signature");
+        -:  188:
+        1:  189:	S32 chunk_n = 0;
+        7:  190:next_chunk:
+        7:  191:	chunk_n++;
+        7:  192:	buffer = __buffer;
+        -:  193:
+        -:  194:	// Chunk length/type
+       7*:  195:	ASSERT(TRUE, ft_fread(f, (char *)&chunk_length, sizeof(U32)) == sizeof(U32), "Couldn't read chunk #%d length", chunk_n);
+        7:  196:	chunk_length = reverse32(chunk_length);
+       7*:  197:	ASSERT(TRUE, ft_fread(f, (char *)&chunk_type_code, sizeof(U32)) == sizeof(U32), "Couldn't read chunk #%d type code", chunk_n);
+        7:  198:	if (UNLIKELY(chunk_n == 1))
+       1*:  199:		ASSERT(TRUE, chunk_type_code == CHUNK_IHDR, "First chunk isn't IDHR");
+        -:  200:
+        -:  201:	// Grow buffer
+        7:  202:	chunk_length += 4; // Need to take chunk_type_code for CRC, so buffer needs to require enough space to hold everything
+        7:  203:	if (chunk_length > buffer_alloc)
+        -:  204:	{
+        5:  205:		free(__buffer);
+        5:  206:		if ((__buffer = malloc(sizeof(U8) * chunk_length)) == NULL)
+    #####:  207:			goto png_error;
+        5:  208:		buffer = __buffer;
+        5:  209:		buffer_alloc = chunk_length;
+        -:  210:	}
+        7:  211:	chunk_length -= 4;
+        7:  212:	crc_buffer = buffer;
+        7:  213:	buffer += 4;
+        7:  214:	*(U32 *)crc_buffer = chunk_type_code;
+        -:  215:
+        -:  216:	// Read whole chunk and validate CRC
+        -:  217:	{
+        7:  218:		U64 bytes_read = 0, total_read = 0;
+       13:  219:		while ((bytes_read = ft_fread(f, (char *)(buffer + total_read), chunk_length - total_read)) > 0)
+        6:  220:			total_read += bytes_read;
+       7*:  221:		ASSERT(TRUE, total_read == chunk_length, "Error reading chunk #%d", chunk_n);
+        -:  222:
+       7*:  223:		ASSERT(TRUE, ft_fread(f, (char *)&crc, sizeof(U32)) == sizeof(U32), "Couldn't read chunk #%d CRC", chunk_n);
+        7:  224:		crc = reverse32(crc);
+        7:  225:		U32 current_crc = ft_crc32(crc_buffer, chunk_length + 4);
+       7*:  226:		ASSERT(FALSE, current_crc == crc, "Invalid CRC on chunk #%d (is:%#x should be:%#x)", chunk_n, current_crc, crc);
+        -:  227:	}
+        -:  228:
+        7:  229:	printf("Chunk: %.4s\n", (char *)&chunk_type_code);
+        -:  230:
+       7*:  231:	if (UNLIKELY(reading_IDAT == 1 && chunk_type_code != CHUNK_IDAT))
+    #####:  232:		ERROR(TRUE, "IDAT chunks are not consecutive");
+        -:  233:
+        -:  234:	// Analyse chunk
+        7:  235:	switch (chunk_type_code)
+        -:  236:	{
+        1:  237:	case CHUNK_IHDR:
+       1*:  238:		ASSERT(TRUE, chunk_n == 1, "IDHR chunk found where it shouldn't be");
+        -:  239:
+        1:  240:		if ((img = malloc(sizeof(t_png_img))) == NULL)
+    #####:  241:			__FTRETURN_ERR(NULL, FT_EOMEM);
+        -:  242:
+        1:  243:		img->width = png_read_u32(&buffer);
+        1:  244:		img->height = png_read_u32(&buffer);
+        1:  245:		img->bit_depth = *buffer++;
+        1:  246:		img->color_type = *buffer++;
+        1:  247:		img->compression_method = *buffer++;
+        1:  248:		img->filter_method = *buffer++;
+        1:  249:		img->interlace_method = *buffer++;
+       1*:  250:		img->sample_depth = img->color_type == COL_TYPE_PALETTE ? 8 : img->bit_depth;
+        1:  251:		img->text_data = NULL;
+        -:  252:
+        -:  253:		// Values check
+        -:  254:		{
+       1*:  255:			ASSERT(FALSE, img->bit_depth == 1 || img->bit_depth == 2 || img->bit_depth == 4 || img->bit_depth == 8 || img->bit_depth == 16, "Bad bit depth (%u)", img->bit_depth);
+       1*:  256:			ASSERT(FALSE, img->color_type == 0 || img->color_type == 2 || img->color_type == 3 || img->color_type == 4 || img->color_type == 6, "Bad color type (%u)", img->color_type);
+       1*:  257:			ASSERT(FALSE,
+        -:  258:				   (img->color_type == COL_TYPE_RGB && (img->bit_depth == 8 || img->bit_depth == 16)) ||
+        -:  259:					   (img->color_type == COL_TYPE_PALETTE && (img->bit_depth == 1 || img->bit_depth == 2 || img->bit_depth == 4 || img->bit_depth == 8)) ||
+        -:  260:					   (img->color_type == COL_TYPE_GRAYSCALE_ALPHA && (img->bit_depth == 8 || img->bit_depth == 16)) ||
+        -:  261:					   (img->color_type == COL_TYPE_RGB_ALPHA && (img->bit_depth == 8 || img->bit_depth == 16)),
+        -:  262:				   "Invalid color type/bit depth combination (color type: %u)", img->color_type);
+        -:  263:
+       1*:  264:			ASSERT(FALSE, img->compression_method == 0, "Unrecognized compression method (%u)", img->compression_method);
+       1*:  265:			ASSERT(FALSE, img->filter_method == 0, "Unrecognized filter method (%u)", img->filter_method);
+       1*:  266:			ASSERT(FALSE, img->interlace_method == 0 || img->interlace_method == 1, "Unrecognized interlace method (%u)", img->interlace_method);
+        -:  267:		}
+        -:  268:
+        1:  269:		switch (img->color_type)
+        -:  270:		{
+    #####:  271:		case COL_TYPE_GRAYSCALE:
+    #####:  272:			img->bpp = ft_ceil(img->bit_depth / 8.0f);
+    #####:  273:			break;
+        1:  274:		case COL_TYPE_RGB:
+        1:  275:			img->bpp = 3 * ft_ceil(img->bit_depth / 8.0f);
+        1:  276:			break;
+    #####:  277:		case COL_TYPE_PALETTE:
+    #####:  278:			img->bpp = ft_ceil(img->bit_depth / 8.0f);
+    #####:  279:			break;
+    #####:  280:		case COL_TYPE_GRAYSCALE_ALPHA:
+    #####:  281:			img->bpp = 2 * ft_ceil(img->bit_depth / 8.0f);
+    #####:  282:			break;
+    #####:  283:		case COL_TYPE_RGB_ALPHA:
+    #####:  284:			img->bpp = 4 * ft_ceil(img->bit_depth / 8.0f);
+    #####:  285:			break;
+        -:  286:		}
+        -:  287:
+        1:  288:		if ((img->data = malloc(sizeof(U8) * img->width * img->height * img->bpp)) == NULL)
+    #####:  289:			__FTRETURN_ERR(NULL, FT_EOMEM);
+        1:  290:		if ((work_area = malloc(sizeof(U8) * (img->width * img->bpp + 1))) == NULL)
+    #####:  291:			__FTRETURN_ERR(NULL, FT_EOMEM);
+        -:  292:
+        6:  293:		goto next_chunk;
+        -:  294:
+    #####:  295:	case CHUNK_PLTE:
+    #####:  296:		ASSERT(TRUE, palette == NULL, "Multiple PLTE chunk found");
+    #####:  297:		ASSERT(TRUE, chunk_length % 3 == 0, "Bad PLTE chunk length");
+    #####:  298:		ASSERT(FALSE, img->color_type != COL_TYPE_GRAYSCALE && img->color_type != COL_TYPE_GRAYSCALE_ALPHA, "PLTE chunk shouldn't be here");
+        -:  299:
+    #####:  300:		palette_size = chunk_length / 3;
+    #####:  301:		ASSERT(TRUE, palette_size <= pow(2, img->bit_depth), "Too much color in palette");
+        -:  302:
+    #####:  303:		if ((palette = malloc(sizeof(U8) * chunk_length)) != NULL)
+    #####:  304:			__FTRETURN_ERR(NULL, FT_EOMEM);
+    #####:  305:		ft_memcpy(palette, buffer, sizeof(U8) * chunk_length);
+    #####:  306:		goto next_chunk;
+        -:  307:
+        1:  308:	case CHUNK_IDAT:
+        1:  309:		if (img->color_type == COL_TYPE_PALETTE)
+    #####:  310:			ASSERT(TRUE, palette != NULL, "PLTE chunk not found / PLTE chunk appears after IDAT chunk");
+        -:  311:
+        1:  312:		if (reading_IDAT == 0)
+        -:  313:		{
+        1:  314:			buffer += 2; // zlib header
+        1:  315:			chunk_length -= 2;
+        -:  316:
+        1:  317:			if (!UNLIKELY(ft_inflate_init(&stream)))
+    #####:  318:				__FTRETURN_ERR(NULL, FT_EOMEM);
+        -:  319:
+        1:  320:			stream.out = work_area;
+        1:  321:			stream.out_size = sizeof(U8) * (img->width * img->bpp + 1);
+        -:  322:
+        1:  323:			reading_IDAT = 1;
+        -:  324:		}
+        -:  325:
+        1:  326:		stream.in = buffer;
+        1:  327:		stream.in_size = chunk_length;
+        1:  328:		stream.in_used = 0;
+        -:  329:
+        -:  330:		do
+        -:  331:		{
+     4016:  332:			ret = ft_inflate(&stream);
+        -:  333:
+     4016:  334:			if (UNLIKELY(ret < 0))
+    #####:  335:				ERROR("Inflate error: %d", ret);
+        -:  336:
+     4016:  337:			if (stream.out_used == stream.out_size)
+        -:  338:			{
+     4016:  339:				U8 *raw_data = work_area;
+     4016:  340:				U64 i = 0;
+     4016:  341:				switch (*raw_data++)
+        -:  342:				{
+    #####:  343:				case 0:
+        -:  344:					/* Filter none */
+    #####:  345:					for (U64 i = 0; i < img->width * img->bpp; i++)
+    #####:  346:						img->data[i + data_i] = raw_data[i];
+    #####:  347:					break;
+        5:  348:				case 1:
+        -:  349:					/* Filter sub */
+       20:  350:					for (; i < img->width * img->bpp && i < img->bpp; i++)
+       15:  351:						img->data[i + data_i] = raw_data[i];
+    90230:  352:					for (; i < img->width * img->bpp; i++)
+    90225:  353:						img->data[i + data_i] = ft_abs(raw_data[i] + img->data[i + data_i - img->bpp]);
+        5:  354:					break;
+       73:  355:				case 2:
+        -:  356:					/* Filter up */
+       73:  357:					if (data_i == 0)
+        -:  358:					{
+    #####:  359:						for (; i < img->width * img->bpp; i++)
+    #####:  360:							img->data[i + data_i] = raw_data[i];
+        -:  361:					}
+        -:  362:					else
+        -:  363:					{
+  1317577:  364:						for (; i < img->width * img->bpp; i++)
+  1317504:  365:							img->data[i + data_i] = ft_abs(raw_data[i] + img->data[i + data_i - img->width * img->bpp]);
+        -:  366:					}
+       73:  367:					break;
+    #####:  368:				case 3:
+        -:  369:					// printf("UNKNOWN FILTER METHOD (3)\n");
+        -:  370:					/* Filter average */
+    #####:  371:					for (; i < img->width * img->bpp; i++)
+        -:  372:					{
+    #####:  373:						U8 a = i < img->bpp ? 0 : img->data[i + data_i - img->bpp];
+    #####:  374:						U8 b = data_i < (img->width * img->bpp) ? 0 : img->data[i + data_i - img->width * img->bpp];
+        -:  375:
+    #####:  376:						img->data[i + data_i] = ft_abs(raw_data[i] + ((a + b) >> 1));
+        -:  377:					}
+    #####:  378:					break;
+     3938:  379:				case 4:
+        -:  380:					/* Filter paeth */
+        -:  381:					U8 a, b, c;
+     3938:  382:					if (UNLIKELY(data_i < (img->width * img->bpp)))
+        -:  383:					{
+    #####:  384:						for (; i < img->bpp; i++)
+    #####:  385:							img->data[i + data_i] = raw_data[i];
+    #####:  386:						for (; i < img->width * img->bpp; i++)
+        -:  387:						{
+    #####:  388:							a = img->data[i + data_i - img->bpp];
+    #####:  389:							b = 0;
+    #####:  390:							c = img->data[i + data_i - img->width * img->bpp - img->bpp];
+        -:  391:
+        -:  392:							// a = UNLIKELY(i < img->bpp) ? 0 : img->data[i + data_i - img->bpp];
+        -:  393:							// b = UNLIKELY(data_i < (img->width * img->bpp)) ? 0 : img->data[i + data_i - img->width * img->bpp];
+        -:  394:							// c = UNLIKELY((i < img->bpp || data_i < (img->width * img->bpp))) ? 0 : img->data[i + data_i - img->width * img->bpp - img->bpp];
+        -:  395:
+    #####:  396:							img->data[i + data_i] = ft_abs(raw_data[i] + sh_png_paeth_predict(a, b, c));
+        -:  397:						}
+        -:  398:					}
+        -:  399:					else
+        -:  400:					{
+    15752:  401:						for (; i < img->bpp; i++)
+    11814:  402:							img->data[i + data_i] = ft_abs(raw_data[i] + sh_png_paeth_predict(0, img->data[i + data_i - img->width * img->bpp], 0));
+ 71065148:  403:						for (; i < img->width * img->bpp; i++)
+        -:  404:						{
+ 71061210:  405:							a = img->data[i + data_i - img->bpp];
+ 71061210:  406:							b = img->data[i + data_i - img->width * img->bpp];
+ 71061210:  407:							c = img->data[i + data_i - img->width * img->bpp - img->bpp];
+        -:  408:
+        -:  409:							// a = UNLIKELY(i < img->bpp) ? 0 : img->data[i + data_i - img->bpp];
+        -:  410:							// b = UNLIKELY(data_i < (img->width * img->bpp)) ? 0 : img->data[i + data_i - img->width * img->bpp];
+        -:  411:							// c = UNLIKELY((i < img->bpp || data_i < (img->width * img->bpp))) ? 0 : img->data[i + data_i - img->width * img->bpp - img->bpp];
+        -:  412:
+ 71061210:  413:							img->data[i + data_i] = ft_abs(raw_data[i] + sh_png_paeth_predict(a, b, c));
+        -:  414:						}
+        -:  415:					}
+        -:  416:					/*
+        -:  417:					for (;i < img->width * img->bpp; i++)
+        -:  418:					{
+        -:  419:						U8 a = i < img->bpp ? 0 : img->data[i + data_i - img->bpp];
+        -:  420:						U8 b = data_i < (img->width * img->bpp) ? 0 : img->data[i + data_i - img->width * img->bpp];
+        -:  421:						U8 c = (i < img->bpp || data_i < (img->width * img->bpp)) ? 0 : img->data[i + data_i - img->width * img->bpp - img->bpp];
+        -:  422:
+        -:  423:						img->data[i + data_i] = ft_abs(raw_data[i] + sh_png_paeth_predict(a, b, c));
+        -:  424:					}
+        -:  425:					*/
+     3938:  426:					break;
+        -:  427:				}
+     4016:  428:				data_i += img->width * img->bpp;
+     4016:  429:				stream.out_used = 0;
+        -:  430:			}
+        -:  431:
+     4016:  432:			if (UNLIKELY(ret == FT_INFLATE_RET_DONE))
+        -:  433:			{
+        1:  434:				free(work_area);
+        1:  435:				reading_IDAT = 2;
+       1*:  436:				ASSERT(TRUE, reverse32(*(U32 *)(stream.in + stream.in_used)) == ft_inflate_addler32(&stream), "Data adler 32 doesn't match");
+        1:  437:				ft_inflate_end(&stream);
+        1:  438:				break;
+        -:  439:			}
+     4015:  440:		} while (stream.in_used < stream.in_size);
+        -:  441:
+        1:  442:		goto next_chunk;
+        -:  443:
+        2:  444:	case CHUNK_tEXt:;
+        -:  445:
+        -:  446:		// TODO: peut etre quand meme verif la taille du keyword (entre 1 et 79 bytes)
+        2:  447:		if ((txt = malloc(sizeof(char) * (chunk_length + 1))) == NULL)
+    #####:  448:			__FTRETURN_ERR(NULL, FT_EOMEM);
+        2:  449:		ft_memcpy(txt, buffer, chunk_length);
+        2:  450:		txt[chunk_length] = '\0';
+        2:  451:		ft_lstadd_front(&img->text_data, ft_lstnew(txt));
+        2:  452:		goto next_chunk;
+        -:  453:
+        1:  454:	case CHUNK_zTXt:;
+        1:  455:		goto next_chunk;
+        -:  456:		string keyword;
+        -:  457:		U64 keyword_length;
+        -:  458:
+        -:  459:		keyword = ft_strdup_l((string)buffer, &keyword_length);
+        -:  460:		buffer += keyword_length + 1;
+        -:  461:		chunk_length -= keyword_length + 1;
+        -:  462:
+        -:  463:		ASSERT(TRUE, *buffer == 0, "Unknown compression method");
+        -:  464:		buffer += 3; // Zlib header
+        -:  465:		chunk_length -= 3;
+        -:  466:
+        -:  467:		ft_inflate_init(&stream);
+        -:  468:		stream.in_size = chunk_length;
+        -:  469:		stream.in = buffer;
+        -:  470:		stream.out_size = 32;
+        -:  471:		if ((stream.out = malloc(sizeof(char) * stream.out_size)) == NULL)
+        -:  472:			__FTRETURN_ERR(NULL, FT_EOMEM);
+        -:  473:
+        -:  474:		ret = FT_INFLATE_RET_NOT_DONE;
+        -:  475:		while ((ret = ft_inflate(&stream)) != FT_INFLATE_RET_DONE)
+        -:  476:		{
+        -:  477:			if (LIKELY(ret == FT_INFLATE_RET_NOT_DONE))
+        -:  478:			{
+        -:  479:				stream.out_size *= 2;
+        -:  480:				if ((txt = malloc(sizeof(char) * stream.out_size)) == NULL)
+        -:  481:					__FTRETURN_ERR(NULL, FT_EOMEM);
+        -:  482:				ft_memcpy(txt, stream.out, stream.out_used);
+        -:  483:				free(stream.out);
+        -:  484:				stream.out = (U8 *)txt;
+        -:  485:			}
+        -:  486:			else
+        -:  487:				ERROR("zTXt chunk: couldn't decompress. Inflate error code: %d", ret);
+        -:  488:		}
+        -:  489:
+        -:  490:		if ((txt = malloc(sizeof(char) * (keyword_length + 1 + stream.out_used + 1))) == NULL)
+        -:  491:			__FTRETURN_ERR(NULL, FT_EOMEM);
+        -:  492:		ft_memcpy(txt, keyword, keyword_length + 1);
+        -:  493:		ft_memcpy(txt + keyword_length + 1, stream.out, stream.out_used);
+        -:  494:		txt[keyword_length + 1 + stream.out_used] = '\0';
+        -:  495:
+        -:  496:		free(stream.out);
+        -:  497:		ft_inflate_end(&stream);
+        -:  498:
+        -:  499:		ft_lstadd_front(&img->text_data, ft_lstnew(txt));
+        -:  500:		goto next_chunk;
+        -:  501:
+        1:  502:	case CHUNK_IEND:
+        1:  503:		break;
+        1:  504:	default:
+        1:  505:		if (verbose)
+        1:  506:			printf("Unknown chunk found: %.4s (code: %u) (%u bytes)\n", (string)&chunk_type_code, chunk_type_code, chunk_length);
+        1:  507:		goto next_chunk;
+        -:  508:	}
+        -:  509:
+        1:  510:	free(__buffer);
+        1:  511:	free(palette);
+        1:  512:	return img;
+        -:  513:
+    #####:  514:png_error:
+    #####:  515:	free(__buffer);
+    #####:  516:	free(palette);
+    #####:  517:	free(img->data);
+    #####:  518:	ft_lstclear(&img->text_data, free);
+    #####:  519:	free(img);
+    #####:  520:	return NULL;
+        -:  521:}
+        -:  522:
+    #####:  523:void ft_free_png_img(t_png_img *img)
+        -:  524:{
+    #####:  525:	free(img->data);
+    #####:  526:	ft_lstclear(&img->text_data, free);
+    #####:  527:	free(img);
+    #####:  528:}

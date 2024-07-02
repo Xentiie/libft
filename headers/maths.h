@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:45:20 by reclaire          #+#    #+#             */
-/*   Updated: 2024/07/02 22:19:34 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/07/02 23:05:30 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,9 +253,9 @@ extern U64 ft_umagnitude(U64 n);
 // Check if a number is prime.
 extern S32 ft_is_prime(S32 nb);
 
-extern S32 ft_fmin(F32 a, F32 b);
-extern S32 ft_fmin_3(F32 a, F32 b, F32 c);
-extern S32 ft_fmin_4(F32 a, F32 b, F32 c, F32 d);
+extern F32 ft_fmin(F32 a, F32 b);
+extern F32 ft_fmin_3(F32 a, F32 b, F32 c);
+extern F32 ft_fmin_4(F32 a, F32 b, F32 c, F32 d);
 extern S32 ft_imin(S32 a, S32 b);
 extern S32 ft_imin_3(S32 a, S32 b, S32 c);
 extern S32 ft_imin_4(S32 a, S32 b, S32 c, S32 d);

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/07/02 15:14:39 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/07/02 23:43:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,9 +133,9 @@ S32 sh_png_paeth_predict(S32 a, S32 b, S32 c)
 	S32 pb = ft_abs(p - b);
 	S32 pc = ft_abs(p - c);
 
-	if (pa <= pb && pa <= pc)
+	if (LIKELY(pa <= pb && pa <= pc))
 		return a;
-	if (pb <= pc)
+	if (LIKELY(pb <= pc))
 		return b;
 	return c;
 }
@@ -172,8 +172,8 @@ FUNCTION_HOT t_png_img *ft_load_png(file f, bool verbose)
 	S32 ret;				 // return from inflate
 	t_deflate_stream stream; // stream for inflate
 
+	U64 data_size;
 	U64 data_i = 0;		 // pixels data index
-	U8 *work_area;		 // IDAT decompress output
 	U8 reading_IDAT = 0; // IDAT chunks must appear consecutively
 
 	U32 chunk_length;
@@ -285,9 +285,8 @@ next_chunk:
 			break;
 		}
 
-		if ((img->data = malloc(sizeof(U8) * img->width * img->height * img->bpp)) == NULL)
-			__FTRETURN_ERR(NULL, FT_EOMEM);
-		if ((work_area = malloc(sizeof(U8) * (img->width * img->bpp + 1))) == NULL)
+		data_size = sizeof(U8) * ((img->width * img->height * img->bpp) + (img->width * img->bpp + 1));
+		if ((img->data = malloc(data_size)) == NULL)
 			__FTRETURN_ERR(NULL, FT_EOMEM);
 
 		goto next_chunk;
@@ -317,8 +316,8 @@ next_chunk:
 			if (!UNLIKELY(ft_inflate_init(&stream)))
 				__FTRETURN_ERR(NULL, FT_EOMEM);
 
-			stream.out = work_area;
-			stream.out_size = sizeof(U8) * (img->width * img->bpp + 1);
+			stream.out = img->data;
+			stream.out_size = data_size;
 
 			reading_IDAT = 1;
 		}
@@ -334,9 +333,10 @@ next_chunk:
 			if (UNLIKELY(ret < 0))
 				ERROR("Inflate error: %d", ret);
 
-			if (stream.out_used == stream.out_size)
+			U64 rows_inflated = stream.out_used / (img->width * img->bpp + 1);
+		 	for (U64 row = 0; row < rows_inflated; row++)
 			{
-				U8 *raw_data = work_area;
+				U8 *raw_data = &img->data[row + data_i];
 				U64 i = 0;
 				switch (*raw_data++)
 				{
@@ -354,57 +354,60 @@ next_chunk:
 					break;
 				case 2:
 					/* Filter up */
-					if (data_i == 0)
+					if (UNLIKELY(data_i == 0))
 					{
-						for (;i < img->width * img->bpp; i++)
+						for (; i < img->width * img->bpp; i++)
 							img->data[i + data_i] = raw_data[i];
 					}
 					else
 					{
-						for (;i < img->width * img->bpp; i++)
+						for (; i < img->width * img->bpp; i++)
 							img->data[i + data_i] = ft_abs(raw_data[i] + img->data[i + data_i - img->width * img->bpp]);
 					}
 					break;
 				case 3:
-					//printf("UNKNOWN FILTER METHOD (3)\n");
+					// printf("UNKNOWN FILTER METHOD (3)\n");
 					/* Filter average */
-					for (;i < img->width * img->bpp; i++)
+					for (; i < img->width * img->bpp; i++)
 					{
-							U8 a = i < img->bpp ? 0 : img->data[i + data_i - img->bpp];
-							U8 b = data_i < (img->width * img->bpp) ? 0 : img->data[i + data_i - img->width * img->bpp];
+						U8 a = i < img->bpp ? 0 : img->data[i + data_i - img->bpp];
+						U8 b = data_i < (img->width * img->bpp) ? 0 : img->data[i + data_i - img->width * img->bpp];
 
-							img->data[i + data_i] = ft_abs(raw_data[i] + ((a + b) >> 1));
+						img->data[i + data_i] = ft_abs(raw_data[i] + ((a + b) >> 1));
 					}
 					break;
 				case 4:
 					/* Filter paeth */
-					for (;i < img->width * img->bpp; i++)
-					{
-						U8 a = UNLIKELY(i < img->bpp) ? 0 : img->data[i + data_i - img->bpp];
-						U8 b = UNLIKELY(data_i < (img->width * img->bpp)) ? 0 : img->data[i + data_i - img->width * img->bpp];
-						U8 c = UNLIKELY((i < img->bpp || data_i < (img->width * img->bpp))) ? 0 : img->data[i + data_i - img->width * img->bpp - img->bpp];
 
-						img->data[i + data_i] = ft_abs(raw_data[i] + sh_png_paeth_predict(a, b, c));
-					}
-					/*
-					for (;i < img->width * img->bpp; i++)
+					U8 a, b, c;
+					if (UNLIKELY(data_i == 0))
 					{
-						U8 a = i < img->bpp ? 0 : img->data[i + data_i - img->bpp];
-						U8 b = data_i < (img->width * img->bpp) ? 0 : img->data[i + data_i - img->width * img->bpp];
-						U8 c = (i < img->bpp || data_i < (img->width * img->bpp)) ? 0 : img->data[i + data_i - img->width * img->bpp - img->bpp];
-
-						img->data[i + data_i] = ft_abs(raw_data[i] + sh_png_paeth_predict(a, b, c));
+						for (; i < img->bpp; i++)
+							img->data[i + data_i] = raw_data[i];
+						for (; i < img->width * img->bpp; i++)
+							img->data[i + data_i] = ft_abs(raw_data[i] + img->data[i + data_i - img->bpp]);
 					}
-					*/
+					else
+					{
+						for (; i < img->bpp; i++)
+							img->data[i + data_i] = ft_abs(raw_data[i] + img->data[i + data_i - img->width * img->bpp]);
+						for (; i < img->width * img->bpp; i++)
+						{
+							a = img->data[i + data_i - img->bpp];
+							b = img->data[i + data_i - img->width * img->bpp];
+							c = img->data[i + data_i - img->width * img->bpp - img->bpp];
+
+							img->data[i + data_i] = ft_abs(raw_data[i] + sh_png_paeth_predict(a, b, c));
+						}
+					}
 					break;
 				}
 				data_i += img->width * img->bpp;
-				stream.out_used = 0;
+				stream.out_used -= img->width * img->bpp;
 			}
 
 			if (UNLIKELY(ret == FT_INFLATE_RET_DONE))
 			{
-				free(work_area);
 				reading_IDAT = 2;
 				ASSERT(TRUE, reverse32(*(U32 *)(stream.in + stream.in_used)) == ft_inflate_addler32(&stream), "Data adler 32 doesn't match");
 				ft_inflate_end(&stream);
