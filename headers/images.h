@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 23:26:42 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/17 13:16:40 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/06/29 17:21:50 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ typedef struct s_png_img
 	U32 width;
 	U32 height;
 	U8 bit_depth;
+	U8 bpp;
 	U8 color_type;
 	U8 compression_method;
 	U8 filter_method;

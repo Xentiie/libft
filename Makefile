@@ -6,7 +6,7 @@
 #    By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/25 09:55:54 by reclaire          #+#    #+#              #
-#    Updated: 2024/06/28 14:01:54 by reclaire         ###   ########.fr        #
+#    Updated: 2024/07/02 16:11:56 by reclaire         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,3 +19,6 @@ INCLUDES  	+=	-I./ -I./srcs
 
 $(NAME):	$(OBJS)
 			$(MKLIB)
+
+test:
+	$(CC) -DFT_OS_LINUX -fprofile-generate -fprofile-arcs -ftest-coverage -I./ ./test.c -L./ -lft -o test

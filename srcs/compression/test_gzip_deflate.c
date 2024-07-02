@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:15:36 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/28 23:33:15 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/07/01 23:51:11 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,8 +211,6 @@ int main()
 
 			in_used += stream.in_used;
 			out_used += stream.out_used;
-			printf("inflate done\n");
-			break;
 
 
 

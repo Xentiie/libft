@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 20:19:41 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/09 03:34:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/07/02 21:55:12 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,8 @@
 S64	ft_fread(file fd, char *buffer, U64 size)
 {
 	S64 bytes_read = 0;
-	if (ReadFile(fd, buffer, size, (LPDWORD)&bytes_read, NULL) == FALSE)
+	if (UNLIKELY(ReadFile(fd, buffer, size, (LPDWORD)&bytes_read, NULL) == FALSE))
 		__FTRETURN_ERR(-1, FT_ESYSCALL);
-
 	__FTRETURN_OK(bytes_read);
 }
 
@@ -30,11 +29,8 @@ S64	ft_fread(file fd, char *buffer, U64 size)
 S64 ft_fread(file fd, char *buffer, U64 size)
 {
 	S64 bytes_read = read(fd, buffer, size);
-	if (bytes_read == -1)
-	{
+	if (UNLIKELY(bytes_read == -1))
 		__FTRETURN_ERR(-1, FT_ESYSCALL);
-	}
-
 	__FTRETURN_OK(bytes_read);
 }
 

@@ -9,6 +9,9 @@ a.out
 
 config.mk
 
+*.gcno
+*.gcda
+
 #env
 .editorconfig
 

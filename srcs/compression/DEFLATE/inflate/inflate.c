@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 11:07:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/28 23:38:43 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/07/02 14:39:58 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,13 @@ enum e_inf_state {
 	} while (0)
 
 /* Restore stream from registers in inflate() */
-#define RESTORE()                                                         \
-	do                                                                    \
-	{                                                                     \
-		stream->in_used += (stream->in_size - stream->in_used) - have;    \
-		inf_data->hold = hold;                                            \
-		stream->bits = bits;                                              \
-		inf_data->code = code;                                            \
+#define RESTORE()                                                      \
+	do                                                                 \
+	{                                                                  \
+		stream->in_used += (stream->in_size - stream->in_used) - have; \
+		inf_data->hold = hold;                                         \
+		stream->bits = bits;                                           \
+		inf_data->code = code;                                         \
 	} while (0)
 
 /* Clear the input bit accumulator */
@@ -138,6 +138,29 @@ enum code_length_type
 	LL,
 	DIST,
 };
+
+#define MOD_ADLER 65521
+
+U32 adler32(const U8 *data, size_t len)
+{
+	U32 a = 1, b = 0;
+
+	while (len > 0)
+	{
+		size_t tlen = len > 5552 ? 5552 : len;
+		len -= tlen;
+		do
+		{
+			a += *data++;
+			b += a;
+		} while (--tlen);
+
+		a %= MOD_ADLER;
+		b %= MOD_ADLER;
+	}
+
+	return (b << 16) | a;
+}
 
 static bool code_length_to_code_table(U16 *code_lengths, U64 code_lengths_len, struct s_code *code_table_out, U16 max_code_length, enum code_length_type type)
 {
@@ -213,7 +236,7 @@ static bool code_length_to_code_table(U16 *code_lengths, U64 code_lengths_len, s
 	return TRUE;
 }
 
-S32 ft_inflate(t_deflate_stream *stream)
+FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 {
 	U64 hold;		// bit accumulator
 	U64 have, left; // remaining in, remaining out
@@ -227,18 +250,6 @@ S32 ft_inflate(t_deflate_stream *stream)
 
 	LOAD();
 	out_st = stream->out_used;
-
-//	if (inf_data->window == NULL)
-//	{
-//		inf_data->window = malloc(sizeof(U8) * FT_DEFLATE_WINDOW_SIZE);
-//		if (UNLIKELY(inf_data->window == NULL))
-//			return FT_INFLATE_RET_OMEM;
-//		ft_memset(inf_data->window, 0, sizeof(U8) * FT_DEFLATE_WINDOW_SIZE);
-//		inf_data->window_size = 0;
-//		inf_data->win_next = inf_data->window;
-//
-//		inf_data->hold = 0;
-//	}
 
 	while (TRUE)
 	{
@@ -388,6 +399,8 @@ S32 ft_inflate(t_deflate_stream *stream)
 
 			inf_data->have = 0;
 			inf_data->last_symbol = -1;
+			// ft_memset(&inf_data->ll_code_length[inf_data->n_dist_codes], 0, sizeof(inf_data->ll_code_length[0]) * ((sizeof(inf_data->ll_code_length)/(sizeof(inf_data->ll_code_length[0]))) - inf_data->n_ll_codes));
+			// ft_memset(&inf_data->dist_code_length[inf_data->n_dist_codes], 0, sizeof(inf_data->dist_code_length[0]) * ((sizeof(inf_data->dist_code_length)/(sizeof(inf_data->dist_code_length[0]))) - inf_data->n_dist_codes));
 			inf_data->state = RD_CL_CODE;
 			/* fallthrough */
 
@@ -487,7 +500,7 @@ S32 ft_inflate(t_deflate_stream *stream)
 					goto inflate_leave;
 				}
 				ft_memset(inf_data->ll_codes, 1, sizeof(inf_data->ll_codes));
-				if (!code_length_to_code_table(inf_data->ll_code_length, 288, inf_data->ll_codes, inf_data->ll_codes_bits, LL))
+				if (!code_length_to_code_table(inf_data->ll_code_length, inf_data->n_ll_codes, inf_data->ll_codes, inf_data->ll_codes_bits, LL))
 				{
 					ret = FT_INFLATE_RET_OMEM;
 					inf_data->state = INV;
@@ -508,7 +521,7 @@ S32 ft_inflate(t_deflate_stream *stream)
 					goto inflate_leave;
 				}
 				ft_memset(inf_data->dist_codes, 0, sizeof(inf_data->dist_codes));
-				if (!code_length_to_code_table(inf_data->dist_code_length, 32, inf_data->dist_codes, inf_data->dist_codes_bits, DIST))
+				if (!code_length_to_code_table(inf_data->dist_code_length, inf_data->n_dist_codes, inf_data->dist_codes, inf_data->dist_codes_bits, DIST))
 				{
 					ret = FT_INFLATE_RET_OMEM;
 					inf_data->state = INV;
@@ -528,7 +541,6 @@ S32 ft_inflate(t_deflate_stream *stream)
 					break;
 				PULLBYTE();
 			}
-			DROPBITS(code.nbits);
 			// printf("%u %u %u\n", code.val, code.op, code.nbits);
 
 			switch (code.op >> 4)
@@ -539,7 +551,7 @@ S32 ft_inflate(t_deflate_stream *stream)
 				break;
 			case 0x40 >> 4:
 				// Backref
-				IFDEBUG(printf("	Backref:\n		base length: %u\n", code.val))
+				IFDEBUG(printf("	Backref:\n		code:%#x(%u)\n		base length: %u\n", BITS(code.nbits), code.nbits, code.val))
 				inf_data->length = code.val;
 				inf_data->state = RD_EXTRA_LEN;
 				break;
@@ -552,8 +564,10 @@ S32 ft_inflate(t_deflate_stream *stream)
 				IFDEBUG(printf("	Error: invalid code\n"))
 				inf_data->state = INV;
 				ret = FT_INFLATE_RET_ERROR;
+				DROPBITS(code.nbits);
 				goto inflate_leave;
 			}
+			DROPBITS(code.nbits);
 			break;
 
 		case RD_EXTRA_LEN:
@@ -573,6 +587,7 @@ S32 ft_inflate(t_deflate_stream *stream)
 					break;
 				PULLBYTE();
 			}
+			IFDEBUG(printf("		code:%#x(%u)\n", BITS(code.nbits), code.nbits))
 			DROPBITS(code.nbits);
 			inf_data->dist = code.val;
 			IFDEBUG(printf("		base dist: %u\n", inf_data->dist))
@@ -605,15 +620,24 @@ S32 ft_inflate(t_deflate_stream *stream)
 
 			to_cpy = inf_data->length;
 
+			IFDEBUG(printf("	Copying backref:\n"));
+			IFDEBUG(printf("		to copy: %u\n", to_cpy));
+
 			U8 *start_cpy = inf_data->win_next - inf_data->dist;
-			if (inf_data->win_next < inf_data->window)
+			IFDEBUG(printf("		window start offset: %ld\n", (S64)(start_cpy - inf_data->window)));
+			if (start_cpy < inf_data->window)
 			{
 				start_cpy += FT_DEFLATE_WINDOW_SIZE;
-				to_cpy = FT_DEFLATE_WINDOW_SIZE - (inf_data->win_next - inf_data->window) - 1;
+				IFDEBUG(printf("	start is under window, going around to: %ld\n", (S64)(start_cpy - inf_data->window)))
 			}
 
-			if (to_cpy > left)
-				to_cpy = left;
+			to_cpy = MIN(to_cpy, left);
+			// IFDEBUG(printf("		MIN(left): %u\n", to_cpy));
+			to_cpy = MIN(to_cpy, FT_DEFLATE_WINDOW_SIZE - (start_cpy - inf_data->window));
+			// IFDEBUG(printf("		MIN(FT_DEFLATE_WINDOW_SIZE - (start_cpy - inf_data->window)): %u\n", to_cpy));
+			to_cpy = MIN(to_cpy, FT_DEFLATE_WINDOW_SIZE - (inf_data->win_next - inf_data->window) + 1);
+			// IFDEBUG(printf("		MIN(FT_DEFLATE_WINDOW_SIZE - (inf_data->win_next - inf_data->window)): %u\n", to_cpy));
+			IFDEBUG(printf("		final to copy: %u\n", to_cpy));
 			if (to_cpy == 0)
 			{
 				ret = FT_INFLATE_RET_NOT_DONE;
@@ -670,9 +694,24 @@ S32 ft_inflate(t_deflate_stream *stream)
 inflate_leave:
 
 	if (ret >= 0)
-		stream->crc32 = ft_crc32_u(stream->out + out_st, stream->out_used - out_st, stream->crc32);
+	{
+		U64 len = stream->out_used - out_st;
+		stream->crc32 = ft_crc32_u(stream->out + out_st, len, stream->crc32);
+
+		for (U64 i = 0; i < len; i++)
+		{
+			stream->adler_a = (stream->adler_a + (stream->out + out_st)[i]) % MOD_ADLER;
+			stream->adler_b = (stream->adler_b + stream->adler_a) % MOD_ADLER;
+		}
+	}
+
 	RESTORE();
 	return ret;
+}
+
+U32 ft_inflate_addler32(t_deflate_stream *stream)
+{
+	return (stream->adler_b << 16) | stream->adler_a;
 }
 
 bool ft_inflate_init(t_deflate_stream *stream)
@@ -690,6 +729,9 @@ bool ft_inflate_init(t_deflate_stream *stream)
 	stream->inflate->win_next = stream->inflate->window;
 
 	stream->inflate->hold = 0;
+
+	stream->adler_a = 1;
+	stream->adler_b = 0;
 
 	return TRUE;
 }

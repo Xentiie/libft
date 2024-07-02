@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:53:23 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/27 12:01:22 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/07/01 23:03:27 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,11 @@
 # define FT_NO_OVERLINED			"\e[55m"
 # define FT_UNDERLINE_COLOR(r,g,b) 	"\e[58;2;"r";"g";"b"m"
 # define FT_NO_UNDERLINE_COLOR		"\e[59m"
+
+# define FT_CURSOR_UP(n)			"\e["#n"A"
+# define FT_CURSOR_DOWN(n)			"\e["#n"B"
+# define FT_CURSOR_FORWARD(n)		"\e["#n"C"
+# define FT_CURSOR_BACK(n)			"\e["#n"D"
 
 //Reset
 # define FT_CRESET					"\e[0m"

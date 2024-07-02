@@ -308,6 +308,7 @@ def code_lengths_to_code_table(code_lengths):
 
     # Step 1
     max_length = max(code_lengths)
+    print("MAX LENGTH: ", max_length)
     length_counts = [0]*(max_length+1)
     for length in code_lengths:
         length_counts[length] += 1

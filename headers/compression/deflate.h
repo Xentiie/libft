@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 23:02:08 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/28 23:10:23 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/07/02 03:30:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,9 @@ typedef struct s_deflate_stream
 	U8 bits;
 	U32 crc32;
 
+	U32 adler_a;
+	U32 adler_b;
+
 	union
 	{
 		struct s_inflate_data *inflate;
@@ -134,6 +137,11 @@ Inits a t_deflate_stream for decompression
 Returns `FALSE` if there was an error, `TRUE` otherwise
 */
 bool ft_inflate_init(t_deflate_stream *stream);
+
+/*
+Returns the computed addler32
+*/
+U32 ft_inflate_addler32(t_deflate_stream *stream);
 
 /*
 Decompresses data in the DEFLATE format.
