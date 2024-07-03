@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 11:07:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/07/02 14:39:58 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/07/03 13:54:30 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ enum e_inf_state {
 		CPY_BACKREF
 };
 // clang-format on
+
+S32 ft_inflate_fast(t_deflate_stream *stream);
 
 /* Load registers with state in inflate() for speed */
 #define LOAD()                                             \
@@ -399,8 +401,6 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 
 			inf_data->have = 0;
 			inf_data->last_symbol = -1;
-			// ft_memset(&inf_data->ll_code_length[inf_data->n_dist_codes], 0, sizeof(inf_data->ll_code_length[0]) * ((sizeof(inf_data->ll_code_length)/(sizeof(inf_data->ll_code_length[0]))) - inf_data->n_ll_codes));
-			// ft_memset(&inf_data->dist_code_length[inf_data->n_dist_codes], 0, sizeof(inf_data->dist_code_length[0]) * ((sizeof(inf_data->dist_code_length)/(sizeof(inf_data->dist_code_length[0]))) - inf_data->n_dist_codes));
 			inf_data->state = RD_CL_CODE;
 			/* fallthrough */
 
@@ -534,6 +534,15 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 			/* fallthrough */
 
 		case RD_CODE:
+
+			if (have >= 8 && left >= 258)
+			{
+				RESTORE();
+				ft_inflate_fast(stream);
+				LOAD();
+				break;
+			}
+
 			while (TRUE)
 			{
 				code = inf_data->ll_codes[BITS(inf_data->ll_codes_bits)];
@@ -541,7 +550,6 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 					break;
 				PULLBYTE();
 			}
-			// printf("%u %u %u\n", code.val, code.op, code.nbits);
 
 			switch (code.op >> 4)
 			{
@@ -682,6 +690,10 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 				else printf("	lit: %#x\n", code.val);)
 			inf_data->state = RD_CODE;
 			break;
+
+		case INV:
+			ret = FT_INFLATE_RET_ERROR;
+			goto inflate_leave;
 		}
 
 		if (inf_data->state == BLK_HEAD && inf_data->last)
@@ -744,4 +756,129 @@ void ft_inflate_end(t_deflate_stream *stream)
 	if (stream->inflate->dist_codes != fixed_dist_codes)
 		free(stream->inflate->dist_codes);
 	free(stream->inflate);
+}
+
+S32 ft_inflate_fast(t_deflate_stream *stream)
+{
+	struct s_inflate_data *inf_data = stream->inflate;
+
+	struct s_code code;
+	U16 length;
+	U16 dist;
+
+	U64 val = inf_data->hold;
+	do
+	{
+		while (stream->bits < 48)
+		{
+			val += ((U64)stream->in[stream->in_used] << stream->bits);
+			stream->bits += 8;
+			stream->in_used++;
+		}
+
+		code = inf_data->ll_codes[val & ((1U << inf_data->ll_codes_bits) - 1)];
+		val >>= code.nbits;
+		stream->bits -= code.nbits;
+
+		switch (code.op >> 4)
+		{
+		case 0x80 >> 4:
+			// Literal
+			if (UNLIKELY(inf_data->win_next - inf_data->window >= FT_DEFLATE_WINDOW_SIZE))
+				inf_data->win_next = inf_data->window;
+
+			*inf_data->win_next++ = (U8)code.val;
+			inf_data->window_size++;
+
+			*(stream->out + stream->out_used) = (U8)code.val;
+			stream->out_used++;
+
+			IFDEBUG(
+				if (ft_isprint(code.val))
+					printf("	lit: %c\n", code.val);
+				else printf("	lit: %#x\n", code.val);)
+			break;
+		case 0x40 >> 4:
+			// Backref
+			length = code.val;
+			IFDEBUG(printf("	Backref:\n		code:???(%u)\n		base length: %u\n", code.nbits, code.val))
+			length += val & ((1U << (code.op & 0xF)) - 1);
+			IFDEBUG(printf("		extra length: %u\n", val & ((1U << (code.op & 0xF)) - 1)));
+			val >>= (code.op & 0xF);
+			stream->bits -= (code.op & 0xF);
+
+			code = inf_data->dist_codes[val & ((1U << inf_data->dist_codes_bits) - 1)];
+			IFDEBUG(printf("		code:%#x(%u)\n", val & ((1U << inf_data->ll_codes_bits) - 1), code.nbits));
+			val >>= code.nbits;
+			stream->bits -= code.nbits;
+			dist = code.val;
+			IFDEBUG(printf("		base dist: %u\n", code.val))
+			dist += val & ((1U << (code.op & 0xF)) - 1);
+			IFDEBUG(printf("		extra dist: %u\n", val & ((1U << (code.op & 0xF)) - 1)));
+			val >>= (code.op & 0xF);
+			stream->bits -= (code.op & 0xF);
+			IFDEBUG(printf("		FULL: %u:%u\n", length, dist))
+
+			if (UNLIKELY(inf_data->dist > inf_data->window_size))
+			{
+				IFDEBUG(printf("	INVALID BACKREF: too far back\n"))
+				stream->inflate->state = INV;
+				return -1;
+			}
+
+			do
+			{
+				U16 to_cpy = length;
+
+				IFDEBUG(printf("	Copying backref:\n"));
+				IFDEBUG(printf("		to copy: %u\n", to_cpy));
+
+				U8 *start_cpy = inf_data->win_next - dist;
+				IFDEBUG(printf("		window start offset: %ld\n", (S64)(start_cpy - inf_data->window)));
+				if (UNLIKELY(start_cpy < inf_data->window))
+				{
+					start_cpy += FT_DEFLATE_WINDOW_SIZE;
+					IFDEBUG(printf("	start is under window, going around to: %ld\n", (S64)(start_cpy - inf_data->window)))
+				}
+
+				to_cpy = MIN(to_cpy, stream->out_size - stream->out_used);
+				to_cpy = MIN(to_cpy, FT_DEFLATE_WINDOW_SIZE - (start_cpy - inf_data->window));
+				to_cpy = MIN(to_cpy, FT_DEFLATE_WINDOW_SIZE - (inf_data->win_next - inf_data->window) + 1);
+				IFDEBUG(printf("		final to copy: %u\n", to_cpy));
+				if (UNLIKELY(to_cpy == 0))
+				{
+					stream->inflate->state = INV;
+					return -1;
+				}
+
+				for (U64 i = 0; i < to_cpy; i++)
+				{
+					*(stream->out + stream->out_used + i) = *start_cpy;
+					*inf_data->win_next++ = *start_cpy++;
+				}
+
+				length -= to_cpy;
+				stream->out_used += to_cpy;
+				inf_data->window_size += to_cpy;
+
+				if (UNLIKELY(inf_data->win_next >= inf_data->window + FT_DEFLATE_WINDOW_SIZE))
+					inf_data->win_next = inf_data->window;
+			} while (length);
+
+			break;
+		case 0x20 >> 4:
+			// Code 256
+			IFDEBUG(printf("	End of block marker found\n"))
+			inf_data->state = BLK_HEAD;
+			inf_data->hold = val;
+			return 1;
+		default:
+			IFDEBUG(printf("	Error: invalid code\n"))
+			stream->inflate->state = INV;
+			return -1;
+		}
+
+	} while (stream->in_size - stream->in_used >= 8 && stream->out_size - stream->out_used >= 258);
+
+	return 0;
 }

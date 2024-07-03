@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/07/02 23:43:34 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/07/03 05:19:45 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -331,7 +331,7 @@ next_chunk:
 			ret = ft_inflate(&stream);
 
 			if (UNLIKELY(ret < 0))
-				ERROR("Inflate error: %d", ret);
+				ERROR(TRUE, "Inflate error: %d", ret);
 
 			U64 rows_inflated = stream.out_used / (img->width * img->bpp + 1);
 		 	for (U64 row = 0; row < rows_inflated; row++)
