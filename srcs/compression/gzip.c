@@ -300,7 +300,7 @@ U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_
 		}
 		header->state--;
 		/* fall through */
-	case -8:
+	case -8:;
 		U64 i = 0;
 		while (i < data_len && data[i] != '\0')
 			i++;

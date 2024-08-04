@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 11:07:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/07/03 13:54:30 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/04 05:19:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "fixed_codes.h"
 #include "../deflate_int.h"
 #include <stdlib.h>
+
+//#define DEBUG
 
 #ifdef DEBUG
 #include <stdio.h>
@@ -803,18 +805,18 @@ S32 ft_inflate_fast(t_deflate_stream *stream)
 			length = code.val;
 			IFDEBUG(printf("	Backref:\n		code:???(%u)\n		base length: %u\n", code.nbits, code.val))
 			length += val & ((1U << (code.op & 0xF)) - 1);
-			IFDEBUG(printf("		extra length: %u\n", val & ((1U << (code.op & 0xF)) - 1)));
+			IFDEBUG(printf("		extra length: %lu\n", val & ((1U << (code.op & 0xF)) - 1)));
 			val >>= (code.op & 0xF);
 			stream->bits -= (code.op & 0xF);
 
 			code = inf_data->dist_codes[val & ((1U << inf_data->dist_codes_bits) - 1)];
-			IFDEBUG(printf("		code:%#x(%u)\n", val & ((1U << inf_data->ll_codes_bits) - 1), code.nbits));
+			IFDEBUG(printf("		code:%#lx(%u)\n", val & ((1U << inf_data->ll_codes_bits) - 1), code.nbits));
 			val >>= code.nbits;
 			stream->bits -= code.nbits;
 			dist = code.val;
 			IFDEBUG(printf("		base dist: %u\n", code.val))
 			dist += val & ((1U << (code.op & 0xF)) - 1);
-			IFDEBUG(printf("		extra dist: %u\n", val & ((1U << (code.op & 0xF)) - 1)));
+			IFDEBUG(printf("		extra dist: %lu\n", val & ((1U << (code.op & 0xF)) - 1)));
 			val >>= (code.op & 0xF);
 			stream->bits -= (code.op & 0xF);
 			IFDEBUG(printf("		FULL: %u:%u\n", length, dist))

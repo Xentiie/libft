@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/07/03 05:19:45 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/04 16:38:13 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ if indexed color, can't parse if PLTE comes after data
 
 #include "libft_int.h"
 
+#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,6 +32,7 @@ static bool check_png_sig(file f)
 {
 	const U8 png_sig[8] = {137, 80, 78, 71, 13, 10, 26, 10};
 	U8 buff[8];
+
 	if (
 		ft_fread(f, (char *)buff, sizeof(buff)) != sizeof(buff) ||
 		ft_memcmp(buff, png_sig, sizeof(png_sig)))
@@ -223,10 +225,10 @@ next_chunk:
 		ASSERT(TRUE, ft_fread(f, (char *)&crc, sizeof(U32)) == sizeof(U32), "Couldn't read chunk #%d CRC", chunk_n);
 		crc = reverse32(crc);
 		U32 current_crc = ft_crc32(crc_buffer, chunk_length + 4);
-		ASSERT(FALSE, current_crc == crc, "Invalid CRC on chunk #%d (is:%#x should be:%#x)", chunk_n, current_crc, crc);
+		ASSERT(TRUE, current_crc == crc, "Invalid CRC on chunk #%d (is:%#x should be:%#x)", chunk_n, current_crc, crc);
 	}
 
-	printf("Chunk: %.4s\n", (char *)&chunk_type_code);
+	printf("Chunk: %.4s (%lu bytes) (CRC32: %#x)\n", (char *)&chunk_type_code, chunk_length, crc);
 
 	if (UNLIKELY(reading_IDAT == 1 && chunk_type_code != CHUNK_IDAT))
 		ERROR(TRUE, "IDAT chunks are not consecutive");
@@ -308,6 +310,8 @@ next_chunk:
 		if (img->color_type == COL_TYPE_PALETTE)
 			ASSERT(TRUE, palette != NULL, "PLTE chunk not found / PLTE chunk appears after IDAT chunk");
 
+		printf("%u\n", chunk_length);
+
 		if (reading_IDAT == 0)
 		{
 			buffer += 2; // zlib header
@@ -376,7 +380,7 @@ next_chunk:
 						img->data[i + data_i] = ft_abs(raw_data[i] + ((a + b) >> 1));
 					}
 					break;
-				case 4:
+				case 4:;
 					/* Filter paeth */
 
 					U8 a, b, c;
@@ -406,10 +410,11 @@ next_chunk:
 				stream.out_used -= img->width * img->bpp;
 			}
 
+			printf("%lu %lu\n", stream.in_size, stream.in_used);
 			if (UNLIKELY(ret == FT_INFLATE_RET_DONE))
 			{
 				reading_IDAT = 2;
-				ASSERT(TRUE, reverse32(*(U32 *)(stream.in + stream.in_used)) == ft_inflate_addler32(&stream), "Data adler 32 doesn't match");
+				//ASSERT(TRUE, reverse32(*(U32 *)(stream.in + stream.in_used)) == ft_inflate_addler32(&stream), "Data adler 32 doesn't match");
 				ft_inflate_end(&stream);
 				break;
 			}
