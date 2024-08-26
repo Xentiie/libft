@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 11:07:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/08/04 05:19:26 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/06 04:31:03 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -537,13 +537,13 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 
 		case RD_CODE:
 
-			if (have >= 8 && left >= 258)
-			{
-				RESTORE();
-				ft_inflate_fast(stream);
-				LOAD();
-				break;
-			}
+			//if (have >= 8 && left >= 258)
+			//{
+			//	RESTORE();
+			//	ft_inflate_fast(stream);
+			//	LOAD();
+			//	break;
+			//}
 
 			while (TRUE)
 			{
@@ -797,33 +797,33 @@ S32 ft_inflate_fast(t_deflate_stream *stream)
 
 			IFDEBUG(
 				if (ft_isprint(code.val))
-					printf("	lit: %c\n", code.val);
-				else printf("	lit: %#x\n", code.val);)
+					printf("[fast]	lit: %c\n", code.val);
+				else printf("[fast]	lit: %#x\n", code.val);)
 			break;
 		case 0x40 >> 4:
 			// Backref
 			length = code.val;
-			IFDEBUG(printf("	Backref:\n		code:???(%u)\n		base length: %u\n", code.nbits, code.val))
+			IFDEBUG(printf("[fast]	Backref:\n		code:???(%u)\n		base length: %u\n", code.nbits, code.val))
 			length += val & ((1U << (code.op & 0xF)) - 1);
-			IFDEBUG(printf("		extra length: %lu\n", val & ((1U << (code.op & 0xF)) - 1)));
+			IFDEBUG(printf("[fast]		extra length: %lu\n", val & ((1U << (code.op & 0xF)) - 1)));
 			val >>= (code.op & 0xF);
 			stream->bits -= (code.op & 0xF);
 
 			code = inf_data->dist_codes[val & ((1U << inf_data->dist_codes_bits) - 1)];
-			IFDEBUG(printf("		code:%#lx(%u)\n", val & ((1U << inf_data->ll_codes_bits) - 1), code.nbits));
+			IFDEBUG(printf("[fast]		code:%#lx(%u)\n", val & ((1U << inf_data->ll_codes_bits) - 1), code.nbits));
 			val >>= code.nbits;
 			stream->bits -= code.nbits;
 			dist = code.val;
-			IFDEBUG(printf("		base dist: %u\n", code.val))
+			IFDEBUG(printf("[fast]		base dist: %u\n", code.val))
 			dist += val & ((1U << (code.op & 0xF)) - 1);
-			IFDEBUG(printf("		extra dist: %lu\n", val & ((1U << (code.op & 0xF)) - 1)));
+			IFDEBUG(printf("[fast]		extra dist: %lu\n", val & ((1U << (code.op & 0xF)) - 1)));
 			val >>= (code.op & 0xF);
 			stream->bits -= (code.op & 0xF);
-			IFDEBUG(printf("		FULL: %u:%u\n", length, dist))
+			IFDEBUG(printf("[fast]		FULL: %u:%u\n", length, dist))
 
 			if (UNLIKELY(inf_data->dist > inf_data->window_size))
 			{
-				IFDEBUG(printf("	INVALID BACKREF: too far back\n"))
+				IFDEBUG(printf("[fast]	INVALID BACKREF: too far back\n"))
 				stream->inflate->state = INV;
 				return -1;
 			}
@@ -832,21 +832,21 @@ S32 ft_inflate_fast(t_deflate_stream *stream)
 			{
 				U16 to_cpy = length;
 
-				IFDEBUG(printf("	Copying backref:\n"));
-				IFDEBUG(printf("		to copy: %u\n", to_cpy));
+				IFDEBUG(printf("[fast]	Copying backref:\n"));
+				IFDEBUG(printf("[fast]		to copy: %u\n", to_cpy));
 
 				U8 *start_cpy = inf_data->win_next - dist;
-				IFDEBUG(printf("		window start offset: %ld\n", (S64)(start_cpy - inf_data->window)));
+				IFDEBUG(printf("[fast]		window start offset: %ld\n", (S64)(start_cpy - inf_data->window)));
 				if (UNLIKELY(start_cpy < inf_data->window))
 				{
 					start_cpy += FT_DEFLATE_WINDOW_SIZE;
-					IFDEBUG(printf("	start is under window, going around to: %ld\n", (S64)(start_cpy - inf_data->window)))
+					IFDEBUG(printf("[fast]	start is under window, going around to: %ld\n", (S64)(start_cpy - inf_data->window)))
 				}
 
 				to_cpy = MIN(to_cpy, stream->out_size - stream->out_used);
 				to_cpy = MIN(to_cpy, FT_DEFLATE_WINDOW_SIZE - (start_cpy - inf_data->window));
 				to_cpy = MIN(to_cpy, FT_DEFLATE_WINDOW_SIZE - (inf_data->win_next - inf_data->window) + 1);
-				IFDEBUG(printf("		final to copy: %u\n", to_cpy));
+				IFDEBUG(printf("[fast]		final to copy: %u\n", to_cpy));
 				if (UNLIKELY(to_cpy == 0))
 				{
 					stream->inflate->state = INV;
@@ -870,17 +870,18 @@ S32 ft_inflate_fast(t_deflate_stream *stream)
 			break;
 		case 0x20 >> 4:
 			// Code 256
-			IFDEBUG(printf("	End of block marker found\n"))
+			IFDEBUG(printf("[fast]	End of block marker found\n"))
 			inf_data->state = BLK_HEAD;
 			inf_data->hold = val;
 			return 1;
 		default:
-			IFDEBUG(printf("	Error: invalid code\n"))
+			IFDEBUG(printf("[fast]	Error: invalid code\n"))
 			stream->inflate->state = INV;
 			return -1;
 		}
 
 	} while (stream->in_size - stream->in_used >= 8 && stream->out_size - stream->out_used >= 258);
 
+	
 	return 0;
 }

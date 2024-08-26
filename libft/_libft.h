@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2024/07/03 05:28:16 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/15 23:55:04 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 
 #  if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #   define FT_OS_WIN
+#   define WIN32_LEAN_AND_MEAN 
 #   ifdef _WIN64
 #    define FT_OS_WIN64 
 #   else

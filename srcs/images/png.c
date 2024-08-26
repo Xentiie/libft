@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/08/04 16:38:13 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/24 00:05:54 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,7 @@ FUNCTION_HOT t_png_img *ft_load_png(file f, bool verbose)
 {
 	// A valid PNG image must contain an IHDR chunk, one or more IDAT chunks, and an IEND chunk.
 
+#undef ERROR
 #define ERROR(critical, ...)                                                                  \
 	do                                                                                        \
 	{                                                                                         \
@@ -174,7 +175,7 @@ FUNCTION_HOT t_png_img *ft_load_png(file f, bool verbose)
 	S32 ret;				 // return from inflate
 	t_deflate_stream stream; // stream for inflate
 
-	U64 data_size;
+	U64 data_size = 0;
 	U64 data_i = 0;		 // pixels data index
 	U8 reading_IDAT = 0; // IDAT chunks must appear consecutively
 
@@ -228,7 +229,7 @@ next_chunk:
 		ASSERT(TRUE, current_crc == crc, "Invalid CRC on chunk #%d (is:%#x should be:%#x)", chunk_n, current_crc, crc);
 	}
 
-	printf("Chunk: %.4s (%lu bytes) (CRC32: %#x)\n", (char *)&chunk_type_code, chunk_length, crc);
+	printf("Chunk: %.4s (%u bytes) (CRC32: %#x)\n", (char *)&chunk_type_code, chunk_length, crc);
 
 	if (UNLIKELY(reading_IDAT == 1 && chunk_type_code != CHUNK_IDAT))
 		ERROR(TRUE, "IDAT chunks are not consecutive");
@@ -310,8 +311,6 @@ next_chunk:
 		if (img->color_type == COL_TYPE_PALETTE)
 			ASSERT(TRUE, palette != NULL, "PLTE chunk not found / PLTE chunk appears after IDAT chunk");
 
-		printf("%u\n", chunk_length);
-
 		if (reading_IDAT == 0)
 		{
 			buffer += 2; // zlib header
@@ -324,6 +323,19 @@ next_chunk:
 			stream.out_size = data_size;
 
 			reading_IDAT = 1;
+
+			file test_file = ft_fopen("test.gz", "w+");
+
+			U8 header_buf[200];
+			t_gzip_header header = {0};
+			header.filename = "test";
+			U64 header_size = ft_gzip_write_header(header_buf, sizeof(header_buf), &header);
+
+			ft_fwrite(test_file, (char *)header_buf, header_size);
+			ft_fwrite(test_file, (char *)buffer, chunk_length);
+
+			ft_fclose(test_file);
+
 		}
 
 		stream.in = buffer;
@@ -410,11 +422,11 @@ next_chunk:
 				stream.out_used -= img->width * img->bpp;
 			}
 
-			printf("%lu %lu\n", stream.in_size, stream.in_used);
+//			printf("%lu %lu\n", stream.in_size, stream.in_used);
 			if (UNLIKELY(ret == FT_INFLATE_RET_DONE))
 			{
 				reading_IDAT = 2;
-				//ASSERT(TRUE, reverse32(*(U32 *)(stream.in + stream.in_used)) == ft_inflate_addler32(&stream), "Data adler 32 doesn't match");
+				ASSERT(TRUE, reverse32(*(U32 *)(stream.in + stream.in_used)) == ft_inflate_addler32(&stream), "Data adler 32 doesn't match");
 				ft_inflate_end(&stream);
 				break;
 			}
@@ -465,7 +477,7 @@ next_chunk:
 				stream.out = (U8 *)txt;
 			}
 			else
-				ERROR("zTXt chunk: couldn't decompress. Inflate error code: %d", ret);
+				ERROR(TRUE, "zTXt chunk: couldn't decompress. Inflate error code: %d", ret);
 		}
 
 		if ((txt = malloc(sizeof(char) * (keyword_length + 1 + stream.out_used + 1))) == NULL)
@@ -495,7 +507,8 @@ next_chunk:
 png_error:
 	free(__buffer);
 	free(palette);
-	free(img->data);
+	if (img)
+		free(img->data);
 	ft_lstclear(&img->text_data, free);
 	free(img);
 	return NULL;

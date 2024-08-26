@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:42:00 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/07 17:35:39 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/18 02:28:29 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,28 @@ Sets ft_errno and returns NULL.
 - FT_EOMEM if out of memory
 */
 extern wstring		ft_wstrdup(const_wstring str);
+
+/*
+Duplicates the string str into a new char array (no more that n characters).
+Caller gets ownership of returned string.
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_EINVPTR if 'str' is NULL
+- FT_EOMEM if out of memory
+*/
+extern string		ft_strndup(const_string str, U64 n);
+
+/*
+Duplicates the string 'str' into a new char array (no more that n characters), and sets 'len' if non-null to the length of the string.
+Caller gets ownership of returned string.
+### On error
+Sets ft_errno, sets 'len' to 0 if non-null and returns NULL.
+### ft_errno
+- FT_EINVPTR if 'str' is NULL
+- FT_EOMEM if out of memory
+*/
+extern string		ft_strndup_l(const_string str, U64 n, U64 *len);
 
 /*
 Returns a new string from s, starting at index start with size len.

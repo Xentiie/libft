@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 19:40:41 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/19 23:25:57 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/24 17:40:37 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void growtypes(S32 **types, S32 *types_size)
 	S32 old_size = *types_size;
 
 	*types_size *= 2;
-	new_table = malloc(sizeof(S32) * *types_size);
+	new_table = malloc(sizeof(S32) * *types_size); //TODO: remonter les erreurs d'allocation
 	ft_memcpy(new_table, *types, old_size * sizeof(S32));
 
 	if (old_size != STATIC_SIZE)
