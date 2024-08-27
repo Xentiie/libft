@@ -46,11 +46,9 @@ file ft_fopen(string path, string mode)
 	}
 
 	if (*mode == '+')
-	{
 		open_mode = GENERIC_READ | GENERIC_WRITE;
-	}
 
-	HANDLE hFile = CreateFileW((LPCWSTR)path, open_mode,
+	HANDLE hFile = CreateFileA(path, open_mode,
 							  0,					 // Share mode (0 for exclusive access)
 							  NULL,					 // Security attributes (NULL for default)
 							  create_mode,			 // Creation disposition (open existing file)

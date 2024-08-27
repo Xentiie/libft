@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft/std.h"
+
+#ifdef TEST_GZIP_DEFLATE
 #include "libft/compression/deflate.h"
 #include "libft/compression/gzip.h"
 #include "libft/io.h"
@@ -17,7 +20,6 @@
 #include "libft/ansi.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <zlib.h>
 
 int decompress_deflate(const unsigned char *compressed_data, size_t compressed_size, unsigned char *output_buffer, size_t output_buffer_size) {
     z_stream stream;
@@ -255,3 +257,5 @@ int main()
 	printf("\ncrc32 deflate: %#x\n", file_crc);
 	printf("crc32 inflate: %#x\n", stream.crc32);
 }
+
+#endif

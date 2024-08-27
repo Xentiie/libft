@@ -12,7 +12,6 @@
 
 #include <stdlib.h>
 #include "libft_int.h"
-#include "../headers/lists.h"
 
 void	**ft_lsttoarray(t_list *lst, U64 *len)
 {
