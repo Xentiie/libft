@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:15:51 by reclaire          #+#    #+#             */
-/*   Updated: 2024/04/26 02:45:37 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/29 20:48:29 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,28 +56,32 @@ typedef struct s_clock
 	U8 buffer[24]; /* Buffer for formatting elapsed time */
 } t_clock;
 
-extern void clk_get(t_time *t);
-extern void clk_diff(t_time *t1, t_time *t2, long *sec, long *nsec);
-extern float clk_diff_float(t_time *t1, t_time *t2);
-extern void clk_init(t_clock *clk);
-extern void clk_start(t_clock *clk);
-extern void clk_stop(t_clock *clk);
+extern void ft_clk_get(t_time *t);
+extern void ft_clk_diff(t_time *t1, t_time *t2, S64 *sec, S64 *nsec);
+extern float ft_clk_diff_float(t_time *t1, t_time *t2);
+extern void ft_clk_init(t_clock *clk);
+extern void ft_clk_start(t_clock *clk);
+extern void ft_clk_stop(t_clock *clk);
+
+extern U64 ft_clk_timestamp();
+extern U64 ft_clk_to_timestamp(t_time time);
+extern t_time ft_clk_from_timestamp(U64 timestamp);
 
 /*Deprecated*/
-__attribute__((deprecated)) extern string clk_elapsed_ms(t_clock *clk, string buffer, U64 buflen);
+__attribute__((deprecated)) extern string ft_clk_elapsed_ms(t_clock *clk, string buffer, U64 buflen);
 
 /*Deprecated*/
-__attribute__((deprecated)) extern string clk_elapsed_us(t_clock *clk, string buffer, U64 buflen);
+__attribute__((deprecated)) extern string ft_clk_elapsed_us(t_clock *clk, string buffer, U64 buflen);
 
 /*Deprecated*/
-__attribute__((deprecated)) extern string clk_elapsed_ns(t_clock *clk, string buffer, U64 buflen);
+__attribute__((deprecated)) extern string ft_clk_elapsed_ns(t_clock *clk, string buffer, U64 buflen);
 
 #ifndef TIMER_VERSION_1
-extern string clk_fmt_elapsed_ms(t_clock *clk);
-extern string clk_fmt_elapsed_us(t_clock *clk);
-extern string clk_fmt_elapsed_ns(t_clock *clk);
-extern string clk_fmt_elapsed_str(t_clock *clk);
-extern double clk_fmt_elapsed_dbl(t_clock *clk);
+extern string ft_clk_fmt_elapsed_ms(t_clock *clk);
+extern string ft_clk_fmt_elapsed_us(t_clock *clk);
+extern string ft_clk_fmt_elapsed_ns(t_clock *clk);
+extern string ft_clk_fmt_elapsed_str(t_clock *clk);
+extern F64 ft_clk_fmt_elapsed_dbl(t_clock *clk);
 #endif /*#  ifndef TIMER_VERSION_1*/
 
 #endif

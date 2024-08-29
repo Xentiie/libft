@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 14:44:13 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/19 23:30:38 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/27 18:08:04 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@
 S32 ft_optopt = 0;
 S32 ft_optind = 0;
 S32 ft_opterr = 1;
+S32 ft_optchr = '?';
 const_string ft_optarg = NULL;
 
 static const_string nextchar = NULL;
@@ -189,7 +190,7 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, t_long_opt
 				nextchar += ft_strlen(nextchar);
 				ft_optind++;
 				ft_optopt = ret;
-				return optstr[0] == ':' ? ':' : '?';
+				return optstr[0] == ':' ? ':' : ft_optchr;
 			}
 		}
 
@@ -207,7 +208,7 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, t_long_opt
 		nextchar += ft_strlen(nextchar);
 		ft_optind++;
 		ft_optopt = ret;
-		return '?';
+		return ft_optchr;
 	}
 	else
 	{
@@ -248,7 +249,7 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, t_long_opt
 						ft_dprintf(ft_stderr, "%s: option requires an argument -- '%c'\n", argv[0], ret);
 					nextchar++;
 					ft_optopt = ret;
-					return optstr[0] == ':' ? ':' : '?';
+					return optstr[0] == ':' ? ':' : ft_optchr;
 				}
 			}
 			else
@@ -264,7 +265,7 @@ finish:
 failure:
 	nextchar++;
 	ft_optopt = ret;
-	return '?';
+	return ft_optchr;
 
 success:
 	nextchar++;

@@ -1,22 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lzss.h                                             :+:      :+:    :+:   */
+/*   ft_str_isflt.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/02 23:01:54 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/02 23:03:09 by reclaire         ###   ########.fr       */
+/*   Created: 2022/05/28 21:18:11 by reclaire          #+#    #+#             */
+/*   Updated: 2024/08/29 18:39:43 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_LZSS_H
-# define LIBFT_LZSS_H
+#include "libft_int.h"
 
-# include "libft/_libft.h"
-# include "libft/bitstreams.h"
+bool	ft_str_isflt(string str)
+{
+	while (*str == '-' || *str == '+')
+		str++;
 
-void ft_lzss_compress(U8 *data, U64 len, t_bitstream *stream, U64 window_max_size, U64 lookahead_size);
-U64 ft_lzss_decompress(t_bitstream *stream, U8 *out, U64 len);
+	while (*str && ft_isdigit(*str))
+		str++;
 
-#endif
+	if (*str == '\0')
+		return TRUE;
+
+	if (*str == '.')
+		return ft_str_isdigit(++str);
+	else
+		return FALSE;
+}

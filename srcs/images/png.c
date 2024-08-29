@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/08/24 00:05:54 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/27 14:52:13 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ if indexed color, can't parse if PLTE comes after data
 
 #include "libft_int.h"
 
-#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 

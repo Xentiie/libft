@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2024/06/12 19:08:06 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/29 18:38:46 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,6 +319,16 @@ extern bool 	ft_str_isascii(string str);
 Check if null-terminated string str is digit-only.
 */
 extern bool 	ft_str_isdigit(string str);
+
+/*
+Check if null-terminated string str is a float.
+*/
+extern bool		ft_str_isflt(string str);
+
+/*
+Check if null-terminated string str is a number (checking for '-' and '+' and start of string).
+*/
+extern bool		ft_str_isnbr(string str);
 
 /*
 Check if null-terminated string str is printable.

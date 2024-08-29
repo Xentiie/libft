@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2024/08/15 23:55:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/28 16:17:01 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,47 +18,8 @@
 
 */
 
-# if defined(FT_OS_UNKNOWN) || (!defined(FT_OS_WIN) && !defined(FT_APPLE) && !defined(FT_OS_LINUX))
-
-#  if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-#   define FT_OS_WIN
-#   define WIN32_LEAN_AND_MEAN 
-#   ifdef _WIN64
-#    define FT_OS_WIN64 
-#   else
-#    define FT_OS_WIN32
-#   endif
-
-#  elif __APPLE__
-#   define FT_APPLE
-#   include <TargetConditionals.h>
-#   if TARGET_IPHONE_SIMULATOR
-#    define FT_APPLE_SIM
-#   elif TARGET_OS_MACCATALYST
-#    define FT_APPLE_MACCATALYST
-#   elif TARGET_OS_IPHONE
-#    define FT_APPLE_IOS
-#   elif TARGET_OS_MAC
-#    define FT_APPLE_OSX
-#   else
-#    error "Unknown Apple platform"
-#   endif
-
-#  elif __ANDROID__
-#   define FT_ANDROID
-#  elif __linux__
-#   define FT_OS_LINUX
-#  elif __unix__
-#   define FT_UNIX
-#  elif defined(_POSIX_VERSION)
-#   define FT_POSIX
-#  else
-#   error "Unknown compiler"
-#  endif
-
-# endif
-
-# include "./types.h"
+# include "_os.h"
+# include "types.h"
 
 extern	int				ft_argc;
 extern	const_string	*ft_argv;

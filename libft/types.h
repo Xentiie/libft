@@ -6,12 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:47:30 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/19 23:25:39 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/28 16:16:55 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_TYPES_H
 # define LIBFT_TYPES_H
+
+#include "_os.h"
 
 # ifndef	NULL
 #  define	NULL 	((void*)0)

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_socket.c                                        :+:      :+:    :+:   */
+/*   socket.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 20:13:26 by reclaire          #+#    #+#             */
-/*   Updated: 2024/08/15 20:13:26 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/27 21:38:05 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,8 @@
 #include <ws2tcpip.h>
 #else
 #include <sys/socket.h>
+typedef file SOCKET;
 #endif
-
-/*
-typedef struct addrinfo {
-  int             ai_flags;
-  int             ai_family;
-  int             ai_socktype;
-  int             ai_protocol;
-  size_t          ai_addrlen;
-  char            *ai_canonname;
-  struct sockaddr *ai_addr;
-  struct addrinfo *ai_next;
-} ADDRINFOA, *PADDRINFOA;
-*/
 
 #ifdef FT_OS_WIN
 static bool WSA_init = FALSE; //TODO: thread safety
@@ -89,6 +77,14 @@ file ft_socket(S32 domain, S32 type, S32 protocol)
 
     file sock = (file)socket(domain, type, protocol);
     if (sock == (file)INVALID_SOCKET) // INVALID_SOCKET not on linux
+        return (file)-1; // TODO: set errno
+    return sock;
+}
+#else
+file ft_socket(S32 domain, S32 type, S32 protocol)
+{
+    file sock = (file)socket(domain, type, protocol);
+    if (sock == (file)-1) // INVALID_SOCKET not on linux
         return (file)-1; // TODO: set errno
     return sock;
 }

@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   path.h                                             :+:      :+:    :+:   */
+/*   ft_str_isnbr.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/20 18:12:54 by reclaire         ###   ########.fr       */
+/*   Created: 2022/05/28 21:18:11 by reclaire          #+#    #+#             */
+/*   Updated: 2024/08/29 18:37:06 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_PATH_H
-# define LIBFT_PATH_H
+#include "libft_int.h"
 
-# include "_libft.h"
-
-void	ft_path_parse(t_list **lst, string path);
-void	ft_path_clean(t_list **path);
-
-#endif
+bool	ft_str_isnbr(string str)
+{
+	U64	i = 0;
+	while (*str == '-' || *str == '+')
+		str++;
+	return ft_str_isdigit(str);
+}
