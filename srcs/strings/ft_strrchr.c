@@ -6,24 +6,24 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 20:57:32 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 23:09:35 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/09/03 03:27:19 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
-const_string	ft_strrchr(const_string s, U8 c)
+const_string	ft_strrchr(const_string str, U8 c)
 {
-	const_string	a;
+	const_string	fnd;
 
-	a = NULL;
-	while (*s != '\0')
+	fnd = NULL;
+	while (*str != '\0')
 	{
-		if (*s == c)
-			a = (char *)s;
-		s++;
+		if (*str == c)
+			fnd = (char *)str;
+		str++;
 	}
-	if (*s == c)
-		a = (char *)s;
-	return (a);
+	if (*str == c)
+		fnd = (char *)str;
+	return (fnd);
 }

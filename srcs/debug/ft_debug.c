@@ -6,13 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 19:57:43 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/18 18:47:29 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/08/30 04:52:46 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
-#ifdef DEBUG
 # ifdef FT_OS_WIN
 #  include <debugapi.h>
 #  define SIGTRAP STATUS_BREAKPOINT
@@ -58,13 +57,3 @@ void ft_debug_break()
 	if (ft_is_debugger() == FT_DEBUG_TRUE)
 		raise(SIGTRAP);
 }
-
-#else
-
-void ft_debug_break()
-{}
-
-S8 ft_is_debugger()
-{ return 0; }
-
-#endif /* FT_DEBUG */

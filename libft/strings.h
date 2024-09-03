@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:42:00 by reclaire          #+#    #+#             */
-/*   Updated: 2024/08/18 02:28:29 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/09/03 03:16:33 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,18 +152,6 @@ Sets ft_errno, sets 'len' to 0 if non-null and returns NULL.
 extern string		ft_strdup_l(const_string str, U64 *len);
 
 /*
-Duplicates the wide string str into a new wchar array.
-Caller gets ownership of returned wstring.
-DO NOT USE
-### On error
-Sets ft_errno and returns NULL.
-### ft_errno
-- FT_EINVPTR if 'str' is NULL
-- FT_EOMEM if out of memory
-*/
-extern wstring		ft_wstrdup(const_wstring str);
-
-/*
 Duplicates the string str into a new char array (no more that n characters).
 Caller gets ownership of returned string.
 ### On error
@@ -225,12 +213,6 @@ extern const_string	ft_strnstr(const_string haystack, const_string needle, U64 l
 Returns the length of string
 */
 extern U64		ft_strlen(const_string str);
-
-/*
-Returns the length of wide string
-DO NOT USE
-*/
-extern U64		ft_wstrlen(const_wstring s);
 
 /*
 Returns the index of the first occurrence of c in str, -1 if not found.

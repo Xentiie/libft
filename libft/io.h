@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2024/08/18 05:06:00 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/09/03 03:38:01 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,10 +92,10 @@ extern string	ft_gnl(file fd);
 /*
 printf !
 */
-extern U64		ft_printf(const_string fmt, ...);
-extern U64		ft_dprintf(file fd, const_string fmt, ...);
-extern U64		ft_sprintf(string str, const_string fmt, ...);
-extern U64		ft_snprintf(string str, U64 n, const_string fmt, ...);
+extern U64		ft_printf(const_string fmt, ...) __attribute__ ((format (printf, 1, 2)));
+extern U64		ft_dprintf(file fd, const_string fmt, ...) __attribute__ ((format (printf, 2, 3)));
+extern U64		ft_sprintf(string str, const_string fmt, ...) __attribute__ ((format (printf, 2, 3)));
+extern U64		ft_snprintf(string str, U64 n, const_string fmt, ...) __attribute__ ((format (printf, 3, 4)));
 
 extern U64		ft_vprintf(const_string fmt, va_list args);
 extern U64		ft_vdprintf(file fd, const_string fmt, va_list args);

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 13:11:49 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 23:09:43 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/09/03 03:10:25 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,5 @@
 
 U8	ft_toupper(U8 c)
 {
-	if (c >= 'a' && c <= 'z')
-	{
-		return (c - 32);
-	}
-	else
-	{
-		return (c);
-	}
+	return ft_islower(c) ? c - 32 : c;
 }

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2024/08/28 16:17:01 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/09/03 03:34:56 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ extern	S32		ft_errno;
 
 # define FUNCTION_HOT __attribute__((hot))
 # define FUNCTION_COLD __attribute__((cold))
+# define FUNCTION_PURE __attribute__((pure))
 
 # define IF_PREDICT(cond, expect) __builtin_expect((cond), expect)
 # define IF_PREDICT_B(cond, expect) __builtin_expect(!!(cond), expect)

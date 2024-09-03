@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 23:58:00 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/12 16:20:41 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/09/03 03:11:09 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,9 @@
 
 void	ft_str_tolower(string str)
 {
-	U64 i = 0;
-	while (str[i])
+	while (*str)
 	{
-		str[i] = ft_tolower(str[i]);
-		i++;
+		*str = ft_tolower(str);
+		str++;
 	}
 }

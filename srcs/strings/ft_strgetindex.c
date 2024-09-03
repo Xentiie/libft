@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 07:10:13 by estarck           #+#    #+#             */
-/*   Updated: 2024/02/11 23:05:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/09/03 03:18:07 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,7 @@
 S64	ft_strgetindex(const_string str, U8 c)
 {
 	S64	i = 0;
-	while (str[i] != '\0')
-	{
-		if (str[i] == c)
-			return (i);
+	while (str[i] && str[i] != c)
 		i++;
-	}
-	return (-1);
+	return (str[i] == c) ? i : -1;
 }

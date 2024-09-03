@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2024/08/29 18:38:46 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/09/03 03:06:15 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,44 +301,51 @@ Check if character is upper-case
 extern bool		ft_isupper(U8 c);
 
 /*
-Check if null-terminated string str is digit or alpha-numerical.
+Check if string str contains only ascii characters.
 */
-extern bool 	ft_str_isalnum(string str);
+extern bool 	ft_str_isascii(const_string str);
 
 /*
-Check if null-terminated string str is alpha.
+Check if string str contains only printable characters.
 */
-extern bool 	ft_str_isalpha(string str);
+extern bool 	ft_str_isprint(const_string str);
 
 /*
-Check if null-terminated string str is ascii.
+Check if string str contains only alpha characters.
 */
-extern bool 	ft_str_isascii(string str);
+extern bool 	ft_str_isalpha(const_string str);
 
 /*
-Check if null-terminated string str is digit-only.
+Check if string str contains only digits characters.
 */
-extern bool 	ft_str_isdigit(string str);
+extern bool 	ft_str_isdigit(const_string str);
 
 /*
-Check if null-terminated string str is a float.
+Check if string str contains only digit or alpha-numerical characters.
 */
-extern bool		ft_str_isflt(string str);
+extern bool 	ft_str_isalnum(const_string str);
 
 /*
-Check if null-terminated string str is a number (checking for '-' and '+' and start of string).
+Check if string str contains only whitespace (' ', '\\t', '\\r', '\\n', '\\v', '\\f') characters.
 */
-extern bool		ft_str_isnbr(string str);
+extern bool 	ft_str_iswhitespace(const_string str);
 
 /*
-Check if null-terminated string str is printable.
+Check if string str represents a number (checking for '-' and '+' and start of string).
 */
-extern bool 	ft_str_isprint(string str);
+extern bool		ft_str_isnbr(const_string str);
 
 /*
-Check if null-terminated string str is whitespace. (' ', '\\t', '\\r', '\\n', '\\v', '\\f')
+Check if string str represents a float.
 */
-extern bool 	ft_str_iswhitespace(string str);
+extern bool		ft_str_isflt(const_string str);
+
+/*
+Check if string str represents a hexadecimal number (optionally starting with 0x).
+*/
+extern bool		ft_str_ishex(const_string str);
+
+
 
 /*
 ### On error

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 14:51:38 by reclaire          #+#    #+#             */
-/*   Updated: 2024/08/18 02:38:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/09/03 03:15:46 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,27 +60,6 @@ string	ft_strdup_l(const_string str, U64 *len)
 	dup[c] = '\0';
 
 	*len = l;
-	__FTRETURN_OK(dup);
-}
-
-wstring	ft_wstrdup(const_wstring str)
-{
-	if (str == NULL)
-		__FTRETURN_ERR(NULL, FT_EINVPTR);
-
-	U64 l = ft_wstrlen(str);
-	wstring dup = malloc((l + 1) * sizeof(wchar));
-	if (dup == NULL)
-		__FTRETURN_ERR(NULL, FT_EOMEM);
-
-	U64 c = 0;
-	while (c < l)
-	{
-		dup[c] = str[c];
-		c++;
-	}
-	dup[c] = L'\0';
-
 	__FTRETURN_OK(dup);
 }
 
