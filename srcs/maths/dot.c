@@ -5,19 +5,19 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/06 22:45:45 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:51:33 by reclaire         ###   ########.fr       */
+/*   Created: 2024/09/08 03:49:19 by reclaire          #+#    #+#             */
+/*   Updated: 2024/09/08 03:49:19 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
-inline F32	ft_dot2(t_v2 a, t_v2 b)
+inline F32	ft_dot2(v2f a, v2f b)
 {
-	return (a.x * b.x + a.y * b.y);
+	return (a[0] * b[0] + a[1] * b[1]);
 }
 
-inline F32	ft_dot3(t_v3 a, t_v3 b)
+inline F32	ft_dot3(v2f a, v2f b)
 {
-	return (a.x * b.x + a.y * b.y + a.z * b.z);
+	return (a[0] * b[0] + a[1] * b[1] + a[2] * b[2]);
 }

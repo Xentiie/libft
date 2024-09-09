@@ -14,7 +14,7 @@
 #include "libft_int.h"
 
 
-t_v2	ft_rand_circle(U32 seed)
+v2f	ft_rand_circle(U32 seed)
 {
-	return (vec2(ft_sin(ft_frand(seed)), ft_cos(ft_frand(seed) + 1)));
+	return (v2f){ft_sin(ft_frand(seed)), ft_cos(ft_frand(seed) + 1)};
 }

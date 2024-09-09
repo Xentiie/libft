@@ -13,26 +13,25 @@
 #include "libft_int.h"
 #include <math.h>
 
-
-F32	ft_dist_line(t_v2 p, t_v2 s1, t_v2 s2)
+F32 ft_dist_line(v2f p, v2f s1, v2f s2)
 {
-	t_v2	ab;
-	t_v2	cd;
-	F32		param;
-	t_v2	d;
-	t_v2	tmp;
+	v2f ab;
+	v2f cd;
+	v2f d;
+	v2f tmp;
+	F32 param;
 
-	ab = vec2_sub(p, s1);
-	cd = vec2_sub(s2, s1);
+	ab = p - s1;
+	cd = s2 - s1;
 	param = 1;
 	if (ft_dot2(cd, cd) != 0)
 		param = ft_dot2(ab, cd) / ft_dot2(cd, cd);
 	if (param < 0)
-		tmp = vec2(s1.x, s1.y);
+		tmp = (v2f){s1[0], s1[1]};
 	else if (param > 1)
-		tmp = vec2(s2.x, s2.y);
+		tmp = (v2f){s2[0], s2[1]};
 	else
-		tmp = vec2(s1.x + param * cd.x, s1.y + param * cd.y);
-	d = vec2_sub(p, tmp);
-	return sqrt(d.x * d.x + d.y * d.y);
+		tmp = (v2f){s1[0] + param * cd[0], s1[1] + param * cd[1]};
+	d = p - tmp;
+	return sqrt(d[0] * d[0] + d[1] * d[1]);
 }

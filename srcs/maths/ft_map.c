@@ -14,14 +14,14 @@
 #include "libft_int.h"
 
 
-F32	ft_map(F32 v, t_v2 from, t_v2 to)
+F32	ft_map(F32 v, v2f from, v2f to)
 {
 	F32	normal;
 	F32	tp_max_abs;
 	F32	to_abs;
 
-	normal = (v - from.x) / (from.y - from.x);
-	tp_max_abs = to.y - to.x;
+	normal = (v - from[0]) / (from[1] - from[0]);
+	tp_max_abs = to[1] - to[0];
 	to_abs = tp_max_abs * normal;
-	return (to_abs + to.x);
+	return (to_abs + to[0]);
 }

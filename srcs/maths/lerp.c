@@ -18,28 +18,28 @@ inline F32 ft_lerp(F32 x, F32 y, F32 t)
 	return (x + ft_clampf(0, 1, t) * (y - x));
 }
 
-inline t_v2 ft_lerp2(t_v2 v_1, t_v2 v_2, F32 t)
+inline v2f ft_lerp2(v2f v_1, v2f v_2, F32 t)
 {
-	return (vec2(
-		ft_lerp(v_1.x, v_2.x, t),
-		ft_lerp(v_1.y, v_2.y, t)));
+	return (v2f){
+		ft_lerp(v_1[0], v_2[0], t),
+		ft_lerp(v_1[1], v_2[1], t)};
 }
 
-inline t_v3 ft_lerp3(t_v3 v_1, t_v3 v_2, F32 t)
+inline v3f ft_lerp3(v3f v_1, v3f v_2, F32 t)
 {
-	return (vec3(
-		ft_lerp(v_1.x, v_2.x, t),
-		ft_lerp(v_1.y, v_2.y, t),
-		ft_lerp(v_1.z, v_2.z, t)));
+	return (v2f){
+		ft_lerp(v_1[0], v_2[0], t),
+		ft_lerp(v_1[1], v_2[1], t),
+		ft_lerp(v_1[2], v_2[2], t)};
 }
 
-inline t_v4 ft_lerp4(t_v4 v_1, t_v4 v_2, F32 t)
+inline v4f ft_lerp4(v4f v_1, v4f v_2, F32 t)
 {
-	return (vec4(
-		ft_lerp(v_1.x, v_2.x, t),
-		ft_lerp(v_1.y, v_2.y, t),
-		ft_lerp(v_1.z, v_2.z, t),
-		ft_lerp(v_1.w, v_2.w, t)));
+	return (v4f){
+		ft_lerp(v_1[0], v_2[0], t),
+		ft_lerp(v_1[1], v_2[1], t),
+		ft_lerp(v_1[2], v_2[2], t),
+		ft_lerp(v_1[3], v_2[3], t)};
 }
 
 inline S32 ft_lerp_i(S32 x, S32 y, float t)
@@ -47,28 +47,28 @@ inline S32 ft_lerp_i(S32 x, S32 y, float t)
 	return (x + ft_clampf(0, 1, t) * (y - x));
 }
 
-inline t_iv2 ft_lerp2_i(t_iv2 v_1, t_iv2 v_2, F32 t)
+inline v2i ft_lerp2_i(v2i v_1, v2i v_2, F32 t)
 {
-	return (ivec2(
-		ft_lerp_i(v_1.x, v_2.x, t),
-		ft_lerp_i(v_1.y, v_2.y, t)));
+	return (v2i){
+		ft_lerp_i(v_1[0], v_2[0], t),
+		ft_lerp_i(v_1[1], v_2[1], t)};
 }
 
-inline t_iv3 ft_lerp3_i(t_iv3 v_1, t_iv3 v_2, F32 t)
+inline v3i ft_lerp3_i(v3i v_1, v3i v_2, F32 t)
 {
-	return (ivec3(
-		ft_lerp_i(v_1.x, v_2.x, t),
-		ft_lerp_i(v_1.y, v_2.y, t),
-		ft_lerp_i(v_1.z, v_2.z, t)));
+	return (v3i){
+		ft_lerp_i(v_1[0], v_2[0], t),
+		ft_lerp_i(v_1[1], v_2[1], t),
+		ft_lerp_i(v_1[2], v_2[2], t)};
 }
 
-inline t_iv4 ft_lerp4_i(t_iv4 v_1, t_iv4 v_2, F32 t)
+inline v4i ft_lerp4_i(v4i v_1, v4i v_2, F32 t)
 {
-	return (ivec4(
-		ft_lerp_i(v_1.x, v_2.x, t),
-		ft_lerp_i(v_1.y, v_2.y, t),
-		ft_lerp_i(v_1.z, v_2.z, t),
-		ft_lerp_i(v_1.w, v_2.w, t)));
+	return (v4i){
+		ft_lerp_i(v_1[0], v_2[0], t),
+		ft_lerp_i(v_1[1], v_2[1], t),
+		ft_lerp_i(v_1[2], v_2[2], t),
+		ft_lerp_i(v_1[3], v_2[3], t)};
 }
 
 inline F32 ft_invlerp(F32 a, F32 b, F32 value)
@@ -76,25 +76,25 @@ inline F32 ft_invlerp(F32 a, F32 b, F32 value)
 	return ((value - a) / (b - a));
 }
 
-inline t_v2 ft_invlerp2(t_v2 a, t_v2 b, t_v2 t)
+inline v2f ft_invlerp2(v2f a, v2f b, v2f t)
 {
-	return (vec2((t.x - a.x) / (b.x - a.x),
-				 (t.y - a.y) / (b.y - a.y)));
+	return (v2f){(t[0] - a[0]) / (b[0] - a[0]),
+				 (t[1] - a[1]) / (b[1] - a[1])};
 }
 
-inline t_v3 ft_invlerp3(t_v3 a, t_v3 b, t_v3 t)
+inline v3f ft_invlerp3(v3f a, v3f b, v3f t)
 {
-	return (vec3((t.x - a.x) / (b.x - a.x),
-				 (t.y - a.y) / (b.y - a.y),
-				 (t.z - a.z) / (b.z - a.z)));
+	return (v3f){(t[0] - a[0]) / (b[0] - a[0]),
+				 (t[1] - a[1]) / (b[1] - a[1]),
+				 (t[2] - a[2]) / (b[2] - a[2])};
 }
 
-inline t_v4 ft_invlerp4(t_v4 a, t_v4 b, t_v4 t)
+inline v4f ft_invlerp4(v4f a, v4f b, v4f t)
 {
-	return (vec4((t.x - a.x) / (b.x - a.x),
-				 (t.y - a.y) / (b.y - a.y),
-				 (t.z - a.z) / (b.z - a.z),
-				 (t.w - a.w) / (b.w - a.w)));
+	return (v4f){(t[0] - a[0]) / (b[0] - a[0]),
+				 (t[1] - a[1]) / (b[1] - a[1]),
+				 (t[2] - a[2]) / (b[2] - a[2]),
+				 (t[3] - a[3]) / (b[3] - a[3])};
 }
 
 inline F32 ft_invlerp_i(S32 a, S32 b, S32 value)
@@ -102,23 +102,23 @@ inline F32 ft_invlerp_i(S32 a, S32 b, S32 value)
 	return ((F32)(value - a) / (F32)(b - a));
 }
 
-inline t_v2 ft_invlerp2_i(t_iv2 a, t_iv2 b, t_iv2 t)
+inline v2f ft_invlerp2_i(v2i a, v2i b, v2i t)
 {
-	return (vec2((F32)(t.x - a.x) / (F32)(b.x - a.x),
-				 (F32)(t.y - a.y) / (F32)(b.y - a.y)));
+	return (v2f){ft_invlerp_i(a[0], b[0], t[0]),
+				 ft_invlerp_i(a[1], b[1], t[1])};
 }
 
-inline t_v3 ft_invlerp3_i(t_iv3 a, t_iv3 b, t_iv3 t)
+inline v3f ft_invlerp3_i(v3i a, v3i b, v3i t)
 {
-	return (vec3((F32)(t.x - a.x) / (F32)(b.x - a.x),
-				 (F32)(t.y - a.y) / (F32)(b.y - a.y),
-				 (F32)(t.z - a.z) / (F32)(b.z - a.z)));
+	return (v3f){ft_invlerp_i(a[0], b[0], t[0]),
+				 ft_invlerp_i(a[1], b[1], t[1]),
+				 ft_invlerp_i(a[2], b[2], t[2])};
 }
 
-inline t_v4 ft_invlerp4_i(t_iv4 a, t_iv4 b, t_iv4 t)
+inline v4f ft_invlerp4_i(v4i a, v4i b, v4i t)
 {
-	return (vec4((F32)(t.x - a.x) / (F32)(b.x - a.x),
-				 (F32)(t.y - a.y) / (F32)(b.y - a.y),
-				 (F32)(t.z - a.z) / (F32)(b.z - a.z),
-				 (F32)(t.w - a.w) / (F32)(b.w - a.w)));
+	return (v4f){ft_invlerp_i(a[0], b[0], t[0]),
+				 ft_invlerp_i(a[1], b[1], t[1]),
+				 ft_invlerp_i(a[2], b[2], t[2]),
+				 ft_invlerp_i(a[3], b[3], t[3])};
 }

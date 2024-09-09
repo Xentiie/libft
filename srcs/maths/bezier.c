@@ -12,9 +12,9 @@
 
 #include "libft_int.h"
 
-t_v2 ft_bezier_interp(t_v2 p1, t_v2 p2, t_v2 p3, F32 t)
+v2f ft_bezier_interp(v2f p1, v2f p2, v2f p3, F32 t)
 {
-	t_v2 tmpa = ft_lerp2(p1, p2, t);
-	t_v2 tmpb = ft_lerp2(p2, p3, t);
+	v2f tmpa = ft_lerp2(p1, p2, t);
+	v2f tmpb = ft_lerp2(p2, p3, t);
 	return ft_lerp2(tmpa, tmpb, t);
 }

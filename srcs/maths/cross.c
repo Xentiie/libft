@@ -5,18 +5,17 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/15 21:24:50 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:51:28 by reclaire         ###   ########.fr       */
+/*   Created: 2024/09/08 03:48:56 by reclaire          #+#    #+#             */
+/*   Updated: 2024/09/08 03:48:56 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
-inline t_v3 ft_cross3(t_v3 a, t_v3 b)
+inline v3f ft_cross3(v3f a, v3f b)
 {
-	return (t_v3){
-		a.y * b.z - a.z * b.y,
-		a.z * b.x - a.x * b.z,
-		a.x * b.y - a.y * b.x
-	};
+	return (v3f){
+		a[1] * b[2] - a[2] * b[1],
+		a[2] * b[0] - a[0] * b[2],
+		a[0] * b[1] - a[1] * b[0]};
 }

@@ -13,6 +13,9 @@
 #include "libft_int.h"
 
 
+#if 0
 t_iv2	ivec2_mod(t_iv2 a, t_iv2 b)	{ return ivec2(a.x%b.x, a.y%b.y);					}
 t_iv3	ivec3_mod(t_iv3 a, t_iv3 b)	{ return ivec3(a.x%b.x, a.y%b.y, a.z%b.z);			}
 t_iv4	ivec4_mod(t_iv4 a, t_iv4 b)	{ return ivec4(a.x%b.x, a.y%b.y, a.z%b.z, a.w%b.w);	}
+#endif
+

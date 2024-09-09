@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/06 22:47:36 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:51:34 by reclaire         ###   ########.fr       */
+/*   Created: 2024/09/08 03:48:22 by reclaire          #+#    #+#             */
+/*   Updated: 2024/09/08 03:48:22 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,17 @@ inline F32	ft_frac(F32 v)
 	return (v - ((long)v));
 }
 
-inline t_v2	ft_frac2(t_v2 v)
+inline v2f	ft_frac2(v2f v)
 {
-	return (vec2(ft_frac(v.x), ft_frac(v.y)));
+	return (v2f){ft_frac(v[0]), ft_frac(v[1])};
+}
+
+inline v3f	ft_frac3(v3f v)
+{
+	return (v3f){ft_frac(v[0]), ft_frac(v[1]), ft_frac(v[2])};
+}
+
+inline v4f	ft_frac4(v4f v)
+{
+	return (v4f){ft_frac(v[0]), ft_frac(v[1]), ft_frac(v[2]), ft_frac(v[3])};
 }
