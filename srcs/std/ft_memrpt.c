@@ -1,28 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_memrpt.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/23 15:42:29 by reclaire          #+#    #+#             */
-/*   Updated: 2024/09/03 03:19:39 by reclaire         ###   ########.fr       */
+/*   Created: 2024/09/14 01:33:25 by reclaire          #+#    #+#             */
+/*   Updated: 2024/09/14 01:33:25 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
-#include <stdarg.h>
 
-string	ft_strjoin(const_string s1, const_string s2)
+void	*ft_memrpt(void *dst, void const *src, U64 src_size, U64 n)
 {
-	string	str;
+	if (UNLIKELY(dst == NULL || src == NULL))
+		__FTRETURN_ERR(dst, FT_EINVPTR);
 
-	str = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
-	if (str == NULL)
-		__FTRETURN_ERR(NULL, FT_EOMEM);
-	str[0] = '\0';
-	ft_strcat(str, s1);
-	ft_strcat(str, s2);
-
-	__FTRETURN_OK(str);
+	U64	j, i = 0;
+	while (i < n)
+	{
+		for (j = 0; j < src_size && i < n; j++, i++)
+			((U8 *)dst)[i] = ((U8 *)src)[j];
+	}
+	__FTRETURN_OK(dst);
 }

@@ -152,7 +152,7 @@ extern t_iv2 ivec2_mod(t_iv2 a, t_iv2 b);
 extern t_iv3 ivec3_mod(t_iv3 a, t_iv3 b);
 extern t_iv4 ivec4_mod(t_iv4 a, t_iv4 b);
 
-#define ft_matrix_identity          \
+#define ft_mat4x4_identity          \
 	(t_mat4x4)                      \
 	{                               \
 		1.0f, 0.0f, 0.0f, 0.0f,     \
@@ -160,33 +160,35 @@ extern t_iv4 ivec4_mod(t_iv4 a, t_iv4 b);
 		0.0f, 0.0f, 1.0f, 0.0f,     \
 		0.0f, 0.0f, 0.0f, 1.0f      \
 	}
-extern t_v4 *ft_matrix_col(t_mat4x4 *mat, S32 c);
-extern float *ft_matrix_get(t_mat4x4 *mat, S32 r, S32 c);
-extern t_v4 *ft_matrix_set_col(t_mat4x4 *mat, S32 c, t_v4 v);
-extern bool ft_matrix_set_row(t_mat4x4 *mat, S32 r, t_v4 v);
+extern t_v4 *ft_mat4x4_col(t_mat4x4 *mat, S32 c);
+extern float *ft_mat4x4_get(t_mat4x4 *mat, S32 r, S32 c);
+extern void ft_mat4x4_set_col(t_mat4x4 *mat, S32 c, t_v4 v);
+extern void ft_mat4x4_set_row(t_mat4x4 *mat, S32 r, t_v4 v);
 
-extern t_mat4x4 ft_matrix_transpose(t_mat4x4 mat);
-extern t_mat4x4 ft_matrix_invert(t_mat4x4 mat);
-extern float ft_matrix_det(t_mat4x4 v);
-extern t_mat4x4 ft_matrix_perspective(F32 fov, F32 near, F32 far);
+extern t_mat4x4 ft_mat4x4_transpose(t_mat4x4 mat);
+extern t_mat4x4 ft_mat4x4_invert(t_mat4x4 mat);
+extern float ft_mat4x4_det(t_mat4x4 v);
+extern t_mat4x4 ft_mat4x4_perspective(F32 fov, F32 near, F32 far);
 
-extern t_mat4x4 ft_matrix_mult_matrix(t_mat4x4 a, t_mat4x4 b);
-extern t_mat4x4 ft_matrix_mult_float(t_mat4x4 a, F32 b);
-extern t_v4 ft_matrix_mult_v4(t_mat4x4 a, t_v4 b);
+extern t_mat4x4 ft_mat4x4_mult_mat(t_mat4x4 a, t_mat4x4 b);
+extern t_mat4x4 ft_mat4x4_mult_float(t_mat4x4 a, F32 b);
+extern t_v4 ft_mat4x4_mult_v4(t_mat4x4 a, t_v4 b);
 
-extern t_mat4x4 ft_matrix_scale_v2(t_v2 v);
-extern t_mat4x4 ft_matrix_scale_v3(t_v3 v);
-extern t_mat4x4 ft_matrix_scale_v4(t_v4 v);
-extern t_mat4x4 ft_matrix_scale_iv2(t_iv2 v);
-extern t_mat4x4 ft_matrix_scale_iv3(t_iv3 v);
-extern t_mat4x4 ft_matrix_scale_iv4(t_iv4 v);
+extern t_mat4x4 ft_mat4x4_scale_v2(t_v2 v);
+extern t_mat4x4 ft_mat4x4_scale_v3(t_v3 v);
+extern t_mat4x4 ft_mat4x4_scale_v4(t_v4 v);
+extern t_mat4x4 ft_mat4x4_scale_iv2(t_iv2 v);
+extern t_mat4x4 ft_mat4x4_scale_iv3(t_iv3 v);
+extern t_mat4x4 ft_mat4x4_scale_iv4(t_iv4 v);
 
-extern t_mat4x4 ft_matrix_translate_v2(t_v2 v);
-extern t_mat4x4 ft_matrix_translate_v3(t_v3 v);
-extern t_mat4x4 ft_matrix_translate_iv2(t_iv2 v);
-extern t_mat4x4 ft_matrix_translate_iv3(t_iv3 v);
+extern t_mat4x4 ft_mat4x4_translate_v2(t_v2 v);
+extern t_mat4x4 ft_mat4x4_translate_v3(t_v3 v);
+extern t_mat4x4 ft_mat4x4_translate_iv2(t_iv2 v);
+extern t_mat4x4 ft_mat4x4_translate_iv3(t_iv3 v);
 
-extern t_mat4x4 ft_matrix_fit_to_view(t_v2 pos, t_v2 size, t_v2 view_size);
+extern t_mat4x4 ft_mat4x4_rotate_euler(t_v3 rot);
+
+extern t_mat4x4 ft_mat4x4_fit_to_view(t_v2 pos, t_v2 size, t_v2 view_size);
 
 #define ft_cos cos
 extern t_v2 ft_cos2(t_v2 v);
@@ -374,6 +376,10 @@ extern F32 ft_frac(F32 v);
 // Fractional part of v
 extern t_v2 ft_frac2(t_v2 v);
 
+/*
+Returns FT_F32_QNAN if lines are parallel or coincident (overlapping) 
+*/
+t_v2 ft_line_intersect(t_v2 l1p1, t_v2 l1p2, t_v2 l2p1, t_v2 l2p2);
 t_v2 ft_bezier_interp(t_v2 p1, t_v2 p2, t_v2 p3, F32 t);
 
 #if defined(__cplusplus)

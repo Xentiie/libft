@@ -12,6 +12,8 @@
 
 #include "libft_int.h"
 
+#if 0
+
 # ifdef FT_OS_WIN
 #  include <debugapi.h>
 #  define SIGTRAP STATUS_BREAKPOINT
@@ -57,3 +59,5 @@ void ft_debug_break()
 	if (ft_is_debugger() == FT_DEBUG_TRUE)
 		raise(SIGTRAP);
 }
+
+#endif

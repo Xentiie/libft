@@ -73,52 +73,56 @@ inline t_iv4 ft_lerp4_i(t_iv4 v_1, t_iv4 v_2, F32 t)
 
 inline F32 ft_invlerp(F32 a, F32 b, F32 value)
 {
+	if (b - a == 0)
+		return 0;
 	return ((value - a) / (b - a));
 }
 
 inline t_v2 ft_invlerp2(t_v2 a, t_v2 b, t_v2 t)
 {
-	return (vec2((t.x - a.x) / (b.x - a.x),
-				 (t.y - a.y) / (b.y - a.y)));
+	return (vec2(ft_invlerp(a.x, b.x, t.x),
+				 ft_invlerp(a.y, b.y, t.y)));
 }
 
 inline t_v3 ft_invlerp3(t_v3 a, t_v3 b, t_v3 t)
 {
-	return (vec3((t.x - a.x) / (b.x - a.x),
-				 (t.y - a.y) / (b.y - a.y),
-				 (t.z - a.z) / (b.z - a.z)));
+	return (vec3(ft_invlerp_i(a.x, b.x, t.x),
+				 ft_invlerp_i(a.y, b.y, t.y),
+				 ft_invlerp_i(a.z, b.z, t.z)));
 }
 
 inline t_v4 ft_invlerp4(t_v4 a, t_v4 b, t_v4 t)
 {
-	return (vec4((t.x - a.x) / (b.x - a.x),
-				 (t.y - a.y) / (b.y - a.y),
-				 (t.z - a.z) / (b.z - a.z),
-				 (t.w - a.w) / (b.w - a.w)));
+	return (vec4(ft_invlerp_i(a.x, b.x, t.x),
+				 ft_invlerp_i(a.y, b.y, t.y),
+				 ft_invlerp_i(a.z, b.z, t.z),
+				 ft_invlerp_i(a.w, b.w, t.w)));
 }
 
 inline F32 ft_invlerp_i(S32 a, S32 b, S32 value)
 {
+	if (b - a == 0)
+		return 0;
 	return ((F32)(value - a) / (F32)(b - a));
 }
 
 inline t_v2 ft_invlerp2_i(t_iv2 a, t_iv2 b, t_iv2 t)
 {
-	return (vec2((F32)(t.x - a.x) / (F32)(b.x - a.x),
-				 (F32)(t.y - a.y) / (F32)(b.y - a.y)));
+	return (vec2(ft_invlerp_i(a.x, b.x, t.x),
+				 ft_invlerp_i(a.y, b.y, t.y)));
 }
 
 inline t_v3 ft_invlerp3_i(t_iv3 a, t_iv3 b, t_iv3 t)
 {
-	return (vec3((F32)(t.x - a.x) / (F32)(b.x - a.x),
-				 (F32)(t.y - a.y) / (F32)(b.y - a.y),
-				 (F32)(t.z - a.z) / (F32)(b.z - a.z)));
+	return (vec3(ft_invlerp_i(a.x, b.x, t.x),
+				 ft_invlerp_i(a.y, b.y, t.y),
+				 ft_invlerp_i(a.z, b.z, t.z)));
 }
 
 inline t_v4 ft_invlerp4_i(t_iv4 a, t_iv4 b, t_iv4 t)
 {
-	return (vec4((F32)(t.x - a.x) / (F32)(b.x - a.x),
-				 (F32)(t.y - a.y) / (F32)(b.y - a.y),
-				 (F32)(t.z - a.z) / (F32)(b.z - a.z),
-				 (F32)(t.w - a.w) / (F32)(b.w - a.w)));
+	return (vec4(ft_invlerp_i(a.x, b.x, t.x),
+				 ft_invlerp_i(a.y, b.y, t.y),
+				 ft_invlerp_i(a.z, b.z, t.z),
+				 ft_invlerp_i(a.w, b.w, t.w)));
 }

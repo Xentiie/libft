@@ -50,4 +50,6 @@ extern	S32		ft_errno;
 //#define UNLIKELY(cond) (cond)
 //#define LIKELY(cond) (cond)
 
+//#define printf(...) do { printf("(%s:%d) ", __FILE__, __LINE__); printf(__VA_ARGS__); } while (0)
+
 #endif
