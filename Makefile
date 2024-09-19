@@ -14,7 +14,7 @@ NAME		=	libft.so
 include config.mk
 
 #CFLAGS		+=	-Wall -Wextra -Werror -O3 -g
-CFLAGS		+=	-g -Wall -Wextra -O3
+CFLAGS		+=	-g -Wall -Wextra
 INCLUDES  	+=	-I./ -I./srcs
 
 $(NAME):	$(OBJS)

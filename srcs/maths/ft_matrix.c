@@ -14,17 +14,15 @@
 #include <math.h>
 #include "libft_int.h"
 
-#define get(mat, i, j) (((F32 *)&mat)[i * 4 + j])
-#define getp(mat, i, j) (((F32 *)mat)[i * 4 + j])
+#define get(mat, r, c) (((F32 *)&mat)[r + c * 4])
+#define getp(mat, r, c) (((F32 *)mat)[r + c * 4])
 
 t_v4 *ft_mat4x4_col(t_mat4x4 *mat, S32 c)
 {
-	if (c * 4 >= 16)
-		return NULL;
-	return (t_v4 *)(((F32 *)mat) + c * 4);
+	return (t_v4 *)ft_mat4x4_get(mat, 0, c);
 }
 
-F32 *ft_mat4x4_get(t_mat4x4 *mat, S32 c, S32 r)
+F32 *ft_mat4x4_get(t_mat4x4 *mat, S32 r, S32 c)
 {
 	if (r + c * 4 >= 16)
 		return NULL;
@@ -60,10 +58,18 @@ t_mat4x4 ft_mat4x4_transpose(t_mat4x4 mat)
 
 F32 ft_mat4x4_det(t_mat4x4 v)
 {
-	return get(v, 0, 0) * (get(v, 1, 1) * (get(v, 2, 2) * get(v, 3, 3) - get(v, 2, 3) * get(v, 3, 2)) - get(v, 1, 2) * (get(v, 2, 1) * get(v, 3, 3) - get(v, 2, 3) * get(v, 3, 1)) + get(v, 1, 3) * (get(v, 2, 1) * get(v, 3, 2) - get(v, 2, 2) * get(v, 3, 1))) -
-		   get(v, 0, 1) * (get(v, 1, 0) * (get(v, 2, 2) * get(v, 3, 3) - get(v, 2, 3) * get(v, 3, 2)) - get(v, 1, 2) * (get(v, 2, 0) * get(v, 3, 3) - get(v, 2, 3) * get(v, 3, 0)) + get(v, 1, 3) * (get(v, 2, 0) * get(v, 3, 2) - get(v, 2, 2) * get(v, 3, 0))) +
-		   get(v, 0, 2) * (get(v, 1, 0) * (get(v, 2, 1) * get(v, 3, 3) - get(v, 2, 3) * get(v, 3, 1)) - get(v, 1, 1) * (get(v, 2, 0) * get(v, 3, 3) - get(v, 2, 3) * get(v, 3, 0)) + get(v, 1, 3) * (get(v, 2, 0) * get(v, 3, 1) - get(v, 2, 1) * get(v, 3, 0))) -
-		   get(v, 0, 3) * (get(v, 1, 0) * (get(v, 2, 1) * get(v, 3, 2) - get(v, 2, 2) * get(v, 3, 1)) - get(v, 1, 1) * (get(v, 2, 0) * get(v, 3, 2) - get(v, 2, 2) * get(v, 3, 0)) + get(v, 1, 2) * (get(v, 2, 0) * get(v, 3, 1) - get(v, 2, 1) * get(v, 3, 0)));
+	return get(v, 0, 3) * get(v, 1, 2) * get(v, 2, 1) * get(v, 3, 0) - get(v, 0, 2) * get(v, 1, 3) * get(v, 2, 1) * get(v, 3, 0) -
+		   get(v, 0, 3) * get(v, 1, 1) * get(v, 2, 2) * get(v, 3, 0) + get(v, 0, 1) * get(v, 1, 3) * get(v, 2, 2) * get(v, 3, 0) +
+		   get(v, 0, 2) * get(v, 1, 1) * get(v, 2, 3) * get(v, 3, 0) - get(v, 0, 1) * get(v, 1, 2) * get(v, 2, 3) * get(v, 3, 0) -
+		   get(v, 0, 3) * get(v, 1, 2) * get(v, 2, 0) * get(v, 3, 1) + get(v, 0, 2) * get(v, 1, 3) * get(v, 2, 0) * get(v, 3, 1) +
+		   get(v, 0, 3) * get(v, 1, 0) * get(v, 2, 2) * get(v, 3, 1) - get(v, 0, 0) * get(v, 1, 3) * get(v, 2, 2) * get(v, 3, 1) -
+		   get(v, 0, 2) * get(v, 1, 0) * get(v, 2, 3) * get(v, 3, 1) + get(v, 0, 0) * get(v, 1, 2) * get(v, 2, 3) * get(v, 3, 1) +
+		   get(v, 0, 3) * get(v, 1, 1) * get(v, 2, 0) * get(v, 3, 2) - get(v, 0, 1) * get(v, 1, 3) * get(v, 2, 0) * get(v, 3, 2) -
+		   get(v, 0, 3) * get(v, 1, 0) * get(v, 2, 1) * get(v, 3, 2) + get(v, 0, 0) * get(v, 1, 3) * get(v, 2, 1) * get(v, 3, 2) +
+		   get(v, 0, 1) * get(v, 1, 0) * get(v, 2, 3) * get(v, 3, 2) - get(v, 0, 0) * get(v, 1, 1) * get(v, 2, 3) * get(v, 3, 2) -
+		   get(v, 0, 2) * get(v, 1, 1) * get(v, 2, 0) * get(v, 3, 3) + get(v, 0, 1) * get(v, 1, 2) * get(v, 2, 0) * get(v, 3, 3) +
+		   get(v, 0, 2) * get(v, 1, 0) * get(v, 2, 1) * get(v, 3, 3) - get(v, 0, 0) * get(v, 1, 2) * get(v, 2, 1) * get(v, 3, 3) -
+		   get(v, 0, 1) * get(v, 1, 0) * get(v, 2, 2) * get(v, 3, 3) + get(v, 0, 0) * get(v, 1, 1) * get(v, 2, 2) * get(v, 3, 3);
 }
 
 t_mat4x4 ft_mat4x4_invert(t_mat4x4 mat)
@@ -88,25 +94,23 @@ t_mat4x4 ft_mat4x4_invert(t_mat4x4 mat)
 		si = -si;
 	}
 	return ft_mat4x4_mult_float(ft_mat4x4_mult_float(r, d == 0 ? 0 : 1 / d), 4);
+	return r;
 }
 
-F32 rcp(F32 v)
+static F32 rcp(F32 v)
 {
 	return v ? 1.0f / v : 0.0f;
 }
 t_mat4x4 ft_mat4x4_perspective(F32 fov, F32 near, F32 far)
 {
-	// Camera points towards -z.  0 < near < far.
-	// Matrix maps z range [-near, -far] to [-1, 1], after homogeneous division.
 	F32 f = rcp(tanf(ft_radians(fov) / 2.0f));
 	F32 d = rcp(near - far);
 
 	return (t_mat4x4){
 		f, 0.f, 0.f, 0.f,
 		0.f, f, 0.f, 0.f,
-		0.f, 0.f, (near + far) * d, 2.0f * near * far * d,
-		0.f, 0.f, -1.0f, 0.f
-	};
+		0.f, 0.f, (near + far) * d, -1.0f,
+		0.f, 0.f, 2.0f * near * far * d, 0.f};
 }
 
 t_mat4x4 ft_mat4x4_mult_mat(t_mat4x4 a, t_mat4x4 b)
@@ -118,39 +122,12 @@ t_mat4x4 ft_mat4x4_mult_mat(t_mat4x4 a, t_mat4x4 b)
 		{
 			F32 rr = 0;
 			for (S32 k = 0; k < 4; k++)
-				rr += (get(a, k, i) * get(b, j, k));
-			get(r, j, i) = rr;
+				rr += (get(a, i, k) * get(b, k, j));
+			get(r, i, j) = rr;
 		}
 	}
 	return r;
 }
-
-/*
-t_mat4x4	ft_mat4x4_mult_mat(t_mat4x4 a, t_mat4x4 b)
-{
-	t_mat4x4	r;
-	r.m00 = a.m00 * b.m00 + a.m01 * b.m10 + a.m02 * b.m20 + a.m03 * b.m30;
-	r.m01 = a.m00 * b.m01 + a.m01 * b.m11 + a.m02 * b.m21 + a.m03 * b.m31;
-	r.m02 = a.m00 * b.m02 + a.m01 * b.m12 + a.m02 * b.m22 + a.m03 * b.m32;
-	r.m03 = a.m00 * b.m03 + a.m01 * b.m13 + a.m02 * b.m23 + a.m03 * b.m33;
-
-	r.m10 = a.m10 * b.m00 + a.m11 * b.m10 + a.m12 * b.m20 + a.m13 * b.m30;
-	r.m11 = a.m10 * b.m01 + a.m11 * b.m11 + a.m12 * b.m21 + a.m13 * b.m31;
-	r.m12 = a.m10 * b.m02 + a.m11 * b.m12 + a.m12 * b.m22 + a.m13 * b.m32;
-	r.m13 = a.m10 * b.m03 + a.m11 * b.m13 + a.m12 * b.m23 + a.m13 * b.m33;
-
-	r.m20 = a.m20 * b.m00 + a.m21 * b.m10 + a.m22 * b.m20 + a.m23 * b.m30;
-	r.m21 = a.m20 * b.m01 + a.m21 * b.m11 + a.m22 * b.m21 + a.m23 * b.m31;
-	r.m22 = a.m20 * b.m02 + a.m21 * b.m12 + a.m22 * b.m22 + a.m23 * b.m32;
-	r.m23 = a.m20 * b.m03 + a.m21 * b.m13 + a.m22 * b.m23 + a.m23 * b.m33;
-
-	r.m30 = a.m30 * b.m00 + a.m31 * b.m10 + a.m32 * b.m20 + a.m33 * b.m30;
-	r.m31 = a.m30 * b.m01 + a.m31 * b.m11 + a.m32 * b.m21 + a.m33 * b.m31;
-	r.m32 = a.m30 * b.m02 + a.m31 * b.m12 + a.m32 * b.m22 + a.m33 * b.m32;
-	r.m33 = a.m30 * b.m03 + a.m31 * b.m13 + a.m32 * b.m23 + a.m33 * b.m33;
-	return r;
-}
-*/
 
 t_v4 ft_mat4x4_mult_v4(t_mat4x4 a, t_v4 b)
 {
@@ -159,7 +136,7 @@ t_v4 ft_mat4x4_mult_v4(t_mat4x4 a, t_v4 b)
 	{
 		F32 rr = 0;
 		for (S32 j = 0; j < 4; j++)
-			rr += *ft_mat4x4_get(&a, j, i) * ((F32 *)&b)[j];
+			rr += get(a, i, j) * ((F32 *)&b)[j];
 		((F32 *)&r)[i] = rr;
 	}
 	return r;
@@ -169,7 +146,7 @@ t_mat4x4 ft_mat4x4_mult_float(t_mat4x4 a, F32 b)
 {
 	t_mat4x4 r;
 	for (S32 i = 0; i < 4 * 4; i++)
-		get(r, i, i) = get(a, i, i) * b;
+		get(r, i, 0) = get(a, i, 0) * b;
 	return r;
 }
 
@@ -177,7 +154,7 @@ t_mat4x4 ft_mat4x4_scale_v2(t_v2 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 2; i++)
-		*ft_mat4x4_get(&r, i, i) = ((F32 *)&v)[i];
+		get(r, i, i) = ((F32 *)&v)[i];
 	return r;
 }
 
@@ -185,7 +162,7 @@ t_mat4x4 ft_mat4x4_scale_v3(t_v3 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 3; i++)
-		*ft_mat4x4_get(&r, i, i) = ((F32 *)&v)[i];
+		get(r, i, i) = ((F32 *)&v)[i];
 	return r;
 }
 
@@ -193,7 +170,7 @@ t_mat4x4 ft_mat4x4_scale_v4(t_v4 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 4; i++)
-		*ft_mat4x4_get(&r, i, i) = ((F32 *)&v)[i];
+		get(r, i, i) = ((F32 *)&v)[i];
 	return r;
 }
 
@@ -201,7 +178,7 @@ t_mat4x4 ft_mat4x4_scale_iv2(t_iv2 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 2; i++)
-		*ft_mat4x4_get(&r, i, i) = ((F32 *)&v)[i];
+		get(r, i, i) = ((F32 *)&v)[i];
 	return r;
 }
 
@@ -209,7 +186,7 @@ t_mat4x4 ft_mat4x4_scale_iv3(t_iv3 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 3; i++)
-		*ft_mat4x4_get(&r, i, i) = ((F32 *)&v)[i];
+		get(r, i, i) = ((F32 *)&v)[i];
 	return r;
 }
 
@@ -217,7 +194,7 @@ t_mat4x4 ft_mat4x4_scale_iv4(t_iv4 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 4; i++)
-		*ft_mat4x4_get(&r, i, i) = ((F32 *)&v)[i];
+		get(r, i, i) = ((F32 *)&v)[i];
 	return r;
 }
 
@@ -225,14 +202,14 @@ t_mat4x4 ft_mat4x4_translate_v2(t_v2 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 2; i++)
-		*ft_mat4x4_get(&r, 2, i) = ((F32 *)&v)[i];
+		get(r, i, 2) = ((F32 *)&v)[i];
 	return r;
 }
 t_mat4x4 ft_mat4x4_translate_v3(t_v3 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 3; i++)
-		*ft_mat4x4_get(&r, 3, i) = ((F32 *)&v)[i];
+		get(r, i, 3) = ((F32 *)&v)[i];
 	return r;
 }
 
@@ -240,14 +217,14 @@ t_mat4x4 ft_mat4x4_translate_iv2(t_iv2 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 2; i++)
-		*ft_mat4x4_get(&r, 2, i) = ((S32 *)&v)[i];
+		get(r, i, 2) = ((S32 *)&v)[i];
 	return r;
 }
 t_mat4x4 ft_mat4x4_translate_iv3(t_iv3 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 3; i++)
-		*ft_mat4x4_get(&r, 3, i) = ((S32 *)&v)[i];
+		get(r, i, 3) = ((S32 *)&v)[i];
 	return r;
 }
 
@@ -271,9 +248,11 @@ t_mat4x4 ft_mat4x4_rotate_euler(t_v3 rot)
 		0.f, 0.f, 0.f, 1.f};
 }
 
-void print_mat(string, t_mat4x4);
 t_mat4x4 ft_mat4x4_fit_to_view(t_v2 pos, t_v2 size, t_v2 view_size)
 {
+	t_v2 ratio = vec2_div(view_size, size);
+	F32 min_ratio = ratio.x < ratio.y ? ratio.x : ratio.y;
+	// clang-format off
 	t_mat4x4 s1 = (t_mat4x4){
 		(2.f / view_size.x), .0f, .0f, .0f,
 		.0f, (2.f / view_size.y), .0f, .0f,
@@ -281,19 +260,17 @@ t_mat4x4 ft_mat4x4_fit_to_view(t_v2 pos, t_v2 size, t_v2 view_size)
 		.0f, .0f, .0f, 1.f,
 	};
 
-	t_v2 ratio = vec2_div(view_size, size);
-	F32 min_ratio = ratio.x < ratio.y ? ratio.x : ratio.y;
 	t_mat4x4 s2 = (t_mat4x4){
 		min_ratio, .0f, .0f, .0f,
 		.0f, min_ratio, .0f, .0f,
 		.0f, .0f, 1.f, .0f,
 		.0f, .0f, .0f, 1.f,
 	};
-	
-	// vec3( -pos - size * 0.5f, 0.0f )
+
 	t_mat4x4 s3 = ft_mat4x4_translate_v3(vec3(
 		-pos.x - size.x * 0.5f,
 		-pos.y - size.y * 0.5f, 0.0f));
+	// clang-format on
 
 	return ft_mat4x4_mult_mat(ft_mat4x4_mult_mat(s1, s2), s3);
 }
