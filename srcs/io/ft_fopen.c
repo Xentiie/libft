@@ -15,7 +15,7 @@
 # if defined(FT_OS_WIN)
 #  include <windows.h>
 
-file ft_fopen(string path, string mode)
+file ft_fopen(const_string path, const_string mode)
 {
 	if (path == NULL || mode == NULL)
 	{
@@ -74,7 +74,7 @@ file ft_fopen(string path, string mode)
 #  endif
 #  include <sys/stat.h>
 
-inline file ft_fopen(string path, string mode)
+inline file ft_fopen(const_string path, const_string mode)
 {
 	if (path == NULL || mode == NULL)
 	{

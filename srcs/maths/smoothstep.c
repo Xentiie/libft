@@ -6,18 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 21:38:10 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 20:51:26 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/09/27 05:10:39 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <math.h>
 #include "libft_int.h"
-
-
-inline F32	ft_smoothstep(F32 x, F32 y, F32 s)
-{
-	return (ft_lerp(x, y, s * s * (3 - 2 * s)));
-}
 
 inline t_v2	ft_smoothstep2(t_v2 x, t_v2 y, t_v2 s)
 {

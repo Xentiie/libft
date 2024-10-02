@@ -40,7 +40,7 @@ Sets ft_errno and returns -1.
 - FT_EINVVAL if 'mode' is invalid
 - FT_ESYSCALL if a syscall fails
 */
-extern file	ft_fopen(string path, string mode);
+extern file	ft_fopen(const_string path, const_string mode);
 
 /*
 Closes the file descriptor 'fd'

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 16:16:11 by reclaire          #+#    #+#             */
-/*   Updated: 2024/08/28 16:16:29 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/09/25 06:02:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,10 @@
 #  endif
 
 # endif
+
+#define FT_TARGET_WIN ((S32)(1 << 0))
+#define FT_TARGET_APPLE ((S32)(1 << 1))
+#define FT_TARGET_LINUX ((S32)(1 << 2))
+
 
 #endif

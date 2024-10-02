@@ -50,7 +50,7 @@
 # endif
 
 # ifndef LIBFT_AVOID_ALLOCA
-#  ifdef FT_OS_WIN
+#  if defined(FT_OS_WIN) || defined(FT_OS_WIN_WSL)
 #   include <malloc.h>
 #  else
 #   include <alloca.h>
