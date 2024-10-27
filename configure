@@ -20,6 +20,7 @@ INCLUDES=
 LIBS_PATHS=
 LIBS=
 
+STATIC="true"
 while [[ $# -gt 0 ]]; do
     case $1 in
         -t|--target)
@@ -30,8 +31,8 @@ while [[ $# -gt 0 ]]; do
             shift # past argument
             shift # past value
             ;;
-        -s|--static)
-            STATIC="true"
+        -d|--dynamic)
+            STATIC="false"
             shift
             ;;
 		-c|--coverage)

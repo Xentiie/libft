@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2024/09/03 03:34:56 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/10/27 02:36:09 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,14 @@
 # include "_os.h"
 # include "types.h"
 
-extern	int				ft_argc;
+extern	S32				ft_argc;
 extern	const_string	*ft_argv;
 extern	const_string	*ft_env;
 # define FT_INIT_ARGV(argc, argv, env) ft_argc=argc;ft_argv=argv;ft_env=env;
 
 /*Error code returned by some ft functions*/
-extern	S32		ft_errno;
+S32 *__ft_errno_location();
+#define ft_errno (*__ft_errno_location())
 # define FT_OK				0	/* No error */
 # define FT_EOMEM			1	/* Out of memory */
 # define FT_EINVPTR			2	/* Invalid pointer */
@@ -49,8 +50,6 @@ extern	S32		ft_errno;
 #define LIKELY(cond) IF_PREDICT(cond, TRUE)
 //#define UNLIKELY(cond) (cond)
 //#define LIKELY(cond) (cond)
-
-#define array_len(x) (sizeof(x) / sizeof(x[0]))
 
 //#define printf(...) do { printf("(%s:%d) ", __FILE__, __LINE__); printf(__VA_ARGS__); } while (0)
 
