@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 04:01:02 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/23 23:39:09 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/10/27 18:26:37 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ t_file *ft_fstdin;
 t_file *ft_fstdout;
 t_file *ft_fstderr;
 
-__attribute__((constructor)) void __init_libft(S32 argc, const_string *argv, const_string *env)
+__attribute__((constructor)) void __init_libft(S32 argc, string *argv, string *env)
 {
 	ft_argc = argc;
 	ft_argv = argv;
