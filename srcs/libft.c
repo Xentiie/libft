@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 04:01:02 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/16 01:35:55 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/10/23 23:39:09 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 #endif
 
 S32 ft_argc = -1;
-const_string *ft_argv = NULL;
-const_string *ft_env = NULL;
+string *ft_argv = NULL;
+string *ft_env = NULL;
 
 S32 *__ft_errno_location()
 {
