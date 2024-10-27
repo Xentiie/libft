@@ -79,13 +79,7 @@ Sets ft_errno and returns dst.
 extern void		*ft_memcpy(void *dst, void const *src, U64 n);
 
 /*
-//TODO: 
-Copies n bytes from memory area src to memory area dst.
-The two strings may not overlap. If they do use ft_memmove instead.
-### On error
-Sets ft_errno and returns dst.
-### ft_errno
-- FT_EINVPTR if dst or src is NULL
+Dumb thing don't use
 */
 extern void	*ft_memrpt(void *dst, void const *src, U64 src_size, U64 n);
 
