@@ -6,11 +6,9 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:42:34 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/10 00:49:13 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/10/27 02:36:18 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-//TODO: check for VAOPT
 
 #ifndef LIBFT_MACROS_H
 # define LIBFT_MACROS_H
