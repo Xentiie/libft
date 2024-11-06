@@ -79,11 +79,6 @@ Sets ft_errno and returns dst.
 extern void		*ft_memcpy(void *dst, void const *src, U64 n);
 
 /*
-Dumb thing don't use
-*/
-extern void	*ft_memrpt(void *dst, void const *src, U64 src_size, U64 n);
-
-/*
 Duplicates n bytes of src.
 Caller owns returned value
 ### On error
