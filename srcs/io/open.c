@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 13:47:45 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/22 04:41:57 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/08 03:45:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static bool parse_mode(const_string mode, S32 *open_mode, S32 *create_mode)
 	}
 
 	if (*mode == '+')
-		*ft_open_mode = FILE_RDWR;
+		*open_mode = GENERIC_READ | GENERIC_WRITE;
 
 	return TRUE;
 }
@@ -55,13 +55,13 @@ filedesc ft_open(const_string path, const_string mode)
 	if (!parse_mode(mode, &open_mode, &create_mode))
 		__FTRETURN_ERR((filedesc)-1, FT_EINVVAL);
 
-	if (fd = CreateFileA(path, open_mode,
+	if ((fd = CreateFileA(path, open_mode,
 						 0,						// Share mode (0 for exclusive access)
 						 NULL,					// Security attributes (NULL for default)
 						 create_mode,			// Creation disposition (open existing file)
 						 FILE_ATTRIBUTE_NORMAL, // File attributes (normal file)
 						 NULL					// Template file (NULL for none)
-						 ) == INVALID_HANDLE_VALUE)
+						 )) == INVALID_HANDLE_VALUE)
 		__FTRETURN_ERR((filedesc)-1, FT_ESYSCALL);
 	__FTRETURN_OK(fd);
 }

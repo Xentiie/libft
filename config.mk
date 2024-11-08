@@ -1,20 +1,33 @@
+.DEFAULT_GOAL=all
 NAME=libft.a
-.DEFAULT_GOAL := all
-all: objs $(NAME)
-
+CFLAGS=-fPIC -Wall -Wextra -Wno-unknown-pragmas
+INCLUDES= -I./ -I./srcs/ 
+LIBS= -lm 
+LIBS_PATHS= 
 RM=rm -rf
-CC=gcc
-MKLIB=ar -rcs $(NAME) $(OBJS)
-CFLAGS=-DFT_OS_LINUX 
-INCLUDES=
-LIBS_PATHS=
-LIBS=
-OBJS_PATH=./objs
-SRCS=./srcs/arrays/ft_array.c ./srcs/bitstreams/bitstream.c ./srcs/btree/print_btree.c ./srcs/compression/DEFLATE/deflate.c ./srcs/compression/DEFLATE/deflate_tables.c ./srcs/compression/DEFLATE/inflate.c ./srcs/compression/fixed_codes_generator.c ./srcs/compression/gzip.c ./srcs/compression/huffman.c ./srcs/compression/lzss.c ./srcs/compression/test_gzip_deflate.c ./srcs/crypt/adler.c ./srcs/crypt/crc.c ./srcs/debug/ft_debug.c ./srcs/debug/ft_memcheck.c ./srcs/exec/edit.c ./srcs/exec/init.c ./srcs/exec/inject.c ./srcs/exec/run.c ./srcs/getopt/getopt.c ./srcs/images/png.c ./srcs/images/xml.c ./srcs/io/close.c ./srcs/io/flush.c ./srcs/io/fmode.c ./srcs/io/ft_printf/arg_table.c ./srcs/io/ft_printf/ft_printf.c ./srcs/io/ft_printf/parse.c ./srcs/io/ft_printf/printf_internal.c ./srcs/io/ft_readfile.c ./srcs/io/gnl/ft_gnl.c ./srcs/io/lock.c ./srcs/io/open.c ./srcs/io/read.c ./srcs/io/write.c ./srcs/libft.c ./srcs/lists/ft_lstadd_back.c ./srcs/lists/ft_lstadd_front.c ./srcs/lists/ft_lstclear.c ./srcs/lists/ft_lstdelone.c ./srcs/lists/ft_lstfind.c ./srcs/lists/ft_lstiter.c ./srcs/lists/ft_lstlast.c ./srcs/lists/ft_lstmap.c ./srcs/lists/ft_lstnew.c ./srcs/lists/ft_lstpop_back.c ./srcs/lists/ft_lstremove.c ./srcs/lists/ft_lstremoveif.c ./srcs/lists/ft_lstsize.c ./srcs/lists/ft_lstsort.c ./srcs/lists/ft_lsttoarray.c ./srcs/maths/abs.c ./srcs/maths/bezier.c ./srcs/maths/ceil.c ./srcs/maths/clamp.c ./srcs/maths/cross.c ./srcs/maths/distance.c ./srcs/maths/dot.c ./srcs/maths/frac.c ./srcs/maths/ft_dist_line.c ./srcs/maths/ft_frand.c ./srcs/maths/ft_is_prime.c ./srcs/maths/ft_isrange.c ./srcs/maths/ft_magnitude.c ./srcs/maths/ft_map.c ./srcs/maths/ft_matrix.c ./srcs/maths/ft_max.c ./srcs/maths/ft_min.c ./srcs/maths/ft_noise2.c ./srcs/maths/ft_pow.c ./srcs/maths/ft_rand_circle.c ./srcs/maths/lerp.c ./srcs/maths/lines.c ./srcs/maths/normalize.c ./srcs/maths/rotate.c ./srcs/maths/smoothstep.c ./srcs/maths/trigo.c ./srcs/maths/vec_add.c ./srcs/maths/vec_conv.c ./srcs/maths/vec_div.c ./srcs/maths/vec_init.c ./srcs/maths/vec_mod.c ./srcs/maths/vec_mul.c ./srcs/maths/vec_scale.c ./srcs/maths/vec_sub.c ./srcs/maths/wrap.c ./srcs/paths/ft_path_clean.c ./srcs/paths/ft_path_parse.c ./srcs/paths/paths.c ./srcs/socket/socket.c ./srcs/std/char_checks.c ./srcs/std/f32_inf_nan.c ./srcs/std/ft_atof.c ./srcs/std/ft_atoi.c ./srcs/std/ft_atoix.c ./srcs/std/ft_bsearch.c ./srcs/std/ft_bzero.c ./srcs/std/ft_error.c ./srcs/std/ft_ftoa.c ./srcs/std/ft_hash.c ./srcs/std/ft_itoa.c ./srcs/std/ft_memchr.c ./srcs/std/ft_memcmp.c ./srcs/std/ft_memcpy.c ./srcs/std/ft_memdup.c ./srcs/std/ft_memmove.c ./srcs/std/ft_memrpt.c ./srcs/std/ft_memset.c ./srcs/std/ft_nrange.c ./srcs/std/ft_rand.c ./srcs/std/ft_range.c ./srcs/std/ft_setenv.c ./srcs/std/ft_sort.c ./srcs/std/ft_utoa.c ./srcs/std/str_checks.c ./srcs/strings/ft_dupsplit.c ./srcs/strings/ft_freesplit.c ./srcs/strings/ft_split.c ./srcs/strings/ft_splitlen.c ./srcs/strings/ft_str_append.c ./srcs/strings/ft_str_tolower.c ./srcs/strings/ft_str_toupper.c ./srcs/strings/ft_strcat.c ./srcs/strings/ft_strchr.c ./srcs/strings/ft_strcmp.c ./srcs/strings/ft_strdup.c ./srcs/strings/ft_strerror.c ./srcs/strings/ft_strgetindex.c ./srcs/strings/ft_striteri.c ./srcs/strings/ft_strjoin.c ./srcs/strings/ft_strlcat.c ./srcs/strings/ft_strlcpy.c ./srcs/strings/ft_strlen.c ./srcs/strings/ft_strmapi.c ./srcs/strings/ft_strnchr.c ./srcs/strings/ft_strncmp.c ./srcs/strings/ft_strnstr.c ./srcs/strings/ft_strrchr.c ./srcs/strings/ft_strtrim.c ./srcs/strings/ft_substr.c ./srcs/strings/ft_tolower.c ./srcs/strings/ft_toupper.c ./srcs/strings/pad.c ./srcs/time/ft_strtime.c ./srcs/time/ft_timer.c
-OBJS=./objs/ft_array.o ./objs/bitstream.o ./objs/print_btree.o ./objs/deflate.o ./objs/deflate_tables.o ./objs/inflate.o ./objs/fixed_codes_generator.o ./objs/gzip.o ./objs/huffman.o ./objs/lzss.o ./objs/test_gzip_deflate.o ./objs/adler.o ./objs/crc.o ./objs/ft_debug.o ./objs/ft_memcheck.o ./objs/edit.o ./objs/init.o ./objs/inject.o ./objs/run.o ./objs/getopt.o ./objs/png.o ./objs/xml.o ./objs/close.o ./objs/flush.o ./objs/fmode.o ./objs/arg_table.o ./objs/ft_printf.o ./objs/parse.o ./objs/printf_internal.o ./objs/ft_readfile.o ./objs/ft_gnl.o ./objs/lock.o ./objs/open.o ./objs/read.o ./objs/write.o ./objs/libft.o ./objs/ft_lstadd_back.o ./objs/ft_lstadd_front.o ./objs/ft_lstclear.o ./objs/ft_lstdelone.o ./objs/ft_lstfind.o ./objs/ft_lstiter.o ./objs/ft_lstlast.o ./objs/ft_lstmap.o ./objs/ft_lstnew.o ./objs/ft_lstpop_back.o ./objs/ft_lstremove.o ./objs/ft_lstremoveif.o ./objs/ft_lstsize.o ./objs/ft_lstsort.o ./objs/ft_lsttoarray.o ./objs/abs.o ./objs/bezier.o ./objs/ceil.o ./objs/clamp.o ./objs/cross.o ./objs/distance.o ./objs/dot.o ./objs/frac.o ./objs/ft_dist_line.o ./objs/ft_frand.o ./objs/ft_is_prime.o ./objs/ft_isrange.o ./objs/ft_magnitude.o ./objs/ft_map.o ./objs/ft_matrix.o ./objs/ft_max.o ./objs/ft_min.o ./objs/ft_noise2.o ./objs/ft_pow.o ./objs/ft_rand_circle.o ./objs/lerp.o ./objs/lines.o ./objs/normalize.o ./objs/rotate.o ./objs/smoothstep.o ./objs/trigo.o ./objs/vec_add.o ./objs/vec_conv.o ./objs/vec_div.o ./objs/vec_init.o ./objs/vec_mod.o ./objs/vec_mul.o ./objs/vec_scale.o ./objs/vec_sub.o ./objs/wrap.o ./objs/ft_path_clean.o ./objs/ft_path_parse.o ./objs/paths.o ./objs/socket.o ./objs/char_checks.o ./objs/f32_inf_nan.o ./objs/ft_atof.o ./objs/ft_atoi.o ./objs/ft_atoix.o ./objs/ft_bsearch.o ./objs/ft_bzero.o ./objs/ft_error.o ./objs/ft_ftoa.o ./objs/ft_hash.o ./objs/ft_itoa.o ./objs/ft_memchr.o ./objs/ft_memcmp.o ./objs/ft_memcpy.o ./objs/ft_memdup.o ./objs/ft_memmove.o ./objs/ft_memrpt.o ./objs/ft_memset.o ./objs/ft_nrange.o ./objs/ft_rand.o ./objs/ft_range.o ./objs/ft_setenv.o ./objs/ft_sort.o ./objs/ft_utoa.o ./objs/str_checks.o ./objs/ft_dupsplit.o ./objs/ft_freesplit.o ./objs/ft_split.o ./objs/ft_splitlen.o ./objs/ft_str_append.o ./objs/ft_str_tolower.o ./objs/ft_str_toupper.o ./objs/ft_strcat.o ./objs/ft_strchr.o ./objs/ft_strcmp.o ./objs/ft_strdup.o ./objs/ft_strerror.o ./objs/ft_strgetindex.o ./objs/ft_striteri.o ./objs/ft_strjoin.o ./objs/ft_strlcat.o ./objs/ft_strlcpy.o ./objs/ft_strlen.o ./objs/ft_strmapi.o ./objs/ft_strnchr.o ./objs/ft_strncmp.o ./objs/ft_strnstr.o ./objs/ft_strrchr.o ./objs/ft_strtrim.o ./objs/ft_substr.o ./objs/ft_tolower.o ./objs/ft_toupper.o ./objs/pad.o ./objs/ft_strtime.o ./objs/ft_timer.o
+CC=x86_64-w64-mingw32-gcc
+SRCS=./srcs/arrays/ft_array.c ./srcs/bitstreams/bitstream.c ./srcs/btree/print_btree.c ./srcs/compression/DEFLATE/deflate.c ./srcs/compression/DEFLATE/deflate_tables.c ./srcs/compression/DEFLATE/inflate.c ./srcs/compression/fixed_codes_generator.c ./srcs/compression/gzip.c ./srcs/compression/huffman.c ./srcs/compression/lzss.c ./srcs/compression/test_gzip_deflate.c ./srcs/crypt/adler.c ./srcs/crypt/crc.c ./srcs/debug/ft_debug.c ./srcs/debug/ft_memcheck.c ./srcs/exec/edit.c ./srcs/exec/init.c ./srcs/exec/inject.c ./srcs/exec/run.c ./srcs/getopt/getopt.c ./srcs/images/png.c ./srcs/images/xml.c ./srcs/io/close.c ./srcs/io/flush.c ./srcs/io/fmode.c ./srcs/io/ft_printf/arg_table.c ./srcs/io/ft_printf/ft_printf.c ./srcs/io/ft_printf/parse.c ./srcs/io/ft_printf/printf_internal.c ./srcs/io/ft_readfile.c ./srcs/io/lock.c ./srcs/io/open.c ./srcs/io/read.c ./srcs/io/write.c ./srcs/libft.c ./srcs/lists/ft_lstadd_back.c ./srcs/lists/ft_lstadd_front.c ./srcs/lists/ft_lstclear.c ./srcs/lists/ft_lstdelone.c ./srcs/lists/ft_lstfind.c ./srcs/lists/ft_lstiter.c ./srcs/lists/ft_lstlast.c ./srcs/lists/ft_lstmap.c ./srcs/lists/ft_lstnew.c ./srcs/lists/ft_lstpop_back.c ./srcs/lists/ft_lstremove.c ./srcs/lists/ft_lstremoveif.c ./srcs/lists/ft_lstsize.c ./srcs/lists/ft_lstsort.c ./srcs/lists/ft_lsttoarray.c ./srcs/maths/abs.c ./srcs/maths/bezier.c ./srcs/maths/ceil.c ./srcs/maths/clamp.c ./srcs/maths/cross.c ./srcs/maths/distance.c ./srcs/maths/dot.c ./srcs/maths/frac.c ./srcs/maths/ft_dist_line.c ./srcs/maths/ft_frand.c ./srcs/maths/ft_isrange.c ./srcs/maths/ft_is_prime.c ./srcs/maths/ft_magnitude.c ./srcs/maths/ft_map.c ./srcs/maths/ft_matrix.c ./srcs/maths/ft_max.c ./srcs/maths/ft_min.c ./srcs/maths/ft_noise2.c ./srcs/maths/ft_pow.c ./srcs/maths/ft_rand_circle.c ./srcs/maths/lerp.c ./srcs/maths/lines.c ./srcs/maths/normalize.c ./srcs/maths/rotate.c ./srcs/maths/smoothstep.c ./srcs/maths/trigo.c ./srcs/maths/vec_add.c ./srcs/maths/vec_conv.c ./srcs/maths/vec_div.c ./srcs/maths/vec_init.c ./srcs/maths/vec_mod.c ./srcs/maths/vec_mul.c ./srcs/maths/vec_scale.c ./srcs/maths/vec_sub.c ./srcs/maths/wrap.c ./srcs/paths/ft_path_clean.c ./srcs/paths/ft_path_parse.c ./srcs/paths/paths.c ./srcs/socket/socket.c ./srcs/std/char_checks.c ./srcs/std/f32_inf_nan.c ./srcs/std/ft_atof.c ./srcs/std/ft_atoi.c ./srcs/std/ft_atoix.c ./srcs/std/ft_bsearch.c ./srcs/std/ft_bzero.c ./srcs/std/ft_error.c ./srcs/std/ft_ftoa.c ./srcs/std/ft_hash.c ./srcs/std/ft_itoa.c ./srcs/std/ft_memchr.c ./srcs/std/ft_memcmp.c ./srcs/std/ft_memcpy.c ./srcs/std/ft_memdup.c ./srcs/std/ft_memmove.c ./srcs/std/ft_memset.c ./srcs/std/ft_nrange.c ./srcs/std/ft_rand.c ./srcs/std/ft_range.c ./srcs/std/ft_setenv.c ./srcs/std/ft_sort.c ./srcs/std/ft_utoa.c ./srcs/std/str_checks.c ./srcs/strings/ft_dupsplit.c ./srcs/strings/ft_freesplit.c ./srcs/strings/ft_split.c ./srcs/strings/ft_splitlen.c ./srcs/strings/ft_strcat.c ./srcs/strings/ft_strchr.c ./srcs/strings/ft_strcmp.c ./srcs/strings/ft_strdup.c ./srcs/strings/ft_strerror.c ./srcs/strings/ft_strgetindex.c ./srcs/strings/ft_striteri.c ./srcs/strings/ft_strjoin.c ./srcs/strings/ft_strlcat.c ./srcs/strings/ft_strlcpy.c ./srcs/strings/ft_strlen.c ./srcs/strings/ft_strmapi.c ./srcs/strings/ft_strnchr.c ./srcs/strings/ft_strncmp.c ./srcs/strings/ft_strnstr.c ./srcs/strings/ft_strrchr.c ./srcs/strings/ft_strtrim.c ./srcs/strings/ft_str_append.c ./srcs/strings/ft_str_tolower.c ./srcs/strings/ft_str_toupper.c ./srcs/strings/ft_substr.c ./srcs/strings/ft_tolower.c ./srcs/strings/ft_toupper.c ./srcs/strings/pad.c ./srcs/time/ft_strtime.c ./srcs/time/ft_timer.c
+OBJS=./objs/ft_array.o ./objs/bitstream.o ./objs/print_btree.o ./objs/deflate.o ./objs/deflate_tables.o ./objs/inflate.o ./objs/fixed_codes_generator.o ./objs/gzip.o ./objs/huffman.o ./objs/lzss.o ./objs/test_gzip_deflate.o ./objs/adler.o ./objs/crc.o ./objs/ft_debug.o ./objs/ft_memcheck.o ./objs/edit.o ./objs/init.o ./objs/inject.o ./objs/run.o ./objs/getopt.o ./objs/png.o ./objs/xml.o ./objs/close.o ./objs/flush.o ./objs/fmode.o ./objs/arg_table.o ./objs/ft_printf.o ./objs/parse.o ./objs/printf_internal.o ./objs/ft_readfile.o ./objs/lock.o ./objs/open.o ./objs/read.o ./objs/write.o ./objs/libft.o ./objs/ft_lstadd_back.o ./objs/ft_lstadd_front.o ./objs/ft_lstclear.o ./objs/ft_lstdelone.o ./objs/ft_lstfind.o ./objs/ft_lstiter.o ./objs/ft_lstlast.o ./objs/ft_lstmap.o ./objs/ft_lstnew.o ./objs/ft_lstpop_back.o ./objs/ft_lstremove.o ./objs/ft_lstremoveif.o ./objs/ft_lstsize.o ./objs/ft_lstsort.o ./objs/ft_lsttoarray.o ./objs/abs.o ./objs/bezier.o ./objs/ceil.o ./objs/clamp.o ./objs/cross.o ./objs/distance.o ./objs/dot.o ./objs/frac.o ./objs/ft_dist_line.o ./objs/ft_frand.o ./objs/ft_isrange.o ./objs/ft_is_prime.o ./objs/ft_magnitude.o ./objs/ft_map.o ./objs/ft_matrix.o ./objs/ft_max.o ./objs/ft_min.o ./objs/ft_noise2.o ./objs/ft_pow.o ./objs/ft_rand_circle.o ./objs/lerp.o ./objs/lines.o ./objs/normalize.o ./objs/rotate.o ./objs/smoothstep.o ./objs/trigo.o ./objs/vec_add.o ./objs/vec_conv.o ./objs/vec_div.o ./objs/vec_init.o ./objs/vec_mod.o ./objs/vec_mul.o ./objs/vec_scale.o ./objs/vec_sub.o ./objs/wrap.o ./objs/ft_path_clean.o ./objs/ft_path_parse.o ./objs/paths.o ./objs/socket.o ./objs/char_checks.o ./objs/f32_inf_nan.o ./objs/ft_atof.o ./objs/ft_atoi.o ./objs/ft_atoix.o ./objs/ft_bsearch.o ./objs/ft_bzero.o ./objs/ft_error.o ./objs/ft_ftoa.o ./objs/ft_hash.o ./objs/ft_itoa.o ./objs/ft_memchr.o ./objs/ft_memcmp.o ./objs/ft_memcpy.o ./objs/ft_memdup.o ./objs/ft_memmove.o ./objs/ft_memset.o ./objs/ft_nrange.o ./objs/ft_rand.o ./objs/ft_range.o ./objs/ft_setenv.o ./objs/ft_sort.o ./objs/ft_utoa.o ./objs/str_checks.o ./objs/ft_dupsplit.o ./objs/ft_freesplit.o ./objs/ft_split.o ./objs/ft_splitlen.o ./objs/ft_strcat.o ./objs/ft_strchr.o ./objs/ft_strcmp.o ./objs/ft_strdup.o ./objs/ft_strerror.o ./objs/ft_strgetindex.o ./objs/ft_striteri.o ./objs/ft_strjoin.o ./objs/ft_strlcat.o ./objs/ft_strlcpy.o ./objs/ft_strlen.o ./objs/ft_strmapi.o ./objs/ft_strnchr.o ./objs/ft_strncmp.o ./objs/ft_strnstr.o ./objs/ft_strrchr.o ./objs/ft_strtrim.o ./objs/ft_str_append.o ./objs/ft_str_tolower.o ./objs/ft_str_toupper.o ./objs/ft_substr.o ./objs/ft_tolower.o ./objs/ft_toupper.o ./objs/pad.o ./objs/ft_strtime.o ./objs/ft_timer.o
+packages: 
+PHONY: packages
 
-objs:
+all: objs $(NAME)
+PHONY: all
+
+objs: 
 	mkdir -p ./objs
+
+clean: 
+	$(RM) $(OBJS)
+PHONY: clean
+
+fclean: clean
+	$(RM) $(NAME)
+PHONY: fclean
+
+re: fclean all
+PHONY: re
+
 ./objs/ft_array.o: ./srcs/arrays/ft_array.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/arrays/ft_array.c -o ./objs/ft_array.o
 
@@ -104,9 +117,6 @@ objs:
 
 ./objs/ft_readfile.o: ./srcs/io/ft_readfile.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/io/ft_readfile.c -o ./objs/ft_readfile.o
-
-./objs/ft_gnl.o: ./srcs/io/gnl/ft_gnl.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/io/gnl/ft_gnl.c -o ./objs/ft_gnl.o
 
 ./objs/lock.o: ./srcs/io/lock.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/io/lock.c -o ./objs/lock.o
@@ -198,11 +208,11 @@ objs:
 ./objs/ft_frand.o: ./srcs/maths/ft_frand.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/maths/ft_frand.c -o ./objs/ft_frand.o
 
-./objs/ft_is_prime.o: ./srcs/maths/ft_is_prime.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/maths/ft_is_prime.c -o ./objs/ft_is_prime.o
-
 ./objs/ft_isrange.o: ./srcs/maths/ft_isrange.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/maths/ft_isrange.c -o ./objs/ft_isrange.o
+
+./objs/ft_is_prime.o: ./srcs/maths/ft_is_prime.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/maths/ft_is_prime.c -o ./objs/ft_is_prime.o
 
 ./objs/ft_magnitude.o: ./srcs/maths/ft_magnitude.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/maths/ft_magnitude.c -o ./objs/ft_magnitude.o
@@ -333,9 +343,6 @@ objs:
 ./objs/ft_memmove.o: ./srcs/std/ft_memmove.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/std/ft_memmove.c -o ./objs/ft_memmove.o
 
-./objs/ft_memrpt.o: ./srcs/std/ft_memrpt.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/std/ft_memrpt.c -o ./objs/ft_memrpt.o
-
 ./objs/ft_memset.o: ./srcs/std/ft_memset.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/std/ft_memset.c -o ./objs/ft_memset.o
 
@@ -371,15 +378,6 @@ objs:
 
 ./objs/ft_splitlen.o: ./srcs/strings/ft_splitlen.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/strings/ft_splitlen.c -o ./objs/ft_splitlen.o
-
-./objs/ft_str_append.o: ./srcs/strings/ft_str_append.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/strings/ft_str_append.c -o ./objs/ft_str_append.o
-
-./objs/ft_str_tolower.o: ./srcs/strings/ft_str_tolower.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/strings/ft_str_tolower.c -o ./objs/ft_str_tolower.o
-
-./objs/ft_str_toupper.o: ./srcs/strings/ft_str_toupper.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/strings/ft_str_toupper.c -o ./objs/ft_str_toupper.o
 
 ./objs/ft_strcat.o: ./srcs/strings/ft_strcat.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/strings/ft_strcat.c -o ./objs/ft_strcat.o
@@ -432,6 +430,15 @@ objs:
 ./objs/ft_strtrim.o: ./srcs/strings/ft_strtrim.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/strings/ft_strtrim.c -o ./objs/ft_strtrim.o
 
+./objs/ft_str_append.o: ./srcs/strings/ft_str_append.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/strings/ft_str_append.c -o ./objs/ft_str_append.o
+
+./objs/ft_str_tolower.o: ./srcs/strings/ft_str_tolower.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/strings/ft_str_tolower.c -o ./objs/ft_str_tolower.o
+
+./objs/ft_str_toupper.o: ./srcs/strings/ft_str_toupper.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/strings/ft_str_toupper.c -o ./objs/ft_str_toupper.o
+
 ./objs/ft_substr.o: ./srcs/strings/ft_substr.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/strings/ft_substr.c -o ./objs/ft_substr.o
 
@@ -450,13 +457,3 @@ objs:
 ./objs/ft_timer.o: ./srcs/time/ft_timer.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c ./srcs/time/ft_timer.c -o ./objs/ft_timer.o
 
-
-clean:
-			$(RM) $(OBJS)
-
-fclean:	clean
-			$(RM) $(NAME)
-
-re:			fclean all
-
-.PHONY:		 all clean fclean re

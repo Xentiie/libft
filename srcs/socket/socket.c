@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 20:13:26 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/13 17:21:23 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/08 03:46:51 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,12 @@ S32 ft_resolve_hostname(void *addr_out, string host, string port)
 #endif
 
 #ifdef FT_OS_WIN
-file ft_socket(S32 domain, S32 type, S32 protocol)
+filedesc ft_socket(S32 domain, S32 type, S32 protocol)
 {
 	__init_WSA();
 
-	file sock = (file)socket(domain, type, protocol);
-	if (sock == (file)INVALID_SOCKET) // INVALID_SOCKET not on linux
+	filedesc sock = (filedesc)socket(domain, type, protocol);
+	if (sock == (filedesc)INVALID_SOCKET) // INVALID_SOCKET not on linux
 		__FTRETURN_ERR((filedesc)-1, FT_ESYSCALL);
 	__FTRETURN_OK(sock);
 }
@@ -91,7 +91,7 @@ filedesc ft_socket(S32 domain, S32 type, S32 protocol)
 #endif
 
 #ifdef FT_OS_WIN
-bool ft_connect(file socket, const void *addr, U64 addr_len)
+bool ft_connect(filedesc socket, const void *addr, U64 addr_len)
 {
 	__init_WSA();
 	return connect((SOCKET)socket, addr, addr_len) != 0; // -1 on linux

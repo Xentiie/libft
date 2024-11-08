@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 20:19:41 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/22 04:36:41 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/08 03:46:11 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # if defined(FT_OS_WIN)
 #  include <windows.h>
 
-S64	ft_read(file fd, char *buffer, U64 size)
+S64	ft_read(filedesc fd, char *buffer, U64 size)
 {
 	S64 bytes_read = 0;
 	if (UNLIKELY(ReadFile(fd, buffer, size, (LPDWORD)&bytes_read, NULL) == FALSE))
