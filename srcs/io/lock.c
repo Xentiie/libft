@@ -6,11 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:47:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/06 01:48:44 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/08 14:58:04 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file.h"
+
+#ifdef FT_OS_LINUX
 
 #define BUCKETS_INIT 32
 
@@ -170,3 +172,63 @@ bool __ft_flockcleanup(t_file *fp)
 	free(lock);
 	return TRUE;
 }
+
+#endif
+
+#ifdef FT_OS_WIN
+
+typedef struct s_lock_node
+{
+} t_lock_node;
+
+typedef struct
+{
+} t_lock_ht;
+
+static void lock_ht_init()
+{
+	(void)1;
+}
+
+static t_lock_ht *get_lock_ht()
+{
+	return NULL;
+}
+
+static void lock_ht_unlock(t_lock_ht *ht)
+{
+	(void)ht;
+}
+
+static t_lock_node **lock_ht_lookup(t_lock_ht *ht, t_file *file)
+{
+	(void)ht;
+	(void)file;
+	return NULL;
+}
+
+bool ft_ffilelock(t_file *file)
+{
+	(void)file;
+	return TRUE;
+}
+
+S32 ft_ftryfilelock(t_file *file)
+{
+	(void)file;
+	return 0;
+}
+
+bool ft_ffileunlock(t_file *file)
+{
+	(void)file;
+	return TRUE;
+}
+
+bool __ft_flockcleanup(t_file *fp)
+{
+	(void)fp;
+	return TRUE;
+}
+
+#endif

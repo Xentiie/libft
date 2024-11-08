@@ -437,7 +437,7 @@ cf_end_target() {
 cf_run() {
 	args=()
 	nextarg=""
-	for (( i=1; i < $#; i++ )); do
+	for (( i=0; i < $# + 1; i++ )); do
 		arg="${!i}"
 		nextarg="${!i+1}"
 	
