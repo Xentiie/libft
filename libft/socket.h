@@ -6,11 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 05:05:42 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/13 17:17:26 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_SOCKET_H
+#if !defined(LIBFT_SOCKET_H)
 #define LIBFT_SOCKET_H
 
 // Should be struct addrinfo *addr_out

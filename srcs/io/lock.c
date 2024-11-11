@@ -6,13 +6,15 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:47:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/08 14:58:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/10 14:44:42 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file.h"
 
-#ifdef FT_OS_LINUX
+#include <stdlib.h>
+
+#if defined(FT_OS_LINUX)
 
 #define BUCKETS_INIT 32
 
@@ -175,7 +177,7 @@ bool __ft_flockcleanup(t_file *fp)
 
 #endif
 
-#ifdef FT_OS_WIN
+#if defined(FT_OS_WIN)
 
 typedef struct s_lock_node
 {

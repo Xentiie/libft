@@ -6,11 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 20:34:20 by reclaire          #+#    #+#             */
-/*   Updated: 2024/03/07 13:27:30 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_TESTS_H
+#if !defined(LIBFT_TESTS_H)
 # define LIBFT_TESTS_H
 
 # include "libft/ansi.h"

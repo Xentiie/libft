@@ -6,11 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2024/09/03 03:06:15 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/10 22:28:12 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_STD_H
+#if !defined(LIBFT_STD_H)
 # define LIBFT_STD_H
 
 # include "_libft.h"
@@ -355,15 +355,6 @@ Sets ft_errno and returns NULL.
 Creates an array of int from min to max.
 */
 extern S32		*ft_range(S32 min, S32 max);
-
-/*
-Creates an array of int from min to max and returns the size of the array.
-### On error
-Sets ft_errno, sets the pointer pointed by 'range' to NULL and returns -1.
-### ft_errno
-- FT_EOMEM if out of memory
-*/
-extern S32		ft_nrange(S32 **range, S32 min, S32 max);
 
 /*
 Sorts the array 'a' inplace, using 'key' function.

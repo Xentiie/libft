@@ -6,11 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 05:57:04 by reclaire          #+#    #+#             */
-/*   Updated: 2024/09/25 05:57:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FORBIDDEN_CHARS_H
+#if !defined(FORBIDDEN_CHARS_H)
 #define FORBIDDEN_CHARS_H
 
 #include "libft/types.h"

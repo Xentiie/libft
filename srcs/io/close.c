@@ -6,11 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:47:39 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/06 01:47:40 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/09 23:11:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file.h"
+#include "libft/io.h"
+
+#include <stdlib.h>
 
 # if defined(FT_OS_WIN)
 #  include <windows.h>

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/22 04:49:37 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/09 23:05:11 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,13 @@ if indexed color, can't parse if PLTE comes after data
 */
 
 #include "libft_int.h"
+#include "libft/images.h"
+#include "libft/io.h"
+#include "libft/maths.h"
+#include "libft/strings.h"
+#include "libft/compression/deflate.h"
+#include "libft/compression/gzip.h"
+#include "libft/crypt/crc.h"
 
 #include <stdio.h>
 #include <stdlib.h>

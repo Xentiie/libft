@@ -6,11 +6,15 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 17:27:54 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/22 04:49:37 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/10 21:57:51 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
+#include "libft/io.h"
+#include "libft/strings.h"
+
+#include <stdlib.h>
 #include <stdarg.h>
 
 void ft_error(S32 retcode, string fmt, ...)

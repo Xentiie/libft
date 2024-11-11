@@ -6,11 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 18:42:01 by reclaire          #+#    #+#             */
-/*   Updated: 2024/05/18 18:18:55 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_BTREE_H
+#if !defined(LIBFT_BTREE_H)
 # define LIBFT_BTREE_H
 
 # include "_libft.h"

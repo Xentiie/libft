@@ -6,12 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:49:04 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/08 15:11:50 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/10 14:48:20 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
-#include "io/file.h"
+#include "libft/io.h"
+
+#include <stdlib.h>
 
 #if defined(FT_OS_WIN)
 #include <windows.h>
@@ -39,7 +41,7 @@ t_file *ft_fstderr;
 __attribute__((constructor))
 void __init_libft(S32 argc, string *argv, string *env)
 {
-#ifdef FT_OS_WIN
+#if defined(FT_OS_WIN)
 	(void)argc;
 	(void)argv;
 	(void)env;

@@ -6,21 +6,23 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 14:44:13 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/22 04:49:37 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
+#include "libft/getopt.h"
+#include "libft/strings.h"
+#include "libft/io.h"
 
-#include <stdio.h>
-#ifdef TEST
+#if defined(TEST)
 #include <getopt.h>
 #else
 #define printf(...)
 #endif
 
-#ifndef FT_GETOPT_USE_MALLOC
-#ifdef FT_OS_WIN
+#if !defined(FT_GETOPT_USE_MALLOC)
+#if defined(FT_OS_WIN)
 #include <malloc.h>
 #else
 #include <alloca.h>
@@ -32,7 +34,7 @@
 
 #define ISLONGOPT(str) (str[0] == '-' && str[1] != '\0')
 
-#ifdef _TEST
+#if defined(_TEST)
 #define CHK_FINISH                                         \
 	do                                                     \
 	{                                                      \
@@ -63,7 +65,7 @@ static void pushback_arg(S32 start, S32 end, const_string *argv, int argc)
 	if (len < 1)
 		return;
 
-#ifdef FT_GETOPT_USE_MALLOC
+#if defined(FT_GETOPT_USE_MALLOC)
 	const_string *tmp = malloc(sizeof(const_string) * (len));
 #else
 	const_string *tmp = alloca(sizeof(const_string) * (len));
@@ -74,7 +76,7 @@ static void pushback_arg(S32 start, S32 end, const_string *argv, int argc)
 	ft_memcpy(&argv[argc - len], tmp, sizeof(const_string) * (len));
 
 	first_nonopt -= len;
-#ifdef FT_GETOPT_USE_MALLOC
+#if defined(FT_GETOPT_USE_MALLOC)
 	free(tmp);
 #endif
 }
@@ -277,7 +279,7 @@ S32 ft_getopt(S32 argc, const_string *argv, const_string optstr)
 	return ft_getopt_long(argc, argv, optstr, NULL, NULL);
 }
 
-#ifdef TEST
+#if defined(TEST)
 
 // cd srcs/getopt
 // gcc -L../.. -I../ getopt.c -lft -DTEST

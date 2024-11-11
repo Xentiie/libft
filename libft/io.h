@@ -6,11 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/06 01:45:39 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/10 00:27:10 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_IO_H
+#if !defined(LIBFT_IO_H)
 #define LIBFT_IO_H
 
 #include "_libft.h"
@@ -139,17 +139,17 @@ extern U8 *ft_freadfile(t_file *file, U64 *out_size);
 /*
 printf !
 */
-extern U64 ft_printf(const_string fmt, ...) __attribute__((format(printf, 1, 2)));
-extern U64 ft_fprintf(t_file *file, const_string fmt, ...) __attribute__((format(printf, 2, 3)));
-extern U64 ft_dprintf(filedesc fd, const_string fmt, ...) __attribute__((format(printf, 2, 3)));
-extern U64 ft_sprintf(string str, const_string fmt, ...) __attribute__((format(printf, 2, 3)));
-extern U64 ft_snprintf(string str, U64 n, const_string fmt, ...) __attribute__((format(printf, 3, 4)));
+extern S64 ft_printf(const_string fmt, ...) __attribute__((format(printf, 1, 2)));
+extern S64 ft_fprintf(t_file *file, const_string fmt, ...) __attribute__((format(printf, 2, 3)));
+extern S64 ft_dprintf(filedesc fd, const_string fmt, ...) __attribute__((format(printf, 2, 3)));
+extern S64 ft_sprintf(string str, const_string fmt, ...) __attribute__((format(printf, 2, 3)));
+extern S64 ft_snprintf(string str, U64 n, const_string fmt, ...) __attribute__((format(printf, 3, 4)));
 
-extern U64 ft_vprintf(const_string fmt, va_list args);
-extern U64 ft_vfprintf(t_file *file, const_string fmt, va_list args);
-extern U64 ft_vdprintf(filedesc fd, const_string fmt, va_list args);
-extern U64 ft_vsprintf(string str, const_string fmt, va_list args);
-extern U64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args);
+extern S64 ft_vprintf(const_string fmt, va_list args);
+extern S64 ft_vfprintf(t_file *file, const_string fmt, va_list args);
+extern S64 ft_vdprintf(filedesc fd, const_string fmt, va_list args);
+extern S64 ft_vsprintf(string str, const_string fmt, va_list args);
+extern S64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args);
 
 /*
 Checks the type of a file.

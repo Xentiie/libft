@@ -6,29 +6,29 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:43:53 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/22 04:44:00 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/10 00:26:46 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include "../file.h"
-#include <stdarg.h>
-#include <stdio.h>
-#ifdef TEST
+#include "libft/limits.h"
+
+#if defined(TEST)
 #include <stdio.h>
 #endif
 
-static U64 write_interface_fd(const_string str, U64 len, void *data)
+static S64 write_interface_fd(const_string str, U64 len, void *data)
 {
 	return ft_write(*((filedesc *)data), (string)str, len);
 }
 
-static U64 write_interface_file(const_string str, U64 len, void *data)
+static S64 write_interface_file(const_string str, U64 len, void *data)
 {
 	return ft_fwrite(data, (string)str, len);
 }
 
-U64 ft_printf(const_string fmt, ...)
+S64 ft_printf(const_string fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
@@ -37,7 +37,7 @@ U64 ft_printf(const_string fmt, ...)
 	return out;
 }
 
-U64 ft_fprintf(t_file *file, const_string fmt, ...)
+S64 ft_fprintf(t_file *file, const_string fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
@@ -46,7 +46,7 @@ U64 ft_fprintf(t_file *file, const_string fmt, ...)
 	return out;
 }
 
-U64 ft_dprintf(filedesc fd, const_string fmt, ...)
+S64 ft_dprintf(filedesc fd, const_string fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
@@ -55,12 +55,12 @@ U64 ft_dprintf(filedesc fd, const_string fmt, ...)
 	return out;
 }
 
-U64 ft_vprintf(const_string fmt, va_list args)
+S64 ft_vprintf(const_string fmt, va_list args)
 {
 	return ft_vfprintf(ft_fstdout, fmt, args);
 }
 
-U64 ft_vfprintf(t_file *file, const_string fmt, va_list args)
+S64 ft_vfprintf(t_file *file, const_string fmt, va_list args)
 {
 	U64 ret;
 
@@ -70,7 +70,7 @@ U64 ft_vfprintf(t_file *file, const_string fmt, va_list args)
 	return ret;
 }
 
-U64 ft_vdprintf(filedesc fd, const_string fmt, va_list args)
+S64 ft_vdprintf(filedesc fd, const_string fmt, va_list args)
 {
 	return printf_internal(fmt, args, write_interface_fd, &fd);
 }
@@ -81,7 +81,7 @@ struct s_wr_i_str_data
 	string str;
 };
 
-static U64 write_interface_str(const_string str, U64 len, void *data)
+static S64 write_interface_str(const_string str, U64 len, void *data)
 {
 	struct s_wr_i_str_data *_data = (struct s_wr_i_str_data *)data;
 
@@ -96,7 +96,7 @@ static U64 write_interface_str(const_string str, U64 len, void *data)
 	return i;
 }
 
-U64 ft_sprintf(string str, const_string fmt, ...)
+S64 ft_sprintf(string str, const_string fmt, ...)
 {
 	va_list args;
 
@@ -106,7 +106,7 @@ U64 ft_sprintf(string str, const_string fmt, ...)
 	return out;
 }
 
-U64 ft_snprintf(string str, U64 n, const_string fmt, ...)
+S64 ft_snprintf(string str, U64 n, const_string fmt, ...)
 {
 	va_list args;
 
@@ -116,12 +116,12 @@ U64 ft_snprintf(string str, U64 n, const_string fmt, ...)
 	return out;
 }
 
-U64 ft_vsprintf(string str, const_string fmt, va_list args)
+S64 ft_vsprintf(string str, const_string fmt, va_list args)
 {
 	return ft_vsnprintf(str, U64_MAX, fmt, args);
 }
 
-U64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args)
+S64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args)
 {
 	struct s_wr_i_str_data data = {n, str};
 	U64 out = printf_internal(fmt, args, write_interface_str, &data);
@@ -132,7 +132,7 @@ U64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args)
 	return out;
 }
 
-#ifdef TEST
+#if defined(TEST)
 
 // gcc -g  -DFT_OS_LINUX -DTEST  -I../../ -L../../  *.c  -lft -lm
 int main()

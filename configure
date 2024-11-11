@@ -439,7 +439,8 @@ cf_run() {
 	nextarg=""
 	for (( i=0; i < $# + 1; i++ )); do
 		arg="${!i}"
-		nextarg="${!i+1}"
+		nextarg="$((i+1))"
+		nextarg="${!nextarg}"
 	
 		if [[ "$arg" == "--pkg-config" ]]; then
 			MODE="config"

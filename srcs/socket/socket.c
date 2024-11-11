@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 20:13:26 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/08 03:46:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/10 22:43:22 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "libft_int.h"
 
 #define _GNU_SOURCE
-#ifdef FT_OS_WIN
+#if defined(FT_OS_WIN)
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #else
@@ -22,7 +22,7 @@
 typedef filedesc SOCKET;
 #endif
 
-#ifdef FT_OS_WIN
+#if defined(FT_OS_WIN)
 static bool WSA_init = FALSE; // TODO: thread safety
 static S32 __init_WSA()
 {
@@ -44,7 +44,7 @@ static S32 __init_WSA()
 }
 #endif
 
-#ifdef FT_OS_WIN
+#if defined(FT_OS_WIN)
 S32 ft_resolve_hostname(void *addr_out, string host, string port)
 {
 	__init_WSA();
@@ -70,27 +70,30 @@ S32 ft_resolve_hostname(void *addr_out, string host, string port)
 }
 #endif
 
-#ifdef FT_OS_WIN
+#if defined(FT_OS_WIN)
 filedesc ft_socket(S32 domain, S32 type, S32 protocol)
 {
+	filedesc sock;
+
 	__init_WSA();
 
-	filedesc sock = (filedesc)socket(domain, type, protocol);
-	if (sock == (filedesc)INVALID_SOCKET) // INVALID_SOCKET not on linux
+	if (UNLIKELY((sock = (filedesc)socket(domain, type, protocol)) == (filedesc)INVALID_SOCKET))
 		__FTRETURN_ERR((filedesc)-1, FT_ESYSCALL);
 	__FTRETURN_OK(sock);
 }
 #else
 filedesc ft_socket(S32 domain, S32 type, S32 protocol)
 {
-	filedesc sock = (filedesc)socket(domain, type, protocol);
-	if (sock == (filedesc)-1) // INVALID_SOCKET not on linux
+	filedesc sock;
+	
+	sock = (filedesc)socket(domain, type, protocol);
+	if (UNLIKELY((sock = (filedesc)socket(domain, type, protocol)) == (filedesc)-1))
 		__FTRETURN_ERR((filedesc)-1, FT_ESYSCALL);
 	__FTRETURN_OK(sock);
 }
 #endif
 
-#ifdef FT_OS_WIN
+#if defined(FT_OS_WIN)
 bool ft_connect(filedesc socket, const void *addr, U64 addr_len)
 {
 	__init_WSA();

@@ -6,11 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 13:47:45 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/08 03:45:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/10 14:47:02 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file.h"
+#include "libft/io.h"
+
+#include <stdlib.h>
 
 static bool parse_mode(const_string mode, S32 *os_open_mode, S32 *os_create_mode);
 
@@ -70,7 +73,7 @@ filedesc ft_open(const_string path, const_string mode)
 
 #include <unistd.h>
 #include <fcntl.h>
-#ifndef __USE_MISC
+#if !defined(__USE_MISC)
 #define __USE_MISC
 #endif
 #include <sys/stat.h>

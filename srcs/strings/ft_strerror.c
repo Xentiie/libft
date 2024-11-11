@@ -6,12 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 14:52:06 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/16 01:21:01 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/10 22:34:56 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
-#ifdef FT_OS_LINUX
+#include "libft/strings.h"
+
+#if defined(FT_OS_LINUX)
 #include <errno.h>
 #include <string.h>
 #elif defined(FT_OS_WIN)
@@ -53,7 +55,7 @@ const_string ft_strerror(S32 err)
 	return entries[err].desc;
 }
 
-#ifdef FT_OS_LINUX
+#if defined(FT_OS_LINUX)
 const_string ft_strerror2(S32 err)
 {
 	if (err < 0)

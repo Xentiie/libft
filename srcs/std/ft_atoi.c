@@ -6,12 +6,15 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 13:51:00 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/12 12:17:05 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/10 21:56:39 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
-#ifdef TEST
+#include "libft/strings.h"
+#include "libft/limits.h"
+
+#if defined(TEST)
 # include <stdio.h>
 #endif
 
@@ -136,7 +139,7 @@ S32	ft_atoi_bl(const_string base, const_string str, U64 *len)
 	return (result*neg);
 }
 
-#ifdef TEST
+#if defined(TEST)
 
 #define _xstr(a) _str(a)
 #define _str(a) #a

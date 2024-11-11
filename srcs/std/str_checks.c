@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 02:36:05 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/22 04:49:37 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/09 23:09:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ bool ft_str_ishex(const_string str)
 	return TRUE;
 }
 
-#ifdef TEST
+#if defined(TEST)
 
 int main()
 {

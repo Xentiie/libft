@@ -1,25 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_str_append.c                                    :+:      :+:    :+:   */
+/*   md5.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/31 00:24:52 by reclaire          #+#    #+#             */
-/*   Updated: 2024/02/11 23:05:12 by reclaire         ###   ########.fr       */
+/*   Created: 2024/11/09 22:56:32 by reclaire          #+#    #+#             */
+/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft_int.h"
+#if !defined(FT_MD5_H)
+#define FT_MD5_H
 
-string	ft_str_append(string a, string b, bool free_a, bool free_b)
+#include "../_libft.h"
+
+struct s_md5_state
 {
-	char	*new;
+  U32 state[4];  /* state (ABCD) */
+  U32 count[2];  /* number of bits, modulo 2^64 (lsb first) */
+  U8 buffer[64]; /* input buffer */
+};
 
-	new = ft_strjoin(a, b);
-	if (free_a)
-		free(a);
-	if (free_b)
-		free(b);
-	return (new);
-}
+void md5_init(struct s_md5_state *state);
+void md5_update(struct s_md5_state *state, const U8 *input, U32 inputLen);
+void md5_final(struct s_md5_state *state, U8 digest[16]);
+
+#endif

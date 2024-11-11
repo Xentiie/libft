@@ -6,12 +6,16 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 05:54:01 by reclaire          #+#    #+#             */
-/*   Updated: 2024/09/25 05:54:01 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/10 21:55:33 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft_int.h"
 #include "forbidden_chars.h"
+#include "libft_int.h"
+#include "libft/strings.h"
+#include "libft/io.h"
+
+#include <stdlib.h>
 
 string ft_path_filename(const_string path)
 {
