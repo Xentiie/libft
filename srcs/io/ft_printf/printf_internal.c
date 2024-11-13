@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 14:08:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 14:44:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/11 21:18:54 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@
 
 #if defined(TEST)
 #include <stdio.h>
-#include <unistd.h>
 #endif
 
 static const_string l_base16 = "0123456789abcdef";
@@ -33,17 +32,51 @@ static const_string u_base16 = "0123456789ABCDEF";
 #define GET_ARG(type) (*(type *)(&args[pos_nextarg == -1 ? nextarg++ : pos_nextarg]))
 #define BUF_SIZE U64_MAX_MAG + 1
 
-static S64 pad(char c, U64 s, t_fmtwr_i wr_i, void *data)
+static S64 pad(char c, S64 s, t_fmtwr_i wr_i, void *data)
 {
 	char _padding[512];
 	S64 out;
 	S64 ret;
 
 	out = 0;
-	ft_memset(_padding, c, MAX(s, sizeof(_padding)));
+	ft_memset(_padding, c, MIN(s, (S64)sizeof(_padding)));
 	while (s > 0)
 	{
-		if (UNLIKELY((ret = wr_i(_padding, MIN(s, sizeof(_padding)), data)) == -1))
+		if (UNLIKELY((ret = wr_i(_padding, MIN(s, (S64)sizeof(_padding)), data)) == -1))
+			return -1;
+		out += ret;
+		s -= ret;
+	}
+	return out;
+}
+
+static S64 pad_sp(S64 s, t_fmtwr_i wr_i, void *data)
+{
+	static char _padding[512] = {[0 ... 511] = ' '};
+	S64 out;
+	S64 ret;
+
+	out = 0;
+	while (s > 0)
+	{
+		if (UNLIKELY((ret = wr_i(_padding, MIN(s, (S64)sizeof(_padding)), data)) == -1))
+			return -1;
+		out += ret;
+		s -= ret;
+	}
+	return out;
+}
+
+static S64 pad_ze(S64 s, t_fmtwr_i wr_i, void *data)
+{
+	static char _padding[512] = {[0 ... 511] = '0'};
+	S64 out;
+	S64 ret;
+
+	out = 0;
+	while (s > 0)
+	{
+		if (UNLIKELY((ret = wr_i(_padding, MIN(s, (S64)sizeof(_padding)), data)) == -1))
 			return -1;
 		out += ret;
 		s -= ret;
@@ -262,7 +295,7 @@ S64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data
 
 		S64 p = width - real_len;
 		if ((flags & (FL_LEFTJUST | FL_ZEROPAD)) == 0)
-			cnt += pad(' ', p, wr_i, data);
+			cnt += pad_sp(p, wr_i, data);
 
 		if (sign)
 			cnt += wr_i(&sign, 1, data);
@@ -270,12 +303,12 @@ S64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data
 			cnt += wr_i(flags & FL_HEX_M ? "0X" : "0x", 2, data);
 
 		if ((flags & (FL_LEFTJUST | FL_ZEROPAD)) == FL_ZEROPAD)
-			cnt += pad('0', p, wr_i, data);
+			cnt += pad_ze(p, wr_i, data);
 
-		cnt += pad('0', prec - str_len, wr_i, data);
+		cnt += pad_ze(prec - str_len, wr_i, data);
 		cnt += wr_i(str, str_len, data);
 		if (flags & FL_LEFTJUST)
-			cnt += pad(' ', p, wr_i, data);
+			cnt += pad_sp(p, wr_i, data);
 
 		fmt++;
 		sv = fmt;
@@ -287,29 +320,4 @@ S64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data
 	free(args);
 	return cnt;
 }
-// TODO 0x 0X only if non zero
-
-#if defined(TEST)
-
-U64 ____tmp(const_string str, U64 len, void *data)
-{
-	return write(1, str, len);
-}
-
-void f(const_string fmt, ...)
-{
-	va_list args;
-	va_start(args, fmt);
-
-	printf_internal(fmt, args, ____tmp, NULL);
-}
-
-int main()
-{
-	void *a = malloc(1);
-
-	f("%1$*5$d\n", 10, 1, 2, 3, 20);
-	printf("%1$*5$d\n", 10, 1, 2, 3, 20);
-}
-
-#endif
+//TODO: 0x 0X only if non zero

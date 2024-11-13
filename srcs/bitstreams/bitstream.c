@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 23:44:59 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 22:51:56 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/11 21:19:37 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ U8 ft_bstrm_read_bits(t_bitstream *stream, U8 n)
 	for (U8 i = 0; i < n; i++)
 	{
 		b |= (ft_bstrm_read_bit(stream) << i);
-		if (UNLIKLEY(ft_errno != FT_OK))
+		if (UNLIKELY(ft_errno != FT_OK))
 			__FTRETURN_ERR(-1, ft_errno);
 	}
 	__FTRETURN_OK(b);
@@ -60,7 +60,7 @@ U8 ft_bstrm_read_byte(t_bitstream *stream)
 	U64 n;
 
 	n = ft_bstrm_read_bits(stream, 8);
-	if (UNLIKLEY(ft_errno != FT_OK))
+	if (UNLIKELY(ft_errno != FT_OK))
 		__FTRETURN_ERR((U8)-1, ft_errno);
 	__FTRETURN_OK((U8)n);
 }

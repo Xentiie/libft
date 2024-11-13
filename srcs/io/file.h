@@ -6,11 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 00:50:06 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/10/22 04:13:43 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#if !defined(FILE_H)
+#ifndef FILE_H
 #define FILE_H
 
 #define _GNU_SOURCE

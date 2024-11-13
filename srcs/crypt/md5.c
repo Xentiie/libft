@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 02:10:31 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/11 17:46:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/12 15:11:46 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ Rotation is separate from addition to prevent recomputation.
 	}
 
 /* MD5 initialization. Begins an MD5 operation, writing a new state. */
-void md5_init(struct s_md5_state *state)
+void ft_md5_init(struct s_md5_state *state)
 {
 	state->count[0] = state->count[1] = 0;
 	state->state[0] = 0x67452301;
@@ -82,7 +82,7 @@ MD5 block update operation. Continues an MD5 message-digest
 operation, processing another message block, and updating the
 state.
 */
-void md5_update(struct s_md5_state *state, const U8 *input, U32 len)
+void ft_md5_update(struct s_md5_state *state, const U8 *input, U32 len)
 {
 	U32 i;
 	U32 index;
@@ -123,7 +123,7 @@ void md5_update(struct s_md5_state *state, const U8 *input, U32 len)
 MD5 finalization. Ends an MD5 message-digest operation, writing the
 the message digest and zeroizing the state.
 */
-void md5_final(struct s_md5_state *state, U8 digest[16])
+void ft_md5_final(struct s_md5_state *state, U8 digest[16])
 {
 	static const U8 _padding[64] = {
 		0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -140,10 +140,10 @@ void md5_final(struct s_md5_state *state, U8 digest[16])
 	/* Pad out to 56 mod 64. */
 	index = (U32)((state->count[0] >> 3) & 0x3f);
 	pad_len = (index < 56) ? (56 - index) : (120 - index);
-	md5_update(state, _padding, pad_len);
+	ft_md5_update(state, _padding, pad_len);
 
 	/* Append length (before padding) */
-	md5_update(state, bits, 8);
+	ft_md5_update(state, bits, 8);
 	/* Store state in digest */
 	encode(digest, state->state, 16);
 

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:43:53 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 00:26:46 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/11 21:18:02 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,8 +137,13 @@ S64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args)
 // gcc -g  -DFT_OS_LINUX -DTEST  -I../../ -L../../  *.c  -lft -lm
 int main()
 {
-	ft_printf("|%05c|\n", 'a');
-	printf("|%05c|\n", 'a');
+#define TEST_STR(fmt, ...) { ft_printf(fmt, __VA_ARGS__); printf("  "); printf(fmt, __VA_ARGS__); printf("\n"); }
+	TEST_STR("|%5c|", 'a');
+	TEST_STR("|%05c|", 'a');
+	TEST_STR("|% 5c|", 'a');
+	TEST_STR("|%-5c|", 'a');
+	TEST_STR("|%- 5c|", 'a');
+	TEST_STR("|%-05c|", 'a');
 }
 
 #endif

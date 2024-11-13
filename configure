@@ -1,4 +1,5 @@
 #!/bin/bash
+VER=1.0.1
 set -e
 cd "$(dirname "$0")"
 
@@ -300,7 +301,7 @@ cf_end_rule() {
 	RULE_NAME=""
 	INDENT=$((INDENT-1))
 	if [ -n "$1" ]; then
-		cf_append "PHONY: %s\n" "$rule_name"
+		cf_append ".PHONY: %s\n" "$rule_name"
 	fi
 	cf_append "\n"
 }
@@ -339,6 +340,7 @@ cf_end_target() {
 
 		cf_begin_rule "all" \
 			--prereq "objs" \
+			--prereq "packages" \
 			--prereq '$(NAME)'
 		cf_end_rule phony
 
@@ -373,9 +375,9 @@ cf_end_target() {
 		done
 
 	elif [ "$MODE" == "config" ]; then
-		printf "INCLUDES=%s\n" "${OUT_INCLUDES[@]}"
-		printf "LIBS=%s %s\n" "${OUT_LIBS[@]}" "${LIBS[@]}"
-		printf "LIBS_PATHS=%s\n" "${OUT_LIBS_PATHS[@]}" "${LIBS_PATHS[@]}"
+		printf "INCLUDES=%s %s\n" "${OUT_INCLUDES[*]}" "${IMPORTS_INCLUDES[*]}"
+		printf "LIBS=%s %s %s\n" "${OUT_LIBS[*]}" "${LIBS[*]}" "${IMPORTS_LIBS[*]}"
+		printf "LIBS_PATHS=%s %s %s\n" "${OUT_LIBS_PATHS[*]}" "${LIBS_PATHS[*]}" "${IMPORTS_LIBS_PATHS[*]}"
 	else
 		printf "{\n"
 		if [ $_N -eq 0 ]; then
@@ -439,8 +441,8 @@ cf_run() {
 	nextarg=""
 	for (( i=0; i < $# + 1; i++ )); do
 		arg="${!i}"
-		nextarg="$((i+1))"
-		nextarg="${!nextarg}"
+		j="$((i+1))"
+		nextarg="${!j}"
 	
 		if [[ "$arg" == "--pkg-config" ]]; then
 			MODE="config"
@@ -496,6 +498,8 @@ configure() {
 		cf_add_cflag "-Wall"
 		cf_add_cflag "-Wextra"
 		cf_add_cflag "-Wno-unknown-pragmas"
+		cf_add_cflag "-g"
+		cf_add_cflag "-O3"
 
 		cf_add_raw_lib "libm"
 		cf_add_output_include "./"
