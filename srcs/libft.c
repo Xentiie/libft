@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:49:04 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 14:48:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/14 04:11:37 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,11 @@ void __init_libft(S32 argc, string *argv, string *env)
 		exit(42);
 }
 
+void lock_ht_cleanup(); /* lock.c:37 */
 __attribute__((destructor)) void __destroy_libft()
 {
 	ft_fdestroy(ft_fstdin);
 	ft_fdestroy(ft_fstdout);
 	ft_fdestroy(ft_fstderr);
+	lock_ht_cleanup();
 }

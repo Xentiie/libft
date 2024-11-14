@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:47:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 14:44:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/14 04:08:14 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,7 @@ typedef struct
 static t_lock_ht *lock_ht = NULL;
 static pthread_once_t lock_ht_once = PTHREAD_ONCE_INIT;
 
-__attribute__((destructor))
-static void lock_ht_cleanup()
+void lock_ht_cleanup()
 {
 	free(lock_ht);
 }
