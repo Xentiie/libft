@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:47:39 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:11:21 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/18 05:06:13 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,6 @@ void ft_fdestroy(t_file *file)
 
 void ft_fclose(t_file *file)
 {
-	ft_fdestroy(file);
 	ft_close(file->fd);
+	ft_fdestroy(file);
 }
