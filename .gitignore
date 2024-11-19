@@ -20,3 +20,5 @@ tests/perf_logs/
 
 *.mk
 apt.sh
+
+./test

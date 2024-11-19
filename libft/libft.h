@@ -1,22 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   _libft.h                                           :+:      :+:    :+:   */
+/*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/19 04:05:40 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#if !defined(_LIBFT_H)
-# define _LIBFT_H
+#if !defined(FT_LIBFT_H)
+# define FT_LIBFT_H
 
-/*
-#define LIBFT_AVOID_ALLOCA -> replace alloca by malloc/free
-
-*/
+/* -DLIBFT_AVOID_ALLOCA -> replace alloca by malloc/free */
 
 # include "_os.h"
 # include "types.h"

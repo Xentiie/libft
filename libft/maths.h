@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:45:20 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 22:33:29 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/19 04:02:04 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_MATHS_H)
 #define LIBFT_MATHS_H
 
-# include "_libft.h"
+# include "libft.h"
 # include <math.h>
 
 #if !defined(FT_PI)

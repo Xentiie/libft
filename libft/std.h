@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 22:28:12 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/19 04:02:04 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_STD_H)
 # define LIBFT_STD_H
 
-# include "_libft.h"
+# include "libft.h"
 
 /*
 Sets the seed for ft_rand

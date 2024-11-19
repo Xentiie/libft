@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 01:30:07 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/19 04:01:51 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_GETOPT_H)
 #define LIBFT_GETOPT_H
 
-#include "_libft.h"
+#include "libft.h"
 
 extern S32 ft_optopt;
 extern S32 ft_optind;

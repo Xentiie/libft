@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:42:00 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/11 17:28:16 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/19 04:02:04 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_STRINGS_H)
 # define LIBFT_STRINGS_H
 
-# include "_libft.h"
+# include "libft.h"
 
 /*
 TODO

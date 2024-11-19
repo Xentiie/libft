@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:22:59 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/18 05:40:41 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/19 04:01:41 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(FT_SHA_H)
 #define FT_SHA_H
 
-#include "../_libft.h"
+#include "../libft.h"
 
 struct s_sha1_state
 {

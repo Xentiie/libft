@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 23:02:02 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/19 04:02:04 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_GZIP_H)
 #define LIBFT_GZIP_H
 
-#include "libft/_libft.h"
+#include "libft/libft.h"
 
 #define FT_GZIP_FLAG_TEXT (1 << 0)	  // Data is 'supposed' to be text
 #define FT_GZIP_FLAG_HCRC (1 << 1)	  // Include the header's CRC16 (2 lowest bytes of header's CRC32)

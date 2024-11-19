@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:53:23 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/19 04:02:04 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_ANSI_H)
 # define LIBFT_ANSI_H
 
-# include "_libft.h"
+# include "libft.h"
 
 # define FT_BLACK					"\e[0;30m"
 # define FT_RED						"\e[0;31m"

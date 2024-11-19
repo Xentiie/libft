@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 02:27:41 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/18 05:44:35 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/19 03:33:45 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void ft_sha256_update(struct s_sha256_state *state, const void *input, U64 len)
 
 void ft_sha224_update(struct s_sha256_state *state, const void *input, U64 len) __attribute__ ((alias ("ft_sha256_update")));
 
-void ft_sha256_final(struct s_sha256_state *state, U8 digest[32])
+void ft_sha256_final2(struct s_sha256_state *state, U8 digest[32])
 {
 	static const U8 _padding[64] = {
 		0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -107,6 +107,32 @@ void ft_sha256_final(struct s_sha256_state *state, U8 digest[32])
 	ft_sha256_update(state, bits, 8);
 
 	for (int i = 0; i < 32; ++i)
+		digest[i] = (U8)(state->state[i >> 2] >> (8 * (3 - (i & 0x03))));
+
+	ft_bzero(state, sizeof(struct s_sha256_state));
+}
+
+void ft_sha256_final(struct s_sha256_state *state, U8 digest[32])
+{
+	U32 index;
+	U64 *msg64;
+
+	index = (U32)((state->len >> 3) & 0x3F);
+	msg64 = (U64 *)state->buffer;
+	state->buffer[index++] = 0x80;
+	if (index > 32)
+	{
+		while (index < 64)
+			state->buffer[index++] = 0;
+		sha256_transform(state->state, (U8 *)msg64);
+		index = 0;
+	}
+	while (index < 56)
+		state->buffer[index++] = 0;
+	msg64[7] = __builtin_bswap64(state->len);
+	sha256_transform(state->state, (U8 *)msg64);
+
+	for (U8 i = 0; i < 32; ++i)
 		digest[i] = (U8)(state->state[i >> 2] >> (8 * (3 - (i & 0x03))));
 
 	ft_bzero(state, sizeof(struct s_sha256_state));
