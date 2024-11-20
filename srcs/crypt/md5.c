@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 02:10:31 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/15 15:19:18 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/20 11:08:33 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,11 @@ void ft_md5_update(struct s_md5_state *state, const void *input, U64 len)
 	U8 *_input;
 	U32 i;
 	U32 index;
-	U32 bits_len;
 	U32 part_len;
 
 	_input = (U8 *)input;
-	index = (U32)((state->len >> 3) & 0x3F);
-	state->len += ((U64)len << 3);
+	index = (U32)((state->len / 8) % 64);
+	state->len += (U64)len * 8;
 
 	part_len = 64 - index;
 
@@ -92,10 +91,7 @@ void ft_md5_update(struct s_md5_state *state, const void *input, U64 len)
 
 void ft_md5_final(struct s_md5_state *state, U8 digest[16])
 {
-	static const U8 _padding[64] = {
-		0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	static const U8 _padding[64] = { 0x80, [1 ... 63] = 0};
 
 	U8 bits[8];
 	U32 index;
@@ -103,7 +99,7 @@ void ft_md5_final(struct s_md5_state *state, U8 digest[16])
 
 	encode(bits, (U32 *)&state->len, 8);
 
-	index = (U32)((state->len >> 3) & 0x3f);
+	index = (U32)((state->len / 8) % 64);
 	pad_len = (index < 56) ? (56 - index) : (120 - index);
 	ft_md5_update(state, _padding, pad_len);
 

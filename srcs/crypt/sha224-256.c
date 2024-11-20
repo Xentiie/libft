@@ -6,12 +6,18 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 02:27:41 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/19 03:33:45 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/20 10:52:38 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 #include "libft/crypt/sha.h"
+
+#ifdef TEST
+#include "libft/io.h"
+#include "libft/limits.h"
+#include <openssl/sha.h>
+#endif
 
 #define ROTATE_LEFT(x, n) (((x) << (n)) | ((x) >> (32 - (n))))
 #define ROTATE_RIGHT(x, n) (((x) >> (n)) | ((x) << (32 - (n))))
@@ -59,8 +65,8 @@ void ft_sha256_update(struct s_sha256_state *state, const void *input, U64 len)
 	U32 part_len;
 
 	_input = (U8 *)input;
-	index = (U32)((state->len >> 3) & 0x3F);
-	state->len += ((U64)len << 3);
+	index = (U32)((state->len / 8) % 64);
+	state->len += ((U64)len * 8);
 
 	part_len = 64 - index;
 
@@ -79,14 +85,11 @@ void ft_sha256_update(struct s_sha256_state *state, const void *input, U64 len)
 	ft_memcpy(&state->buffer[index], &_input[i], len - i);
 }
 
-void ft_sha224_update(struct s_sha256_state *state, const void *input, U64 len) __attribute__ ((alias ("ft_sha256_update")));
+void ft_sha224_update(struct s_sha256_state *state, const void *input, U64 len) __attribute__((alias("ft_sha256_update")));
 
-void ft_sha256_final2(struct s_sha256_state *state, U8 digest[32])
+void ft_sha256_final(struct s_sha256_state *state, U8 digest[32])
 {
-	static const U8 _padding[64] = {
-		0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	static const U8 _padding[64] = {0x80, [1 ... 63] = 0};
 	U8 bits[8];
 	U32 index;
 	U32 pad_len;
@@ -100,7 +103,7 @@ void ft_sha256_final2(struct s_sha256_state *state, U8 digest[32])
 	bits[6] = (U8)(state->len >> 8);
 	bits[7] = (U8)(state->len);
 
-	index = (U32)((state->len >> 3) & 0x3f);
+	index = (U32)((state->len / 8) % 64);
 	pad_len = (index < 56) ? (56 - index) : (120 - index);
 	ft_sha256_update(state, _padding, pad_len);
 
@@ -112,38 +115,9 @@ void ft_sha256_final2(struct s_sha256_state *state, U8 digest[32])
 	ft_bzero(state, sizeof(struct s_sha256_state));
 }
 
-void ft_sha256_final(struct s_sha256_state *state, U8 digest[32])
-{
-	U32 index;
-	U64 *msg64;
-
-	index = (U32)((state->len >> 3) & 0x3F);
-	msg64 = (U64 *)state->buffer;
-	state->buffer[index++] = 0x80;
-	if (index > 32)
-	{
-		while (index < 64)
-			state->buffer[index++] = 0;
-		sha256_transform(state->state, (U8 *)msg64);
-		index = 0;
-	}
-	while (index < 56)
-		state->buffer[index++] = 0;
-	msg64[7] = __builtin_bswap64(state->len);
-	sha256_transform(state->state, (U8 *)msg64);
-
-	for (U8 i = 0; i < 32; ++i)
-		digest[i] = (U8)(state->state[i >> 2] >> (8 * (3 - (i & 0x03))));
-
-	ft_bzero(state, sizeof(struct s_sha256_state));
-}
-
 void ft_sha224_final(struct s_sha256_state *state, U8 digest[28])
 {
-	static const U8 _padding[64] = {
-		0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	static const U8 _padding[64] = {0x80, [1 ... 63] = 0};
 	U8 bits[8];
 	U32 index;
 	U32 pad_len;
@@ -157,7 +131,7 @@ void ft_sha224_final(struct s_sha256_state *state, U8 digest[28])
 	bits[6] = (U8)(state->len >> 8);
 	bits[7] = (U8)(state->len);
 
-	index = (U32)((state->len >> 3) & 0x3f);
+	index = (U32)((state->len / 8) % 64);
 	pad_len = (index < 56) ? (56 - index) : (120 - index);
 	ft_sha256_update(state, _padding, pad_len);
 
@@ -185,7 +159,7 @@ static void sha256_transform(U32 state[8], const U8 block[64])
 		0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f,
 		0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
 		0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
-	int t, t4;
+	S32 t, t4;
 	U32 tmp1, tmp2;
 	U32 W[64];
 	U32 A, B, C, D, E, F, G, H;
@@ -232,3 +206,122 @@ static void sha256_transform(U32 state[8], const U8 block[64])
 	state[6] += G;
 	state[7] += H;
 }
+
+#ifdef TEST
+
+#define TEST_OK()                         \
+	do                                    \
+	{                                     \
+		ft_printf("[%03d] OK\n", test++); \
+	} while (0)
+#define TEST_FAIL()                                    \
+	do                                                 \
+	{                                                  \
+		ft_printf("[%03d] FAIL\n\tft:   ", test++);    \
+		for (U8 _i = 0; _i < sizeof(digests[0]); _i++) \
+			ft_printf("%x ", digests[0][_i]);          \
+		ft_printf("\n\tossl: ");                       \
+		for (U8 _i = 0; _i < sizeof(digests[0]); _i++) \
+			ft_printf("%x ", digests[1][_i]);          \
+		ft_printf("\n");                               \
+	} while (0)
+#define DO_TEST()                                                  \
+	do                                                             \
+	{                                                              \
+		if (ft_memcmp(digests[0], digests[1], sizeof(digests[0]))) \
+			TEST_FAIL();                                           \
+		else                                                       \
+			TEST_OK();                                             \
+	} while (0)
+
+S32 main_224()
+{
+#define BUFSIZE 8192
+#define DIGEST_SIZE 28
+
+	const U64 max = U64_MAX;
+	U8 buf[BUFSIZE] = {[0 ... BUFSIZE - 1] = 'a'};
+	U8 digests[2][DIGEST_SIZE];
+	U8 test = 1;
+
+	SHA256_CTX ctx;
+	struct s_sha256_state state;
+
+	{
+		SHA224_Init(&ctx);
+		SHA224_Update(&ctx, buf, sizeof(buf));
+		SHA224_Final(digests[0], &ctx);
+
+		ft_sha224_init(&state);
+		ft_sha224_update(&state, buf, sizeof(buf));
+		ft_sha224_final(&state, digests[1]);
+
+		DO_TEST();
+	}
+
+	for (U8 j = 0; j < 16; j++)
+	{
+		SHA224_Init(&ctx);
+		for (int i = 0; i < j; i++)
+			SHA224_Update(&ctx, buf, sizeof(buf));
+		SHA224_Final(digests[0], &ctx);
+
+		ft_sha224_init(&state);
+		for (int i = 0; i < j; i++)
+			ft_sha224_update(&state, buf, sizeof(buf));
+		ft_sha224_final(&state, digests[1]);
+
+		DO_TEST();
+	}
+}
+
+S32 main_256()
+{
+#undef BUFSIZE
+#undef DIGEST_SIZE
+#define BUFSIZE 8192
+#define DIGEST_SIZE 32
+
+	const U64 max = U64_MAX;
+	U8 buf[BUFSIZE] = {[0 ... BUFSIZE - 1] = 'a'};
+	U8 digests[2][DIGEST_SIZE];
+	U8 test = 1;
+
+	SHA256_CTX ctx;
+	struct s_sha256_state state;
+
+	{
+		SHA256_Init(&ctx);
+		SHA256_Update(&ctx, buf, sizeof(buf));
+		SHA256_Final(digests[0], &ctx);
+
+		ft_sha256_init(&state);
+		ft_sha256_update(&state, buf, sizeof(buf));
+		ft_sha256_final(&state, digests[1]);
+
+		DO_TEST();
+	}
+
+	for (U8 j = 0; j < 16; j++)
+	{
+		SHA256_Init(&ctx);
+		for (int i = 0; i < j; i++)
+			SHA256_Update(&ctx, buf, sizeof(buf));
+		SHA256_Final(digests[0], &ctx);
+
+		ft_sha256_init(&state);
+		for (int i = 0; i < j; i++)
+			ft_sha256_update(&state, buf, sizeof(buf));
+		ft_sha256_final(&state, digests[1]);
+
+		DO_TEST();
+	}
+}
+
+S32 main()
+{
+	main_224();
+	main_256();
+}
+
+#endif

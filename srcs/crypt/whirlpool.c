@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 03:59:56 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/19 04:06:55 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/20 11:07:06 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void ft_whirlpool_update(struct s_whirlpool_state *state, const void *input, U64
 	U32 part_len;
 
 	_input = (U8 *)input;
-	index = (U32)((state->len >> 3) & 0x3F);
-	state->len += ((U64)len << 3);
+	index = (U32)((state->len / 8) % 64);
+	state->len += (U64)len * 8;
 
 	part_len = 64 - index;
 
@@ -81,7 +81,7 @@ void ft_whirlpool_final(struct s_whirlpool_state *state, U8 digest[64])
 	bits[6] = (U8)(state->len >> 8);
 	bits[7] = (U8)(state->len);
 
-	index = (U32)((state->len >> 3) & 0x3f);
+	index = (U32)((state->len / 8) % 64);
 	pad_len = (index < 56) ? (56 - index) : (120 - index);
 	ft_whirlpool_update(state, _padding, pad_len);
 

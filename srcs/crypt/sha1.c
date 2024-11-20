@@ -6,12 +6,18 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 09:02:03 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/18 02:28:23 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/20 10:52:42 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 #include "libft/crypt/sha.h"
+
+#ifdef TEST
+#include "libft/io.h"
+#include "libft/limits.h"
+#include <openssl/sha.h>
+#endif
 
 #define ROTATE_LEFT(x, n) (((x) << (n)) | ((x) >> (32 - (n))))
 
@@ -39,8 +45,8 @@ void ft_sha1_update(struct s_sha1_state *state, const void *input, U64 len)
 	U32 part_len;
 
 	_input = (U8 *)input;
-	index = (U32)((state->len >> 3) & 0x3F);
-	state->len += ((U64)len << 3);
+	index = (U32)((state->len / 8) % 64);
+	state->len += ((U64)len * 8);
 
 	part_len = 64 - index;
 
@@ -61,10 +67,7 @@ void ft_sha1_update(struct s_sha1_state *state, const void *input, U64 len)
 
 void ft_sha1_final(struct s_sha1_state *state, U8 digest[20])
 {
-	static const U8 _padding[64] = {
-		0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	static const U8 _padding[64] = {0x80, [1 ... 63] = 0};
 
 	U8 bits[8];
 	U32 index;
@@ -79,7 +82,7 @@ void ft_sha1_final(struct s_sha1_state *state, U8 digest[20])
 	bits[6] = (U8)(state->len >> 8);
 	bits[7] = (U8)(state->len);
 
-	index = (U32)((state->len >> 3) & 0x3f);
+	index = (U32)((state->len / 8) % 64);
 	pad_len = (index < 56) ? (56 - index) : (120 - index);
 	ft_sha1_update(state, _padding, pad_len);
 
@@ -162,3 +165,73 @@ static void sha1_transform(U32 state[5], const U8 block[64])
 	state[3] += D;
 	state[4] += E;
 }
+
+#ifdef TEST
+
+#define TEST_OK()                         \
+	do                                    \
+	{                                     \
+		ft_printf("[%03d] OK\n", test++); \
+	} while (0)
+#define TEST_FAIL()                                    \
+	do                                                 \
+	{                                                  \
+		ft_printf("[%03d] FAIL\n\tft:   ", test++);    \
+		for (U8 _i = 0; _i < sizeof(digests[0]); _i++) \
+			ft_printf("%x ", digests[0][_i]);          \
+		ft_printf("\n\tossl: ");                       \
+		for (U8 _i = 0; _i < sizeof(digests[0]); _i++) \
+			ft_printf("%x ", digests[1][_i]);          \
+		ft_printf("\n");                               \
+	} while (0)
+#define DO_TEST()                                                  \
+	do                                                             \
+	{                                                              \
+		if (ft_memcmp(digests[0], digests[1], sizeof(digests[0]))) \
+			TEST_FAIL();                                           \
+		else                                                       \
+			TEST_OK();                                             \
+	} while (0)
+
+S32 main()
+{
+#define BUFSIZE 8192
+#define DIGEST_SIZE 20
+
+	const U64 max = U64_MAX;
+	U8 buf[BUFSIZE] = {[0 ... BUFSIZE - 1] = 'a'};
+	U8 digests[2][DIGEST_SIZE];
+	U8 test = 1;
+
+	SHA_CTX ctx;
+	struct s_sha1_state state;
+
+	{
+		SHA1_Init(&ctx);
+		SHA1_Update(&ctx, buf, sizeof(buf));
+		SHA1_Final(digests[0], &ctx);
+
+		ft_sha1_init(&state);
+		ft_sha1_update(&state, buf, sizeof(buf));
+		ft_sha1_final(&state, digests[1]);
+
+		DO_TEST();
+	}
+
+	for (U8 j = 0; j < 16; j++)
+	{
+		SHA1_Init(&ctx);
+		for (int i = 0; i < j; i++)
+			SHA1_Update(&ctx, buf, sizeof(buf));
+		SHA1_Final(digests[0], &ctx);
+
+		ft_sha1_init(&state);
+		for (int i = 0; i < j; i++)
+			ft_sha1_update(&state, buf, sizeof(buf));
+		ft_sha1_final(&state, digests[1]);
+
+		DO_TEST();
+	}
+}
+
+#endif
