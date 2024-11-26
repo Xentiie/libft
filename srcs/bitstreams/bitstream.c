@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 23:44:59 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/11 21:19:37 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ U8 ft_bstrm_read_bit(t_bitstream *stream)
 	U8 out;
 
 	if (UNLIKELY(stream->byte_offset > stream->buffer_max_len))
-		__FTRETURN_ERR((U8)-1, FT_ERANGE);
+		FT_RET_ERR((U8)-1, FT_ERANGE);
 
 	if (stream->bit_offset == 0)
 		stream->buffer[stream->byte_offset] = 0;
@@ -35,7 +35,7 @@ U8 ft_bstrm_read_bit(t_bitstream *stream)
 		stream->byte_offset++;
 	}
 
-	__FTRETURN_OK(out);
+	FT_RET_OK(out);
 }
 
 U8 ft_bstrm_read_bits(t_bitstream *stream, U8 n)
@@ -43,16 +43,16 @@ U8 ft_bstrm_read_bits(t_bitstream *stream, U8 n)
 	U8 b;
 
 	if (UNLIKELY(n > 64))
-		__FTRETURN_ERR((U8)-1, FT_ERANGE);
+		FT_RET_ERR((U8)-1, FT_ERANGE);
 
 	b = 0;
 	for (U8 i = 0; i < n; i++)
 	{
 		b |= (ft_bstrm_read_bit(stream) << i);
 		if (UNLIKELY(ft_errno != FT_OK))
-			__FTRETURN_ERR(-1, ft_errno);
+			FT_RET_ERR(-1, ft_errno);
 	}
-	__FTRETURN_OK(b);
+	FT_RET_OK(b);
 }
 
 U8 ft_bstrm_read_byte(t_bitstream *stream)
@@ -61,8 +61,8 @@ U8 ft_bstrm_read_byte(t_bitstream *stream)
 
 	n = ft_bstrm_read_bits(stream, 8);
 	if (UNLIKELY(ft_errno != FT_OK))
-		__FTRETURN_ERR((U8)-1, ft_errno);
-	__FTRETURN_OK((U8)n);
+		FT_RET_ERR((U8)-1, ft_errno);
+	FT_RET_OK((U8)n);
 }
 
 void ft_bstrm_read_bytes(t_bitstream *stream, U64 n, U8 *out)
@@ -72,9 +72,9 @@ void ft_bstrm_read_bytes(t_bitstream *stream, U64 n, U8 *out)
 		*out = ft_bstrm_read_byte(stream);
 		out++;
 		if (UNLIKELY(ft_errno != FT_OK))
-			__FTRETURN_ERR(, ft_errno);
+			FT_RET_ERR(, ft_errno);
 	}
-	__FTRETURN_OK();
+	FT_RET_OK();
 }
 
 void ft_bstrm_read_align_byte(t_bitstream *stream)
@@ -106,7 +106,7 @@ U32 ft_bstrm_read_u32_little_endian(t_bitstream *stream)
 void ft_bstrm_write_bit(t_bitstream *stream, U8 bit)
 {
 	if (UNLIKELY(stream->byte_offset > stream->buffer_max_len))
-		__FTRETURN_ERR(, FT_ERANGE);
+		FT_RET_ERR(, FT_ERANGE);
 
 	if (stream->bit_offset == 0)
 		stream->buffer[stream->byte_offset] = 0;
@@ -119,7 +119,7 @@ void ft_bstrm_write_bit(t_bitstream *stream, U8 bit)
 		stream->byte_offset++;
 	}
 
-	__FTRETURN_OK();
+	FT_RET_OK();
 }
 
 void ft_bstrm_write_bits(t_bitstream *stream, U64 n, U8 *bits)
@@ -128,9 +128,9 @@ void ft_bstrm_write_bits(t_bitstream *stream, U64 n, U8 *bits)
 	{
 		ft_bstrm_write_bit(stream, bits[i]);
 		if (UNLIKELY(ft_errno != FT_OK))
-			__FTRETURN_ERR(, ft_errno);
+			FT_RET_ERR(, ft_errno);
 	}
-	__FTRETURN_OK();
+	FT_RET_OK();
 }
 
 void ft_bstrm_write_byte(t_bitstream *stream, U8 byte)

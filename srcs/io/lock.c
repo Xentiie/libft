@@ -6,11 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:47:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/14 04:08:14 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 20:45:43 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "file.h"
+#include "file_private.h"
 
 #include <stdlib.h>
 
@@ -115,10 +115,10 @@ bool ft_ffilelock(t_file *file)
 	}
 	lock_ht_unlock(ht);
 	pthread_mutex_lock(&node->file_lock);
-	__FTRETURN_OK(TRUE);
+	FT_RET_OK(TRUE);
 exit_err:
 	lock_ht_unlock(ht);
-	__FTRETURN_ERR(FALSE, FT_EOMEM);
+	FT_RET_ERR(FALSE, FT_EOMEM);
 }
 
 S32 ft_ftryfilelock(t_file *file)
@@ -127,7 +127,7 @@ S32 ft_ftryfilelock(t_file *file)
 	t_lock_node *node;
 
 	if (UNLIKELY((ht = get_lock_ht()) == NULL))
-		__FTRETURN_ERR(-1, FT_EOMEM);
+		FT_RET_ERR(-1, FT_EOMEM);
 
 	node = *lock_ht_lookup(ht, file);
 	lock_ht_unlock(ht);
@@ -143,7 +143,7 @@ bool ft_ffileunlock(t_file *file)
 	t_lock_node *lock;
 
 	if (UNLIKELY((ht = get_lock_ht()) == NULL))
-		__FTRETURN_ERR(FALSE, FT_EOMEM);
+		FT_RET_ERR(FALSE, FT_EOMEM);
 
 	lock = *lock_ht_lookup(ht, file);
 
@@ -160,7 +160,7 @@ bool __ft_flockcleanup(t_file *fp)
 	t_lock_node *lock;
 
 	if (UNLIKELY((ht = get_lock_ht()) == NULL))
-		__FTRETURN_ERR(FALSE, FT_EOMEM);
+		FT_RET_ERR(FALSE, FT_EOMEM);
 
 	lookup = lock_ht_lookup(ht, fp);
 	lock = *lookup;

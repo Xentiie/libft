@@ -6,67 +6,77 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 13:47:45 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 14:47:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 07:35:25 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "file.h"
-#include "libft/io.h"
+#include "file_private.h"
 
 #include <stdlib.h>
+#include <errno.h>
 
-static bool parse_mode(const_string mode, S32 *os_open_mode, S32 *os_create_mode);
-
-#if defined(FT_OS_WIN)
-#include <windows.h>
-
-static bool parse_mode(const_string mode, S32 *open_mode, S32 *create_mode)
+static bool parse_mode(const_string mode, bool *readable, bool *writeable, bool *append)
 {
+	*readable = FALSE;
+	*writeable = FALSE;
+	*append = FALSE;
+
 	switch (*mode++)
 	{
 	case 'r':
-		*open_mode = GENERIC_READ;
-		*create_mode = OPEN_EXISTING;
+		*readable = TRUE;
 		break;
 	case 'w':
-		*open_mode = GENERIC_WRITE;
-		*create_mode = OPEN_ALWAYS;
+		*writeable = TRUE;
 		break;
 	case 'a':
-		*open_mode = FILE_APPEND_DATA;
-		*create_mode = OPEN_ALWAYS;
+		*writeable = TRUE;
+		*append = TRUE;
 		break;
 	default:
 		return FALSE;
 	}
 
 	if (*mode == '+')
-		*open_mode = GENERIC_READ | GENERIC_WRITE;
+	{
+		*readable = TRUE;
+		*writeable = TRUE;
+	}
 
 	return TRUE;
 }
 
-filedesc ft_open(const_string path, const_string mode)
+#if defined(FT_OS_WIN)
+#include <windows.h>
+
+filedesc ft_open_old(const_string path, const_string mode)
 {
-	S32 open_mode;
-	S32 create_mode;
+	bool readable, writeable, append;
+	S32 open_mode, create_mode;
 	filedesc fd;
 
 	if (path == NULL || mode == NULL)
-		__FTRETURN_ERR((filedesc)-1, FT_EINVPTR);
+		FT_RET_ERR((filedesc)-1, FT_EINVPTR);
 
-	if (!parse_mode(mode, &open_mode, &create_mode))
-		__FTRETURN_ERR((filedesc)-1, FT_EINVVAL);
+	if (!parse_mode(mode, &readable, &writeable, &append))
+		FT_RET_ERR((filedesc)-1, FT_EINVVAL);
+
+	open_mode = readable ? GENERIC_READ : 0;
+	if (writeable)
+		open_mode |= GENERIC_WRITE;
+	if (append)
+		open_mode = FILE_APPEND_DATA;
+	create_mode = (writeable || append) ? OPEN_ALWAYS : OPEN_EXISTING;
 
 	if ((fd = CreateFileA(path, open_mode,
-						 0,						// Share mode (0 for exclusive access)
-						 NULL,					// Security attributes (NULL for default)
-						 create_mode,			// Creation disposition (open existing file)
-						 FILE_ATTRIBUTE_NORMAL, // File attributes (normal file)
-						 NULL					// Template file (NULL for none)
-						 )) == INVALID_HANDLE_VALUE)
-		__FTRETURN_ERR((filedesc)-1, FT_ESYSCALL);
-	__FTRETURN_OK(fd);
+						  0,					 // Share mode (0 for exclusive access)
+						  NULL,					 // Security attributes (NULL for default)
+						  create_mode,			 // Creation disposition (open existing file)
+						  FILE_ATTRIBUTE_NORMAL, // File attributes (normal file)
+						  NULL					 // Template file (NULL for none)
+						  )) == INVALID_HANDLE_VALUE)
+		FT_RET_ERR((filedesc)-1, FT_ESYSCALL);
+	FT_RET_OK(fd);
 }
 
 #else
@@ -78,82 +88,82 @@ filedesc ft_open(const_string path, const_string mode)
 #endif
 #include <sys/stat.h>
 
-static bool parse_mode(const_string mode, S32 *open_mode, S32 *create_mode)
-{
-	switch (*mode++)
-	{
-	case 'r':
-		*open_mode = O_RDONLY;
-		*create_mode = 0;
-		break;
-	case 'w':
-		*open_mode = O_WRONLY;
-		*create_mode = O_CREAT | O_TRUNC;
-		break;
-	case 'a':
-		*open_mode = O_WRONLY;
-		*create_mode = O_CREAT | O_APPEND;
-		break;
-	default:
-		return FALSE;
-	}
-
-	if (*mode == '+')
-		*open_mode = O_RDWR;
-
-	return TRUE;
-}
-
 filedesc ft_open(const_string path, const_string mode)
 {
-	S32 open_mode;
-	S32 create_mode;
+	bool readable, writeable, append;
+	S32 open_mode, create_mode;
 	filedesc fd;
 
 	if (path == NULL || mode == NULL)
-		__FTRETURN_ERR((filedesc)-1, FT_EINVPTR);
+		FT_RET_ERR((filedesc)-1, FT_EINVPTR);
 
-	if (!parse_mode(mode, &open_mode, &create_mode))
-		__FTRETURN_ERR((filedesc)-1, FT_EINVVAL);
+	if (!parse_mode(mode, &readable, &writeable, &append))
+		FT_RET_ERR((filedesc)-1, FT_EINVVAL);
+
+	if (readable && writeable)
+		open_mode = O_RDWR;
+	else
+	{
+		if (readable)
+			open_mode = O_RDONLY;
+		else if (writeable)
+			open_mode = O_WRONLY;
+	}
+
+	create_mode = append ? O_CREAT | O_APPEND : (writeable ? O_CREAT | O_TRUNC : 0);
 
 	if ((fd = open(path, open_mode | create_mode, DEFFILEMODE)) == -1)
-		__FTRETURN_ERR((filedesc)-1, FT_ESYSCALL);
-	__FTRETURN_OK(fd);
+		FT_RET_ERR((filedesc)-1, FT_ESYSCALL);
+	FT_RET_OK(fd);
 }
 #endif
 
 t_file *ft_fopen(const_string path, const_string mode)
 {
 	filedesc fd;
+	t_file *out;
 
 	if ((fd = ft_open(path, mode)) == (filedesc)-1)
 		return NULL;
-	return ft_fcreate(fd);
+	if ((out = ft_fcreate(fd, mode)) == NULL)
+		ft_close(fd);
+	return out;
 }
 
-t_file *ft_fcreate(filedesc fd)
+t_file *ft_fcreate(filedesc fd, const_string mode)
 {
-	const U16 default_buf_size = 8192;
+	bool readable, writeable, append;
 	t_file *file;
-	string buff;
-
-	file = NULL;
-	buff = NULL;
 
 	if (UNLIKELY((file = malloc(sizeof(t_file))) == NULL))
+		goto exit_omem;
+
+	if (!parse_mode(mode, &readable, &writeable, &append))
 		goto exit_err;
-	if (UNLIKELY((buff = malloc(sizeof(char) * default_buf_size)) == NULL))
-		goto exit_err;
+
+	file->readable = readable;
+	file->writeable = writeable;
 
 	file->fd = fd;
-	file->buff_size = default_buf_size;
-	file->buff = buff;
 	file->buff_cnt = 0;
-	file->buffered = FALSE;
-	__FTRETURN_OK(file);
+	file->buff_size = 0;
+	file->buff = NULL;
+	file->buffering_mode = FT_IO_UNBUFFERED;
 
-exit_err:
-	free(buff);
+	errno = 0;
+	if (isatty(file->fd))
+		ft_fsetbuf(file, NULL, 0, FT_IO_LINE_BUFFERED);
+	else
+		ft_fsetbuf(file, NULL, 0, FT_IO_FULL_BUFFERED);
+	if (errno == ENOTTY || errno == EINVAL)
+		errno = 0;
+
+	FT_RET_OK(file);
+
+exit_omem:
 	free(file);
-	__FTRETURN_ERR(NULL, FT_EOMEM);
+	FT_RET_ERR(NULL, FT_EOMEM);
+exit_err:
+	free(file);
+	FT_RET_ERR(NULL, ft_errno);
 }

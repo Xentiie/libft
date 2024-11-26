@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 01:30:07 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/19 04:01:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/25 17:38:47 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,21 @@ typedef struct s_long_opt
 	S32 flag_value;
 } t_long_opt;
 
+/*
+Parses option like GNU getopt.
+Returns the char associated with the short opt found, or the `flag_value` value in the long opt found,
+or if `flag_ptr` is not NULL, returns 0 and sets `flag_value` in the address pointer by `flag_ptr`
+Returns a value <0 when done:
+-1 if done
+-2 if done because of '--'
+-3 if an error has occured
+### On error
+Sets ft_errno and returns -2. `ft_optchr` should not be set to -2
+### ft_errno
+- FT_EOMEM if out of memory
+*/
 S32 ft_getopt(S32 argc, const_string *argv, const_string optstr);
 S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, const t_long_opt *longopts, S32 *longopts_index);
+S32 ft_getopt_long_only(S32 argc, const_string *argv, const t_long_opt *longopts, S32 *longopts_index);
 
 #endif

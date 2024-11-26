@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 19:11:27 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 21:49:16 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:53 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,5 @@ U64	ft_lstsize(t_list *lst)
 		size++;
 		current = current->next;
 	}
-	__FTRETURN_OK(size);
+	FT_RET_OK(size);
 }

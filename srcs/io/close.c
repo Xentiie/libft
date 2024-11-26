@@ -6,12 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:47:39 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/18 05:06:13 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 20:47:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "file.h"
-#include "libft/io.h"
+#include "file_private.h"
 
 #include <stdlib.h>
 
@@ -20,12 +19,12 @@
 void	ft_close(filedesc fd)
 {
 	if (fd == ((filedesc)-1))
-		__FTRETURN_ERR(, FT_EINVVAL);
+		FT_RET_ERR(, FT_EINVVAL);
 
 	if (!CloseHandle(((HANDLE)fd)))
-		__FTRETURN_ERR(, FT_ESYSCALL);
+		FT_RET_ERR(, FT_ESYSCALL);
 
-	__FTRETURN_OK();
+	FT_RET_OK();
 }
 
 /* socket close */
@@ -39,7 +38,7 @@ void	ft_sclose(filedesc fd)
 void	ft_close(filedesc fd)
 {
 	close(fd);
-	__FTRETURN_OK();
+	FT_RET_OK();
 }
 
 void	ft_sclose(filedesc fd)
@@ -60,6 +59,9 @@ void ft_fdestroy(t_file *file)
 
 void ft_fclose(t_file *file)
 {
-	ft_close(file->fd);
+	filedesc fd;
+
+	fd = file->fd;
 	ft_fdestroy(file);
+	ft_close(fd);
 }

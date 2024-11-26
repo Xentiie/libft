@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 20:13:02 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 21:48:54 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 void	ft_lstiter(t_list *lst, void (*f)(void *))
 {
 	if (UNLIKELY(lst == NULL || f == NULL))
-		__FTRETURN_ERR(, FT_EINVPTR);
+		FT_RET_ERR(, FT_EINVPTR);
 
 	while (lst)
 	{
@@ -24,5 +24,5 @@ void	ft_lstiter(t_list *lst, void (*f)(void *))
 		lst = lst->next;
 	}
 
-	__FTRETURN_OK();
+	FT_RET_OK();
 }

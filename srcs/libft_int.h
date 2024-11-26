@@ -6,23 +6,24 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:57:38 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/19 04:02:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_INT_H)
 # define LIBFT_INT_H
 
-# include "../libft/libft.h"
-# include "../libft/std.h"
+# include "libft/libft.h"
+# include "libft/std.h"
+# include "libft/debug.h"
 
 /*Private usage*/
-# define __FTRETURN_OK(ret) do { ft_errno=FT_OK; return ret; } while (0)
+# define FT_RET_OK(ret) do { ft_errno=FT_OK; return ret; } while (0)
 
 # if defined(DEBUG)
-#  define __FTRETURN_ERR(ret, err) do { ft_errno = err ; ft_debug_break(); return ret; } while (0)
+#  define FT_RET_ERR(ret, err) do { ft_errno = err ; ft_debug_break(); return ret; } while (0)
 # else
-#  define __FTRETURN_ERR(ret, err) do { ft_errno = err ; return ret; } while (0)
+#  define FT_RET_ERR(ret, err) do { ft_errno = err ; return ret; } while (0)
 # endif
 
 # if !defined(LIBFT_AVOID_ALLOCA)
@@ -31,8 +32,8 @@
 #  else
 #   include <alloca.h>
 #  endif
-#  define a_malloc(...) alloca(__VA_ARGS__)
-#  define a_free(...)
+#  define ft_alloca(...) alloca(__VA_ARGS__)
+#  define ft_afree(...)
 # endif
 
 # define MAX(x, y) (x > y ? x : y)

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 02:05:10 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 21:49:13 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ bool ft_lstremoveif(t_list **lst, void (*del)(void *),
 	bool found = FALSE;
 
 	if (lst == NULL || f == NULL)
-		__FTRETURN_ERR(FALSE, FT_EINVPTR);
+		FT_RET_ERR(FALSE, FT_EINVPTR);
 
 	curr = *lst;
 	while (curr && curr->next)
@@ -33,7 +33,7 @@ bool ft_lstremoveif(t_list **lst, void (*del)(void *),
 			curr->next = curr->next->next;
 			ft_lstdelone(tmp, del);
 			if (ft_errno != FT_OK)
-				__FTRETURN_ERR(FALSE, ft_errno);
+				FT_RET_ERR(FALSE, ft_errno);
 			found = TRUE;
 		}
 		curr = curr->next;
@@ -46,11 +46,11 @@ bool ft_lstremoveif(t_list **lst, void (*del)(void *),
 		*lst = curr->next;
 		ft_lstdelone(curr, del);
 		if (ft_errno != FT_OK)
-			__FTRETURN_ERR(FALSE, ft_errno);
+			FT_RET_ERR(FALSE, ft_errno);
 		found = TRUE;
 	}
 
-	__FTRETURN_OK(found);
+	FT_RET_OK(found);
 }
 */
 
@@ -66,7 +66,7 @@ bool ft_lstremoveif(t_list **lst, void (*del)(void *),
 		*lst = (*lst)->next;
 		ft_lstdelone(tmp, del);
 		if (UNLIKELY(ft_errno != FT_OK))
-			__FTRETURN_ERR(FALSE, ft_errno);
+			FT_RET_ERR(FALSE, ft_errno);
 		found = TRUE;
 	}
 
@@ -79,12 +79,12 @@ bool ft_lstremoveif(t_list **lst, void (*del)(void *),
 			curr->next = tmp->next;
 			ft_lstdelone(tmp, del);
 			if (UNLIKELY(ft_errno != FT_OK))
-				__FTRETURN_ERR(FALSE, ft_errno);
+				FT_RET_ERR(FALSE, ft_errno);
 			found = TRUE;
 		}
 		if (curr->next)
 			curr = curr->next;
 	}
 
-	__FTRETURN_OK(found);
+	FT_RET_OK(found);
 }

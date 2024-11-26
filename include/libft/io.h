@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/19 04:01:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 07:37:30 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,31 @@
 #include <sys/types.h>
 #include <stdarg.h>
 
+#define FT_IO_UNBUFFERED 0
+#define FT_IO_LINE_BUFFERED 1
+#define FT_IO_FULL_BUFFERED 2
+
+#if defined(_FT_FILE_DEF)
+
+typedef struct s_file
+{
+	U8 buffering_mode;
+	U8 *buff;
+	U64 buff_size;
+	U64 buff_cnt;
+	filedesc fd;
+	bool readable;
+	bool writeable;
+}	t_file;
+
+/*
+cleanup lock in lock ht, called from ft_fclose
+*/
+bool __ft_flockcleanup(t_file *fp);
+
+#endif
+
+extern U64 _ft_bufsiz;
 extern filedesc ft_stdout;
 extern filedesc ft_stdin;
 extern filedesc ft_stderr;
@@ -41,7 +66,7 @@ Sets ft_errno and returns -1.
 */
 extern filedesc ft_open(const_string path, const_string mode);
 extern t_file *ft_fopen(const_string path, const_string mode);
-extern t_file *ft_fcreate(filedesc fd);
+extern t_file *ft_fcreate(filedesc fd, const_string mode);
 
 /*
 Closes the file descriptor 'fd'
@@ -64,8 +89,9 @@ Sets ft_errno and returns -1.
 ### ft_errno
 - FT_ESYSCALL if a syscall fails
 */
-extern S64 ft_read(filedesc fd, char *buffer, U64 size);
-extern S64 ft_fread(t_file *file, char *buffer, U64 size);
+extern S64 ft_read(filedesc fd, void *buffer, U64 size);
+extern S64 ft_fread(t_file *file, void *buffer, U64 size);
+extern S64 ft_fread_unlocked(t_file *file, void *buffer, U64 size);
 
 /*
 Writes 'size' bytes from 'buffer' into file 'fd'.
@@ -74,8 +100,9 @@ Sets ft_errno and returns -1.
 ### ft_errno
 - FT_ESYSCALL if a syscall fails
 */
-extern S64 ft_write(filedesc fd, char *buffer, U64 size);
-extern S64 ft_fwrite(t_file *file, char *buffer, U64 size);
+extern S64 ft_write(filedesc fd, void *buffer, U64 size);
+extern S64 ft_fwrite(t_file *file, void *buffer, U64 size);
+extern S64 ft_fwrite_unlocked(t_file *file, void *buffer, U64 size);
 
 /*
 Flushes the internal buffer
@@ -89,7 +116,7 @@ Locks the file
 ### On error
 Returns FALSE
 ### ft_errno
-- FT_EOMEM if there was a failure allocating memory for internal data
+- FT_EOMEM if out of memory
 */
 extern bool ft_ffilelock(t_file *file);
 
@@ -99,7 +126,7 @@ Returns 0 for failure, >0 for success
 ### On error
 Returns -1
 ### ft_errno
-- FT_EOMEM if there was a failure allocating memory for internal data
+- FT_EOMEM if out of memory
 */
 extern S32 ft_ftryfilelock(t_file *file);
 
@@ -108,9 +135,23 @@ Unlocks the file
 ### On error
 Returns FALSE
 ### ft_errno
-- FT_EOMEM if there was a failure allocating memory for internal data
+- FT_EOMEM if out of memory
 */
 extern bool ft_ffileunlock(t_file *file);
+
+/*
+Changes the internal buffer.
+
+If `buf` is non NULL, sets the t_file `f` buffer to `buf`, with size `size`.
+
+If the file is not buffered, always return TRUE without doing anything
+### On error
+Returns FALSE
+### ft_errno
+- FT_EINVVAL if `buf` is non NULL and `size` is 0
+- FT_EOMEM if out of memory
+*/
+extern bool ft_fsetbuf(t_file *f, U8 *buf, U64 size, S16 bufmode);
 
 /*
 Reads the whole file.

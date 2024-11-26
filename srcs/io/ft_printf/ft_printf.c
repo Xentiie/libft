@@ -6,12 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:43:53 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/11 21:18:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/22 09:24:19 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include "../file.h"
 #include "libft/limits.h"
 
 #if defined(TEST)

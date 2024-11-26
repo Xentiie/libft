@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 19:03:18 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 22:40:00 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,14 +131,14 @@ t_huffman_node *ft_create_huffman_tree(U8 *data, U64 len, t_huffman_node ***out_
 				count++;
 
 		if (UNLIKELY((nodes = malloc(sizeof(t_huffman_node *) * count)) == NULL))
-			__FTRETURN_ERR(NULL, FT_EOMEM);
+			FT_RET_ERR(NULL, FT_EOMEM);
 #define FAIL_CLEANUP(n, err)       \
 	do                             \
 	{                              \
 		for (i = 0; i < n; i++)    \
 			free(nodes[i]);        \
 		free(nodes);               \
-		__FTRETURN_ERR(NULL, err); \
+		FT_RET_ERR(NULL, err); \
 	} while (0)
 
 		U64 j = 0;
@@ -181,7 +181,7 @@ t_huffman_node *ft_create_huffman_tree(U8 *data, U64 len, t_huffman_node ***out_
 	{                              \
 		ft_lstclear(&lst, free);   \
 		free(nodes);               \
-		__FTRETURN_ERR(NULL, err); \
+		FT_RET_ERR(NULL, err); \
 	} while (0)
 	while (lst && lst->next)
 	{
@@ -239,8 +239,8 @@ t_huffman_node *ft_get_huffman_node(U8 byte, t_huffman_node **nodes, U64 count)
 	t_huffman_node *tmp2 = &tmp;
 	t_huffman_node **result = ft_bsearch(nodes, sizeof(t_huffman_node *), count, smallest_byte2, &tmp2);
 	if (!result)
-		__FTRETURN_ERR(NULL, FT_ENOENT);
-	__FTRETURN_OK(*result);
+		FT_RET_ERR(NULL, FT_ENOENT);
+	FT_RET_OK(*result);
 }
 
 void ft_free_huffman_tree(t_huffman_node *tree)

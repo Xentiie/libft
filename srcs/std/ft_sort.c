@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 16:23:40 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 22:32:22 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 static S64 partition(void *a, S64 low, S64 high, U64 elem_size, S32 (*key)(void *, void *), bool *ok)
 {
-	void *tmp = a_malloc(elem_size);
+	void *tmp = ft_alloca(elem_size);
 	if (!tmp)
 	{
 		*ok = FALSE;
@@ -43,7 +43,7 @@ static S64 partition(void *a, S64 low, S64 high, U64 elem_size, S32 (*key)(void 
 	ft_memcpy(tmp, INDEX(high), elem_size);
 	ft_memcpy(INDEX(high), INDEX(i), elem_size);
 	ft_memcpy(INDEX(i), tmp, elem_size);
-	a_free(tmp);
+	ft_afree(tmp);
 	return i;
 }
 
@@ -66,8 +66,8 @@ U8 quickSort(void *a, U64 elem_size, S64 low, S64 high, S32 (*key)(void *, void 
 void ft_sort(void *a, U64 elem_size, U64 array_size, S32 (*key)(void *, void *))
 {
 	if (UNLIKELY(!quickSort(a, elem_size, 0, array_size - 1, key)))
-		__FTRETURN_ERR(, FT_EOMEM);
-	__FTRETURN_OK();
+		FT_RET_ERR(, FT_EOMEM);
+	FT_RET_OK();
 }
 
 void ft_bubble_sort(void *a, U64 elem_size, U64 array_size, S32 (*key)(void *, void *))

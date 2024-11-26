@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 18:30:13 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 22:42:24 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ bool	ft_lstremove2(t_list **lst, void *content, void (*del)(void *))
 	t_list	*curr;
 
 	if (UNLIKELY(lst == NULL))
-		__FTRETURN_ERR(FALSE, FT_EINVPTR);
+		FT_RET_ERR(FALSE, FT_EINVPTR);
 
 	curr = *lst;
 	prev = NULL;
@@ -41,14 +41,14 @@ bool	ft_lstremove2(t_list **lst, void *content, void (*del)(void *))
 
 			ft_lstdelone(curr, del);
 			if (ft_errno != FT_OK)
-				__FTRETURN_ERR(FALSE, ft_errno);
+				FT_RET_ERR(FALSE, ft_errno);
 
-			__FTRETURN_OK(TRUE);
+			FT_RET_OK(TRUE);
 		}
 		prev = curr;
 		curr = curr->next;
 	}
-	__FTRETURN_OK(FALSE);
+	FT_RET_OK(FALSE);
 }
 
 bool	ft_lstremove(t_list **lst, t_list *elem, void (*del)(void *))
@@ -57,7 +57,7 @@ bool	ft_lstremove(t_list **lst, t_list *elem, void (*del)(void *))
 	t_list	*curr;
 
 	if (UNLIKELY(lst == NULL || elem == NULL))
-		__FTRETURN_ERR(FALSE, FT_EINVPTR);
+		FT_RET_ERR(FALSE, FT_EINVPTR);
 
 	curr = *lst;
 	prev = NULL;
@@ -80,14 +80,14 @@ bool	ft_lstremove(t_list **lst, t_list *elem, void (*del)(void *))
 
 			ft_lstdelone(curr, del);
 			if (ft_errno != FT_OK)
-				__FTRETURN_ERR(FALSE, ft_errno);
+				FT_RET_ERR(FALSE, ft_errno);
 
-			__FTRETURN_OK(TRUE);
+			FT_RET_OK(TRUE);
 		}
 		prev = curr;
 		curr = curr->next;
 	}
-	__FTRETURN_OK(FALSE);
+	FT_RET_OK(FALSE);
 }
 
 
@@ -97,7 +97,7 @@ bool	ft_lst_softremove(t_list **lst, t_list *elem)
 	t_list	*curr;
 
 	if (UNLIKELY(lst == NULL || elem == NULL))
-		__FTRETURN_ERR(FALSE, FT_EINVPTR);
+		FT_RET_ERR(FALSE, FT_EINVPTR);
 
 	curr = *lst;
 	prev = NULL;
@@ -118,10 +118,10 @@ bool	ft_lst_softremove(t_list **lst, t_list *elem)
 					prev->next->prev = prev;
 			}
 
-			__FTRETURN_OK(TRUE);
+			FT_RET_OK(TRUE);
 		}
 		prev = curr;
 		curr = curr->next;
 	}
-	__FTRETURN_OK(FALSE);
+	FT_RET_OK(FALSE);
 }

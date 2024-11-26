@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 11:07:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:08:38 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:19:55 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ U32 adler32(const U8 *data, size_t len)
 
 static bool code_length_to_code_table(U16 *code_lengths, U64 code_lengths_len, struct s_code *code_table_out, U16 max_code_length, enum code_length_type type)
 {
-	U16 *next_code = a_malloc(sizeof(U16) * max_code_length + sizeof(U8) * max_code_length);
+	U16 *next_code = ft_alloca(sizeof(U16) * max_code_length + sizeof(U8) * max_code_length);
 	if (next_code == NULL)
 		return FALSE;
 	ft_bzero(next_code, sizeof(U16) * max_code_length + sizeof(U8) * max_code_length);
@@ -235,7 +235,7 @@ static bool code_length_to_code_table(U16 *code_lengths, U64 code_lengths_len, s
 			next_code[length]++;
 		}
 	}
-	a_free(next_code);
+	ft_afree(next_code);
 
 	return TRUE;
 }

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 14:08:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/11 21:18:54 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ S64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data
 	S32 n, n2;
 
 	if (UNLIKELY(!build_arg_table(fmt, vaargs, &args)))
-		__FTRETURN_ERR(-1, FT_EOMEM);
+		FT_RET_ERR(-1, FT_EOMEM);
 	nextarg = 0;
 	cnt = 0;
 	while (*fmt)

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:45:20 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/19 04:02:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:13:36 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@
 #  define FT_F32_QNAN FT_F32_PQNAN
 # endif
 
-# if defined(__has_builtin) && __has_builtin(__builtin_nans)
+# if FT_HAS_BUILTIN(__builtin_nans)
 #  define FT_F32_PSNAN __builtin_nansf("")				// 0 11111111 0nnnnnnnnnnnnnnnnnnnnnn
 #  define FT_F32_NSNAN -__builtin_nansf("")				// 1 11111111 0nnnnnnnnnnnnnnnnnnnnnn
 #  define FT_F32_SNAN FT_F32_PSNAN
@@ -78,13 +78,13 @@
 # define FT_F32_ISPINF(flt) (FT_F32_U32(flt) == FT_F32_U32(FT_F32_PINFINITY))
 # define FT_F32_ISNINF(flt) (FT_F32_U32(flt) == FT_F32_U32(FT_F32_NINFINITY))
 
-# if defined(__has_builtin) && __has_builtin(__builtin_isnan)
+# if FT_HAS_BUILTIN(__builtin_isnan)
 #  define FT_F32_ISNAN(flt) (__builtin_isnan(flt))
 # else
 #  define FT_F32_ISNAN(flt) (((FT_F32_U32(flt) & 0x7F800000) == 0x7F800000) && ((FT_F32_U32(flt) & 0x007FFFFF) != 0))
 # endif
 
-# if defined(__has_builtin) && __has_builtin(__builtin_issignaling)
+# if FT_HAS_BUILTIN(__builtin_issignaling)
 #  define FT_F32_ISSNAN(flt) (FT_F32_ISNAN(flt) && __builtin_issignaling(flt))
 #  define FT_F32_ISQNAN(flt) (FT_F32_ISNAN(flt) && !__builtin_issignaling(flt))
 # else

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 17:27:54 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 21:57:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 00:48:49 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void ft_error_errno2(S32 retcode, string fmt, ...)
 {
 	va_list args;
 
-	ft_fprintf(ft_fstderr, "%s: (%d)%s: ", ft_argv[0], ft_errno, ft_strerror2(ft_errno));
+	ft_fprintf(ft_fstderr, "%s: (%d)%s: ", ft_argv[0], ft_errno, ft_strerror2());
 	va_start(args, fmt);
 	ft_vdprintf(ft_stderr, fmt, args);
 	va_end(args);

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 00:01:59 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 22:43:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ string ft_ftoa(float n)
 		return ft_strdup("#QNAN");
 
 	if (UNLIKELY((out = malloc(sizeof(char) * (AFTERPOINT * 2 + 3))) == NULL))
-		__FTRETURN_ERR(NULL, FT_EOMEM);
+		FT_RET_ERR(NULL, FT_EOMEM);
 
 	ft_bzero(out, sizeof(char) * (AFTERPOINT * 2 + 3));
 	if (n < 0)
@@ -108,7 +108,7 @@ string ft_ftoa(float n)
 		fpart = fpart * pow(10, AFTERPOINT);
 		int_to_str((int)fpart, out + i + 1, AFTERPOINT, neg, NULL);
 	}
-	__FTRETURN_OK(out);
+	FT_RET_OK(out);
 }
 
 string ft_ftoa_l(float n, U64 *len)
@@ -128,7 +128,7 @@ string ft_ftoa_l(float n, U64 *len)
 		return ft_strdup("#QNAN");
 
 	if (UNLIKELY((out = malloc(sizeof(char) * (AFTERPOINT * 2 + 3))) == NULL))
-		__FTRETURN_ERR(NULL, FT_EOMEM);
+		FT_RET_ERR(NULL, FT_EOMEM);
 
 	ft_bzero(out, sizeof(char) * (AFTERPOINT * 2 + 3));
 	if (n < 0)
@@ -154,7 +154,7 @@ string ft_ftoa_l(float n, U64 *len)
 		fpart = fpart * pow(10, AFTERPOINT);
 		int_to_str((int)fpart, out + i + 1, AFTERPOINT, neg, len);
 	}
-	__FTRETURN_OK(out);
+	FT_RET_OK(out);
 }
 
 #if defined(TEST)

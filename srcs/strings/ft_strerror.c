@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 14:52:06 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 22:34:56 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,19 +49,22 @@ static struct s_error_entry entries[] = {
 const_string ft_strerror(S32 err)
 {
 	if (err < 0)
-		__FTRETURN_ERR((NULL), FT_ERANGE);
+		FT_RET_ERR((NULL), FT_ERANGE);
 	if (err > ENTRIES_LEN)
-		__FTRETURN_ERR((NULL), FT_ENOENT);
+		FT_RET_ERR((NULL), FT_ENOENT);
 	return entries[err].desc;
 }
 
 #if defined(FT_OS_LINUX)
-const_string ft_strerror2(S32 err)
+const_string ft_strerror2()
 {
+	S32 err;
+
+	err = ft_errno;
 	if (err < 0)
-		__FTRETURN_ERR((NULL), FT_ERANGE);
+		FT_RET_ERR((NULL), FT_ERANGE);
 	if (err > ENTRIES_LEN)
-		__FTRETURN_ERR((NULL), FT_ENOENT);
+		FT_RET_ERR((NULL), FT_ENOENT);
 
 	if ((err == FT_OK && errno != 0) || err == FT_ESYSCALL)
 		return strerror(errno);
@@ -69,12 +72,15 @@ const_string ft_strerror2(S32 err)
 		return entries[err].desc;
 }
 #elif defined(FT_OS_WIN)
-const_string ft_strerror2(S32 err)
+const_string ft_strerror2()
 {
+	S32 err;
+
+	err = ft_errno;
 	if (err < 0)
-		__FTRETURN_ERR((NULL), FT_ERANGE);
+		FT_RET_ERR((NULL), FT_ERANGE);
 	if (err > ENTRIES_LEN)
-		__FTRETURN_ERR((NULL), FT_ENOENT);
+		FT_RET_ERR((NULL), FT_ENOENT);
 
 	if (err == FT_ESYSCALL)
 	{
@@ -114,16 +120,16 @@ const_string ft_strerror2(S32 err)
 const_string ft_errnotostr(S32 err)
 {
 	if (err < 0)
-		__FTRETURN_ERR((NULL), FT_ERANGE);
+		FT_RET_ERR((NULL), FT_ERANGE);
 	if (err > ENTRIES_LEN)
-		__FTRETURN_ERR((NULL), FT_ENOENT);
+		FT_RET_ERR((NULL), FT_ENOENT);
 	return entries[err].name;
 }
 
 S32 ft_strtoerrno(const_string name)
 {
 	if (name == NULL)
-		__FTRETURN_ERR((-1), FT_EINVPTR);
+		FT_RET_ERR((-1), FT_EINVPTR);
 	S32 i = 0;
 	while (i < ENTRIES_LEN)
 	{
@@ -132,6 +138,6 @@ S32 ft_strtoerrno(const_string name)
 		i++;
 	}
 	if (i == ENTRIES_LEN)
-		__FTRETURN_ERR((-1), FT_ENOENT);
-	__FTRETURN_OK(i);
+		FT_RET_ERR((-1), FT_ENOENT);
+	FT_RET_OK(i);
 }

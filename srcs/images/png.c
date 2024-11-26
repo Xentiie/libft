@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:05:11 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,7 +247,7 @@ next_chunk:
 		ASSERT(TRUE, chunk_n == 1, "IDHR chunk found where it shouldn't be");
 
 		if ((img = malloc(sizeof(t_png_img))) == NULL)
-			__FTRETURN_ERR(NULL, FT_EOMEM);
+			FT_RET_ERR(NULL, FT_EOMEM);
 
 		img->width = png_read_u32(&buffer);
 		img->height = png_read_u32(&buffer);
@@ -296,7 +296,7 @@ next_chunk:
 
 		data_size = sizeof(U8) * ((img->width * img->height * img->bpp) + (img->width * img->bpp + 1));
 		if ((img->data = malloc(data_size)) == NULL)
-			__FTRETURN_ERR(NULL, FT_EOMEM);
+			FT_RET_ERR(NULL, FT_EOMEM);
 
 		goto next_chunk;
 
@@ -309,7 +309,7 @@ next_chunk:
 		ASSERT(TRUE, palette_size <= pow(2, img->bit_depth), "Too much color in palette");
 
 		if ((palette = malloc(sizeof(U8) * chunk_length)) != NULL)
-			__FTRETURN_ERR(NULL, FT_EOMEM);
+			FT_RET_ERR(NULL, FT_EOMEM);
 		ft_memcpy(palette, buffer, sizeof(U8) * chunk_length);
 		goto next_chunk;
 
@@ -323,7 +323,7 @@ next_chunk:
 			chunk_length -= 2;
 
 			if (!UNLIKELY(ft_inflate_init(&stream)))
-				__FTRETURN_ERR(NULL, FT_EOMEM);
+				FT_RET_ERR(NULL, FT_EOMEM);
 
 			stream.out = img->data;
 			stream.out_size = data_size;
@@ -444,7 +444,7 @@ next_chunk:
 
 		// TODO: peut etre quand meme verif la taille du keyword (entre 1 et 79 bytes)
 		if ((txt = malloc(sizeof(char) * (chunk_length + 1))) == NULL)
-			__FTRETURN_ERR(NULL, FT_EOMEM);
+			FT_RET_ERR(NULL, FT_EOMEM);
 		ft_memcpy(txt, buffer, chunk_length);
 		txt[chunk_length] = '\0';
 		ft_lstadd_front(&img->text_data, ft_lstnew(txt));
@@ -468,7 +468,7 @@ next_chunk:
 		stream.in = buffer;
 		stream.out_size = 32;
 		if ((stream.out = malloc(sizeof(char) * stream.out_size)) == NULL)
-			__FTRETURN_ERR(NULL, FT_EOMEM);
+			FT_RET_ERR(NULL, FT_EOMEM);
 
 		ret = FT_INFLATE_RET_NOT_DONE;
 		while ((ret = ft_inflate(&stream)) != FT_INFLATE_RET_DONE)
@@ -477,7 +477,7 @@ next_chunk:
 			{
 				stream.out_size *= 2;
 				if ((txt = malloc(sizeof(char) * stream.out_size)) == NULL)
-					__FTRETURN_ERR(NULL, FT_EOMEM);
+					FT_RET_ERR(NULL, FT_EOMEM);
 				ft_memcpy(txt, stream.out, stream.out_used);
 				free(stream.out);
 				stream.out = (U8 *)txt;
@@ -487,7 +487,7 @@ next_chunk:
 		}
 
 		if ((txt = malloc(sizeof(char) * (keyword_length + 1 + stream.out_used + 1))) == NULL)
-			__FTRETURN_ERR(NULL, FT_EOMEM);
+			FT_RET_ERR(NULL, FT_EOMEM);
 		ft_memcpy(txt, keyword, keyword_length + 1);
 		ft_memcpy(txt + keyword_length + 1, stream.out, stream.out_used);
 		txt[keyword_length + 1 + stream.out_used] = '\0';

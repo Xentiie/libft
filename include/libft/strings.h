@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:42:00 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/19 04:02:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 00:47:06 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,15 +76,15 @@ Sets ft_errno and returns NULL.
 const_string		ft_strerror(S32 err);
 
 /*
-Returns the description of the error number 'err'.
-If `err == FT_ESYSCALL`, returns `strerror(errno)`
+Returns the description of the error number 'ft_errno'.
+If `ft_errno == FT_ESYSCALL`, returns `strerror(errno)`
 ### On error
 Sets ft_errno and returns NULL.
 ### ft_errno
 - FT_ERANGE if 'err' is < 0
-- FT_ENOENT if no error associated with 'err' was found
+- FT_ENOENT if no error associated with 'ft_errno' was found
 */
-const_string 		ft_strerror2(S32 err);
+const_string 		ft_strerror2();
 
 /*
 Append src behind dest. Dest must have enough space, including \0

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 19:32:58 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 22:41:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void ft_lstadd_back_chained(t_list **lst, t_list *new)
 	t_list			*current_last;
 
 	if (UNLIKELY(lst == NULL))
-		__FTRETURN_ERR(, FT_EINVPTR);
+		FT_RET_ERR(, FT_EINVPTR);
 	if (*lst == NULL)
 	{
 		*lst = new;
@@ -52,7 +52,7 @@ void ft_lstadd_back_chained(t_list **lst, t_list *new)
 		last = new;
 	}
 	current_list = *lst;
-	__FTRETURN_OK();
+	FT_RET_OK();
 }
 
 void ft_lstadd_back(t_list **lst, t_list *new)
@@ -60,7 +60,7 @@ void ft_lstadd_back(t_list **lst, t_list *new)
 	t_list *current_last;
 
 	if (UNLIKELY(lst == NULL))
-		__FTRETURN_ERR(, FT_EINVPTR);
+		FT_RET_ERR(, FT_EINVPTR);
 	if (*lst == NULL)
 		*lst = new;
 	else
@@ -69,5 +69,5 @@ void ft_lstadd_back(t_list **lst, t_list *new)
 		current_last->next = new;
 		new->prev = current_last;
 	}
-	__FTRETURN_OK();
+	FT_RET_OK();
 }

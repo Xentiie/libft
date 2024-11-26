@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:49:04 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/18 05:00:49 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 07:08:15 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,15 @@ S32 ft_argc = -1;
 string *ft_argv = NULL;
 string *ft_env = NULL;
 
+#if defined(_FT_ERRNO_LOCATION)
 S32 *__ft_errno_location()
 {
 	static __thread S32 __ft_errno;
 	return &(__ft_errno);
 }
+#else
+__thread S32 ft_errno;
+#endif
 
 filedesc ft_stdin;
 filedesc ft_stdout;
@@ -65,14 +69,10 @@ void __init_libft(S32 argc, string *argv, string *env)
 	ft_stderr = (filedesc)2;
 #endif
 
-	ft_fstdin = ft_fcreate(ft_stdin);
-	if (ft_fstdin == NULL)
-		exit(42);
-	ft_fstdout = ft_fcreate(ft_stdout);
-	if (ft_fstdout == NULL)
-		exit(42);
-	ft_fstderr = ft_fcreate(ft_stderr);
-	if (ft_fstderr == NULL)
+	if (UNLIKELY((ft_fstdin = ft_fcreate(ft_stdin, "r")) == NULL) ||
+		UNLIKELY((ft_fstdout = ft_fcreate(ft_stdout, "w")) == NULL) ||
+		UNLIKELY((ft_fstderr = ft_fcreate(ft_stderr, "w")) == NULL)
+		)
 		exit(42);
 }
 

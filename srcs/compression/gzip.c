@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 22:00:12 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:10:43 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ U64 ft_gzip_write_header(U8 *out, U64 out_len, t_gzip_header *header)
 #define CHK_SIZE(x)                                   \
 	{                                                 \
 		if (UNLIKELY(out_len < x))                    \
-			__FTRETURN_ERR(sv - out_len, FT_EOSPACE); \
+			FT_RET_ERR(sv - out_len, FT_EOSPACE); \
 	}
 
 	const U8 magic[2] = {0x1f, 0x8b};
@@ -208,7 +208,7 @@ U64 ft_gzip_write_header(U8 *out, U64 out_len, t_gzip_header *header)
 		/* fall through */
 	}
 
-	__FTRETURN_OK(sv - out_len);
+	FT_RET_OK(sv - out_len);
 }
 
 U64 ft_gzip_write_footer(U8 *out, U32 crc, U32 size)
@@ -231,7 +231,7 @@ U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_
 #define CHK_SIZE(x)                                    \
 	{                                                  \
 		if (UNLIKELY(data_len < x))                    \
-			__FTRETURN_ERR(sv - data_len, FT_EOSPACE); \
+			FT_RET_ERR(sv - data_len, FT_EOSPACE); \
 	}
 
 	U64 sv = data_len;
@@ -242,13 +242,13 @@ U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_
 
 		CHK_SIZE(2);
 		if (*data != 0x1f || *(data + 1) != 0x8b)
-			__FTRETURN_ERR(sv - data_len, FT_EINVOP); // ERROR: magic bytes
+			FT_RET_ERR(sv - data_len, FT_EINVOP); // ERROR: magic bytes
 		ADVANCE(2);
 		/* fall through */
 	case -1:
 		CHK_SIZE(1);
 		if (*data != 0x8)
-			__FTRETURN_ERR(sv - data_len, FT_EINVOP); // ERROR: compression method
+			FT_RET_ERR(sv - data_len, FT_EINVOP); // ERROR: compression method
 		ADVANCE(1);
 		/* fall through */
 	case -2:
@@ -270,7 +270,7 @@ U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_
 		CHK_SIZE(1);
 		header->extra_flags = *data;
 		if ((read_flags & FT_GZIP_READ_FLAG_STRICT) && UNLIKELY(header->extra_flags != FT_GZIP_XFLAG_NONE || header->extra_flags != FT_GZIP_XFLAG_SLOW || header->extra_flags != FT_GZIP_XFLAG_FAST))
-			__FTRETURN_ERR(sv - data_len, FT_EINVOP);
+			FT_RET_ERR(sv - data_len, FT_EINVOP);
 		ADVANCE(1);
 		/* fall through */
 	case -5:
@@ -278,7 +278,7 @@ U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_
 		header->os = *data;
 		if ((read_flags & FT_GZIP_READ_FLAG_STRICT) && UNLIKELY(!(
 														   (header->os >= 0 && header->os <= 13) || (header->os == 255))))
-			__FTRETURN_ERR(sv - data_len, FT_EINVOP);
+			FT_RET_ERR(sv - data_len, FT_EINVOP);
 		ADVANCE(1);
 		/* fall through */
 	case -6:
@@ -297,7 +297,7 @@ U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_
 			CHK_SIZE(header->extra_data_len);
 			header->extra_data = ft_memdup(data, header->extra_data_len);
 			if (header->extra_data == NULL)
-				__FTRETURN_ERR(sv - data_len, FT_EOMEM);
+				FT_RET_ERR(sv - data_len, FT_EOMEM);
 			data += header->extra_data_len;
 			data_len -= header->extra_data_len;
 		}
@@ -308,12 +308,12 @@ U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_
 		while (i < data_len && data[i] != '\0')
 			i++;
 		if (data[i] != '\0')
-			__FTRETURN_ERR(sv - data_len, FT_EOSPACE);
+			FT_RET_ERR(sv - data_len, FT_EOSPACE);
 		if (header->filename)
 		{
 			header->filename = ft_strdup((const_string)data);
 			if (header->filename == NULL)
-				__FTRETURN_ERR(sv - data_len, FT_EOMEM);
+				FT_RET_ERR(sv - data_len, FT_EOMEM);
 		}
 		data += i + 1;
 		data_len -= i + 1;
@@ -327,10 +327,10 @@ U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_
 			while (i < data_len && data[i] != '\0')
 				i++;
 			if (data[i] != '\0')
-				__FTRETURN_ERR(sv - data_len, FT_EOSPACE);
+				FT_RET_ERR(sv - data_len, FT_EOSPACE);
 			header->comment = ft_strdup((const_string)data);
 			if (header->comment == NULL)
-				__FTRETURN_ERR(sv - data_len, FT_EOMEM);
+				FT_RET_ERR(sv - data_len, FT_EOMEM);
 			data += i + 1;
 			data_len -= i + 1;
 		}
@@ -343,7 +343,7 @@ U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_
 			U16 crc = ft_gzip_header_crc16(header);
 			U16 crc2 = *(U16 *)data;
 			if (crc != crc2)
-				__FTRETURN_ERR(sv - data_len, FT_EINVOP);
+				FT_RET_ERR(sv - data_len, FT_EINVOP);
 			data += 2;
 			data_len -= 2;
 		}
@@ -351,7 +351,7 @@ U64 ft_gzip_read_header(U8 *data, U64 data_len, t_gzip_header *header, S32 read_
 		/* fall through */
 	}
 
-	__FTRETURN_OK(sv - data_len);
+	FT_RET_OK(sv - data_len);
 }
 
 U64 ft_gzip_read_footer(U8 *data, U32 *crc, U32 *size)

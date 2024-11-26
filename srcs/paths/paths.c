@@ -6,12 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 05:54:01 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 21:55:33 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "forbidden_chars.h"
 #include "libft_int.h"
+#include "libft/paths.h"
 #include "libft/strings.h"
 #include "libft/io.h"
 
@@ -19,8 +20,11 @@
 
 string ft_path_filename(const_string path)
 {
-	const_string sv = path;
-	U64 l = ft_strlen(path);
+	const_string sv;
+	U64 l;
+
+	sv = path;
+	l = ft_strlen(path);
 	path = &path[l - 1];
 
 	while (path > (sv - 1) && *(path - 1) != '/')
@@ -30,8 +34,10 @@ string ft_path_filename(const_string path)
 
 string ft_path_dirname(const_string path)
 {
-	U64 l = ft_strlen(path);
+	U64 l;
+	string out;
 
+	l = ft_strlen(path);
 	while (l && path[l - 1] != '/')
 		l--;
 	if (l == 0)
@@ -39,13 +45,22 @@ string ft_path_dirname(const_string path)
 	while (l && path[l - 1] == '/')
 		l--;
 
-	string out = malloc(sizeof(char) * (l + 2));
+	if (UNLIKELY((out = malloc(sizeof(char) * (l + 2))) == NULL))
+		FT_RET_ERR(NULL, FT_EOMEM);
 	out[ft_snprintf(out, sizeof(char) * (l + 1), "%s/", path)] = '\0';
-	return out;
+
+	FT_RET_OK(out);
 }
 
-bool ft_path_valid(const_string path, S32 target)
+bool ft_path_valid(const_string path)
 {
+	return ft_path_valid2(path, 0);
+}
+
+bool ft_path_valid2(const_string path, S32 target)
+{
+	const_string forbidden_chars;
+
 	if (target == 0)
 	{
 #if defined(FT_OS_WIN)
@@ -54,8 +69,8 @@ bool ft_path_valid(const_string path, S32 target)
 		target = FT_TARGET_LINUX;
 #endif
 	}
-	const_string forbidden_chars = get_forbidden_chars(target);
 
+	forbidden_chars = get_forbidden_chars(target);
 	while (*path)
 	{
 		if (ft_strchr(forbidden_chars, *path))

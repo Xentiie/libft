@@ -6,13 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 19:57:43 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:08:52 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 01:37:38 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
-
-#if 0
 
 # if defined(FT_OS_WIN)
 #  include <debugapi.h>
@@ -59,5 +57,3 @@ void ft_debug_break()
 	if (ft_is_debugger() == FT_DEBUG_TRUE)
 		raise(SIGTRAP);
 }
-
-#endif

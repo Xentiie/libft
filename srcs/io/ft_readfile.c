@@ -6,13 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 22:55:52 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:12:37 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "file.h"
-
-#include "libft/io.h"
+#include "file_private.h"
 
 #include <stdlib.h>
 
@@ -57,13 +55,13 @@ U8 *ft_readfile(filedesc fd, U64 *out_size)
 
 	if (out_size)
 		*out_size = total_rd;
-	__FTRETURN_OK(data);
+	FT_RET_OK(data);
 exit_err_cleanup:
 	free(data);
 exit_err:
 	if (out_size)
 		*out_size = 0;
-	__FTRETURN_ERR(NULL, FT_EOMEM);
+	FT_RET_ERR(NULL, FT_EOMEM);
 }
 
 U8 *ft_freadfile(t_file *file, U64 *out_size)

@@ -1,38 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file.h                                             :+:      :+:    :+:   */
+/*   path.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/12 00:50:06 by reclaire          #+#    #+#             */
-/*   Updated: 2024/10/22 04:13:43 by reclaire         ###   ########.fr       */
+/*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
+/*   Updated: 2024/11/25 20:02:57 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FILE_H
-#define FILE_H
+#if !defined(LIBFT_PATH_H)
+#define LIBFT_PATH_H
 
-#define _GNU_SOURCE
-#include "libft_int.h"
-#include <pthread.h>
+#include "libft.h"
+#include "libft/lists.h"
 
-#if defined(FT_OS_WIN)
-#include <windows.h>
-#endif
+void ft_path_parse(t_list **lst, const_string path);
+void ft_path_clean(t_list **path);
 
-typedef struct s_file
-{
-	char *buff;
-	U64 buff_size;
-	U64 buff_cnt;
-	bool buffered;
-	filedesc fd;
-}	t_file;
+string ft_path_filename(const_string path);
+string ft_path_dirname(const_string path);
 
-/*
-cleanup lock in lock ht, called from ft_fclose
-*/
-bool __ft_flockcleanup(t_file *fp);
+bool ft_path_valid(const_string path);
+bool ft_path_valid2(const_string path, S32 target);
+
+bool ft_path_expanduser(const_string path);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 14:51:38 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/11 17:27:29 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,18 @@ string ft_strdup_l(const_string str, U64 *len)
 	if (UNLIKELY(str == NULL))
 	{
 		*len = 0;
-		__FTRETURN_ERR(NULL, FT_EINVPTR);
+		FT_RET_ERR(NULL, FT_EINVPTR);
 	}
 
 	*len = ft_strlen(str);
 	if (UNLIKELY((dup = malloc(sizeof(U8) * ((*len) + 1))) == NULL))
 	{
 		*len = 0;
-		__FTRETURN_ERR(NULL, FT_EOMEM);
+		FT_RET_ERR(NULL, FT_EOMEM);
 	}
 
 	ft_memcpy(dup, str, (*len) + 1);
-	__FTRETURN_OK(dup);
+	FT_RET_OK(dup);
 }
 
 string ft_strndup(const_string str, U64 n)
@@ -61,7 +61,7 @@ string ft_strndup_l(const_string str, U64 n, U64 *len)
 	if (UNLIKELY(str == NULL))
 	{
 		*len = 0;
-		__FTRETURN_ERR(NULL, FT_EINVPTR);
+		FT_RET_ERR(NULL, FT_EINVPTR);
 	}
 
 	*len = ft_strlen(str);
@@ -69,9 +69,9 @@ string ft_strndup_l(const_string str, U64 n, U64 *len)
 	if (UNLIKELY((dup = malloc((sizeof(U8) * (*len) + 1))) == NULL))
 	{
 		*len = 0;
-		__FTRETURN_ERR(NULL, FT_EOMEM);
+		FT_RET_ERR(NULL, FT_EOMEM);
 	}
 
 	ft_memcpy(dup, str, (*len) + 1);
-	__FTRETURN_OK(dup);
+	FT_RET_OK(dup);
 }

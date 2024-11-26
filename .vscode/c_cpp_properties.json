@@ -10,7 +10,8 @@
             "defines": [
                 "FT_OS_LINUX",
                 "TEST",
-                "FT_INFLATE_CODES_GENERATOR"
+                "FT_INFLATE_CODES_GENERATOR",
+                "_FT_RETURN=1",
             ],
             "compilerPath": "/usr/bin/gcc",
             "intelliSenseMode": "linux-gcc-x64"
@@ -19,7 +20,7 @@
             "name": "Windows",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:/mingw64/x86_64-w64-mingw32/include/**",
+                "C:/mingw64/x86_64-w64-mingw32/include/**"
             ],
             "defines": [
                 "FT_OS_WIN32",

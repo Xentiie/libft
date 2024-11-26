@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 03:49:46 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:08:32 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ bool ft_deflate_init(t_deflate_stream *stream)
 bool ft_deflate_next_block(t_deflate_stream *stream, U64 block_max_size, U8 is_last, U8 block_type)
 {
 	if (UNLIKELY(in_remaining_size(stream) == 0) || UNLIKELY(out_remaining_size(stream) == 0))
-		__FTRETURN_ERR(FALSE, FT_EINVOP);
+		FT_RET_ERR(FALSE, FT_EINVOP);
 
 	IFDEBUG(printf("Writing block:\n	last: %s\n", is_last ? "yes" : "no"))
 
@@ -132,11 +132,11 @@ bool ft_deflate_next_block(t_deflate_stream *stream, U64 block_max_size, U8 is_l
 
 		{ // Error checks
 			if (UNLIKELY(to_compress > U16_MAX))
-				__FTRETURN_ERR(FALSE, FT_EINVVAL); // ERROR: BLOCK SIZE OVERFLOW
+				FT_RET_ERR(FALSE, FT_EINVVAL); // ERROR: BLOCK SIZE OVERFLOW
 			if (UNLIKELY(min_type_0_size > out_remaining_bits(stream)))
-				__FTRETURN_ERR(FALSE, FT_EINVOP); // ERROR: PAS ASSEZ DE PLACE PR UN BLOCK
+				FT_RET_ERR(FALSE, FT_EINVOP); // ERROR: PAS ASSEZ DE PLACE PR UN BLOCK
 			if (UNLIKELY(to_compress == 0))
-				__FTRETURN_ERR(FALSE, FT_EINVOP); // ERROR: BLOCK DE 0 DE SIZE
+				FT_RET_ERR(FALSE, FT_EINVOP); // ERROR: BLOCK DE 0 DE SIZE
 		}
 
 		write_block_header(stream, is_last, block_type);
@@ -168,11 +168,11 @@ bool ft_deflate_next_block(t_deflate_stream *stream, U64 block_max_size, U8 is_l
 	case FT_DEFLATE_BLOCK_TYPE_1:;
 		IFDEBUG(printf("	block type: fixed\n"))
 		if (UNLIKELY(min_type_1_size > out_remaining_bits(stream)))
-			__FTRETURN_ERR(FALSE, FT_EINVOP); // ERROR: PAS ASSEZ DE PLACE PR UN BLOCK
+			FT_RET_ERR(FALSE, FT_EINVOP); // ERROR: PAS ASSEZ DE PLACE PR UN BLOCK
 
 		to_compress = MIN(to_compress, (out_remaining_bits(stream) - (min_type_1_size - 8)) / 8);
 		if (UNLIKELY(to_compress == 0))
-			__FTRETURN_ERR(FALSE, FT_EINVOP); // ERROR: BLOCK DE 0 DE SIZE
+			FT_RET_ERR(FALSE, FT_EINVOP); // ERROR: BLOCK DE 0 DE SIZE
 
 		write_block_header(stream, is_last, block_type);
 
@@ -221,7 +221,7 @@ bool ft_deflate_next_block(t_deflate_stream *stream, U64 block_max_size, U8 is_l
 
 				// + 7 pour le code de fin de block (256)
 				if ((U8)(code_size + 7) > out_remaining_bits(stream))
-					__FTRETURN_ERR(FALSE, FT_EINVOP); // ERROR: PLUS DE PLACE
+					FT_RET_ERR(FALSE, FT_EINVOP); // ERROR: PLUS DE PLACE
 
 				// Le code entier tiens dans 32 bits (9 + 5 + 5 + 13 = 32)
 				// clang-format off
@@ -263,7 +263,7 @@ bool ft_deflate_next_block(t_deflate_stream *stream, U64 block_max_size, U8 is_l
 		break;
 	}
 
-	__FTRETURN_OK(TRUE);
+	FT_RET_OK(TRUE);
 }
 
 bool ft_deflate_end(t_deflate_stream *stream)
@@ -272,8 +272,8 @@ bool ft_deflate_end(t_deflate_stream *stream)
 	{
 		stream->out_used++;
 		if (UNLIKELY(stream->out_used > stream->out_size))
-			__FTRETURN_ERR(FALSE, FT_EINVOP);
+			FT_RET_ERR(FALSE, FT_EINVOP);
 		stream->bits = 0;
 	}
-	__FTRETURN_OK(TRUE);
+	FT_RET_OK(TRUE);
 }

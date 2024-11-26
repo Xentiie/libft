@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 20:21:20 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/19 07:17:34 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	*ft_memcpy(void *dst, void const *src, U64 n)
 {
 	if (UNLIKELY(dst == NULL || src == NULL))
-		__FTRETURN_ERR(dst, FT_EINVPTR);
+		FT_RET_ERR(dst, FT_EINVPTR);
 
 	U64	i = 0;
 	while (i < n)
@@ -23,5 +23,5 @@ void	*ft_memcpy(void *dst, void const *src, U64 n)
 		((U8 *)dst)[i] = ((U8 *)src)[i];
 		i++;
 	}
-	__FTRETURN_OK(dst);
+	FT_RET_OK(dst);
 }

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 20:13:26 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 22:43:22 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,8 @@ filedesc ft_socket(S32 domain, S32 type, S32 protocol)
 	__init_WSA();
 
 	if (UNLIKELY((sock = (filedesc)socket(domain, type, protocol)) == (filedesc)INVALID_SOCKET))
-		__FTRETURN_ERR((filedesc)-1, FT_ESYSCALL);
-	__FTRETURN_OK(sock);
+		FT_RET_ERR((filedesc)-1, FT_ESYSCALL);
+	FT_RET_OK(sock);
 }
 #else
 filedesc ft_socket(S32 domain, S32 type, S32 protocol)
@@ -88,8 +88,8 @@ filedesc ft_socket(S32 domain, S32 type, S32 protocol)
 	
 	sock = (filedesc)socket(domain, type, protocol);
 	if (UNLIKELY((sock = (filedesc)socket(domain, type, protocol)) == (filedesc)-1))
-		__FTRETURN_ERR((filedesc)-1, FT_ESYSCALL);
-	__FTRETURN_OK(sock);
+		FT_RET_ERR((filedesc)-1, FT_ESYSCALL);
+	FT_RET_OK(sock);
 }
 #endif
 

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 23:02:02 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/19 04:02:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 05:43:58 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ Sets ft_errno.
 See section 'Header State Infos' for more infos.
 - FT_EINVOP if the header is ill-formed.
 - FT_EOSPACE if there isn't enough data in the buffer left.
-- FT_EOMEM if out of memory (malloc error)
+- FT_EOMEM if out of memory
 
 ### Header State Infos
 `header.state` returns more infos about what went wrong:

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 14:44:13 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,37 +17,6 @@
 
 #if defined(TEST)
 #include <getopt.h>
-#else
-#define printf(...)
-#endif
-
-#if !defined(FT_GETOPT_USE_MALLOC)
-#if defined(FT_OS_WIN)
-#include <malloc.h>
-#else
-#include <alloca.h>
-#endif
-#endif
-
-#define ISOPT(i) (argv[i][0] == '-' && argv[i][1] != '\0')
-#define ISSTOP(i) (argv[i][0] == '-' && argv[i][1] == '-' && argv[i][2] == '\0')
-
-#define ISLONGOPT(str) (str[0] == '-' && str[1] != '\0')
-
-#if defined(_TEST)
-#define CHK_FINISH                                         \
-	do                                                     \
-	{                                                      \
-		if (ft_optind >= argc || ft_optind > first_nonopt) \
-		{                                                  \
-			printf("RET:%s:%d\n", __FILE__, __LINE__);     \
-			goto finish;                                   \
-		}                                                  \
-	} while (0)
-#else
-#define CHK_FINISH                                     \
-	if (ft_optind >= argc || ft_optind > first_nonopt) \
-	goto finish
 #endif
 
 S32 ft_optopt = 0;
@@ -59,64 +28,85 @@ const_string ft_optarg = NULL;
 static const_string nextchar = NULL;
 static S32 first_nonopt = -1;
 
-static void pushback_arg(S32 start, S32 end, const_string *argv, int argc)
+static bool pushback_arg(S32 start, S32 end, const_string *argv, int argc)
 {
-	S32 len = end - start;
-	if (len < 1)
-		return;
+	S32 len;
+	const_string *tmp;
 
-#if defined(FT_GETOPT_USE_MALLOC)
-	const_string *tmp = malloc(sizeof(const_string) * (len));
-#else
-	const_string *tmp = alloca(sizeof(const_string) * (len));
-#endif
+	if ((len = end - start) < 1)
+		return TRUE;
+
+	if (UNLIKELY((tmp = ft_alloca(sizeof(const_string) * len)) == NULL))
+		return FALSE;
 
 	ft_memcpy(tmp, &argv[start], sizeof(const_string) * (len));
 	ft_memcpy(&argv[start], &argv[start + len], sizeof(const_string) * (argc - len - start));
 	ft_memcpy(&argv[argc - len], tmp, sizeof(const_string) * (len));
 
 	first_nonopt -= len;
-#if defined(FT_GETOPT_USE_MALLOC)
-	free(tmp);
-#endif
+	ft_afree(tmp);
+	return TRUE;
+}
+
+inline static bool is_opt(const_string str)
+{
+	return str[0] == '-' && str[1] != '\0';
+}
+
+inline static bool is_stop(const_string str)
+{
+	return str[0] == '-' && str[1] == '-' && str[2] == '\0';
 }
 
 S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, const t_long_opt *longopts, S32 *longopts_index)
 {
-	(void)optstr;
-
+	if (longopts == NULL && optstr == NULL)
+		FT_RET_ERR(-3, FT_EINVPTR);
 	if (first_nonopt == -1)
 		first_nonopt = argc - 1;
 
-	// End of current arg -> step
+	/* Pas d'arg qui se fait parser -> on trouve la prochaine option */
 	if (nextchar == NULL || *nextchar == '\0')
 	{
+		/* On passe a la prochaine option. ft_optind est init a 0, donc on skip toujours le premier arg (ft_argv[0]) */
 		ft_optind++;
-		// Finished
-		CHK_FINISH;
+		if (ft_optind >= argc || ft_optind > first_nonopt)
+			goto finish;
 
-		// Skip all non-opt
+		/* Skip tout les non-options */
 		S32 cnt = 0;
-		while (ft_optind + cnt <= first_nonopt && !ISOPT(ft_optind + cnt))
+		while (ft_optind + cnt <= first_nonopt && !is_opt(argv[ft_optind + cnt]))
 			cnt++;
-		pushback_arg(ft_optind, ft_optind + cnt, argv, argc);
+		if (UNLIKELY(!pushback_arg(ft_optind, ft_optind + cnt, argv, argc)))
+			FT_RET_ERR(-3, FT_EOMEM);
 
-		// If '--' -> push all remaining args as non-opt, and finished
-		if (ISSTOP(ft_optind))
+		/* Si '--' trouvé, on arrete de parser les options */
+		if (is_stop(argv[ft_optind]))
 		{
-			pushback_arg(ft_optind + 1, first_nonopt + 1, argv, argc);
-			return -5;
+			if (UNLIKELY(!pushback_arg(ft_optind + 1, first_nonopt + 1, argv, argc)))
+				FT_RET_ERR(-3, FT_EOMEM);
+			FT_RET_OK(-2);
 		}
-		// Finished
-		CHK_FINISH;
-		nextchar = argv[ft_optind] + 1; // Skip first '-'
+
+		if (ft_optind >= argc || ft_optind > first_nonopt)
+			goto finish;
+		nextchar = argv[ft_optind] + 1; /* Skip '-' */
 	}
 
-	int ret;
-	// Starts with '--', but doesn't have '\0' after '--'
-	if (longopts && ISLONGOPT(nextchar))
+	/*
+	On arrive ici uniquement si on a trouvé une option
+
+	On skip automatiquement le premier '-', donc pour
+	./a.out a b -CD e, nextchar == "CD\0"
+	./a.out a b --longopt d, nextchar == "-longopt\0"
+	*/
+
+	S32 ret;
+	/* Vu qu'on skip le premier '-', on peut check si il y en a un 2eme avec is_opt */
+	if (longopts && (is_opt(nextchar) || optstr == NULL))
 	{
-		nextchar++; // skip '-'
+		if (*nextchar == '-')
+			nextchar++; /* Skip 2eme '-' */
 
 		const_string name_end = nextchar;
 		while (*name_end && *name_end != '=')
@@ -192,7 +182,7 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, const t_lo
 				nextchar += ft_strlen(nextchar);
 				ft_optind++;
 				ft_optopt = ret;
-				return optstr[0] == ':' ? ':' : ft_optchr;
+				FT_RET_OK(ft_optchr);
 			}
 		}
 
@@ -202,19 +192,18 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, const t_lo
 		if (found->flag_ptr)
 		{
 			*found->flag_ptr = found->flag_value;
-			return 0;
+			FT_RET_OK(0);
 		}
-		return found->flag_value;
+		FT_RET_OK(found->flag_value);
 
 	failure_long:
 		nextchar += ft_strlen(nextchar);
 		ft_optind++;
 		ft_optopt = ret;
-		return ft_optchr;
+		FT_RET_OK(ft_optchr);
 	}
 	else
 	{
-		// Find if argument is in optstr
 		const_string optstr_loc = ft_strchr(optstr, *nextchar);
 		if (!optstr_loc)
 		{
@@ -240,7 +229,8 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, const t_lo
 				else if (ft_optind < first_nonopt)
 				{
 					ft_optind++;
-					CHK_FINISH;
+					if (ft_optind >= argc || ft_optind > first_nonopt)
+						goto finish;
 					ft_optarg = argv[ft_optind];
 					nextchar += ft_strlen(nextchar) - 1;
 				}
@@ -251,7 +241,7 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, const t_lo
 						ft_fprintf(ft_fstderr, "%s: option requires an argument -- '%c'\n", argv[0], ret);
 					nextchar++;
 					ft_optopt = ret;
-					return optstr[0] == ':' ? ':' : ft_optchr;
+					FT_RET_OK(ft_optchr);
 				}
 			}
 			else
@@ -262,16 +252,21 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, const t_lo
 
 finish:
 	ft_optind = first_nonopt + 1;
-	return -1;
+	FT_RET_OK(-1);
 
 failure:
 	nextchar++;
 	ft_optopt = ret;
-	return ft_optchr;
+	FT_RET_OK(ft_optchr);
 
 success:
 	nextchar++;
-	return ret;
+	FT_RET_OK(ret);
+}
+
+S32 ft_getopt_long_only(S32 argc, const_string *argv, const t_long_opt *longopts, S32 *longopts_index)
+{
+	return ft_getopt_long(argc, argv, NULL, longopts, longopts_index);
 }
 
 S32 ft_getopt(S32 argc, const_string *argv, const_string optstr)

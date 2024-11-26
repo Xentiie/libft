@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:55:27 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 00:33:06 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/22 09:24:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #define FT_PRINTF_H
 
 #include "libft_int.h"
-#include "libft/io.h"
+#include "../file_private.h"
 
 #include <stdarg.h>
 

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 15:52:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 22:36:14 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,14 @@ string	ft_strtrim(const_string s1, const_string set)
 	{
 		new = ft_strdup("");
 		if (new == NULL)
-			__FTRETURN_ERR(NULL, ft_errno);
-		__FTRETURN_OK(new);
+			FT_RET_ERR(NULL, ft_errno);
+		FT_RET_OK(new);
 	}
 
 	new = malloc((end - start + 1) * sizeof(char));
 	if (new == NULL)
-		__FTRETURN_ERR(NULL, FT_EOMEM);
+		FT_RET_ERR(NULL, FT_EOMEM);
 	
 	ft_strlcpy(new, (char *)(s1 + start), end - start + 1);
-	__FTRETURN_OK(new);
+	FT_RET_OK(new);
 }
