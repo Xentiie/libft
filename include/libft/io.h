@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 07:37:30 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/01 03:30:08 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ Opens a file. The string 'mode' can be one of the following:
 	w: open for writing
 	a: open for appending
 	[r/w/a]+: read/write
-
 Modes [w/a] will create the file if it doesn't exists
 ### On error
 Sets ft_errno and returns -1.
@@ -66,6 +65,10 @@ Sets ft_errno and returns -1.
 */
 extern filedesc ft_open(const_string path, const_string mode);
 extern t_file *ft_fopen(const_string path, const_string mode);
+
+/*
+Creates a new t_file from a filedesc `fd`.
+*/
 extern t_file *ft_fcreate(filedesc fd, const_string mode);
 
 /*
@@ -193,7 +196,7 @@ extern S64 ft_vsprintf(string str, const_string fmt, va_list args);
 extern S64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args);
 
 /*
-Checks the type of a file.
+Checks the type of a file from a bitfield `md` (returned by `stat`)
 'b': block device
 'c': character device
 'd': directory
@@ -202,11 +205,11 @@ Checks the type of a file.
 's': socket
 '?': unkown
 */
-extern char ft_ftype(U32 md);
+extern U8 ft_fchk_type(U32 md);
 
 /*
-Parses the mode of a file (returned by stat) into buf. Buf should have 10 or more spaces allocated.
+Parses the mode of a file (returned by stat) into buf.
 */
-extern void ft_fmode(U32 md, char *buf);
+extern void ft_fchk_mode(U32 md, char buf[11]);
 
 #endif

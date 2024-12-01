@@ -6,13 +6,46 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 22:50:27 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 22:50:47 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/27 15:15:03 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file_private.h"
 
 #include <errno.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+static bool parse_mode(const_string mode, bool *readable, bool *writeable, bool *append)
+{
+	*readable = FALSE;
+	*writeable = FALSE;
+	*append = FALSE;
+
+	switch (*mode++)
+	{
+	case 'r':
+		*readable = TRUE;
+		break;
+	case 'w':
+		*writeable = TRUE;
+		break;
+	case 'a':
+		*writeable = TRUE;
+		*append = TRUE;
+		break;
+	default:
+		return FALSE;
+	}
+
+	if (*mode == '+')
+	{
+		*readable = TRUE;
+		*writeable = TRUE;
+	}
+
+	return TRUE;
+}
 
 t_file *ft_fcreate(filedesc fd, const_string mode)
 {
