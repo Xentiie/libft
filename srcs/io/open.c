@@ -6,14 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 13:47:45 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 22:50:39 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/27 15:15:33 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file_private.h"
 
 #include <stdlib.h>
-#include <errno.h>
 
 static bool parse_mode(const_string mode, bool *readable, bool *writeable, bool *append)
 {

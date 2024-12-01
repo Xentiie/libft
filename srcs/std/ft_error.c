@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 17:27:54 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 00:48:49 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/27 15:36:55 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void ft_error(S32 retcode, string fmt, ...)
 
 	ft_fprintf(ft_fstderr, "%s: ", ft_argv[0]);
 	va_start(args, fmt);
-	ft_vdprintf(ft_stderr, fmt, args);
+	ft_vfprintf(ft_fstderr, fmt, args);
 	va_end(args);
 
 	if (retcode > 0)
@@ -37,7 +37,7 @@ void ft_error_errno(S32 retcode, string fmt, ...)
 	ft_fprintf(ft_fstderr, "%s: (%d)%s: ", ft_argv[0], ft_errno, ft_strerror(ft_errno));
 	
 	va_start(args, fmt);
-	ft_vdprintf(ft_stderr, fmt, args);
+	ft_vfprintf(ft_fstderr, fmt, args);
 	va_end(args);
 	
 	if (retcode > 0)
@@ -50,7 +50,7 @@ void ft_error_errno2(S32 retcode, string fmt, ...)
 
 	ft_fprintf(ft_fstderr, "%s: (%d)%s: ", ft_argv[0], ft_errno, ft_strerror2());
 	va_start(args, fmt);
-	ft_vdprintf(ft_stderr, fmt, args);
+	ft_vfprintf(ft_fstderr, fmt, args);
 	va_end(args);
 
 	if (retcode > 0)

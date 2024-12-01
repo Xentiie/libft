@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 05:12:47 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/11/30 20:38:17 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,13 @@ extern __thread S32 ft_errno;
 #define FUNCTION_PURE
 #endif
 
+#define _FT_NO_IF_PREDICT
 #if !FT_HAS_BUILTIN(__builtin_expect) || defined(_FT_NO_IF_PREDICT)
 #if !defined(_FT_NO_IF_PREDICT)
 #pragma warn "No IF_PREDICT"
 #endif
-#define IF_PREDICT(cond, expect)
-#define IF_PREDICT_B(cond, expect)
+#define IF_PREDICT(cond, expect) (cond)
+#define IF_PREDICT_B(cond, expect) (cond)
 #else
 #define IF_PREDICT(cond, expect) __builtin_expect((cond), expect)
 #define IF_PREDICT_B(cond, expect) __builtin_expect(!!(cond), expect)
