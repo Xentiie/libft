@@ -6,11 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 14:08:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/05 03:22:56 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "ft_printf_int.h"
 #include "libft/strings.h"
 #include "libft/limits.h"
 
@@ -83,6 +83,9 @@ static S64 pad_ze(S64 s, t_fmtwr_i wr_i, void *data)
 	}
 	return out;
 }
+
+__attribute__((alias("printf_internal")))
+S64 ft_ivprintf(const_string fmt, va_list args, f_printf_write_interface write_interface, void *data);
 
 S64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data)
 {

@@ -6,12 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:43:53 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/22 09:24:19 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/05 03:25:53 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "ft_printf_int.h"
 #include "libft/limits.h"
+
+#include <stdlib.h>
 
 #if defined(TEST)
 #include <stdio.h>
@@ -25,6 +27,15 @@ static S64 write_interface_fd(const_string str, U64 len, void *data)
 static S64 write_interface_file(const_string str, U64 len, void *data)
 {
 	return ft_fwrite(data, (string)str, len);
+}
+
+S64 ft_iprintf(f_printf_write_interface write_interface, void *data, const_string fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	U64 out = ft_ivprintf(fmt, args, write_interface, data);
+	va_end(args);
+	return out;
 }
 
 S64 ft_printf(const_string fmt, ...)
@@ -64,7 +75,7 @@ S64 ft_vfprintf(t_file *file, const_string fmt, va_list args)
 	U64 ret;
 
 	ft_ffilelock(file);
-	ret = printf_internal(fmt, args, write_interface_file, file);
+	ret = ft_ivprintf(fmt, args, write_interface_file, ft_fstdout);
 	ft_ffileunlock(file);
 	return ret;
 }
@@ -95,6 +106,13 @@ static S64 write_interface_str(const_string str, U64 len, void *data)
 	return i;
 }
 
+static S64 write_interface_void(const_string str, U64 len, void *data)
+{
+	(void)str;
+	(void)data;
+	return len;
+}
+
 S64 ft_sprintf(string str, const_string fmt, ...)
 {
 	va_list args;
@@ -115,6 +133,28 @@ S64 ft_snprintf(string str, U64 n, const_string fmt, ...)
 	return out;
 }
 
+string ft_saprintf(const_string fmt, ...)
+{
+	va_list args;
+	string ret;
+
+	va_start(args, fmt);
+	ret = ft_vsaprintf(fmt, args);
+	va_end(args);
+	return ret;
+}
+
+string ft_sanprintf(U64 n, const_string fmt, ...)
+{
+	va_list args;
+	string ret;
+
+	va_start(args, fmt);
+	ret = ft_vsanprintf(n, fmt, args);
+	va_end(args);
+	return ret;
+}
+
 S64 ft_vsprintf(string str, const_string fmt, va_list args)
 {
 	return ft_vsnprintf(str, U64_MAX, fmt, args);
@@ -129,6 +169,29 @@ S64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args)
 	else
 		out += write_interface_str("", 1, &data);
 	return out;
+}
+
+string ft_vsaprintf(const_string fmt, va_list args)
+{
+	return ft_vsanprintf(U64_MAX, fmt, args);
+}
+
+string ft_vsanprintf(U64 n, const_string fmt, va_list args)
+{
+	U64 ret;
+	string str;
+	va_list dup;
+
+	va_copy(dup, args);
+	ret = ft_ivprintf(fmt, dup, write_interface_void, NULL) + 1;
+	va_end(dup);
+	if (ret > n)
+		ret = n;
+	if (UNLIKELY((str = malloc(sizeof(U8) * ret)) == NULL))
+		FT_RET_ERR(NULL, FT_EOMEM);
+	ft_vsnprintf(str, ret, fmt, args);
+
+	return str;
 }
 
 #if defined(TEST)

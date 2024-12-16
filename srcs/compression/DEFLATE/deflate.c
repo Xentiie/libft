@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 03:49:46 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/03 18:35:27 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "libft/crypt/crc.h"
 #include <stdlib.h>
 
-#if defined(DEBUG)
+#if defined(_DEFLATE_DEBUG)
 #include <stdio.h>
 #define IFDEBUG(...) \
 	do               \

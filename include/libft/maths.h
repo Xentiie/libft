@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:45:20 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:13:36 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/10 03:10:58 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,29 @@
 #  define FT_F32_ISQNAN(flt) (FT_F32_ISNAN(flt) && ((FT_F32_U32(flt) & 0x00400000) == 0x00400000))
 # endif
 
+#define vec2_zero ((t_v2){0, 0})
+#define vec2_one ((t_v2){1, 1})
+#define vec2_two ((t_v2){2, 2})
+
+#define vec3_zero ((t_v3){0, 0, 0})
+#define vec3_one ((t_v3){1, 1, 1})
+#define vec3_two ((t_v3){2, 2, 2})
+
+#define vec4_zero ((t_v4){0, 0, 0, 0})
+#define vec4_one ((t_v4){1, 1, 1, 1})
+#define vec4_two ((t_v4){2, 2, 2, 2})
+
+#define ivec2_zero ((t_iv2){0, 0})
+#define ivec2_one ((t_iv2){1, 1})
+#define ivec2_two ((t_iv2){2, 2})
+
+#define ivec3_zero ((t_iv3){0, 0, 0})
+#define ivec3_one ((t_iv3){1, 1, 1})
+#define ivec3_two ((t_iv3){2, 2, 2})
+
+#define ivec4_zero ((t_iv4){0, 0, 0, 0})
+#define ivec4_one ((t_iv4){1, 1, 1, 1})
+#define ivec4_two ((t_iv4){2, 2, 2, 2})
 
 extern t_v2 vec2(F32 x, F32 y);
 extern t_v3 vec3(F32 x, F32 y, F32 z);

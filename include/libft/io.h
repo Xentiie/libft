@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/01 03:30:08 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/05 03:21:18 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,8 @@ Sets ft_errno and returns NULL.
 */
 extern U8 *ft_freadfile(t_file *file, U64 *out_size);
 
+
+
 /*
 printf !
 */
@@ -187,6 +189,8 @@ extern S64 ft_printf(const_string fmt, ...) __attribute__((format(printf, 1, 2))
 extern S64 ft_fprintf(t_file *file, const_string fmt, ...) __attribute__((format(printf, 2, 3)));
 extern S64 ft_dprintf(filedesc fd, const_string fmt, ...) __attribute__((format(printf, 2, 3)));
 extern S64 ft_sprintf(string str, const_string fmt, ...) __attribute__((format(printf, 2, 3)));
+extern string ft_saprintf(const_string fmt, ...);
+extern string ft_sanprintf(U64 n, const_string fmt, ...);
 extern S64 ft_snprintf(string str, U64 n, const_string fmt, ...) __attribute__((format(printf, 3, 4)));
 
 extern S64 ft_vprintf(const_string fmt, va_list args);
@@ -194,6 +198,14 @@ extern S64 ft_vfprintf(t_file *file, const_string fmt, va_list args);
 extern S64 ft_vdprintf(filedesc fd, const_string fmt, va_list args);
 extern S64 ft_vsprintf(string str, const_string fmt, va_list args);
 extern S64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args);
+extern string ft_vsaprintf(const_string fmt, va_list args);
+extern string ft_vsanprintf(U64 n, const_string fmt, va_list args);
+#define _FT_IPRINTF
+#if defined(_FT_IPRINTF)
+typedef S64 (*f_printf_write_interface)(const_string str, U64 str_len, void *data);
+extern S64 ft_iprintf(f_printf_write_interface write_interface, void *data, const_string fmt, ...);
+extern S64 ft_ivprintf(const_string fmt, va_list args, f_printf_write_interface write_interface, void *data);
+#endif
 
 /*
 Checks the type of a file from a bitfield `md` (returned by `stat`)

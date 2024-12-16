@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_printf_int.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,10 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#if !defined(FT_PRINTF_H)
-#define FT_PRINTF_H
+#if !defined(FT_PRINTF_INT_H)
+#define FT_PRINTF_INT_H
 
+#define _FT_IPRINTF
 #include "libft_int.h"
+#include "libft/io.h"
 #include "../file_private.h"
 
 #include <stdarg.h>

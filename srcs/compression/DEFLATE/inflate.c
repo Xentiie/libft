@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 11:07:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:19:55 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/03 18:36:11 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 //#define DEBUG
 
-#if defined(DEBUG)
+#if defined(_INFLATE_DEBUG)
 #include <stdio.h>
 #define IFDEBUG(...) \
 	do               \

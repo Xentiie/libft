@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/30 20:38:17 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/05 17:24:41 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,9 +98,10 @@ extern __thread S32 ft_errno;
 #define LIKELY(cond) IF_PREDICT(cond, TRUE)
 
 // clang-format off
-#if _FT_RETURN == 1
+#if defined(_FT_RETURN)
 # define FT_RET_OK(ret) do { ft_errno=FT_OK; return ret; } while (0)
 # if defined(DEBUG)
+#  include "libft/debug.h"
 #  define FT_RET_ERR(ret, err) do { ft_errno = err ; ft_debug_break(); return ret; } while (0)
 # else
 #  define FT_RET_ERR(ret, err) do { ft_errno = err ; return ret; } while (0)
@@ -123,6 +124,9 @@ extern __thread S32 ft_errno;
 #endif
 // clang-format on
 
-// #define printf(...) do { printf("(%s:%d) ", __FILE__, __LINE__); printf(__VA_ARGS__); } while (0)
+/*
+#include <stdio.h>
+#define printf(...) do { printf("(%s:%d) ", __FILE__, __LINE__); printf(__VA_ARGS__); } while (0)
+*/
 
 #endif

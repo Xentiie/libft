@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file.c                                             :+:      :+:    :+:   */
+/*   fsetbuf.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 08:50:16 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 07:05:01 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/03 06:04:23 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ bool ft_fsetbuf(t_file *f, U8 *buf, U64 size, S16 bufmode)
 	case FT_IO_FULL_BUFFERED:
 		if (buf == NULL)
 		{
-			if (f->buff != NULL && size == f->buff_size)
+			if (f->buff != NULL && (size == f->buff_size || size == 0))
 				break;
 
 			ft_fflush(f);
