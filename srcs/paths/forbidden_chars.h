@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 05:57:04 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/31 15:58:12 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 
 #include "libft/types.h"
 
-const char forbidden_chars_linux[] = {
+static const char forbidden_chars_linux[] = {
 	'/',
 };
 
-const char forbidden_chars_windows[] = {
+static const char forbidden_chars_windows[] = {
 	'/',
 	'\\',
 	':',
@@ -33,12 +33,15 @@ const char forbidden_chars_windows[] = {
 
 static inline const_string get_forbidden_chars(S32 target)
 {
-	if (target & FT_TARGET_LINUX)
+	switch (target)
+	{
+	case FT_TARGET_LINUX:
 		return forbidden_chars_linux;
-	else if (target & FT_TARGET_WIN)
+	case FT_TARGET_WIN:
 		return forbidden_chars_windows;
-
-	return forbidden_chars_linux;
+	default:
+		return NULL;
+	}
 }
 
 #endif

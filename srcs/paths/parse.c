@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_path_parse.c                                    :+:      :+:    :+:   */
+/*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 15:37:41 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 21:55:03 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/31 16:07:08 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,15 @@
 #include "libft/lists.h"
 #include "libft/strings.h"
 
-void ft_path_parse(t_list **lst, const_string path)
+bool ft_path_parse(t_list **lst, const_string path)
 {
-	U64 i = 0;
-	U64 st = 0;
+	U64 i;
+	U64 st;
+	t_list *new;
+	string part;
+
+	i = 0;
+	st = 0;
 	while (path[i])
 	{
 		while (path[i] != '/')
@@ -26,14 +31,27 @@ void ft_path_parse(t_list **lst, const_string path)
 				goto end;
 			i++;
 		}
-		ft_lstadd_back(lst, ft_lstnew(ft_substr(path, st, i - st)));
+
+		if (UNLIKELY((part = ft_substr(path, st, i - st)) == NULL))
+			return FALSE;
+		if (UNLIKELY((new = ft_lstnew(part)) == NULL))
+			return FALSE;
+		ft_lstadd_back(lst, new);
 		i++;
 		while (path[i] == '/')
 			i++;
 		st = i;
 	}
-	end:
-	
+
+end:
 	if (st < i)
-		ft_lstadd_back(lst, ft_lstnew(ft_substr(path, st, i - st)));
+	{
+		if (UNLIKELY((part = ft_substr(path, st, i - st)) == NULL))
+			return FALSE;
+		if (UNLIKELY((new = ft_lstnew(part)) == NULL))
+			return FALSE;
+		ft_lstadd_back(lst, new);
+	}
+
+	return TRUE;
 }

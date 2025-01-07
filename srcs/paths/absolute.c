@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 03:33:50 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 21:54:40 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/31 16:02:43 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,25 @@
 
 #include <stdlib.h>
 
-void	ft_path_clean(t_list **path)
+void ft_path_partial_absolute(t_list **path)
 {
-	t_list *curr = *path;
+	t_list *curr;
+	t_list *nxt;
+	string p;
+	string p_prev;
+
+	curr = *path;
 	while (curr)
 	{
-		t_list *nxt = curr->next;
-		string p = (string)curr->content;
+		nxt = curr->next;
+		p = (string)curr->content;
 
 		if (p[0] == '.' && p[1] == '\0')
+			/* remove useless '.' */
 			ft_lstremove(path, curr, free);
 		else if (p[0] == '.' && p[1] == '.' && p[2] == '\0' && curr->prev)
-		{
-			string p_prev = curr->prev->content;
+		{ /* remove '..' */
+			p_prev = curr->prev->content;
 			if (!(p_prev[0] == '.' && p[1] == '.' && p[2] == '\0'))
 			{
 				ft_lstremove(path, curr->prev, free);
@@ -37,4 +43,3 @@ void	ft_path_clean(t_list **path)
 		curr = nxt;
 	}
 }
-
