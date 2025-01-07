@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:15:51 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/19 04:01:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/18 15:37:14 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 #define LIBFT_TIME_H
 
 #include "libft.h"
+
+#define FT_MINUTE_SEC (60)
+#define FT_HOUR_SEC (60 * FT_MINUTE_SEC)
+#define FT_DAY_SEC (24 * FT_HOUR_SEC)
+#define FT_YEAR_SEC (365 * FT_DAY_SEC)
 
 typedef struct s_tm
 {
