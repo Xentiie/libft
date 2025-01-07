@@ -6,44 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 13:47:45 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/27 15:15:33 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/06 00:32:38 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file_private.h"
 
 #include <stdlib.h>
-
-static bool parse_mode(const_string mode, bool *readable, bool *writeable, bool *append)
-{
-	*readable = FALSE;
-	*writeable = FALSE;
-	*append = FALSE;
-
-	switch (*mode++)
-	{
-	case 'r':
-		*readable = TRUE;
-		break;
-	case 'w':
-		*writeable = TRUE;
-		break;
-	case 'a':
-		*writeable = TRUE;
-		*append = TRUE;
-		break;
-	default:
-		return FALSE;
-	}
-
-	if (*mode == '+')
-	{
-		*readable = TRUE;
-		*writeable = TRUE;
-	}
-
-	return TRUE;
-}
 
 #if defined(FT_OS_WIN)
 #include <windows.h>
@@ -57,7 +26,7 @@ filedesc ft_open_old(const_string path, const_string mode)
 	if (path == NULL || mode == NULL)
 		FT_RET_ERR((filedesc)-1, FT_EINVPTR);
 
-	if (!parse_mode(mode, &readable, &writeable, &append))
+	if (!__parse_mode(mode, &readable, &writeable, &append))
 		FT_RET_ERR((filedesc)-1, FT_EINVVAL);
 
 	open_mode = readable ? GENERIC_READ : 0;
@@ -89,14 +58,14 @@ filedesc ft_open_old(const_string path, const_string mode)
 
 filedesc ft_open(const_string path, const_string mode)
 {
-	bool readable, writeable, append;
+	bool readable, writeable, append, binary_mode;
 	S32 open_mode, create_mode;
 	filedesc fd;
 
 	if (path == NULL || mode == NULL)
 		FT_RET_ERR((filedesc)-1, FT_EINVPTR);
 
-	if (!parse_mode(mode, &readable, &writeable, &append))
+	if (!__parse_mode(mode, &readable, &writeable, &append, &binary_mode))
 		FT_RET_ERR((filedesc)-1, FT_EINVVAL);
 
 	if (readable && writeable)
@@ -107,6 +76,8 @@ filedesc ft_open(const_string path, const_string mode)
 			open_mode = O_RDONLY;
 		else if (writeable)
 			open_mode = O_WRONLY;
+		else
+			FT_RET_ERR((filedesc)-1, FT_EINVOP);
 	}
 
 	create_mode = append ? O_CREAT | O_APPEND : (writeable ? O_CREAT | O_TRUNC : 0);

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 22:50:27 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/27 15:15:03 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/29 16:00:36 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static bool parse_mode(const_string mode, bool *readable, bool *writeable, bool *append)
+bool __parse_mode(const_string mode, bool *readable, bool *writeable, bool *append, bool *binary_mode)
 {
 	*readable = FALSE;
 	*writeable = FALSE;
@@ -38,6 +38,14 @@ static bool parse_mode(const_string mode, bool *readable, bool *writeable, bool 
 		return FALSE;
 	}
 
+	if (*mode == 'b')
+	{
+		*binary_mode = TRUE;
+		mode++;
+	}
+	else
+		*binary_mode = FALSE;
+
 	if (*mode == '+')
 	{
 		*readable = TRUE;
@@ -49,17 +57,18 @@ static bool parse_mode(const_string mode, bool *readable, bool *writeable, bool 
 
 t_file *ft_fcreate(filedesc fd, const_string mode)
 {
-	bool readable, writeable, append;
+	bool readable, writeable, append, binary_mode;
 	t_file *file;
 
 	if (UNLIKELY((file = malloc(sizeof(t_file))) == NULL))
 		goto exit_omem;
 
-	if (!parse_mode(mode, &readable, &writeable, &append))
+	if (!__parse_mode(mode, &readable, &writeable, &append, &binary_mode))
 		goto exit_err;
 
 	file->readable = readable;
 	file->writeable = writeable;
+	file->binary_mode = binary_mode;
 
 	file->fd = fd;
 	file->buff_cnt = 0;

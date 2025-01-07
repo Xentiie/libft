@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/05 03:21:18 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/05 13:41:46 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef struct s_file
 	U64 buff_size;
 	U64 buff_cnt;
 	filedesc fd;
+	bool binary_mode;
 	bool readable;
 	bool writeable;
 }	t_file;
@@ -200,11 +201,10 @@ extern S64 ft_vsprintf(string str, const_string fmt, va_list args);
 extern S64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args);
 extern string ft_vsaprintf(const_string fmt, va_list args);
 extern string ft_vsanprintf(U64 n, const_string fmt, va_list args);
-#define _FT_IPRINTF
 #if defined(_FT_IPRINTF)
 typedef S64 (*f_printf_write_interface)(const_string str, U64 str_len, void *data);
 extern S64 ft_iprintf(f_printf_write_interface write_interface, void *data, const_string fmt, ...);
-extern S64 ft_ivprintf(const_string fmt, va_list args, f_printf_write_interface write_interface, void *data);
+extern S64 ft_viprintf(const_string fmt, va_list args, f_printf_write_interface write_interface, void *data);
 #endif
 
 /*

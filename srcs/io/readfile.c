@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_readfile.c                                      :+:      :+:    :+:   */
+/*   readfile.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 22:55:52 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/29 16:04:31 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include <stdlib.h>
 
-U8 *ft_readfile(filedesc fd, U64 *out_size)
+U8 *__readfile_impl(filedesc fd, U64 *out_size, bool append_0)
 {
 	S64 rd, total_rd;
 	U8 buffer[32768];
@@ -46,11 +46,17 @@ U8 *ft_readfile(filedesc fd, U64 *out_size)
 
 	if ((S64)alloc > total_rd)
 	{
-		if (UNLIKELY((tmp = malloc(sizeof(U8) * total_rd)) == NULL))
+		if (UNLIKELY((tmp = malloc(sizeof(U8) * (total_rd + append_0))) == NULL))
 			goto exit_err_cleanup;
 		ft_memcpy(tmp, data, total_rd);
 		free(data);
 		data = tmp;
+	}
+
+	if (append_0)
+	{
+		data[total_rd] = '\0';
+		total_rd++;
 	}
 
 	if (out_size)
@@ -64,13 +70,18 @@ exit_err:
 	FT_RET_ERR(NULL, FT_EOMEM);
 }
 
+U8 *ft_readfile(filedesc fd, U64 *out_size)
+{
+	return __readfile_impl(fd, out_size, FALSE);
+}
+
 U8 *ft_freadfile(t_file *file, U64 *out_size)
 {
 	U8 *out;
 
 	if (UNLIKELY(!ft_ffilelock(file)))
 		return NULL;
-	out = ft_readfile(file->fd, out_size);
+	out = __readfile_impl(file->fd, out_size, !file->binary_mode);
 	ft_ffileunlock(file);
 
 	return out;
