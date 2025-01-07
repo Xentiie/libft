@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 18:12:39 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/11 17:34:28 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/17 15:34:14 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,18 +41,19 @@ static const S16 yday_count[2][13] = {
 // t = time in secs
 t_tm ft_gmtime(S64 t)
 {
+	S32 tmpyr;
+	bool is_leap_yr;
 	S64 t_save = t;
-	t_tm out;
-	ft_bzero(&out, sizeof(t_tm));
+	t_tm out = {0};
 
 	// Without leap years (+/- 70 because we start at 1900 here, not 1970)
-	S32 tmpyr = (S32)(t / YEAR_SEC) + 70;
+	tmpyr = (S32)(t / YEAR_SEC) + 70;
 	t -= ((S64)(tmpyr - 70) * YEAR_SEC);
 
 	// With leap years (si current year is leap year, t will overflow down and be negative)
 	t -= ((S64)_ELAPSED_LEAP_YEARS(tmpyr) * DAY_SEC);
 
-	S8 is_leap_yr = 0;
+	is_leap_yr = 0;
 	if (t < 0)
 	{
 		t += (S64)YEAR_SEC;
@@ -60,11 +61,11 @@ t_tm ft_gmtime(S64 t)
 		if (IS_LEAP_YEAR(tmpyr))
 		{
 			t += DAY_SEC;
-			is_leap_yr++;
+			is_leap_yr = TRUE;
 		}
 	}
 	else if (IS_LEAP_YEAR(tmpyr))
-		is_leap_yr++;
+		is_leap_yr = TRUE;
 
 	out.year = tmpyr;
 

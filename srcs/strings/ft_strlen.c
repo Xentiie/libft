@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 13:38:25 by reclaire          #+#    #+#             */
-/*   Updated: 2024/09/03 03:16:11 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/05 08:47:58 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 
 U64	ft_strlen(const_string s)
 {
-	U64	n = 0;
-	while (s[n] != '\0')
-		n++;
-	return (n);
-}
+	U64	i;
 
+	i = 0;
+	while (s[i] != '\0')
+		i++;
+	return i;
+}
