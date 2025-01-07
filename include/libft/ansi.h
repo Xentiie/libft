@@ -6,102 +6,132 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:53:23 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/19 04:02:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/30 03:20:51 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_ANSI_H)
-# define LIBFT_ANSI_H
+#define LIBFT_ANSI_H
 
-# include "libft.h"
+#include "libft/libft.h"
+#include "libft/macros.h"
 
-# define FT_BLACK					"\e[0;30m"
-# define FT_RED						"\e[0;31m"
-# define FT_GREEN					"\e[0;32m"
-# define FT_YELLOW					"\e[0;33m"
-# define FT_BLUE					"\e[0;34m"
-# define FT_MAGENTA					"\e[0;35m"
-# define FT_CYAN					"\e[0;36m"
-# define FT_WHITE					"\e[0;37m"
-# define FT_DEFAULT					"\e[0;39m"
+#define __TC_STRINGIFY(x) #x
+#define __TC_ARG(x) FT_EXPAND(__TC_STRINGIFY(x))
 
-# define FT_LBLACK					"\e[0;90m"
-# define FT_LRED					"\e[0;91m"
-# define FT_LGREEN					"\e[0;92m"
-# define FT_LYELLOW					"\e[0;93m"
-# define FT_LBLUE					"\e[0;94m"
-# define FT_LMAGENTA				"\e[0;95m"
-# define FT_LCYAN					"\e[0;96m"
-# define FT_LWHITE					"\e[0;97m"
-# define FT_LDEFAULT				"\e[0;99m"
+/* ANSI escape characters */
+#define FT_TC_ESCAPE "\e["
 
-# define FT_BG_BLACK				"\e[0;40m"
-# define FT_BG_RED					"\e[0;41m"
-# define FT_BG_GREEN				"\e[0;42m"
-# define FT_BG_YELLOW				"\e[0;43m"
-# define FT_BG_BLUE					"\e[0;44m"
-# define FT_BG_MAGENTA				"\e[0;45m"
-# define FT_BG_CYAN					"\e[0;46m"
-# define FT_BG_WHITE				"\e[0;47m"
-# define FT_BG_DEFAULT				"\e[0;49m"
+/*
+FT_TC: construct a ANSI color code. Each arguments is expected to be an int
+*/
+#define FT_TC(...) \
+	FT_TC_ESCAPE   \
+	FT_MACRO_FOR_EACH_sep(__TC_ARG, ";", __VA_ARGS__) "m"
+/* Same as FT_TC, but always resets first */
+#define FT_TCR(...)       \
+	FT_TC_ESCAPE          \
+	__TC_ARG(FT_TC_RESET) \
+	__VA_OPT__(";" FT_MACRO_FOR_EACH_sep(__TC_ARG, ";", __VA_ARGS__)) "m"
 
-# define FT_BG_LBLACK				"\e[0;100m"
-# define FT_BG_LRED					"\e[0;101m"
-# define FT_BG_LGREEN				"\e[0;102m"
-# define FT_BG_LYELLOW				"\e[0;103m"
-# define FT_BG_LBLUE				"\e[0;104m"
-# define FT_BG_LMAGENTA				"\e[0;105m"
-# define FT_BG_LCYAN				"\e[0;106m"
-# define FT_BG_LWHITE				"\e[0;107m"
-# define FT_BG_LDEFAULT				"\e[0;109m"
+/* colors */
 
-# define FT_BOLD					"\e[1m"
-# define FT_DIM						"\e[2m"
-# define FT_ITALIC					"\e[3m"
-# define FT_UNDERLINE				"\e[4m"
-# define FT_BLINK					"\e[5m"
-# define FT_BLINK_FAST				"\e[6m"
-# define FT_INVERSE					"\e[7m"
-# define FT_INVISIBLE				"\e[8m"
-# define FT_STRIKETHROUGH			"\e[9m"
-# define FT_FONT1					"\e[10m"
-# define FT_FONT2					"\e[11m"
-# define FT_FONT3					"\e[12m"
-# define FT_FONT4					"\e[13m"
-# define FT_FONT5					"\e[14m"
-# define FT_FONT6					"\e[15m"
-# define FT_FONT7					"\e[16m"
-# define FT_FONT8					"\e[17m"
-# define FT_FONT9					"\e[18m"
-# define FT_FONT10					"\e[19m"
-# define FT_GOTHIC					"\e[20m"
-# define FT_UNDERLINE2				"\e[21m"
-# define FT_NO_INTENSITY			"\e[22m"
-# define FT_NO_ITALIC				"\e[23m"
-# define FT_NO_UNDERLINE			"\e[24m"
-# define FT_NO_BLINKING				"\e[25m"
-# define FT_NOTHING					"\e[26m"
-# define FT_NO_REVERSE				"\e[27m"
-# define FT_REVEAL					"\e[28m"
-# define FT_NO_STRIKE				"\e[29m"
-# define FT_FOREGROUND_COLOR(r,g,b)	"\e[38;2;"#r";"#g";"#b"m"
-# define FT_NO_FOREGROUND			"\e[39m"
-# define FT_BACKGROUND_COLOR(r,g,b)	"\e[48;2;"#r";"#g";"#b"m"
-# define FT_NO_BACKGROUND			"\e[49m"
-# define FT_FRAMED					"\e[51m"
-# define FT_ENCIRCLED				"\e[52m"
-# define FT_OVERLINED				"\e[53m"
-# define FT_NO_FRAMED_ENCIRCLED		"\e[54m"
-# define FT_NO_OVERLINED			"\e[55m"
-# define FT_UNDERLINE_COLOR(r,g,b) 	"\e[58;2;"r";"g";"b"m"
-# define FT_NO_UNDERLINE_COLOR		"\e[59m"
+#define FT_TC_COL_BLACK 30
+#define FT_TC_COL_RED 31
+#define FT_TC_COL_GREEN 32
+#define FT_TC_COL_YELLOW 33
+#define FT_TC_COL_BLUE 34
+#define FT_TC_COL_MAGENTA 35
+#define FT_TC_COL_CYAN 36
+#define FT_TC_COL_WHITE 37
+#define FT_TC_COL_DEFAULT 39
 
-# define FT_CURSOR_UP(n)			"\e["#n"A"
-# define FT_CURSOR_DOWN(n)			"\e["#n"B"
-# define FT_CURSOR_FORWARD(n)		"\e["#n"C"
-# define FT_CURSOR_BACK(n)			"\e["#n"D"
+#define FT_TC_COL_GRAY 90
+#define FT_TC_COL_BRIGHT_RED 91
+#define FT_TC_COL_BRIGHT_GREEN 92
+#define FT_TC_COL_BRIGHT_YELLOW 93
+#define FT_TC_COL_BRIGHT_BLUE 94
+#define FT_TC_COL_BRIGHT_MAGENTA 95
+#define FT_TC_COL_BRIGHT_CYAN 96
+#define FT_TC_COL_BRIGHT_WHITE 97
+#define FT_TC_COL_BRIGHT_DEFAULT 99
 
-//Reset
-# define FT_CRESET					"\e[0m"
+#define FT_TC_COL_BG_BLACK 40
+#define FT_TC_COL_BG_RED 41
+#define FT_TC_COL_BG_GREEN 42
+#define FT_TC_COL_BG_YELLOW 43
+#define FT_TC_COL_BG_BLUE 44
+#define FT_TC_COL_BG_MAGENTA 45
+#define FT_TC_COL_BG_CYAN 46
+#define FT_TC_COL_BG_WHITE 47
+#define FT_TC_COL_BG_DEFAULT 49
+
+#define FT_TC_BG_BRIGHT_BLACK 100
+#define FT_TC_BG_BRIGHT_RED 101
+#define FT_TC_BG_BRIGHT_GREEN 102
+#define FT_TC_BG_BRIGHT_YELLOW 103
+#define FT_TC_BG_BRIGHT_BLUE 104
+#define FT_TC_BG_BRIGHT_MAGENTA 105
+#define FT_TC_BG_BRIGHT_CYAN 106
+#define FT_TC_BG_BRIGHT_WHITE 107
+#define FT_TC_BG_BRIGHT_DEFAULT 109
+
+/* styles */
+
+#define FT_TC_BOLD 1
+#define FT_TC_DIM 2
+#define FT_TC_ITALIC 3
+#define FT_TC_UNDERLINE 4
+#define FT_TC_BLINK 5
+#define FT_TC_BLINK_FAST 6
+#define FT_TC_INVERSE 7
+#define FT_TC_INVISIBLE 8
+#define FT_TC_STRIKETHROUGH 9
+#define FT_TC_FONT1 10
+#define FT_TC_FONT2 11
+#define FT_TC_FONT3 12
+#define FT_TC_FONT4 13
+#define FT_TC_FONT5 14
+#define FT_TC_FONT6 15
+#define FT_TC_FONT7 16
+#define FT_TC_FONT8 17
+#define FT_TC_FONT9 18
+#define FT_TC_FONT10 19
+#define FT_TC_GOTHIC 20
+#define FT_TC_UNDERLINE2 21
+#define FT_TC_NO_INTENSITY 22
+#define FT_TC_NO_ITALIC 23
+#define FT_TC_NO_UNDERLINE 24
+#define FT_TC_NO_BLINKING 25
+#define FT_TC_NOTHING 26
+#define FT_TC_NO_REVERSE 27
+#define FT_TC_REVEAL 28
+#define FT_TC_NO_STRIKE 29
+
+/* expects the next 3 arguments for FT_TC to be a rgb tuple */
+#define FT_TC_FOREGROUND_COLOR(r, g, b) \
+	38;                                 \
+	2
+#define FT_TC_RESET_FOREGROUND "\e[39m"
+/* expects the next 3 arguments for FT_TC to be a rgb tuple */
+#define FT_TC_BACKGROUND_COLOR(r, g, b) \
+	48;                                 \
+	2
+#define FT_TC_RESET_BACKGROUND "\e[49m"
+#define FT_TC_FRAMED "\e[51m"
+#define FT_TC_ENCIRCLED "\e[52m"
+#define FT_TC_OVERLINED "\e[53m"
+#define FT_TC_NO_FRAMED_ENCIRCLED "\e[54m"
+#define FT_TC_NO_OVERLINED "\e[55m"
+#define FT_TC_UNDERLINE_COLOR(r, g, b) "\e[58;2;" r ";" g ";" b "m"
+#define FT_TC_NO_UNDERLINE_COLOR "\e[59m"
+
+#define FT_TC_CURSOR_UP(n) "\e[" #n "A"
+#define FT_TC_CURSOR_DOWN(n) "\e[" #n "B"
+#define FT_TC_CURSOR_FORWARD(n) "\e[" #n "C"
+#define FT_TC_CURSOR_BACK(n) "\e[" #n "D"
+
+// Reset
+#define FT_TC_RESET 0
 
 #endif
