@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:42:00 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 00:47:06 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/05 08:47:55 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,7 @@ Compares string s1 against string s2. Returns s1 - s2
 extern S32		ft_strcmp(const_string s1, const_string s2);
 
 /*
-Compares string s1 against string s2. Compares no more than (n - 1) characters. Returns s1 - s2
+Compares string s1 against string s2. Compares no more than n characters. Returns s1 - s2
 */
 extern S32		ft_strncmp(const_string s1, const_string s2, U64 n);
 
