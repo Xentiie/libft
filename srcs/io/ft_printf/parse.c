@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 18:23:46 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/05 03:06:44 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/31 18:46:31 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf_int.h"
 #include <stdio.h>
 
-S32 parse_specifier_n(const_string *_fmt)
+S32 __ftprintf_parse_specifier_n(const_string *_fmt)
 {
 	const_string fmt;
 	S32 n;
@@ -33,7 +33,7 @@ S32 parse_specifier_n(const_string *_fmt)
 	return -1;
 }
 
-S32 parse_flags(const_string *_fmt)
+S32 __ftprintf_parse_flags(const_string *_fmt)
 {
 	const_string fmt;
 	S32 flags;
@@ -73,7 +73,7 @@ S32 parse_flags(const_string *_fmt)
 	return flags;
 }
 
-S32 parse_width(const_string *_fmt, S32 *arg_n, S32 *nextarg)
+S32 __ftprintf_parse_width(const_string *_fmt, S32 *arg_n, S32 *nextarg)
 {
 	const_string fmt;
 	S32 n;
@@ -133,7 +133,7 @@ S32 parse_width(const_string *_fmt, S32 *arg_n, S32 *nextarg)
 	}
 }
 
-S32 parse_prec(const_string *_fmt, S32 *arg_n, S32 *nextarg)
+S32 __ftprintf_parse_prec(const_string *_fmt, S32 *arg_n, S32 *nextarg)
 {
 	if (**_fmt != '.')
 	{
@@ -141,10 +141,10 @@ S32 parse_prec(const_string *_fmt, S32 *arg_n, S32 *nextarg)
 		return -1;
 	}
 	(*_fmt)++;
-	return parse_width(_fmt, arg_n, nextarg);
+	return __ftprintf_parse_width(_fmt, arg_n, nextarg);
 }
 
-S32 parse_size_flags(const_string *_fmt)
+S32 __ftprintf_parse_size_flags(const_string *_fmt)
 {
 	const_string fmt;
 	S32 flags;

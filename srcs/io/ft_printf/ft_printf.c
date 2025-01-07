@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:43:53 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/05 03:25:53 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/05 13:41:46 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ S64 ft_iprintf(f_printf_write_interface write_interface, void *data, const_strin
 {
 	va_list args;
 	va_start(args, fmt);
-	U64 out = ft_ivprintf(fmt, args, write_interface, data);
+	U64 out = ft_viprintf(fmt, args, write_interface, data);
 	va_end(args);
 	return out;
 }
@@ -75,14 +75,14 @@ S64 ft_vfprintf(t_file *file, const_string fmt, va_list args)
 	U64 ret;
 
 	ft_ffilelock(file);
-	ret = ft_ivprintf(fmt, args, write_interface_file, ft_fstdout);
+	ret = ft_viprintf(fmt, args, write_interface_file, file);
 	ft_ffileunlock(file);
 	return ret;
 }
 
 S64 ft_vdprintf(filedesc fd, const_string fmt, va_list args)
 {
-	return printf_internal(fmt, args, write_interface_fd, &fd);
+	return __ftprintf_internal(fmt, args, write_interface_fd, &fd);
 }
 
 struct s_wr_i_str_data
@@ -163,7 +163,7 @@ S64 ft_vsprintf(string str, const_string fmt, va_list args)
 S64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args)
 {
 	struct s_wr_i_str_data data = {n, str};
-	U64 out = printf_internal(fmt, args, write_interface_str, &data);
+	U64 out = __ftprintf_internal(fmt, args, write_interface_str, &data);
 	if (data.n == 0 && n != 0)
 		*(data.str - 1) = '\0';
 	else
@@ -183,7 +183,7 @@ string ft_vsanprintf(U64 n, const_string fmt, va_list args)
 	va_list dup;
 
 	va_copy(dup, args);
-	ret = ft_ivprintf(fmt, dup, write_interface_void, NULL) + 1;
+	ret = ft_viprintf(fmt, dup, write_interface_void, NULL) + 1;
 	va_end(dup);
 	if (ret > n)
 		ret = n;

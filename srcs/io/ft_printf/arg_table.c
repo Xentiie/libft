@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 19:40:41 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/05 03:06:44 by reclaire         ###   ########.fr       */
+/*   Updated: 2024/12/31 18:46:31 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static void addtype(S32 **types, S32 *types_size, S32 *types_max, enum e_arg_typ
 	*types_max = (*types_max) > index ? (*types_max) : index;
 }
 
-bool build_arg_table(const_string fmt, va_list vaargs, U64 **args)
+bool __ftprintf_build_arg_table(const_string fmt, va_list vaargs, U64 **args)
 {
 	S32 stattypes[STATIC_SIZE] = {T_UNUSED};
 	S32 *types = stattypes;
@@ -92,18 +92,18 @@ bool build_arg_table(const_string fmt, va_list vaargs, U64 **args)
 
 		S32 flags = 0;
 
-		pos_nextarg = parse_specifier_n(&fmt);
-		(void)parse_flags(&fmt);
+		pos_nextarg = __ftprintf_parse_specifier_n(&fmt);
+		(void)__ftprintf_parse_flags(&fmt);
 
-		(void)parse_width(&fmt, &n2, &nextarg);
+		(void)__ftprintf_parse_width(&fmt, &n2, &nextarg);
 		if (n2 >= 0)
 			addtype(&types, &types_size, &types_max, T_S32, n2);
 
-		(void)parse_prec(&fmt, &n2, &nextarg);
+		(void)__ftprintf_parse_prec(&fmt, &n2, &nextarg);
 		if (n2 >= 0)
 			addtype(&types, &types_size, &types_max, T_S32, n2);
 
-		flags |= parse_size_flags(&fmt);
+		flags |= __ftprintf_parse_size_flags(&fmt);
 
 		switch (*fmt)
 		{

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 14:08:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/05 03:22:56 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/05 13:41:46 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,10 +84,10 @@ static S64 pad_ze(S64 s, t_fmtwr_i wr_i, void *data)
 	return out;
 }
 
-__attribute__((alias("printf_internal")))
-S64 ft_ivprintf(const_string fmt, va_list args, f_printf_write_interface write_interface, void *data);
+__attribute__((alias("__ftprintf_internal")))
+S64 ft_viprintf(const_string fmt, va_list args, f_printf_write_interface write_interface, void *data);
 
-S64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data)
+S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data)
 {
 	const_string base;
 	U64 basel;
@@ -107,7 +107,7 @@ S64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data
 	S64 ret;
 	S32 n, n2;
 
-	if (UNLIKELY(!build_arg_table(fmt, vaargs, &args)))
+	if (UNLIKELY(!__ftprintf_build_arg_table(fmt, vaargs, &args)))
 		FT_RET_ERR(-1, FT_EOMEM);
 	nextarg = 0;
 	cnt = 0;
@@ -137,25 +137,25 @@ S64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data
 		base = l_base16;
 		basel = 10;
 
-		pos_nextarg = parse_specifier_n(&fmt);
-		flags |= parse_flags(&fmt);
+		pos_nextarg = __ftprintf_parse_specifier_n(&fmt);
+		flags |= __ftprintf_parse_flags(&fmt);
 		if (flags & FL_SPACESIGN)
 			sign = ' ';
 		if (flags & FL_SHOWSIGN)
 			sign = '+';
 
-		n = parse_width(&fmt, &n2, &nextarg);
+		n = __ftprintf_parse_width(&fmt, &n2, &nextarg);
 		if (n2 < 0)
 			width = n;
 		else
 			width = *(S32 *)(&args[n2]);
 
-		n = parse_prec(&fmt, &n2, &nextarg);
+		n = __ftprintf_parse_prec(&fmt, &n2, &nextarg);
 		if (n2 < 0)
 			prec = n;
 		else
 			prec = *(S32 *)(&args[n2]);
-		flags |= parse_size_flags(&fmt);
+		flags |= __ftprintf_parse_size_flags(&fmt);
 
 		switch (*fmt)
 		{
@@ -264,6 +264,7 @@ S64 printf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data
 			{
 				value = (LU64)(flags & FL_T_LONGLONG ? GET_ARG(LS64) : flags & FL_T_LONG ? GET_ARG(S64)
 																						 : GET_ARG(S32));
+
 				if (((LS64)value) < 0)
 				{
 					value = (LU64)(-(LS64)value);

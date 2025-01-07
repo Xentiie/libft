@@ -38,11 +38,11 @@
 #define FL_HEX_M (1 << 14)
 
 typedef S64 (*t_fmtwr_i)(const_string str, U64 str_len, void *data);
-S64 printf_internal(const_string fmt, va_list args, t_fmtwr_i wr_i, void *data);
-bool build_arg_table(const_string fmt, va_list vaargs, U64 **args);
-S32 parse_flags(const_string *_fmt);
-S32 parse_specifier_n(const_string *_fmt);
-S32 parse_width(const_string *_fmt, S32 *arg_n, S32 *nextarg);
-S32 parse_prec(const_string *_fmt, S32 *arg_n, S32 *nextarg);
-S32 parse_size_flags(const_string *_fmt);
+S64 __ftprintf_internal(const_string fmt, va_list args, t_fmtwr_i wr_i, void *data);
+bool __ftprintf_build_arg_table(const_string fmt, va_list vaargs, U64 **args);
+S32 __ftprintf_parse_flags(const_string *_fmt);
+S32 __ftprintf_parse_specifier_n(const_string *_fmt);
+S32 __ftprintf_parse_width(const_string *_fmt, S32 *arg_n, S32 *nextarg);
+S32 __ftprintf_parse_prec(const_string *_fmt, S32 *arg_n, S32 *nextarg);
+S32 __ftprintf_parse_size_flags(const_string *_fmt);
 #endif
