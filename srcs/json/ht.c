@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 01:45:12 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 02:13:05 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/07 02:48:00 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ struct s_json_member **__ftjson_lookup_ht(struct s_json_ht *ht, const_string key
 	return curr;
 }
 
-bool __ftjson_append_ht(struct s_json_member **node, const_string key, struct s_json_object *obj)
+bool __ftjson_insert_ht(struct s_json_member **node, const_string key, struct s_json_object *obj)
 {
 	struct s_json_member *new;
 

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 01:43:28 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 02:13:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/07 02:26:10 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,12 +136,16 @@ string ft_json_dump(struct s_json_object *obj, U64 *len)
 {
 	string out;
 	string tmp;
+	U64 l;
 	U64 alloc;
 
 	alloc = 1024;
 	if (UNLIKELY((out = malloc(sizeof(U8) * alloc)) == NULL))
 		FT_RET_ERR(NULL, FT_EOMEM);
 	*out = '\0';
+
+	if (len == NULL)
+		len = &l;
 
 	*len = 0;
 	if (!__json_dump(&out, &alloc, len, obj))

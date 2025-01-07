@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/04 16:57:57 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 02:04:08 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/07 02:42:07 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,6 +294,9 @@ void ft_json_iter_reset(struct s_json_iterator *it, struct s_json_object *obj);
 
 /*
 Returns the next member in the json object associated with `it`
+Note:
+Iterator store the next element, so you're free to destroy the element returned by this function,
+as long as you don't destroy the next one.
 */
 struct s_json_member *ft_json_iter(struct s_json_iterator *it);
 

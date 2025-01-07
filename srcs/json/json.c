@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/04 05:30:40 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 02:12:46 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/07 03:32:17 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,7 +274,7 @@ bool ft_json_insert(struct s_json_object *obj, const_string key, struct s_json_o
 		/* key already present */
 		FT_RET_ERR(FALSE, FT_ERANGE);
 
-	if (!__ftjson_append_ht(lookup, key, value))
+	if (!__ftjson_insert_ht(lookup, key, value))
 		return FALSE;
 
 	FT_RET_OK(TRUE);
@@ -340,8 +340,10 @@ void ft_json_destroy_object(struct s_json_object *obj)
 			FT_RET_ERR(, ft_errno);
 		while ((member = ft_json_iter(it)) != NULL)
 		{
+			//ft_printf("Free: %p (%p) %s\n", member, member->key, member->key);
 			ft_json_destroy_object(member->obj);
 			free((void *)member->key);
+			free(member);
 		}
 		ft_json_iter_destroy(it);
 		__ftjson_cleanup_ht(obj->obj);

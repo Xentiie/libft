@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 01:49:56 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 02:03:19 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/07 03:24:43 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,35 @@ void ft_json_iter_reset(struct s_json_iterator *it, struct s_json_object *obj)
 
 struct s_json_member *ft_json_iter(struct s_json_iterator *it)
 {
+	struct s_json_member *ret;
+
+	//ft_printf("Entering Iter\n");
 	if (it->i >= it->obj->obj->buckets_len)
+	{
+		//ft_printf("Iter done\n");	
 		return NULL;
+	}
 
 	if (it->curr == NULL)
-	{
-		it->curr = it->obj->obj->buckets[it->i];
+	{ /* choose next bucket */
+		//ft_printf("Choosing next bucket\n");
+		while (it->i < it->obj->obj->buckets_len && (it->curr = it->obj->obj->buckets[it->i]) == NULL)
+			it->i++;
+		return ft_json_iter(it);
+	}
+	ret = it->curr;
+	it->curr = it->curr->next;
+	if (it->curr == NULL)
+		it->i++;
+
+	//ft_printf("Returning: ret=%s curr=%p\n", ret->key, it->curr);
+
+	return ret;
+
+	if (it->curr == NULL)
+	{ /* choose next bucket */
+		while (it->i < it->obj->obj->buckets_len && (it->curr = it->obj->obj->buckets[it->i]) == NULL)
+			it->i++;
 		return it->curr;
 	}
 	else
@@ -58,6 +81,7 @@ struct s_json_member *ft_json_iter(struct s_json_iterator *it)
 		if (it->curr->next == NULL)
 		{
 			it->i++;
+			it->curr = NULL;
 			return ft_json_iter(it);
 		}
 		else

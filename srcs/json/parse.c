@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 01:48:49 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 02:12:11 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/07 03:33:16 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,7 @@ struct s_json_object *ft_json_parse(const_string json, U64 *rd, enum e_json_erro
 				*err = JSON_ERR_SYS;
 				goto exit_err;
 			}
+			free(ptr);
 			i += ret_rd;
 			SKIP_WHITESPACES();
 
