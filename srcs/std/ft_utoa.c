@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 20:49:50 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/06 00:18:15 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,18 @@
 
 static S32 num_digits(U64 base_len, U64 n)
 {
-	S32 r = 0;
+	S32 r;
+
 	if (n == 0)
-		return (1);
+		return 1;
+
+	r = 0;
 	while (n > 0)
 	{
 		n /= base_len;
 		r++;
 	}
-	return (r);
+	return r;
 }
 
 U64 _ft_utoa(const_string base, U64 base_len, U64 n_digits, U64 nb, string out, S64 maxlen)
@@ -38,8 +41,10 @@ U64 _ft_utoa(const_string base, U64 base_len, U64 n_digits, U64 nb, string out, 
 	if (base == NULL)
 	{
 		base = "0123456789";
-		if (base_len != 0 || base_len > 10)
-			base_len = 10;
+		//if (base_len != 0 || base_len > 10)
+		//	base_len = 10;
+		// ^ ca m'a pas l'air de faire beaucoup de sens, donc je change. Ca risque de pt
+		base_len = 10;
 	}
 	else if (base_len == 0)
 		base_len = ft_strlen(base);
