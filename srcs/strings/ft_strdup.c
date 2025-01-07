@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 14:51:38 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/05 08:49:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,23 +55,27 @@ string ft_strndup_l(const_string str, U64 n, U64 *len)
 	U64 l;
 	string dup;
 
-	if (len == NULL)
-		len = &l;
-
 	if (UNLIKELY(str == NULL))
 	{
-		*len = 0;
+		if (len)
+			*len = 0;
 		FT_RET_ERR(NULL, FT_EINVPTR);
 	}
 
-	*len = ft_strlen(str);
-	(*len) = (*len) < n ? (*len) : n;
-	if (UNLIKELY((dup = malloc((sizeof(U8) * (*len) + 1))) == NULL))
+	l = 0;
+	while (l < n && str[l])
+		l++;
+
+	if (UNLIKELY((dup = malloc((sizeof(U8) * (l + 1)))) == NULL))
 	{
-		*len = 0;
+		if (len)
+			*len = 0;
 		FT_RET_ERR(NULL, FT_EOMEM);
 	}
 
-	ft_memcpy(dup, str, (*len) + 1);
+	ft_memcpy(dup, str, l);
+	dup[l] = '\0';
+	if (len)
+		*len = l;
 	FT_RET_OK(dup);
 }
