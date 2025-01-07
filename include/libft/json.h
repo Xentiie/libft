@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/04 16:57:57 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/06 21:00:41 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/07 02:04:08 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 enum e_json_error;
 enum e_json_type;
 struct s_json_object;
+struct s_json_iterator;
 
 enum e_json_error
 {
@@ -59,6 +60,13 @@ struct s_json_object
 			struct s_json_object **objs;
 		} array;
 	};
+};
+
+struct s_json_member
+{
+	struct s_json_member *next;
+	const_string key;
+	struct s_json_object *obj;
 };
 
 /*
@@ -214,6 +222,10 @@ struct s_json_object *ft_json_add_null(struct s_json_object *obj, const_string k
 Destroys a json object. Type specific:
 - JSON_OBJ: destroys all the key/values recursively
 - JSON_ARRAY: destroys all the arrays values recursively
+### On error
+Sets ft_errno
+### ft_errno
+- FT_EOMEM if out of memory
 */
 void ft_json_destroy_object(struct s_json_object *obj);
 
@@ -264,6 +276,31 @@ Sets ft_errno and returns `FALSE`.
 - FT_EOMEM if out of memory
 */
 bool ft_json_insert(struct s_json_object *obj, const_string key, struct s_json_object *value);
+
+/*
+Initializes a new json iterator
+### On error
+Sets ft_errno and returns `FALSE`.
+### ft_errno
+- FT_EINVOP if `obj->type` is not `JSON_OBJ`
+- FT_EOMEM if out of memory
+*/
+struct s_json_iterator *ft_json_iter_init(struct s_json_object *obj);
+
+/*
+Resets an existing iterator. If `obj` is NULL then doesn't change the object associated with `it`
+*/
+void ft_json_iter_reset(struct s_json_iterator *it, struct s_json_object *obj);
+
+/*
+Returns the next member in the json object associated with `it`
+*/
+struct s_json_member *ft_json_iter(struct s_json_iterator *it);
+
+/*
+Cleanups ressources used by `it`
+*/
+void ft_json_iter_destroy(struct s_json_iterator *it);
 
 /*
 Appends the object `new` to the json array in `obj`

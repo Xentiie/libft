@@ -1,0 +1,3 @@
+// TODO: support float and exponant for numbers
+// TODO: better errors support
+// TODO: reallocate and rehash JSON_OBJ at some point

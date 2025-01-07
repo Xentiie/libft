@@ -6,25 +6,17 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:57:38 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/07 01:46:58 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_INT_H)
 # define LIBFT_INT_H
 
+#define _FT_RETURN
+
 # include "libft/libft.h"
 # include "libft/std.h"
-# include "libft/debug.h"
-
-/*Private usage*/
-# define FT_RET_OK(ret) do { ft_errno=FT_OK; return ret; } while (0)
-
-# if defined(DEBUG)
-#  define FT_RET_ERR(ret, err) do { ft_errno = err ; ft_debug_break(); return ret; } while (0)
-# else
-#  define FT_RET_ERR(ret, err) do { ft_errno = err ; return ret; } while (0)
-# endif
 
 # if !defined(LIBFT_AVOID_ALLOCA)
 #  if defined(FT_OS_WIN) || defined(FT_OS_WIN_WSL)
