@@ -11,6 +11,10 @@ join() {
 	fi
 }
 
+clean_path() {
+	realpath --relative-to="$(pwd)" -m "$1"
+}
+
 # echo 'nom: premier arg'
 # suivit d'une backtrace
 #
@@ -300,10 +304,17 @@ cf_end_rule() {
 cf_end_target() {
 	_chk_target_scope
 
+	unique_paths=""
+	OBJS_PATH=$(clean_path "$OBJS_PATH")
+
 	for i in "${!SRCS[@]}"; do
-		base_name=$(basename "${SRCS[i]%.c}")
-		OBJS+=("$OBJS_PATH/$base_name.o")
+		SRCS["$i"]=$(clean_path "${SRCS[$i]}")
+		obj_path="$OBJS_PATH/${SRCS[i]%.c}.o"
+		OBJS+=("$obj_path")
+		unique_paths="$unique_paths $(dirname $obj_path)"
 	done
+
+	unique_paths=$(echo "$unique_paths" | tr ' ' '\n' | sort -u | tr '\n' ' ')
 
 	if [ "$MODE" == "make" ]; then
 		cf_append ".DEFAULT_GOAL=all\n"
@@ -336,7 +347,7 @@ cf_end_target() {
 		cf_end_rule phony
 
 		cf_begin_rule "objs"
-			cf_append "mkdir -p %s\n" "$OBJS_PATH"
+			cf_append "mkdir -p %s\n" "$unique_paths"
 		cf_end_rule
 
 		cf_begin_rule "clean"
