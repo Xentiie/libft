@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/22 17:22:52 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/24 03:57:30 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,23 @@ bool __ft_flockcleanup(t_file *fp);
 
 #endif
 
-extern U64 _ft_bufsiz;
-extern filedesc ft_stdout;
-extern filedesc ft_stdin;
-extern filedesc ft_stderr;
-extern t_file *ft_fstdout;
-extern t_file *ft_fstdin;
-extern t_file *ft_fstderr;
+_FT_GLOBAL_VAR_DEC(U64, _ft_bufsiz);
+
+_FT_GLOBAL_VAR_DEC(filedesc, ft_stdin);
+_FT_GLOBAL_VAR_DEC(filedesc, ft_stdout);
+_FT_GLOBAL_VAR_DEC(filedesc, ft_stderr);
+
+_FT_GLOBAL_VAR_DEC(t_file *, ft_fstdin);
+_FT_GLOBAL_VAR_DEC(t_file *, ft_fstdout);
+_FT_GLOBAL_VAR_DEC(t_file *, ft_fstderr);
+
+#define _ft_bufsiz _FT_GLOBAL_VAR(_ft_bufsiz)
+#define ft_stdin _FT_GLOBAL_VAR(ft_stdin)
+#define ft_stdout _FT_GLOBAL_VAR(ft_stdout)
+#define ft_stderr _FT_GLOBAL_VAR(ft_stderr)
+#define ft_fstdin _FT_GLOBAL_VAR(ft_fstdin)
+#define ft_fstdout _FT_GLOBAL_VAR(ft_fstdout)
+#define ft_fstderr _FT_GLOBAL_VAR(ft_fstderr)
 
 /*
 Opens a file. The string 'mode' can be one of the following:

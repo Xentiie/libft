@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 08:50:16 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/03 06:04:23 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/24 03:58:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 #include <stdlib.h>
 
 #if defined(_FT_BUFSIZ)
-U64 _ft_bufsiz = _FT_BUFSIZ;
+_FT_GLOBAL_VAR_DEF(U64, _ft_bufsiz, _FT_BUFSIZ);
 #else
-U64 _ft_bufsiz = 8192;
+_FT_GLOBAL_VAR_DEF(U64, _ft_bufsiz, 8192);
 #endif
 
 /*

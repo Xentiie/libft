@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   dump.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: yyyyyy <yyyyyy@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 01:43:28 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 19:07:23 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/22 19:46:05 by yyyyyy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "json_private.h"
 
-#include "libft/strings.h"
 #include "libft/limits.h"
+#include "libft/strings.h"
 
 #include <stdlib.h>
 
@@ -34,7 +34,8 @@ static bool __json_dump_grow(string *out, U64 *alloc, U64 *len, U64 strlen)
 	FT_RET_OK(TRUE);
 }
 
-static bool __json_dump_append(string *out, U64 *alloc, U64 *len, const_string str, U64 strlen)
+static bool __json_dump_append(string *out, U64 *alloc, U64 *len, const_string str,
+							   U64 strlen)
 {
 	if (strlen == 0)
 		strlen = ft_strlen(str);
@@ -51,13 +52,13 @@ static bool __json_dump_append(string *out, U64 *alloc, U64 *len, const_string s
 static bool __json_dump(string *out, U64 *alloc, U64 *len, struct s_json_object *obj)
 {
 	struct s_json_member *curr;
-	bool comma;
+	bool				  comma;
 
-#define _JSON_APPEND(_str, _len)                              \
-	do                                                        \
-	{                                                         \
-		if (!__json_dump_append(out, alloc, len, _str, _len)) \
-			FT_RET_ERR(FALSE, ft_errno);                      \
+#define _JSON_APPEND(_str, _len)                                                         \
+	do                                                                                   \
+	{                                                                                    \
+		if (!__json_dump_append(out, alloc, len, _str, _len))                            \
+			FT_RET_ERR(FALSE, ft_errno);                                                 \
 	} while (0);
 
 	switch (obj->type)
@@ -107,7 +108,7 @@ static bool __json_dump(string *out, U64 *alloc, U64 *len, struct s_json_object 
 		}
 		break;
 
-	case JSON_NUM:
+	case JSON_NUM:;
 		U64 n_digits = _ft_utoa(NULL, 0, 0, obj->num, NULL, S64_MAX);
 		if (!__json_dump_grow(out, alloc, len, n_digits + 1))
 			FT_RET_ERR(FALSE, ft_errno);
@@ -136,8 +137,8 @@ string ft_json_dump(struct s_json_object *obj, U64 *len)
 {
 	string out;
 	string tmp;
-	U64 l;
-	U64 alloc;
+	U64	   l;
+	U64	   alloc;
 
 	alloc = 1024;
 	if (UNLIKELY((out = malloc(sizeof(U8) * alloc)) == NULL))

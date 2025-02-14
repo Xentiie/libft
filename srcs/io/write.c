@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 13:40:56 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/15 04:16:43 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/23 04:13:47 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ S64 ft_fwrite(t_file *file, void *buffer, U64 size)
 
 S64 ft_fwrite_unlocked(t_file *file, void *buffer, U64 size)
 {
-	U64 n;
 
 	if (!file->writeable)
 		FT_RET_ERR(-1, FT_EINVVAL);
@@ -69,6 +68,7 @@ S64 ft_fwrite_unlocked(t_file *file, void *buffer, U64 size)
 	{
 		// TODO: memcpy + memchr = pas opti
 #if 0
+		U64 n;
 		//TODO: lol marche pas
 		if (file->buffering_mode == FT_IO_LINE_BUFFERED)
 		{

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 11:07:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/03 18:36:11 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/23 04:17:23 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -803,7 +803,7 @@ S32 ft_inflate_fast(t_deflate_stream *stream)
 		case 0x40 >> 4:
 			// Backref
 			length = code.val;
-			IFDEBUG(printf("[fast]	Backref:\n		code:???(%u)\n		base length: %u\n", code.nbits, code.val))
+			IFDEBUG(printf("[fast]	Backref:\n		code:?(%u)\n		base length: %u\n", code.nbits, code.val))
 			length += val & ((1U << (code.op & 0xF)) - 1);
 			IFDEBUG(printf("[fast]		extra length: %lu\n", val & ((1U << (code.op & 0xF)) - 1)));
 			val >>= (code.op & 0xF);

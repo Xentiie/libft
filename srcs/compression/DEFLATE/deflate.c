@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 03:49:46 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/03 18:35:27 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/23 04:15:05 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,9 @@ static void find_backref_linear(t_deflate_stream *stream, U64 n, U64 to_compress
 
 S32 ft_deflate(t_deflate_stream *stream)
 {
-
-
+	(void)stream;
+	ft_errno = FT_EINVOP;
+	return -1;
 }
 
 bool ft_deflate_init(t_deflate_stream *stream)

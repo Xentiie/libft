@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 14:44:13 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/23 22:33:54 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,17 @@
 #include <getopt.h>
 #endif
 
-S32 ft_optopt = 0;
-S32 ft_optind = 0;
-S32 ft_opterr = 1;
-S32 ft_optchr = '?';
-const_string ft_optarg = NULL;
+_FT_GLOBAL_VAR_DEF(S32, ft_optopt, 0);
+_FT_GLOBAL_VAR_DEF(S32, ft_optind, 0);
+_FT_GLOBAL_VAR_DEF(S32, ft_opterr, 1);
+_FT_GLOBAL_VAR_DEF(S32, ft_optchr, '?');
+_FT_GLOBAL_VAR_DEF(const_string, ft_optarg, NULL);
 
-static const_string nextchar = NULL;
-static S32 first_nonopt = -1;
+static _FT_GLOBAL_VAR_DEF(const_string, nextchar, NULL);
+static _FT_GLOBAL_VAR_DEF(S32, first_nonopt, -1);
+
+#define nextchar _FT_GLOBAL_VAR(nextchar)
+#define first_nonopt _FT_GLOBAL_VAR(first_nonopt)
 
 static bool pushback_arg(S32 start, S32 end, const_string *argv, int argc)
 {

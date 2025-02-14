@@ -1,21 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_sub.c                                          :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/25 18:10:46 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/08 01:08:32 by reclaire         ###   ########.fr       */
+/*   Created: 2021/11/16 09:56:23 by estarck           #+#    #+#             */
+/*   Updated: 2024/09/03 03:23:22 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/maths.h"
 #include "libft_int.h"
 
-extern t_v2 vec2_sub(t_v2 a, t_v2 b);
-extern t_v3 vec3_sub(t_v3 a, t_v3 b);
-extern t_v4 vec4_sub(t_v4 a, t_v4 b);
-extern t_iv2 ivec2_sub(t_iv2 a, t_iv2 b);
-extern t_iv3 ivec3_sub(t_iv3 a, t_iv3 b);
-extern t_iv4 ivec4_sub(t_iv4 a, t_iv4 b);
+S32	ft_strncmp(const_string s1, const_string s2, U64 n)
+{
+	U32 i;
+
+	if (n == 0)
+		return 0;
+	i = 0;
+	while ((i < n - 1) &&
+		s1[i] &&
+		s2[i] &&
+		s1[i] == s2[i])
+		i++;
+	return (s1[i] - s2[i]);
+}

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:43:53 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/05 13:41:46 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/27 22:21:02 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,10 @@ static S64 write_interface_str(const_string str, U64 len, void *data)
 	struct s_wr_i_str_data *_data = (struct s_wr_i_str_data *)data;
 
 	U64 i = 0;
+
+	if (_data->n <= 0 || _data->n - 1 > (len))
+		ft_errno = FT_EOSPACE;
+
 	while (i < len && i < _data->n)
 	{
 		_data->str[i] = str[i];

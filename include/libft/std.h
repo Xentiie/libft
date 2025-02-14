@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/27 14:55:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/22 18:29:05 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #define LIBFT_STD_H
 
 #include "libft.h"
+
+void *ft_calloc(U64 n, U64 size);
 
 /*
 Sets the seed for ft_rand

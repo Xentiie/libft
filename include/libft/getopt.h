@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 01:30:07 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/25 17:38:47 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/23 22:33:01 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,17 @@
 
 #include "libft.h"
 
-extern S32 ft_optopt;
-extern S32 ft_optind;
-extern S32 ft_opterr;
-extern S32 ft_optchr;
-extern const_string ft_optarg;
+_FT_GLOBAL_VAR_DEC(S32, ft_optopt)
+_FT_GLOBAL_VAR_DEC(S32, ft_optind)
+_FT_GLOBAL_VAR_DEC(S32, ft_opterr)
+_FT_GLOBAL_VAR_DEC(S32, ft_optchr)
+_FT_GLOBAL_VAR_DEC(const_string, ft_optarg)
+
+#define ft_optopt _FT_GLOBAL_VAR(ft_optopt)
+#define ft_optind _FT_GLOBAL_VAR(ft_optind)
+#define ft_opterr _FT_GLOBAL_VAR(ft_opterr)
+#define ft_optchr _FT_GLOBAL_VAR(ft_optchr)
+#define ft_optarg _FT_GLOBAL_VAR(ft_optarg)
 
 #if !defined(no_argument)
 #define no_argument 0

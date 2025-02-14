@@ -1,21 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_sub.c                                          :+:      :+:    :+:   */
+/*   plane_eq.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/25 18:10:46 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/08 01:08:32 by reclaire         ###   ########.fr       */
+/*   Created: 2025/02/06 16:42:46 by reclaire          #+#    #+#             */
+/*   Updated: 2025/02/06 16:43:00 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/maths.h"
 #include "libft_int.h"
 
-extern t_v2 vec2_sub(t_v2 a, t_v2 b);
-extern t_v3 vec3_sub(t_v3 a, t_v3 b);
-extern t_v4 vec4_sub(t_v4 a, t_v4 b);
-extern t_iv2 ivec2_sub(t_iv2 a, t_iv2 b);
-extern t_iv3 ivec3_sub(t_iv3 a, t_iv3 b);
-extern t_iv4 ivec4_sub(t_iv4 a, t_iv4 b);
+#include "libft/maths.h"
+
+t_v4 ft_plane_eq(t_v3 p1, t_v3 p2, t_v3 p3)
+{
+	t_v3 v1;
+	t_v3 v2;
+	t_v3 n;
+	F32	 k;
+
+	v1 = vec3_sub(p2, p1);
+	v2 = vec3_sub(p3, p1);
+	n = vec3_scl(ft_normalize3(ft_cross3(v1, v2)), -1);
+	k = -ft_dot3(p1, n);
+	return vec4(n.x, n.y, n.z, k);
+}
+

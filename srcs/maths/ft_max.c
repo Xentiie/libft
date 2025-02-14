@@ -6,16 +6,16 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/30 20:58:48 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 21:53:31 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/23 04:22:24 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 #include "libft/maths.h"
 
-F32 ft_fmax(F32 a, F32 b) { return MAX(a, b); }
-F32 ft_fmax_3(F32 a, F32 b, F32 c) { return MAX(MAX(a, b), c); }
-F32 ft_fmax_4(F32 a, F32 b, F32 c, F32 d) { return MAX(MAX(MAX(a, b), c), d); }
+F64 ft_fmax(F64 a, F64 b) { return MAX(a, b); }
+F64 ft_fmax_3(F64 a, F64 b, F64 c) { return MAX(MAX(a, b), c); }
+F64 ft_fmax_4(F64 a, F64 b, F64 c, F64 d) { return MAX(MAX(MAX(a, b), c), d); }
 S32 ft_imax(S32 a, S32 b) { return MAX(a, b); }
 S32 ft_imax_3(S32 a, S32 b, S32 c) { return MAX(MAX(a, b), c); }
 S32 ft_imax_4(S32 a, S32 b, S32 c, S32 d) { return MAX(MAX(MAX(a, b), c), d); }

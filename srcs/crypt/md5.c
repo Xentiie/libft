@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 02:10:31 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/20 11:08:33 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/02/11 02:35:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,22 +66,25 @@ void ft_md5_update(struct s_md5_state *state, const void *input, U64 len)
 	U8 *_input;
 	U32 i;
 	U32 index;
-	U32 part_len;
+	U32 buf_rem;
 
 	_input = (U8 *)input;
 	index = (U32)((state->len / 8) % 64);
 	state->len += (U64)len * 8;
 
-	part_len = 64 - index;
-
-	if (len >= part_len)
+	buf_rem = sizeof(state->buffer) - index;
+	if (len > buf_rem)
 	{
-		ft_memcpy(&state->buffer[index], _input, part_len);
+		ft_memcpy(&state->buffer[index], _input, buf_rem);
 		md5_transform(state->state, state->buffer);
-
-		for (i = part_len; i + 63 < len; i += 64)
-			md5_transform(state->state, &_input[i]);
 		index = 0;
+
+		i = buf_rem;
+		while ((i + 64) < len)
+		{
+			md5_transform(state->state, &_input[i]);
+			i += 64;
+		}
 	}
 	else
 		i = 0;

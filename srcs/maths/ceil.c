@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 16:38:34 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 21:50:26 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/23 04:22:10 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include <math.h>
 
-F32		ft_ceil(F32 n)		{ return ceil(n); }
+F64		ft_ceil(F64 n)		{ return ceil(n); }
 
 t_v2	ft_ceil2(t_v2 n)	{ return vec2(ceil(n.x), ceil(n.y)); }
 t_v3	ft_ceil3(t_v3 n)	{ return vec3(ceil(n.x), ceil(n.y), ceil(n.z)); }

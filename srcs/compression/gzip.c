@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 22:00:12 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/02/11 02:37:45 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,9 @@ U64 ft_gzip_header_len(t_gzip_header *header)
 		 + 1 // extra flags
 		 + 1 // os
 		 + ((header->extra_data != NULL) * header->extra_data_len)
-		 + (header->filename != NULL) ? (ft_strlen(header->filename) + 1) : 0
-		 + (header->comment != NULL) ? (ft_strlen(header->comment) + 1) : 0
-		 + (header->header_crc16) ? 2 : 0;
+		 + ((header->filename != NULL) ? (ft_strlen(header->filename) + 1) : 0)
+		 + ((header->comment != NULL) ? (ft_strlen(header->comment) + 1) : 0)
+		 + ((header->header_crc16) ? 2 : 0);
 	// clang-format on
 }
 

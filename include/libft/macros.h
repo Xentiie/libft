@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:46:29 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/19 04:02:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/02/13 14:40:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,5 +253,17 @@ Usage:
 )
 
 */
+
+#define __valueif_test(...)
+#define __valueif_test0(...)
+#define __valueif_test1(...) __VA_ARGS__
+/* Will expand to __VA_ARGS__ if first argument is 1, won't expand anything otherwise */
+#define VALUE_IF(T, ...) __valueif_test##T (__VA_ARGS__)
+
+#define __valueifnot_test(...) __VA_ARGS__
+#define __valueifnot_test0(...) __VA_ARGS__
+#define __valueifnot_test1(...)
+/* Will expand to __VA_ARGS__ if first argument is 0 or nothing, won't expand anything otherwise */
+#define VALUE_IFNOT(T, ...) __valueifnot_test##T (__VA_ARGS__)
 
 #endif

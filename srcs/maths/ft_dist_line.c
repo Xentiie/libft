@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 04:34:41 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 21:50:46 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/23 04:23:48 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 
 #include <math.h>
 
-F32	ft_dist_line(t_v2 p, t_v2 s1, t_v2 s2)
+F64	ft_dist_line(t_v2 p, t_v2 s1, t_v2 s2)
 {
 	t_v2	ab;
 	t_v2	cd;
-	F32		param;
+	F64		param;
 	t_v2	d;
 	t_v2	tmp;
 

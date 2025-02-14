@@ -6,13 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 14:08:44 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/05 13:41:46 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/24 06:21:12 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf_int.h"
-#include "libft/strings.h"
 #include "libft/limits.h"
+#include "libft/strings.h"
 
 #include <stdlib.h>
 
@@ -30,13 +30,14 @@ static const_string l_base16 = "0123456789abcdef";
 static const_string u_base16 = "0123456789ABCDEF";
 
 #define GET_ARG(type) (*(type *)(&args[pos_nextarg == -1 ? nextarg++ : pos_nextarg]))
-#define BUF_SIZE U64_MAX_MAG + 1
+#define BUF_SIZE	  U64_MAX_MAG + 1
 
+MAYBE_UNUSED
 static S64 pad(char c, S64 s, t_fmtwr_i wr_i, void *data)
 {
 	char _padding[512];
-	S64 out;
-	S64 ret;
+	S64	 out;
+	S64	 ret;
 
 	out = 0;
 	ft_memset(_padding, c, MIN(s, (S64)sizeof(_padding)));
@@ -53,8 +54,8 @@ static S64 pad(char c, S64 s, t_fmtwr_i wr_i, void *data)
 static S64 pad_sp(S64 s, t_fmtwr_i wr_i, void *data)
 {
 	static char _padding[512] = {[0 ... 511] = ' '};
-	S64 out;
-	S64 ret;
+	S64			out;
+	S64			ret;
 
 	out = 0;
 	while (s > 0)
@@ -70,8 +71,8 @@ static S64 pad_sp(S64 s, t_fmtwr_i wr_i, void *data)
 static S64 pad_ze(S64 s, t_fmtwr_i wr_i, void *data)
 {
 	static char _padding[512] = {[0 ... 511] = '0'};
-	S64 out;
-	S64 ret;
+	S64			out;
+	S64			ret;
 
 	out = 0;
 	while (s > 0)
@@ -84,17 +85,17 @@ static S64 pad_ze(S64 s, t_fmtwr_i wr_i, void *data)
 	return out;
 }
 
-__attribute__((alias("__ftprintf_internal")))
-S64 ft_viprintf(const_string fmt, va_list args, f_printf_write_interface write_interface, void *data);
+__attribute__((alias("__ftprintf_internal"))) S64 ft_viprintf(
+	const_string fmt, va_list args, f_printf_write_interface write_interface, void *data);
 
 S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data)
 {
 	const_string base;
-	U64 basel;
+	U64			 basel;
 
-	char buffer[BUF_SIZE];
+	char		 buffer[BUF_SIZE];
 	const_string str = NULL;
-	S64 str_len = 0;
+	S64			 str_len = 0;
 
 	const_string sv = fmt;
 
@@ -130,9 +131,9 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 		}
 		fmt++;
 
-		S32 width = -1;
-		S32 prec = -1;
-		S32 flags = 0;
+		S32	 width = -1;
+		S32	 prec = -1;
+		S32	 flags = 0;
 		char sign = '\0';
 		base = l_base16;
 		basel = 10;
@@ -220,7 +221,8 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 
 		case 'p':
 			basel = 16;
-			flags = (flags & ~FL_T_LONGLONG) | FL_T_LONG | FL_UNSIGNED | FL_NUMBER | FL_HEX;
+			flags
+				= (flags & ~FL_T_LONGLONG) | FL_T_LONG | FL_UNSIGNED | FL_NUMBER | FL_HEX;
 			break;
 		case 's':
 			str = GET_ARG(const_string);
@@ -257,13 +259,15 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 			LU64 value;
 			if (flags & FL_UNSIGNED)
 			{
-				value = (LU64)(flags & FL_T_LONGLONG ? GET_ARG(LU64) : flags & FL_T_LONG ? GET_ARG(U64)
-																						 : GET_ARG(U32));
+				value = (LU64)(flags & FL_T_LONGLONG ? GET_ARG(LU64)
+							   : flags & FL_T_LONG	 ? GET_ARG(U64)
+													 : GET_ARG(U32));
 			}
 			else
 			{
-				value = (LU64)(flags & FL_T_LONGLONG ? GET_ARG(LS64) : flags & FL_T_LONG ? GET_ARG(S64)
-																						 : GET_ARG(S32));
+				value = (LU64)(flags & FL_T_LONGLONG ? GET_ARG(LS64)
+							   : flags & FL_T_LONG	 ? GET_ARG(S64)
+													 : GET_ARG(S32));
 
 				if (((LS64)value) < 0)
 				{
@@ -286,6 +290,24 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 				str = "";
 				str_len = 0;
 			}
+		}
+
+		if (flags & FL_FP)
+		{
+			F64 value;
+
+			value = GET_ARG(F64);
+			if (value < 0)
+			{
+				value = -value;
+				sign = '-';
+			}
+
+			string tmp = ft_ftoa(value);
+			str_len = ft_strlen(tmp);
+			ft_memcpy(buffer, tmp, str_len + 1);
+			str = buffer;
+			free(tmp);
 		}
 
 		if (flags & FL_UNSIGNED)

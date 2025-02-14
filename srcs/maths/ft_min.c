@@ -6,16 +6,16 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/30 20:55:17 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 21:53:28 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/23 04:21:09 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 #include "libft/maths.h"
 
-F32 ft_fmin(F32 a, F32 b) { return MIN(a, b); }
-F32 ft_fmin_3(F32 a, F32 b, F32 c) { return MIN(MIN(a, b), c); }
-F32 ft_fmin_4(F32 a, F32 b, F32 c, F32 d) { return MIN(MIN(MIN(a, b), c), d); }
+F64 ft_fmin(F64 a, F64 b) { return MIN(a, b); }
+F64 ft_fmin_3(F64 a, F64 b, F64 c) { return MIN(MIN(a, b), c); }
+F64 ft_fmin_4(F64 a, F64 b, F64 c, F64 d) { return MIN(MIN(MIN(a, b), c), d); }
 S32 ft_imin(S32 a, S32 b) { return MIN(a, b); }
 S32 ft_imin_3(S32 a, S32 b, S32 c) { return MIN(MIN(a, b), c); }
 S32 ft_imin_4(S32 a, S32 b, S32 c, S32 d) { return MIN(MIN(MIN(a, b), c), d); }

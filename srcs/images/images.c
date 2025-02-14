@@ -1,21 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_sub.c                                          :+:      :+:    :+:   */
+/*   images.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/25 18:10:46 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/08 01:08:32 by reclaire         ###   ########.fr       */
+/*   Created: 2025/02/13 14:15:22 by reclaire          #+#    #+#             */
+/*   Updated: 2025/02/13 14:29:48 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/maths.h"
 #include "libft_int.h"
 
-extern t_v2 vec2_sub(t_v2 a, t_v2 b);
-extern t_v3 vec3_sub(t_v3 a, t_v3 b);
-extern t_v4 vec4_sub(t_v4 a, t_v4 b);
-extern t_iv2 ivec2_sub(t_iv2 a, t_iv2 b);
-extern t_iv3 ivec3_sub(t_iv3 a, t_iv3 b);
-extern t_iv4 ivec4_sub(t_iv4 a, t_iv4 b);
+#include "libft/images.h"
+#include "libft/maths.h"
+
+#include <stdlib.h>
+
+bool ft_init_image(t_image *img, t_iv2 size)
+{
+	img->size = size;
+	if ((img->data = malloc(sizeof(t_color) * size.x * size.y)) == NULL)
+		FT_RET_ERR(FALSE, FT_EOMEM);
+	img->pixels = (t_color *) img->data;
+
+	FT_RET_OK(TRUE);
+}
+
+void ft_destroy_image(t_image *img) { free(img->data); }

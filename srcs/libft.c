@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:49:04 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 07:08:15 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/24 03:54:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@
 #define __thread
 #endif
 
-S32 ft_argc = -1;
-string *ft_argv = NULL;
-string *ft_env = NULL;
+_FT_GLOBAL_VAR_DEF(S32, ft_argc, -1);
+_FT_GLOBAL_VAR_DEF(string *, ft_argv, NULL);
+_FT_GLOBAL_VAR_DEF(string *, ft_env, NULL);
 
 #if defined(_FT_ERRNO_LOCATION)
 S32 *__ft_errno_location()
@@ -34,13 +34,13 @@ S32 *__ft_errno_location()
 __thread S32 ft_errno;
 #endif
 
-filedesc ft_stdin;
-filedesc ft_stdout;
-filedesc ft_stderr;
+_FT_GLOBAL_VAR_DEF(filedesc, ft_stdin);
+_FT_GLOBAL_VAR_DEF(filedesc, ft_stdout);
+_FT_GLOBAL_VAR_DEF(filedesc, ft_stderr);
 
-t_file *ft_fstdin;
-t_file *ft_fstdout;
-t_file *ft_fstderr;
+_FT_GLOBAL_VAR_DEF(t_file *, ft_fstdin);
+_FT_GLOBAL_VAR_DEF(t_file *, ft_fstdout);
+_FT_GLOBAL_VAR_DEF(t_file *, ft_fstderr);
 
 __attribute__((constructor))
 void __init_libft(S32 argc, string *argv, string *env)
