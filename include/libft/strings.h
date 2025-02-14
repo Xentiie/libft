@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:42:00 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/05 08:47:55 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/10 13:28:40 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,6 +218,11 @@ extern S32		ft_strcmp(const_string s1, const_string s2);
 Compares string s1 against string s2. Compares no more than n characters. Returns s1 - s2
 */
 extern S32		ft_strncmp(const_string s1, const_string s2, U64 n);
+
+/*
+Compares filenames s1 against s2. Uses debian's versionning rules to determine highest file version
+*/
+extern S32 ft_filevercmp(const_string s1, const_string s2);
 
 /*
 Converts a lower-case letter to the corresponding upper-case letter.

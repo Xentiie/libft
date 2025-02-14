@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 01:43:28 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 02:26:10 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/07 19:07:23 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ static bool __json_dump(string *out, U64 *alloc, U64 *len, struct s_json_object 
 		_JSON_APPEND("}", 1);
 		break;
 
-	case JSON_ARRAY:
+	case JSON_ARR:
 		_JSON_APPEND("[", 1);
 		for (U64 i = 0; i < obj->array.len; i++)
 		{
@@ -96,7 +96,7 @@ static bool __json_dump(string *out, U64 *alloc, U64 *len, struct s_json_object 
 		_JSON_APPEND("]", 1);
 		break;
 
-	case JSON_BOOL:
+	case JSON_BLN:
 		if (obj->boolean)
 		{
 			_JSON_APPEND("true", 4);
@@ -115,13 +115,13 @@ static bool __json_dump(string *out, U64 *alloc, U64 *len, struct s_json_object 
 		(*out)[*len] = '\0';
 		break;
 
-	case JSON_STRING:
+	case JSON_STR:
 		_JSON_APPEND("\"", 1);
 		_JSON_APPEND(obj->str, 0);
 		_JSON_APPEND("\"", 1);
 		break;
 
-	case JSON_NULL:
+	case JSON_NUL:
 		_JSON_APPEND("false", 5);
 		break;
 

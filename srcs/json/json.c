@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/04 05:30:40 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 03:32:17 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/07 19:07:23 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool ft_json_set_bool(struct s_json_object *obj, bool b)
 {
 	if (obj->type != JSON_NONE)
 		FT_RET_ERR(FALSE, FT_EINVOP);
-	obj->type = JSON_BOOL;
+	obj->type = JSON_BLN;
 	obj->boolean = b;
 
 	FT_RET_OK(TRUE);
@@ -43,7 +43,7 @@ bool ft_json_set_string(struct s_json_object *obj, const_string str)
 {
 	if (obj->type != JSON_NONE)
 		FT_RET_ERR(FALSE, FT_EINVOP);
-	obj->type = JSON_STRING;
+	obj->type = JSON_STR;
 	if (UNLIKELY((obj->str = ft_strdup(str)) == NULL))
 		FT_RET_ERR(FALSE, FT_EOMEM);
 
@@ -76,7 +76,7 @@ bool ft_json_set_array(struct s_json_object *obj)
 {
 	if (obj->type != JSON_NONE)
 		FT_RET_ERR(FALSE, FT_EINVOP);
-	obj->type = JSON_ARRAY;
+	obj->type = JSON_ARR;
 
 	obj->array.alloc = 0;
 	obj->array.len = 0;
@@ -89,7 +89,7 @@ bool ft_json_set_null(struct s_json_object *obj)
 {
 	if (obj->type != JSON_NONE)
 		FT_RET_ERR(FALSE, FT_EINVOP);
-	obj->type = JSON_NULL;
+	obj->type = JSON_NUL;
 
 	FT_RET_OK(TRUE);
 }
@@ -98,7 +98,7 @@ struct s_json_object *ft_json_add_bool(struct s_json_object *obj, const_string k
 {
 	struct s_json_object *new;
 
-	if (obj->type != JSON_ARRAY && obj->type != JSON_OBJ)
+	if (obj->type != JSON_ARR && obj->type != JSON_OBJ)
 		FT_RET_ERR(NULL, FT_EINVOP);
 
 	if (obj->type == JSON_OBJ && key == NULL)
@@ -126,7 +126,7 @@ struct s_json_object *ft_json_add_string(struct s_json_object *obj, const_string
 {
 	struct s_json_object *new;
 
-	if (obj->type != JSON_ARRAY && obj->type != JSON_OBJ)
+	if (obj->type != JSON_ARR && obj->type != JSON_OBJ)
 		FT_RET_ERR(NULL, FT_EINVOP);
 
 	if (obj->type == JSON_OBJ && key == NULL)
@@ -154,7 +154,7 @@ struct s_json_object *ft_json_add_num(struct s_json_object *obj, const_string ke
 {
 	struct s_json_object *new;
 
-	if (obj->type != JSON_ARRAY && obj->type != JSON_OBJ)
+	if (obj->type != JSON_ARR && obj->type != JSON_OBJ)
 		FT_RET_ERR(NULL, FT_EINVOP);
 
 	if (obj->type == JSON_OBJ && key == NULL)
@@ -182,7 +182,7 @@ struct s_json_object *ft_json_add_obj(struct s_json_object *obj, const_string ke
 {
 	struct s_json_object *new;
 
-	if (obj->type != JSON_ARRAY && obj->type != JSON_OBJ)
+	if (obj->type != JSON_ARR && obj->type != JSON_OBJ)
 		FT_RET_ERR(NULL, FT_EINVOP);
 
 	if (obj->type == JSON_OBJ && key == NULL)
@@ -210,7 +210,7 @@ struct s_json_object *ft_json_add_array(struct s_json_object *obj, const_string 
 {
 	struct s_json_object *new;
 
-	if (obj->type != JSON_ARRAY && obj->type != JSON_OBJ)
+	if (obj->type != JSON_ARR && obj->type != JSON_OBJ)
 		FT_RET_ERR(NULL, FT_EINVOP);
 
 	if (obj->type == JSON_OBJ && key == NULL)
@@ -238,7 +238,7 @@ struct s_json_object *ft_json_add_null(struct s_json_object *obj, const_string k
 {
 	struct s_json_object *new;
 
-	if (obj->type != JSON_ARRAY && obj->type != JSON_OBJ)
+	if (obj->type != JSON_ARR && obj->type != JSON_OBJ)
 		FT_RET_ERR(NULL, FT_EINVOP);
 
 	if (obj->type == JSON_OBJ && key == NULL)
@@ -298,7 +298,7 @@ bool ft_json_append(struct s_json_object *obj, struct s_json_object *new)
 {
 	struct s_json_object **new_objs;
 
-	if (obj->type != JSON_ARRAY)
+	if (obj->type != JSON_ARR)
 		FT_RET_ERR(FALSE, FT_EINVOP);
 
 	if (obj->array.objs == NULL || obj->array.len == 0)
@@ -331,7 +331,7 @@ void ft_json_destroy_object(struct s_json_object *obj)
 
 	switch (obj->type)
 	{
-	case JSON_STRING:
+	case JSON_STR:
 		free(obj->str);
 		break;
 
@@ -349,7 +349,7 @@ void ft_json_destroy_object(struct s_json_object *obj)
 		__ftjson_cleanup_ht(obj->obj);
 		break;
 
-	case JSON_ARRAY:
+	case JSON_ARR:
 		for (U64 i = 0; i < obj->array.len; i++)
 			ft_json_destroy_object(obj->array.objs[i]);
 		free(obj->array.objs);

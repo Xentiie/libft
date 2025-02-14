@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/16 15:37:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,17 +52,6 @@ static U32 png_read_u32(U8 **buffer)
 	*buffer += sizeof(U32);
 	return n;
 }
-
-/*
-trucs droles:
-
-la taille est stocké sur un U32, mais le bit de signe n'est pas utilisé
-(donc normalement limité sur S32_MAX), du coup il se passe quoi si je rentre une image
-plus grande ?
-
-
-
-*/
 
 #define COL_TYPE_GRAYSCALE 0
 #define COL_TYPE_RGB 2
@@ -330,17 +319,17 @@ next_chunk:
 
 			reading_IDAT = 1;
 
-			filedesc test_file = ft_open("test.gz", "w+");
+			//filedesc test_file = ft_open("test.gz", "w+");
 
-			U8 header_buf[200];
-			t_gzip_header header = {0};
-			header.filename = "test";
-			U64 header_size = ft_gzip_write_header(header_buf, sizeof(header_buf), &header);
+			//U8 header_buf[200];
+			//t_gzip_header header = {0};
+			//header.filename = "test";
+			//U64 header_size = ft_gzip_write_header(header_buf, sizeof(header_buf), &header);
 
-			ft_write(test_file, (char *)header_buf, header_size);
-			ft_write(test_file, (char *)buffer, chunk_length);
+			//ft_write(test_file, (char *)header_buf, header_size);
+			//ft_write(test_file, (char *)buffer, chunk_length);
 
-			ft_close(test_file);
+			//ft_close(test_file);
 
 		}
 

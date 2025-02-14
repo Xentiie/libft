@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 13:51:00 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 21:56:39 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/07 19:28:05 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,14 @@
 #include "libft/limits.h"
 
 #if defined(TEST)
-# include <stdio.h>
+#include <stdio.h>
 #endif
 
-
-S32	ft_atoi(const_string str)
+S32 ft_atoi(const_string str)
 {
-	S8		neg = 1;
-	U64		i = 0;
-	U64		result = 0;
+	S8 neg = 1;
+	U64 i = 0;
+	U64 result = 0;
 
 	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
 		i++;
@@ -42,16 +41,16 @@ S32	ft_atoi(const_string str)
 
 	if (result > S32_MAX && neg > 0)
 		return (S32_MAX);
-	if (result > (U64)(S32_MAX)+1 && neg < 0)
+	if (result > (U64)(S32_MAX) + 1 && neg < 0)
 		return (S32_MIN);
-	return (result*neg);
+	return (result * neg);
 }
 
-S32	ft_atoi_l(const_string str, U64 *len)
+S32 ft_atoi_l(const_string str, U64 *len)
 {
-	S8		neg = 1;
-	U64		i = 0;
-	U64		result = 0;
+	S8 neg = 1;
+	U64 i = 0;
+	U64 result = 0;
 
 	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
 		i++;
@@ -61,7 +60,7 @@ S32	ft_atoi_l(const_string str, U64 *len)
 
 	if (str[i] == '-' || str[i] == '+')
 		i++;
-	
+
 	while (ft_isdigit(str[i]) && str[i] != '\0')
 	{
 		result = result * 10 + (str[i] - '0');
@@ -70,28 +69,28 @@ S32	ft_atoi_l(const_string str, U64 *len)
 
 	if (result > S32_MAX && neg > 0)
 		return (0);
-	if (result > (U64)(S32_MAX)+1 && neg < 0)
+	if (result > (U64)(S32_MAX) + 1 && neg < 0)
 		return (0);
 	if (len)
 		*len = i;
-	return (result*neg);
+	return (result * neg);
 }
 
-S32	ft_atoi_b(const_string base, const_string str)
+S32 ft_atoi_b(const_string base, const_string str)
 {
-	S8		neg = 1;
-	U64		i = 0;
-	U64		result = 0;
+	S8 neg = 1;
+	U64 i = 0;
+	U64 result = 0;
 
 	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
 		i++;
-	
+
 	if (str[i] == '-')
 		neg = -1;
 
 	if (str[i] == '-' || str[i] == '+')
 		i++;
-	
+
 	S64 ind;
 	U64 base_l = ft_strlen(base);
 	while ((ind = ft_strgetindex(base, str[i])) != -1 && str[i] != '\0')
@@ -102,26 +101,26 @@ S32	ft_atoi_b(const_string base, const_string str)
 
 	if (result > S32_MAX && neg > 0)
 		return (0);
-	if (result > (U64)(S32_MAX)+1 && neg < 0)
+	if (result > (U64)(S32_MAX) + 1 && neg < 0)
 		return (0);
-	return (result*neg);
+	return (result * neg);
 }
 
-S32	ft_atoi_bl(const_string base, const_string str, U64 *len)
+S32 ft_atoi_bl(const_string base, const_string str, U64 *len)
 {
-	S8		neg = 1;
-	U64		i = 0;
-	U64		result = 0;
+	S8 neg = 1;
+	U64 i = 0;
+	U64 result = 0;
 
 	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
 		i++;
-	
+
 	if (str[i] == '-')
 		neg = -1;
 
 	if (str[i] == '-' || str[i] == '+')
 		i++;
-	
+
 	S64 ind;
 	U64 base_l = ft_strlen(base);
 	while ((ind = ft_strgetindex(base, str[i])) != -1 && str[i] != '\0')
@@ -132,11 +131,11 @@ S32	ft_atoi_bl(const_string base, const_string str, U64 *len)
 
 	if (result > S32_MAX && neg > 0)
 		return (0);
-	if (result > (U64)(S32_MAX)+1 && neg < 0)
+	if (result > (U64)(S32_MAX) + 1 && neg < 0)
 		return (0);
 	if (len)
 		*len = i;
-	return (result*neg);
+	return (result * neg);
 }
 
 #if defined(TEST)
@@ -147,7 +146,11 @@ S32	ft_atoi_bl(const_string base, const_string str, U64 *len)
 #define MK_TEST(n) _xstr(n), n
 int main()
 {
-	struct _s_test { string str; S32 i; } tests[] = {
+	struct _s_test
+	{
+		string str;
+		S32 i;
+	} tests[] = {
 		{MK_TEST(0)},
 		{MK_TEST(-0)},
 		{MK_TEST(1)},
@@ -159,13 +162,12 @@ int main()
 		{MK_TEST(12345)},
 	};
 
-	
-	for (int i = 0; i < sizeof(tests)/sizeof(*tests); i++)
+	for (int i = 0; i < sizeof(tests) / sizeof(*tests); i++)
 		printf("%s (%d) -> %d\n", tests[i].str, tests[i].i, ft_atoi(tests[i].str));
 
 	printf("\n");
 
-	for (int i = 0; i < sizeof(tests)/sizeof(*tests); i++)
+	for (int i = 0; i < sizeof(tests) / sizeof(*tests); i++)
 		printf("%s (%d) -> %d\n", tests[i].str, tests[i].i, ft_atoi_b("0123456789", tests[i].str));
 
 	string hex_tests[] = {
@@ -182,7 +184,7 @@ int main()
 		"d",
 		"7f800000",
 	};
-	for (int i = 0; i < sizeof(hex_tests)/sizeof(*hex_tests); i++)
+	for (int i = 0; i < sizeof(hex_tests) / sizeof(*hex_tests); i++)
 	{
 		S32 n = ft_atoi_b("0123456789abcdef", hex_tests[i]);
 		printf("0x%s -> 0x%X (%d)\n", hex_tests[i], n, n);

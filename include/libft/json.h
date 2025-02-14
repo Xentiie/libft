@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/04 16:57:57 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 02:42:07 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/07 19:11:22 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,18 @@ enum e_json_type
 {
 	/* DO NOT USE */
 	JSON_NONE = 0,
-	JSON_BOOL,
-	JSON_STRING,
+	/* boolean */
+	JSON_BLN,
+	/* string */
+	JSON_STR,
+	/* numerical value */
 	JSON_NUM,
+	/* json object dictionnary */
 	JSON_OBJ,
-	JSON_ARRAY,
-	JSON_NULL,
+	/* json objects array */
+	JSON_ARR,
+	/* null */
+	JSON_NUL,
 };
 
 struct s_json_object
@@ -126,7 +132,7 @@ Sets ft_errno and returns `FALSE`.
 bool ft_json_set_array(struct s_json_object *obj);
 
 /*
-Sets the type to `JSON_NULL`.
+Sets the type to `JSON_NUL`.
 ### On error
 Sets ft_errno and returns `FALSE`.
 ### ft_errno
@@ -136,11 +142,11 @@ bool ft_json_set_null(struct s_json_object *obj);
 
 /*
 A combination of ft_json_new_object, ft_json_set_bool and ft_json_insert/ft_json_append
-If `obj->type == JSON_ARRAY`, `key` is ignored and can be set to NULL
+If `obj->type == JSON_ARR`, `key` is ignored and can be set to NULL
 ### On error
 Sets ft_errno and returns `NULL`
 ### ft_errno
-- FT_EINVOP if `obj->type != JSON_OBJ && obj->type != JSON_ARRAY`
+- FT_EINVOP if `obj->type != JSON_OBJ && obj->type != JSON_ARR`
 - FT_EINVPTR if `obj->type == JSON_OBJ` and `key == NULL`
 - FT_ERANGE if `obj->type == JSON_OBJ` and a value for `key` already exists
 - FT_EOMEM if out of memory
@@ -150,11 +156,11 @@ struct s_json_object *ft_json_add_bool(struct s_json_object *obj, const_string k
 
 /*
 A combination of ft_json_new_object, ft_json_add_string and ft_json_insert/ft_json_append
-If `obj->type == JSON_ARRAY`, `key` is ignored and can be set to NULL
+If `obj->type == JSON_ARR`, `key` is ignored and can be set to NULL
 ### On error
 Sets ft_errno and returns `NULL`
 ### ft_errno
-- FT_EINVOP if `obj->type != JSON_OBJ && obj->type != JSON_ARRAY`
+- FT_EINVOP if `obj->type != JSON_OBJ && obj->type != JSON_ARR`
 - FT_EINVPTR if `obj->type == JSON_OBJ` and `key == NULL`
 - FT_ERANGE if `obj->type == JSON_OBJ` and a value for `key` already exists
 - FT_EOMEM if out of memory
@@ -164,11 +170,11 @@ struct s_json_object *ft_json_add_string(struct s_json_object *obj, const_string
 
 /*
 A combination of ft_json_new_object, ft_json_add_num and ft_json_insert/ft_json_append
-If `obj->type == JSON_ARRAY`, `key` is ignored and can be set to NULL
+If `obj->type == JSON_ARR`, `key` is ignored and can be set to NULL
 ### On error
 Sets ft_errno and returns `NULL`
 ### ft_errno
-- FT_EINVOP if `obj->type != JSON_OBJ && obj->type != JSON_ARRAY`
+- FT_EINVOP if `obj->type != JSON_OBJ && obj->type != JSON_ARR`
 - FT_EINVPTR if `obj->type == JSON_OBJ` and `key == NULL`
 - FT_ERANGE if `obj->type == JSON_OBJ` and a value for `key` already exists
 - FT_EOMEM if out of memory
@@ -178,11 +184,11 @@ struct s_json_object *ft_json_add_num(struct s_json_object *obj, const_string ke
 
 /*
 A combination of ft_json_new_object, ft_json_add_obj and ft_json_insert/ft_json_append
-If `obj->type == JSON_ARRAY`, `key` is ignored and can be set to NULL
+If `obj->type == JSON_ARR`, `key` is ignored and can be set to NULL
 ### On error
 Sets ft_errno and returns `NULL`
 ### ft_errno
-- FT_EINVOP if `obj->type != JSON_OBJ && obj->type != JSON_ARRAY`
+- FT_EINVOP if `obj->type != JSON_OBJ && obj->type != JSON_ARR`
 - FT_EINVPTR if `obj->type == JSON_OBJ` and `key == NULL`
 - FT_ERANGE if `obj->type == JSON_OBJ` and a value for `key` already exists
 - FT_EOMEM if out of memory
@@ -192,11 +198,11 @@ struct s_json_object *ft_json_add_obj(struct s_json_object *obj, const_string ke
 
 /*
 A combination of ft_json_new_object, ft_json_add_array and ft_json_insert/ft_json_append
-If `obj->type == JSON_ARRAY`, `key` is ignored and can be set to NULL
+If `obj->type == JSON_ARR`, `key` is ignored and can be set to NULL
 ### On error
 Sets ft_errno and returns `NULL`
 ### ft_errno
-- FT_EINVOP if `obj->type != JSON_OBJ && obj->type != JSON_ARRAY`
+- FT_EINVOP if `obj->type != JSON_OBJ && obj->type != JSON_ARR`
 - FT_EINVPTR if `obj->type == JSON_OBJ` and `key == NULL`
 - FT_ERANGE if `obj->type == JSON_OBJ` and a value for `key` already exists
 - FT_EOMEM if out of memory
@@ -206,11 +212,11 @@ struct s_json_object *ft_json_add_array(struct s_json_object *obj, const_string 
 
 /*
 A combination of ft_json_new_object, ft_json_add_null and ft_json_insert/ft_json_append
-If `obj->type == JSON_ARRAY`, `key` is ignored and can be set to NULL
+If `obj->type == JSON_ARR`, `key` is ignored and can be set to NULL
 ### On error
 Sets ft_errno and returns `NULL`
 ### ft_errno
-- FT_EINVOP if `obj->type != JSON_OBJ && obj->type != JSON_ARRAY`
+- FT_EINVOP if `obj->type != JSON_OBJ && obj->type != JSON_ARR`
 - FT_EINVPTR if `obj->type == JSON_OBJ` and `key == NULL`
 - FT_ERANGE if `obj->type == JSON_OBJ` and a value for `key` already exists
 - FT_EOMEM if out of memory
@@ -221,7 +227,7 @@ struct s_json_object *ft_json_add_null(struct s_json_object *obj, const_string k
 /*
 Destroys a json object. Type specific:
 - JSON_OBJ: destroys all the key/values recursively
-- JSON_ARRAY: destroys all the arrays values recursively
+- JSON_ARR: destroys all the arrays values recursively
 ### On error
 Sets ft_errno
 ### ft_errno
@@ -310,7 +316,7 @@ Appends the object `new` to the json array in `obj`
 ### On error
 Sets ft_errno and returns `FALSE`.
 ### ft_errno
-- FT_EINVOP if `obj->type` is not `JSON_ARRAY`
+- FT_EINVOP if `obj->type` is not `JSON_ARR`
 - FT_EOMEM if out of memory
 */
 bool ft_json_append(struct s_json_object *obj, struct s_json_object *new);

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:53:23 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/30 03:20:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/14 15:42:46 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,15 @@ FT_TC: construct a ANSI color code. Each arguments is expected to be an int
 #define FT_TC_COL_BG_WHITE 47
 #define FT_TC_COL_BG_DEFAULT 49
 
-#define FT_TC_BG_BRIGHT_BLACK 100
-#define FT_TC_BG_BRIGHT_RED 101
-#define FT_TC_BG_BRIGHT_GREEN 102
-#define FT_TC_BG_BRIGHT_YELLOW 103
-#define FT_TC_BG_BRIGHT_BLUE 104
-#define FT_TC_BG_BRIGHT_MAGENTA 105
-#define FT_TC_BG_BRIGHT_CYAN 106
-#define FT_TC_BG_BRIGHT_WHITE 107
-#define FT_TC_BG_BRIGHT_DEFAULT 109
+#define FT_TC_COL_BG_BRIGHT_BLACK 100
+#define FT_TC_COL_BG_BRIGHT_RED 101
+#define FT_TC_COL_BG_BRIGHT_GREEN 102
+#define FT_TC_COL_BG_BRIGHT_YELLOW 103
+#define FT_TC_COL_BG_BRIGHT_BLUE 104
+#define FT_TC_COL_BG_BRIGHT_MAGENTA 105
+#define FT_TC_COL_BG_BRIGHT_CYAN 106
+#define FT_TC_COL_BG_BRIGHT_WHITE 107
+#define FT_TC_COL_BG_BRIGHT_DEFAULT 109
 
 /* styles */
 

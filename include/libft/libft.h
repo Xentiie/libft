@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/05 17:24:41 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/01/21 04:09:04 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@
 #define FT_HAS_BUILTIN(x) __has_builtin(x)
 #else
 #pragma warn "No FT_HAS_BUILTIN"
-#define FT_HAS_BUILTIN(x) 0
+#define FT_HAS_BUILTIN(x) FALSE
 #endif
 
 #ifdef __has_attribute
 #define FT_HAS_ATTRIBUTE(x) __has_attribute(x)
 #else
 #pragma warn "No FT_HAS_ATTRIBUTE"
-#define FT_HAS_ATTRIBUTE(x) 0
+#define FT_HAS_ATTRIBUTE(x) FALSE
 #endif
 
 extern S32 ft_argc;
@@ -46,7 +46,7 @@ extern string *ft_env;
 	ft_env = env;
 
 /*Error code returned by some ft functions*/
-#define _FT_ERRNO_LOCATION /* TODO: */
+//#define _FT_ERRNO_LOCATION /* TODO: */
 #if defined(_FT_ERRNO_LOCATION)
 S32 *__ft_errno_location();
 #define ft_errno (*__ft_errno_location())
@@ -83,7 +83,13 @@ extern __thread S32 ft_errno;
 #define FUNCTION_PURE
 #endif
 
-#define _FT_NO_IF_PREDICT
+#if FT_HAS_ATTRIBUTE(unused)
+#define MAYBE_UNUSED __attribute__((unused))
+#else
+#define MAYBE_UNUSED
+#endif
+
+//#define _FT_NO_IF_PREDICT
 #if !FT_HAS_BUILTIN(__builtin_expect) || defined(_FT_NO_IF_PREDICT)
 #if !defined(_FT_NO_IF_PREDICT)
 #pragma warn "No IF_PREDICT"

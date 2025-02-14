@@ -10,6 +10,9 @@
         "array": "c",
         "string": "c",
         "string_view": "c",
-        "*.tcc": "c"
+        "*.tcc": "c",
+        "functional": "c",
+        "initializer_list": "c",
+        "utility": "c"
     }
 }
