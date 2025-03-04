@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/31 03:22:15 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/04 23:48:51 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 -D _FT_RETURN -> exposes FT_RET_OK and FT_RET_ERR macros
 -D _FT_AVOID_ALLOCA -> replace ft_alloca/ft_afree by malloc/free
 -D _FT_NO_GLOBALS=1 -> replaces globals by getters/setters
+-D _FT_GROWTH_FACTOR -> sets growth factor for stack
 */
 
 #define _FT_ERRNO_LOCATION
@@ -155,6 +156,10 @@ extern __thread S32 ft_errno;
 # define ft_afree(...) free(__VA_ARGS__)
 #endif
 // clang-format on
+
+#if !defined(_FT_GROWTH_FACTOR)
+#define _FT_GROWTH_FACTOR 2
+#endif
 
 /*
 #include <stdio.h>

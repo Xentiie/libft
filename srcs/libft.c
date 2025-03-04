@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:49:04 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/24 03:54:32 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/02/15 22:25:45 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ _FT_GLOBAL_VAR_DEF(t_file *, ft_fstdin);
 _FT_GLOBAL_VAR_DEF(t_file *, ft_fstdout);
 _FT_GLOBAL_VAR_DEF(t_file *, ft_fstderr);
 
-__attribute__((constructor))
-void __init_libft(S32 argc, string *argv, string *env)
+__attribute__((constructor)) void __init_libft(S32 argc, string *argv, string *env)
 {
 #if defined(FT_OS_WIN)
 	(void)argc;
@@ -71,8 +70,7 @@ void __init_libft(S32 argc, string *argv, string *env)
 
 	if (UNLIKELY((ft_fstdin = ft_fcreate(ft_stdin, "r")) == NULL) ||
 		UNLIKELY((ft_fstdout = ft_fcreate(ft_stdout, "w")) == NULL) ||
-		UNLIKELY((ft_fstderr = ft_fcreate(ft_stderr, "w")) == NULL)
-		)
+		UNLIKELY((ft_fstderr = ft_fcreate(ft_stderr, "w")) == NULL))
 		exit(42);
 }
 

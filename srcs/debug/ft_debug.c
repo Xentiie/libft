@@ -6,25 +6,22 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 19:57:43 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 01:37:38 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/02/15 23:10:11 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
-# if defined(FT_OS_WIN)
-#  include <debugapi.h>
-#  define SIGTRAP STATUS_BREAKPOINT
-# else
-#  include <sys/ptrace.h>
-#  include <valgrind/valgrind.h>
-# endif /* FT_OS_WIN */
-# include <stdio.h>
-# include <signal.h>
+#include "libft/debug.h"
+#include "libft/io.h"
+#include "libft/macros.h"
 
-static S8 __is_debugger = -1;
+#include <signal.h>
 
-# if defined(FT_OS_WIN)
+#if defined(FT_OS_WIN)
+#include <debugapi.h>
+#define SIGTRAP STATUS_BREAKPOINT
+
 S8 ft_is_debugger()
 {
 	if (__is_debugger == -1)
@@ -36,21 +33,29 @@ S8 ft_is_debugger()
 	}
 	return __is_debugger;
 }
-# else
+#else
+#include <sys/ptrace.h>
+#include <valgrind/valgrind.h>
+
+#undef RUNNING_ON_VALGRIND
+#define RUNNING_ON_VALGRIND FALSE
+
 S8 ft_is_debugger()
 {
+	static S8 __is_debugger = -1;
 	if (__is_debugger == -1)
 	{
 		if (RUNNING_ON_VALGRIND)
 			__is_debugger = FT_DEBUG_VALGRIND;
-		else if (ptrace(PTRACE_TRACEME, 0, 1, 0) == -1) //TODO: untrace me
+		else if (ptrace(PTRACE_TRACEME, 0, 1, 0) == -1) // TODO: untrace me
 			__is_debugger = FT_DEBUG_TRUE;
 		else
 			__is_debugger = FT_DEBUG_FALSE;
 	}
 	return __is_debugger;
 }
-# endif /* FT_OS_WIN */
+
+#endif /* FT_OS_WIN */
 
 void ft_debug_break()
 {

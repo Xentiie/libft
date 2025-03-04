@@ -551,6 +551,7 @@ configure() {
 		cf_add_cflag "-DDEBUG"
 		cf_add_cflag "-g"
 		cf_add_cflag "-O3"
+		cf_add_cflag "-masm=intel"
 
 		cf_add_raw_lib "libm"
 		cf_add_output_include "./include"

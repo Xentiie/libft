@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/22 18:29:05 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/02/14 02:45:43 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,86 @@ extern F32 ft_atof_l(const_string str, U64 *len);
 Converts a hex string to a unsigned int.
 */
 extern U32 ft_atoix(const_string str, U64 *len);
+
+/*
+Converts a string to a U8.
+### On error
+Sets ft_errno, see ft_errno section for return values.
+### ft_errno
+- FT_ERANGE, return 0, if string represents a negative number
+- FT_ERANGE, return `U8_MAX`, if string represents a number larger than the max value of a U8
+*/
+extern U8 ft_strtoU8(const_string str, U64 *len, const_string base);
+
+/*
+Converts a string to a U16.
+### On error
+Sets ft_errno, see ft_errno section for return values.
+### ft_errno
+- FT_ERANGE, return 0, if string represents a negative number
+- FT_ERANGE, return `U16_MAX`, if string represents a number larger than the max value of a U16
+*/
+extern U16 ft_strtoU16(const_string str, U64 *len, const_string base);
+
+/*
+Converts a string to a U32.
+### On error
+Sets ft_errno, see ft_errno section for return values.
+### ft_errno
+- FT_ERANGE, return 0, if string represents a negative number
+- FT_ERANGE, return `U32_MAX`, if string represents a number larger than the max value of a U32
+*/
+extern U32 ft_strtoU32(const_string str, U64 *len, const_string base);
+
+/*
+Converts a string to a U64.
+### On error
+Sets ft_errno, see ft_errno section for return values.
+### ft_errno
+- FT_ERANGE, return 0, if string represents a negative number
+- FT_ERANGE, return `U64_MAX`, if string represents a number larger than the max value of a U64
+*/
+extern U64 ft_strtoU64(const_string str, U64 *len, const_string base);
+
+/*
+Converts a string to a S8.
+### On error
+Sets ft_errno, see ft_errno section for return values.
+### ft_errno
+- FT_ERANGE, return `S8_MAX`, if string represents a number larger than the max value of a S8
+- FT_ERANGE, return `S8_MIN`, if string represents a number smaller than the min value of a S8
+*/
+extern S8 ft_strtoS8(const_string str, U64 *len, const_string base);
+
+/*
+Converts a string to a S16.
+### On error
+Sets ft_errno, see ft_errno section for return values.
+### ft_errno
+- FT_ERANGE, return `S16_MAX`, if string represents a number larger than the max value of a S16
+- FT_ERANGE, return `S16_MIN`, if string represents a number smaller than the min value of a S16
+*/
+extern S16 ft_strtoS16(const_string str, U64 *len, const_string base);
+
+/*
+Converts a string to a S32.
+### On error
+Sets ft_errno, see ft_errno section for return values.
+### ft_errno
+- FT_ERANGE, return `S32_MAX`, if string represents a number larger than the max value of a S32
+- FT_ERANGE, return `S32_MIN`, if string represents a number smaller than the min value of a S32
+*/
+extern S32 ft_strtoS32(const_string str, U64 *len, const_string base);
+
+/*
+Converts a string to a S64.
+### On error
+Sets ft_errno, see ft_errno section for return values.
+### ft_errno
+- FT_ERANGE, return `S64_MAX`, if string represents a number larger than the max value of a S64
+- FT_ERANGE, return `S64_MIN`, if string represents a number smaller than the min value of a S64
+*/
+extern S64 ft_strtoS64(const_string str, U64 *len, const_string base);
 
 /*
 Internal function for itoa family of functions.

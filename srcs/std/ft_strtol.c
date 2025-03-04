@@ -6,143 +6,109 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 19:16:28 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 19:56:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/02/14 03:03:52 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
-#include "libft/maths.h"
+
 #include "libft/strings.h"
 #include "libft/limits.h"
 
-#include "libft/io.h"
-
-static const_string base10 = "0123456789";
-
-#define INIT_BASE()                     \
-	do                                  \
-	{ /* init base */                   \
-		if (base == NULL)               \
-		{                               \
-			base = base10;              \
-			base_len = 10;              \
-		}                               \
-		else                            \
-			base_len = ft_strlen(base); \
-	} while (0)
-
-#define PARSE_SIGN(type)      \
-	do                        \
-	{ /* parse sign */        \
-		neg = FALSE;          \
-		if (*str == '+')      \
-			str++;            \
-		else if (*str == '-') \
-		{                     \
-			str++;            \
-			neg = TRUE;       \
-		}                     \
-	} while (0)
-
-S8 ft_strtoS8(const_string str, U64 *len, const_string base)
-{
-	U64 base_len;
-	S16 i;
-	S16 num_len;
-	bool neg;
-
-	S8 n;
-	S8 ret;
-
-	if (str == NULL)
-		FT_RET_ERR(0, FT_EINVPTR);
-
-	INIT_BASE();
-	PARSE_SIGN(S8);
-
-#if 0
-	{ /* simple first overflow check */
-		i = 0;
-		while (ft_isdigit(str[i]))
-			i++;
-		if (i > S8_MAX_MAG)
-			/* would overflow */
-			FT_RET_ERR(S8_MIN, FT_EINVOP);
-	}
-#endif
-
-	ret = 0;
-	i = 0;
-	if (neg)
-	{
-		while (ft_isdigit(str[i]))
-		{
-			n = str[i] - '0';
-			if (ret > (S8_MIN / 10) || ret > (S8_MIN + n))
-				/* would overflow */
-				FT_RET_ERR(S8_MIN, FT_EINVOP);
-
-			ft_printf("N:%d\n", n);
-			ft_printf("ret:%d > (S8_MIN / 10)(%d) = %s\n", ret, (S8_MIN / 10), ret > (S8_MIN / 10) ? "TRUE" : "FALSE");
-			ft_printf("ret:%d > (S8_MIN + n)(%d) = %s\n", ret, (S8_MIN + n), ret > (S8_MIN + n) ? "TRUE" : "FALSE");
-
-			ret = (ret * 10) - (str[i] - '0');
-			i++;
-		}
-	}
-	else
-	{
-		while (ft_isdigit(str[i]))
-		{
-			n = str[i] - '0';
-
-			ft_printf("N:%d\n", n);
-			ft_printf("ret:%d > (S8_MAX / 10)(%d) = %s\n", ret, (S8_MAX / 10), ret > (S8_MAX / 10) ? "TRUE" : "FALSE");
-			ft_printf("ret:(%d*10=%d) > (S8_MAX - n)(%d-%d=%d) = %s\n\n", ret, ret*10, S8_MAX, n, S8_MAX - n, (ret * 10) > (S8_MAX - n) ? "TRUE" : "FALSE");
-
-			if (ret > (S8_MAX / 10) || (ret * 10) > (S8_MAX - n))
-				/* would overflow */
-				FT_RET_ERR(S8_MAX, FT_EINVOP);
-
-
-			ret = (ret * 10) + (str[i] - '0');
-			i++;
-		}
+#define ft_strtoX_impl_unsigned(X)                                           \
+	X ft_strto##X(const_string str, U64 *len, const_string base)             \
+	{                                                                        \
+		S64 ind;                                                             \
+		U64 base_len;                                                        \
+		X out;                                                               \
+		U64 i;                                                               \
+                                                                             \
+		if (*str == '-')                                                     \
+			FT_RET_ERR(0, FT_ERANGE);                                        \
+		if (*str == '+')                                                     \
+			str++;                                                           \
+                                                                             \
+		if (base == NULL)                                                    \
+			base = "0123456789";                                             \
+		base_len = ft_strlen(base);                                          \
+                                                                             \
+		out = 0;                                                             \
+		i = 0;                                                               \
+		while ((ind = ft_strgetindex(base, str[i])) != -1 && str[i] != '\0') \
+		{                                                                    \
+			if (out > (X##_MAX / (X)base_len))                               \
+				FT_RET_ERR(X##_MAX, FT_ERANGE);                              \
+			out *= base_len;                                                 \
+                                                                             \
+			if (out > (X##_MAX - ind))                                       \
+				FT_RET_ERR(X##_MAX, FT_ERANGE);                              \
+			out += ind;                                                      \
+			i++;                                                             \
+		}                                                                    \
+                                                                             \
+		if (len)                                                             \
+			*len = i;                                                        \
+                                                                             \
+		FT_RET_OK(out);                                                      \
 	}
 
-	FT_RET_OK(ret);
-}
+#define ft_strtoX_impl_signed(X)                                                 \
+	X ft_strto##X(const_string str, U64 *len, const_string base)                 \
+	{                                                                            \
+		S64 ind;                                                                 \
+		U64 base_len;                                                            \
+		X out;                                                                   \
+		U64 i;                                                                   \
+                                                                                 \
+		if (base == NULL)                                                        \
+			base = "0123456789";                                                 \
+		base_len = ft_strlen(base);                                              \
+                                                                                 \
+		out = 0;                                                                 \
+		i = 0;                                                                   \
+		if (*str == '-')                                                         \
+		{                                                                        \
+			i++;                                                                 \
+			while ((ind = ft_strgetindex(base, str[i])) != -1 && str[i] != '\0') \
+			{                                                                    \
+				if (out < (X##_MIN / (X)base_len))                               \
+					FT_RET_ERR(X##_MIN, FT_ERANGE);                              \
+				out *= base_len;                                                 \
+                                                                                 \
+				if (out < (X##_MIN + ind))                                       \
+					FT_RET_ERR(X##_MIN, FT_ERANGE);                              \
+				out -= ind;                                                      \
+				i++;                                                             \
+			}                                                                    \
+		}                                                                        \
+		else                                                                     \
+		{                                                                        \
+			if (*str == '+')                                                     \
+				str++;                                                           \
+			while ((ind = ft_strgetindex(base, str[i])) != -1 && str[i] != '\0') \
+			{                                                                    \
+				if (out > (X##_MAX / (X)base_len))                               \
+					FT_RET_ERR(X##_MAX, FT_ERANGE);                              \
+				out *= base_len;                                                 \
+                                                                                 \
+				if (out > (X##_MAX - ind))                                       \
+					FT_RET_ERR(X##_MAX, FT_ERANGE);                              \
+				out += ind;                                                      \
+				i++;                                                             \
+			}                                                                    \
+		}                                                                        \
+                                                                                 \
+		if (len)                                                                 \
+			*len = i;                                                            \
+                                                                                 \
+		FT_RET_OK(out);                                                          \
+	}
 
-int main()
-{
-	S8 out = ft_strtoS8(ft_argv[1], NULL, NULL);
-	ft_printf("Out:%d\nft_errno:%d:%s\n", out, ft_errno, ft_strerror(ft_errno));
-}
-
-U8 ft_strtoU8(const_string str, U64 *len, const_string base)
-{
-}
-
-S32 ft_strtoS32(const_string str, U64 *len, const_string base)
-{
-}
-
-U32 ft_strtoU32(const_string str, U64 *len, const_string base)
-{
-}
-
-S64 ft_strtoS64(const_string str, U64 *len, const_string base)
-{
-}
-
-U64 ft_strtoU64(const_string str, U64 *len, const_string base)
-{
-}
-
-F32 ft_strtoF32(const_string str, U64 *len, const_string base)
-{
-}
-
-F64 ft_strtoF64(const_string str, U64 *len, const_string base)
-{
-}
+ft_strtoX_impl_unsigned(U8);
+ft_strtoX_impl_unsigned(U16);
+ft_strtoX_impl_unsigned(U32);
+ft_strtoX_impl_unsigned(U64);
+ft_strtoX_impl_signed(S8);
+ft_strtoX_impl_signed(S16);
+ft_strtoX_impl_signed(S32);
+ft_strtoX_impl_signed(S64);

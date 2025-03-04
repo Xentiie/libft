@@ -13,6 +13,7 @@
         "*.tcc": "c",
         "functional": "c",
         "initializer_list": "c",
-        "utility": "c"
+        "utility": "c",
+        "random": "c"
     }
 }

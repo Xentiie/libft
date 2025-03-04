@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 09:19:11 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/30 01:29:50 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/02/14 03:05:30 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,8 @@ S32 ft_strcasecmp(const_string s1, const_string s2)
 
 S32 ft_strncasecmp(const_string s1, const_string s2, U64 n)
 {
-	
+	(void)s1;
+	(void)s2;
+	(void)n;
+	FT_RET_ERR(-1, FT_EINVOP);
 }
