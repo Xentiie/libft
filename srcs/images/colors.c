@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:20:53 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/17 02:18:45 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/05 02:55:02 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static t_color ablend_simd(t_color under, t_color over)
 {
 	t_color result;
 
-	__asm__(
+	asm(
 		/*
 		Alpha blending formula: ((alpha * over) + ((255 - alpha) * under)) / 255
 

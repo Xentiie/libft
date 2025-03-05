@@ -6,21 +6,47 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 01:35:11 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/18 04:19:12 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/05 16:27:27 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cpuid_private.h"
 
-bool ft_cpuid_get_flags(U32 maxinfos, U64 *flags)
+#if !defined(array_len)
+#define array_len(x) (sizeof(x) / sizeof((x)[0]))
+#endif
+
+bool ft_cpuid_get_flags(U32 maxinfos, struct s_cpuid_flags *flags)
 {
 	U32 out[4];
+	U32 max_ecx;
+	U32 i;
+	U32 *ptr;
 
 	if (FT_CPUID_PROC_INFO_AND_FLAGS >= maxinfos)
 		FT_RET_ERR(FALSE, FT_ENOENT);
-	ft_cpuid(FT_CPUID_PROC_INFO_AND_FLAGS, 0, out);
-	ft_memcpy(flags, &out[2], sizeof(U32) * 2);
+	ft_bzero(flags, sizeof(struct s_cpuid_flags));
 
+	ft_cpuid(FT_CPUID_PROC_INFO_AND_FLAGS, 0, out);
+	flags->flags_ecx = out[_ECX];
+	flags->flags_edx = out[_EDX];
+
+	if (maxinfos < FT_CPUID_EXTANDED_FLAGS)
+		FT_RET_OK(TRUE); /* no extanded flags */
+
+	ft_cpuid(FT_CPUID_EXTANDED_FLAGS, 0, out);
+	max_ecx = out[_EAX]; /* 'Returns the maximum ECX value for EAX=7 in EAX' */
+	max_ecx = (max_ecx <= array_len(flags->extanded_flags)) ? max_ecx : array_len(flags->extanded_flags);
+
+	ptr = flags->extanded_flags;
+	i = 0;
+	while (i < max_ecx)
+	{
+		ft_cpuid(FT_CPUID_EXTANDED_FLAGS, i, out);
+		ft_memcpy(ptr, out, sizeof(out));
+		ptr += array_len(out);
+		i++;
+	}
 	FT_RET_OK(TRUE);
 }
 

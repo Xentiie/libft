@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:15:23 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/18 00:36:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/05 02:40:06 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,6 @@ void ft_copy_image(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrect)
 		dst_y++;
 	}
 }
-
-typedef t_color (*f_copy_image2)(t_color, t_color);
-static void (*resolve_copy_image2(void))(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrect)
-{
-	return ft_copy_image_abl;
-}
-
-void ft_copy_image2(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrect)
-	__attribute__((ifunc("resolve_copy_image2")));
 
 void ft_copy_image_abl(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrect)
 {
@@ -223,3 +214,11 @@ void ft_copy_image_abl_avx2(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcr
 		dst_y++;
 	}
 }
+
+static void (*resolve_copy_image2(void))(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrect)
+{
+	return ft_copy_image_abl;
+}
+
+void ft_copy_image2(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrect)
+	__attribute__((ifunc("resolve_copy_image2")));
