@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/04 23:48:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/07 09:41:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,26 @@
 #define FT_HAS_ATTRIBUTE(x) FALSE
 #endif
 
+#if __INTELLISENSE__
+/* Stupid vscode intellisense who thinks __attribute__((constructor)) takes no arguments */
+#pragma diag_suppress 1094
+#endif
+
+#if !FT_HAS_ATTRIBUTE(constructor)
+#pragma error "No __attribute__((constructor))"
+#endif
+
 #if defined(_FT_NO_GLOBALS) && _FT_NO_GLOBALS
 #define _FT_GLOBAL_VAR_DEC(type, name) type *__global_##name();
-#define _FT_GLOBAL_VAR_DEF(type, name, ...)                                              \
-	type *__global_##name()                                                               \
-	{                                                                                    \
-		static type __##name __VA_OPT__(= __VA_ARGS__);                                      \
-		return &__##name;                                                                    \
+#define _FT_GLOBAL_VAR_DEF(type, name, ...)             \
+	type *__global_##name()                             \
+	{                                                   \
+		static type __##name __VA_OPT__(= __VA_ARGS__); \
+		return &__##name;                               \
 	}
 #define _FT_GLOBAL_VAR(name) (*(__global_##name()))
 #else
-#define _FT_GLOBAL_VAR_DEC(type, name)		extern type name;
+#define _FT_GLOBAL_VAR_DEC(type, name) extern type name;
 #define _FT_GLOBAL_VAR_DEF(type, name, ...) type name __VA_OPT__(= __VA_ARGS__);
 #define _FT_GLOBAL_VAR(name) (name)
 #endif
@@ -67,13 +76,13 @@ _FT_GLOBAL_VAR_DEC(string *, ft_env);
 #define ft_argv _FT_GLOBAL_VAR(ft_argv)
 #define ft_env _FT_GLOBAL_VAR(ft_env)
 
-#define FT_INIT_ARGV(argc, argv, env)                                                    \
-	ft_argc = argc;                                                                      \
-	ft_argv = argv;                                                                      \
+#define FT_INIT_ARGV(argc, argv, env) \
+	ft_argc = argc;                   \
+	ft_argv = argv;                   \
 	ft_env = env;
 
 /*Error code returned by some ft functions*/
-//#define _FT_ERRNO_LOCATION /* TODO: */
+// #define _FT_ERRNO_LOCATION /* TODO: */
 #if defined(_FT_ERRNO_LOCATION)
 S32 *__ft_errno_location();
 #define ft_errno (*__ft_errno_location())
@@ -81,16 +90,16 @@ S32 *__ft_errno_location();
 extern __thread S32 ft_errno;
 #endif
 
-#define FT_OK		0 /* No error */
-#define FT_EOMEM	1 /* Out of memory */
-#define FT_EINVPTR	2 /* Invalid pointer */
-#define FT_EINVVAL	3 /* Invalid value */
-#define FT_EINVOP	4 /* Invalid operation */
+#define FT_OK 0		  /* No error */
+#define FT_EOMEM 1	  /* Out of memory */
+#define FT_EINVPTR 2  /* Invalid pointer */
+#define FT_EINVVAL 3  /* Invalid value */
+#define FT_EINVOP 4	  /* Invalid operation */
 #define FT_ESYSCALL 5 /* System call failed */
-#define FT_ENOENT	6 /* No entries found */
-#define FT_ERANGE	7 /* Out of range */
-#define FT_ENOINIT	8 /* Libft value not initialized */
-#define FT_EOSPACE	9 /* Out of space */
+#define FT_ENOENT 6	  /* No entries found */
+#define FT_ERANGE 7	  /* Out of range */
+#define FT_ENOINIT 8  /* Libft value not initialized */
+#define FT_EOSPACE 9  /* Out of space */
 
 #if FT_HAS_ATTRIBUTE(hot)
 #define FUNCTION_HOT __attribute__((hot))
@@ -116,19 +125,27 @@ extern __thread S32 ft_errno;
 #define MAYBE_UNUSED
 #endif
 
-//#define _FT_NO_IF_PREDICT
+#if FT_HAS_ATTRIBUTE(aligned)
+#define ft_aligned(X) __attribute__((aligned(X)))
+#else
+// TODO: check for SSE functions that requires alignement
+#pragma warn "Careful: no __attribute__((aligned)), will break stuff"
+#define ft_aligned(X)
+#endif
+
+// #define _FT_NO_IF_PREDICT
 #if !FT_HAS_BUILTIN(__builtin_expect) || defined(_FT_NO_IF_PREDICT)
 #if !defined(_FT_NO_IF_PREDICT)
 #pragma warn "No IF_PREDICT"
 #endif
-#define IF_PREDICT(cond, expect)   (cond)
+#define IF_PREDICT(cond, expect) (cond)
 #define IF_PREDICT_B(cond, expect) (cond)
 #else
-#define IF_PREDICT(cond, expect)   __builtin_expect((cond), expect)
+#define IF_PREDICT(cond, expect) __builtin_expect((cond), expect)
 #define IF_PREDICT_B(cond, expect) __builtin_expect(!!(cond), expect)
 #endif
 #define UNLIKELY(cond) IF_PREDICT(cond, FALSE)
-#define LIKELY(cond)   IF_PREDICT(cond, TRUE)
+#define LIKELY(cond) IF_PREDICT(cond, TRUE)
 
 // clang-format off
 #if defined(_FT_RETURN)
