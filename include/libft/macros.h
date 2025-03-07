@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:46:29 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/15 23:03:16 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/05 17:52:09 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #define FT_EXP(x) x
 // CONCAT
 #define FT_CONCAT(X, Y) X##Y
+
+#define FT_STRINGIFY(X) #X
 
 // REMOVE PARENTHESIS
 #define FT_DEPAREN(X) __ESC(__ISH X)
