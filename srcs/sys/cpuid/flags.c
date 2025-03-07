@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 01:35:11 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/05 16:27:27 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/05 17:49:27 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,31 +23,47 @@ bool ft_cpuid_get_flags(U32 maxinfos, struct s_cpuid_flags *flags)
 	U32 i;
 	U32 *ptr;
 
+	ft_bzero(flags, sizeof(struct s_cpuid_flags));
 	if (FT_CPUID_PROC_INFO_AND_FLAGS >= maxinfos)
 		FT_RET_ERR(FALSE, FT_ENOENT);
-	ft_bzero(flags, sizeof(struct s_cpuid_flags));
 
 	ft_cpuid(FT_CPUID_PROC_INFO_AND_FLAGS, 0, out);
 	flags->flags_ecx = out[_ECX];
 	flags->flags_edx = out[_EDX];
 
-	if (maxinfos < FT_CPUID_EXTANDED_FLAGS)
-		FT_RET_OK(TRUE); /* no extanded flags */
+	if (maxinfos < FT_CPUID_EXTENDED_FLAGS)
+		FT_RET_OK(TRUE); /* no extended flags */
 
-	ft_cpuid(FT_CPUID_EXTANDED_FLAGS, 0, out);
+	ft_cpuid(FT_CPUID_EXTENDED_FLAGS, 0, out);
 	max_ecx = out[_EAX]; /* 'Returns the maximum ECX value for EAX=7 in EAX' */
-	max_ecx = (max_ecx <= array_len(flags->extanded_flags)) ? max_ecx : array_len(flags->extanded_flags);
+	max_ecx = (max_ecx <= array_len(flags->extended_flags)) ? max_ecx : array_len(flags->extended_flags);
 
-	ptr = flags->extanded_flags;
+	ptr = flags->extended_flags;
 	i = 0;
-	while (i < max_ecx)
+	while (i <= max_ecx)
 	{
-		ft_cpuid(FT_CPUID_EXTANDED_FLAGS, i, out);
+		ft_cpuid(FT_CPUID_EXTENDED_FLAGS, i, out);
 		ft_memcpy(ptr, out, sizeof(out));
 		ptr += array_len(out);
 		i++;
 	}
 	FT_RET_OK(TRUE);
+}
+
+struct s_cpuid_flags *ft_cpuid_get_cached_flags()
+{
+	static U32 maxinfos;
+	static struct s_cpuid_flags flags;
+	static bool cached = FALSE;
+
+	if (cached)
+		return &flags;
+	
+	maxinfos = ft_cpuid_get_max_infos();
+	ft_cpuid_get_flags(maxinfos, &flags);
+	cached = TRUE;
+
+	return &flags;
 }
 
 #define CPUID_FLAGS_SHORT \

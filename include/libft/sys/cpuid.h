@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 02:08:17 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/05 16:27:38 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/07 08:33:40 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #define FT_CPUID_CACHE_INFO_AND_TLB_INFO 2
 #define FT_CPUID_PROC_SERIAL 3
 #define FT_CPUID_CACHE_HIERARCHY_AND_TOPOLOGY 4
-#define FT_CPUID_EXTANDED_FLAGS 7
+#define FT_CPUID_EXTENDED_FLAGS 7
 
 /* Executes the `CPUID` instruction, with `reg` and `sub` as arguments, and outputs the result in `out` */
 extern void ft_cpuid(U32 reg, U32 sub, U32 out[4]);
@@ -151,8 +151,8 @@ struct s_cpuid_flags
 			U32 __pad2 : 1;		  /* padding */
 			U32 pcid : 1;		  /* Process context identifiers (CR4 bit 17) */
 			U32 dca : 1;		  /* Direct cache access for DMA writes */
-			U32 see41 : 1;		  /* SSE4.1 instructions */
-			U32 sse42 : 1;		  /* SSE4.2 instructions */
+			U32 sse4_1 : 1;		  /* SSE4.1 instructions */
+			U32 sse4_2 : 1;		  /* SSE4.2 instructions */
 			U32 x2apic : 1;		  /* x2APIC (enhanced APIC) */
 			U32 movbe : 1;		  /* MOVBE instruction (big-endian) */
 			U32 popcnt : 1;		  /* POPCNT instruction */
@@ -231,7 +231,7 @@ struct s_cpuid_flags
 			U32 avx512_vpopcntdq : 1; /* AVX-512 Vector Population Count Double and Quad-word  */
 			U32 fzm : 1;			  /* ? */
 			U32 la57 : 1;			  /* 5-level paging (57 address bits)  */
-			U32 mawau : 1;			  /* The value of userspace MPX Address-Width Adjust used by the BNDLDX and BNDSTX Intel MPX instructions in 64-bit mode  */
+			U32 mawau : 5;			  /* The value of userspace MPX Address-Width Adjust used by the BNDLDX and BNDSTX Intel MPX instructions in 64-bit mode  */
 			U32 rdpid : 1;			  /* RDPID (Read Processor ID) instruction and IA32_TSC_AUX MSR  */
 			U32 kl : 1;				  /* AES Key Locker  */
 			U32 bus_lock_detect : 1;  /* Bus lock debug exceptions   */
@@ -356,30 +356,25 @@ struct s_cpuid_flags
 
 		struct
 		{
-			U32 extanded_flags_ecx_1_eax;
-			U32 extanded_flags_ecx_1_ebx;
-			U32 extanded_flags_ecx_1_ecx;
-			U32 extanded_flags_ecx_1_edx;
+			U32 extended_flags_ecx_1_eax;
+			U32 extended_flags_ecx_1_ebx;
+			U32 extended_flags_ecx_1_ecx;
+			U32 extended_flags_ecx_1_edx;
 
-			U32 extanded_flags_ecx_2_eax;
-			U32 extanded_flags_ecx_2_ebx;
-			U32 extanded_flags_ecx_2_ecx;
-			U32 extanded_flags_ecx_2_edx;
+			U32 extended_flags_ecx_2_eax;
+			U32 extended_flags_ecx_2_ebx;
+			U32 extended_flags_ecx_2_ecx;
+			U32 extended_flags_ecx_2_edx;
 
-			U32 extanded_flags_ecx_3_eax;
-			U32 extanded_flags_ecx_3_ebx;
-			U32 extanded_flags_ecx_3_ecx;
-			U32 extanded_flags_ecx_3_edx;
+			U32 extended_flags_ecx_3_eax;
+			U32 extended_flags_ecx_3_ebx;
+			U32 extended_flags_ecx_3_ecx;
+			U32 extended_flags_ecx_3_edx;
 		};
 
-		U32 extanded_flags[12];
+		U32 extended_flags[12];
 	};
 };
-
-void f()
-{
-	sizeof(struct s_cpuid_flags);
-}
 
 /*
 Fills `flags` with the flags returned by `CPUID` (`ft_cpuid(1, 0)[ECX/EDX]`)
@@ -389,6 +384,7 @@ Sets ft_errno, and returns FALSE.
 - FT_ENOENT if no flags informations are not available
 */
 extern bool ft_cpuid_get_flags(U32 maxinfos, struct s_cpuid_flags *flags);
+extern struct s_cpuid_flags *ft_cpuid_get_cached_flags();
 
 enum __attribute__((packed)) e_cpuid_cache_type
 {
