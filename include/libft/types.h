@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:47:30 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/10 22:42:22 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/10 23:54:04 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ typedef struct s_v3
 		struct
 		{
 			t_v2 xy;
-			F32 z;
+			F32 _z;
 		};
 	};
 } t_v3;
@@ -122,7 +122,7 @@ typedef struct s_iv3
 		struct
 		{
 			t_iv2 xy;
-			S32 z;
+			S32 _z;
 		};
 	};
 } t_iv3;

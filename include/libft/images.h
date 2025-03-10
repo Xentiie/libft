@@ -6,15 +6,16 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 23:26:42 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/03 23:01:11 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:31:07 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_IMAGES_H)
 #define LIBFT_IMAGES_H
 
-#include "libft.h"
+#include "libft/libft.h"
 #include "libft/lists.h"
+#include "libft/maths.h"
 #include "libft/macros.h"
 
 typedef union u_color
@@ -99,6 +100,7 @@ typedef struct s_png_img
 extern bool ft_init_image(t_image *img, t_iv2 size);
 /* destroys an image */
 extern void ft_destroy_image(t_image *img);
+inline t_iv4 ft_image_rect(t_image *img) { return ivec4(0, 0, img->size.x, img->size.y); };
 /* returns the pixel address at coordinates xy */
 #define ft_get_pixel(img, _x, _y) ((img)->pixels + ((_y) * ((img)->size.x) + (_x)))
 

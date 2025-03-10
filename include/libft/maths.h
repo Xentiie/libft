@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:45:20 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/10 23:47:41 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:00:54 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,10 +224,10 @@ inline t_iv2 ft_iabs2(t_iv2 n) { return ivec2(abs(n.x), abs(n.y)); }
 inline t_iv3 ft_iabs3(t_iv3 n) { return ivec3(abs(n.x), abs(n.y), abs(n.z)); }
 inline t_iv4 ft_iabs4(t_iv4 n) { return ivec4(abs(n.x), abs(n.y), abs(n.z), abs(n.w)); }
 
-inline F32 ft_fmin(F32 a, F32 b) { return MIN(a, b); }
-inline S32 ft_min(S32 a, S32 b) { return MIN(a, b); }
-inline F32 ft_fmax(F32 a, F32 b) { return MAX(a, b); }
-inline S32 ft_max(S32 a, S32 b) { return MAX(a, b); }
+inline F32 ft_fmin(F32 a, F32 b) { return a < b ? a : b; }
+inline S32 ft_min(S32 a, S32 b) { return a < b ? a : b; }
+inline F32 ft_fmax(F32 a, F32 b) { return a > b ? a : b; }
+inline S32 ft_max(S32 a, S32 b) { return a > b ? a : b; }
 
 inline F32 ft_ceil(F32 n) { return ceilf(n); }
 inline t_v2 ft_ceil2(t_v2 n) { return vec2(ceilf(n.x), ceilf(n.y)); }
@@ -304,8 +304,8 @@ inline F32 ft_invlerp(F32 a, F32 b, F32 value)
 	return ((value - a) / (b - a));
 }
 inline t_v2 ft_invlerp2(t_v2 a, t_v2 b, t_v2 t) { return (vec2(ft_invlerp(a.x, b.x, t.x), ft_invlerp(a.y, b.y, t.y))); }
-inline t_v3 ft_invlerp3(t_v3 a, t_v3 b, t_v3 t) { return (vec3(ft_invlerp_i(a.x, b.x, t.x), ft_invlerp_i(a.y, b.y, t.y), ft_invlerp_i(a.z, b.z, t.z))); }
-inline t_v4 ft_invlerp4(t_v4 a, t_v4 b, t_v4 t) { return (vec4(ft_invlerp_i(a.x, b.x, t.x), ft_invlerp_i(a.y, b.y, t.y), ft_invlerp_i(a.z, b.z, t.z), ft_invlerp_i(a.w, b.w, t.w))); }
+inline t_v3 ft_invlerp3(t_v3 a, t_v3 b, t_v3 t) { return (vec3(ft_invlerp(a.x, b.x, t.x), ft_invlerp(a.y, b.y, t.y), ft_invlerp(a.z, b.z, t.z))); }
+inline t_v4 ft_invlerp4(t_v4 a, t_v4 b, t_v4 t) { return (vec4(ft_invlerp(a.x, b.x, t.x), ft_invlerp(a.y, b.y, t.y), ft_invlerp(a.z, b.z, t.z), ft_invlerp(a.w, b.w, t.w))); }
 
 inline F32 ft_invlerp_i(S32 a, S32 b, S32 value)
 {
@@ -334,6 +334,8 @@ inline t_v2 ft_bezier_interp(t_v2 p1, t_v2 p2, t_v2 p3, F32 t)
 
 inline t_iv2 ft_irectsize(t_iv4 rect) { return ivec2(rect.z - rect.x, rect.w - rect.y); }
 inline t_v2 ft_rectsize(t_v4 rect) { return vec2(rect.z - rect.x, rect.w - rect.y); }
+inline t_iv4 ft_clip_rect_rect(t_iv4 rect, t_iv4 bound) { return ivec4(ft_max(rect.x, bound.x), ft_max(rect.y, bound.y), ft_min(rect.z, bound.z), ft_min(rect.w, bound.w)); }
+inline t_v4 ft_clip_rect_rect_flt(t_v4 rect, t_v4 bound) { return vec4(ft_fmax(rect.x, bound.x), ft_fmax(rect.y, bound.y), ft_fmin(rect.z, bound.z), ft_fmin(rect.w, bound.w)); }
 
 extern t_v4 ft_plane_eq(t_v3 p1, t_v3 p2, t_v3 p3);
 
