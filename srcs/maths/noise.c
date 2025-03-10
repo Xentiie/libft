@@ -6,16 +6,15 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 05:03:12 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/23 04:22:36 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/10 23:50:24 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
+
 #include "libft/maths.h"
 
-#include <math.h>
-
-F64	ft_noise2(t_v2 st)
+F32	ft_noise2(t_v2 st)
 {
 	t_v2	i;
 	t_v2	f;

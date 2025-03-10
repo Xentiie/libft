@@ -6,16 +6,15 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 21:38:10 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/04 19:13:09 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/10 23:49:37 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
+
 #include "libft/maths.h"
 
-#include <math.h>
-
-F64 ft_smoothstep (F64 edge0, F64 edge1, F64 x) {
+F32 ft_smoothstep (F32 edge0, F32 edge1, F32 x) {
    // Scale, and clamp x to 0..1 range
    x = ft_clampf(0, 1, (x - edge0) / (edge1 - edge0));
    return x * x * (3.0f - 2.0f * x);

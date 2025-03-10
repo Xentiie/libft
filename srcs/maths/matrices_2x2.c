@@ -1,21 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_rand_circle.c                                   :+:      :+:    :+:   */
+/*   matrices_2x2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/08 01:17:38 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 21:51:37 by reclaire         ###   ########.fr       */
+/*   Created: 2025/01/22 18:42:51 by reclaire          #+#    #+#             */
+/*   Updated: 2025/03/10 23:51:47 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
+
 #include "libft/maths.h"
 
-#include <math.h>
-
-t_v2	ft_rand_circle(U32 seed)
+t_mat22 ft_mat22_inv(t_mat22 m)
 {
-	return (vec2(ft_sin(ft_frand(seed)), ft_cos(ft_frand(seed) + 1)));
+	F32		det;
+	t_mat22 inv;
+
+	det = m.m[0][0] * m.m[1][1] - m.m[0][1] * m.m[1][0];
+	inv.m[0][0] = m.m[1][1] / det;
+	inv.m[0][1] = -m.m[0][1] / det;
+	inv.m[1][0] = -m.m[1][0] / det;
+	inv.m[1][1] = m.m[0][0] / det;
+	return (inv);
+}
+
+t_v2 ft_mat22_vec2_mul(t_mat22 m, t_v2 v)
+{
+	return ((t_v2){.x = m.m[0][0] * v.x + m.m[0][1] * v.y,
+				   .y = m.m[1][0] * v.x + m.m[1][1] * v.y});
 }

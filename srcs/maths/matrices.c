@@ -1,33 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_matrix.c                                        :+:      :+:    :+:   */
+/*   matrices.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/16 02:51:20 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/31 19:25:55 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/10 23:51:54 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
+
 #include "libft/maths.h"
 
-#include <math.h>
-
-#define get(mat, r, c) (((F64 *)&mat)[(r) + (c) * 4])
-#define getp(mat, r, c) (((F64 *)mat)[(r) + (c) * 4])
+#define get(mat, r, c) (((F32 *)&mat)[(r) + (c) * 4])
+#define getp(mat, r, c) (((F32 *)mat)[(r) + (c) * 4])
 
 t_v4 *ft_mat4x4_col(t_mat4x4 *mat, S32 c)
 {
 	return (t_v4 *)ft_mat4x4_get(mat, 0, c);
 }
 
-F64 *ft_mat4x4_get(t_mat4x4 *mat, S32 r, S32 c)
+F32 *ft_mat4x4_get(t_mat4x4 *mat, S32 r, S32 c)
 {
 	if (r + c * 4 >= 16)
 		return NULL;
-	F64 *ptr = (F64 *)mat;
+	F32 *ptr = (F32 *)mat;
 	return &(ptr[r + c * 4]);
 }
 
@@ -42,7 +41,7 @@ void ft_mat4x4_set_col(t_mat4x4 *mat, S32 c, t_v4 v)
 void ft_mat4x4_set_row(t_mat4x4 *mat, S32 r, t_v4 v)
 {
 	for (S32 i = 0; i < 4; i++)
-		getp(mat, i, r) = ((F64 *)&v)[i];
+		getp(mat, i, r) = ((F32 *)&v)[i];
 }
 
 t_mat4x4 ft_mat4x4_transpose(t_mat4x4 mat)
@@ -57,7 +56,7 @@ t_mat4x4 ft_mat4x4_transpose(t_mat4x4 mat)
 	return r;
 }
 
-F64 ft_mat4x4_det(t_mat4x4 v)
+F32 ft_mat4x4_det(t_mat4x4 v)
 {
 	return get(v, 0, 3) * get(v, 1, 2) * get(v, 2, 1) * get(v, 3, 0) - get(v, 0, 2) * get(v, 1, 3) * get(v, 2, 1) * get(v, 3, 0) -
 		   get(v, 0, 3) * get(v, 1, 1) * get(v, 2, 2) * get(v, 3, 0) + get(v, 0, 1) * get(v, 1, 3) * get(v, 2, 2) * get(v, 3, 0) +
@@ -76,18 +75,18 @@ F64 ft_mat4x4_det(t_mat4x4 v)
 t_mat4x4 ft_mat4x4_invert(t_mat4x4 mat)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
-	F64 d = 0;
-	F64 si = 1;
+	F32 d = 0;
+	F32 si = 1;
 	for (S32 i = 0; i < 4; i++)
 	{
-		F64 sj = si;
+		F32 sj = si;
 		for (S32 j = 0; j < 4; j++)
 		{
 			t_mat4x4 sub = ft_mat4x4_identity;
 			for (S32 k = 0; k < 3; k++)
 				for (S32 l = 0; l < 3; l++)
 					get(sub, k, l) = get(mat, (k < j) ? k : k + 1, (l < i) ? l : l + 1);
-			F64 dd = ft_mat4x4_det(sub) * sj;
+			F32 dd = ft_mat4x4_det(sub) * sj;
 			get(r, i, j) = dd;
 			d += dd * get(mat, j, i);
 			sj = -sj;
@@ -98,14 +97,14 @@ t_mat4x4 ft_mat4x4_invert(t_mat4x4 mat)
 	return r;
 }
 
-static F64 rcp(F64 v)
+static inline F32 rcp(F32 v)
 {
 	return v ? 1.0f / v : 0.0f;
 }
-t_mat4x4 ft_mat4x4_perspective(F64 fov, F64 near, F64 far)
+t_mat4x4 ft_mat4x4_perspective(F32 fov, F32 near, F32 far)
 {
-	F64 f = rcp(tanf(ft_radians(fov) / 2.0f));
-	F64 d = rcp(near - far);
+	F32 f = rcp(tanf(ft_radians(fov) / 2.0f));
+	F32 d = rcp(near - far);
 
 	return (t_mat4x4){
 		f, 0.f, 0.f, 0.f,
@@ -121,7 +120,7 @@ t_mat4x4 ft_mat4x4_mult_mat(t_mat4x4 a, t_mat4x4 b)
 	{
 		for (S32 j = 0; j < 4; j++)
 		{
-			F64 rr = 0;
+			F32 rr = 0;
 			for (S32 k = 0; k < 4; k++)
 				rr += (get(a, i, k) * get(b, k, j));
 			get(r, i, j) = rr;
@@ -135,15 +134,15 @@ t_v4 ft_mat4x4_mult_v4(t_mat4x4 a, t_v4 b)
 	t_v4 r = {0};
 	for (S32 i = 0; i < 4; i++)
 	{
-		F64 rr = 0;
+		F32 rr = 0;
 		for (S32 j = 0; j < 4; j++)
-			rr += get(a, i, j) * ((F64 *)&b)[j];
-		((F64 *)&r)[i] = rr;
+			rr += get(a, i, j) * ((F32 *)&b)[j];
+		((F32 *)&r)[i] = rr;
 	}
 	return r;
 }
 
-t_mat4x4 ft_mat4x4_mult_float(t_mat4x4 a, F64 b)
+t_mat4x4 ft_mat4x4_mult_float(t_mat4x4 a, F32 b)
 {
 	t_mat4x4 r;
 	for (S32 i = 0; i < 4 * 4; i++)
@@ -155,7 +154,7 @@ t_mat4x4 ft_mat4x4_scale_v2(t_v2 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 2; i++)
-		get(r, i, i) = ((F64 *)&v)[i];
+		get(r, i, i) = ((F32 *)&v)[i];
 	return r;
 }
 
@@ -163,7 +162,7 @@ t_mat4x4 ft_mat4x4_scale_v3(t_v3 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 3; i++)
-		get(r, i, i) = ((F64 *)&v)[i];
+		get(r, i, i) = ((F32 *)&v)[i];
 	return r;
 }
 
@@ -171,7 +170,7 @@ t_mat4x4 ft_mat4x4_scale_v4(t_v4 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 4; i++)
-		get(r, i, i) = ((F64 *)&v)[i];
+		get(r, i, i) = ((F32 *)&v)[i];
 	return r;
 }
 
@@ -203,14 +202,14 @@ t_mat4x4 ft_mat4x4_translate_v2(t_v2 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 2; i++)
-		get(r, i, 2) = ((F64 *)&v)[i];
+		get(r, i, 2) = ((F32 *)&v)[i];
 	return r;
 }
 t_mat4x4 ft_mat4x4_translate_v3(t_v3 v)
 {
 	t_mat4x4 r = ft_mat4x4_identity;
 	for (S32 i = 0; i < 3; i++)
-		get(r, i, 3) = ((F64 *)&v)[i];
+		get(r, i, 3) = ((F32 *)&v)[i];
 	return r;
 }
 
@@ -231,7 +230,7 @@ t_mat4x4 ft_mat4x4_translate_iv3(t_iv3 v)
 
 t_mat4x4 ft_mat4x4_rotate_euler(t_v3 rot)
 {
-	F64 cos_a, sin_a, cos_b, sin_b, cos_y, sin_y;
+	F32 cos_a, sin_a, cos_b, sin_b, cos_y, sin_y;
 
 	rot = ft_radians3(rot);
 
@@ -252,7 +251,7 @@ t_mat4x4 ft_mat4x4_rotate_euler(t_v3 rot)
 t_mat4x4 ft_mat4x4_fit_to_view(t_v2 pos, t_v2 size, t_v2 view_size)
 {
 	t_v2 ratio = vec2_div(view_size, size);
-	F64 min_ratio = ratio.x < ratio.y ? ratio.x : ratio.y;
+	F32 min_ratio = ratio.x < ratio.y ? ratio.x : ratio.y;
 	// clang-format off
 	t_mat4x4 s1 = (t_mat4x4){
 		(2.f / view_size.x), .0f, .0f, .0f,

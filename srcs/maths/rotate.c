@@ -6,16 +6,15 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 22:56:39 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/23 04:24:24 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/10 23:49:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
+
 #include "libft/maths.h"
 
-#include <math.h>
-
-t_v2	ft_rotate2(t_v2 v, F64 angle, t_v2 origin)
+t_v2	ft_rotate2(t_v2 v, F32 angle, t_v2 origin)
 {
 	t_v2	p;
 	t_v2	tmp;

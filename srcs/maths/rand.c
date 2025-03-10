@@ -1,21 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_conv.c                                         :+:      :+:    :+:   */
+/*   rand.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/09 04:01:45 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/08 01:07:31 by reclaire         ###   ########.fr       */
+/*   Created: 2025/03/10 23:48:39 by reclaire          #+#    #+#             */
+/*   Updated: 2025/03/10 23:50:43 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/maths.h"
 #include "libft_int.h"
 
-extern t_iv2 vec2_int(t_v2 v);
-extern t_iv3 vec3_int(t_v3 v);
-extern t_iv4 vec4_int(t_v4 v);
-extern t_v2 ivec2_flt(t_iv2 v);
-extern t_v3 ivec3_flt(t_iv3 v);
-extern t_v4 ivec4_flt(t_iv4 v);
+#include "libft/maths.h"
+
+F32	ft_frand(S32 n)
+{
+	n = (n << 13U) ^ n;
+	n = n * (n * n * 15731U + 789221U) + 1376312589U;
+	return ((F32)(n & (U32)(0x7fffffffU)) / (F32)(0x7fffffff));
+}
+
+F32	ft_frand2(t_v2 st)
+{
+	return (ft_frac(sin(ft_dot2(st, vec2(12.9898, 78.233)))
+			* 43758.5453123));
+}
+
+t_v2	ft_rand_circle(U32 seed)
+{
+	return (vec2(ft_sin(ft_frand(seed)), ft_cos(ft_frand(seed + 1))));
+}

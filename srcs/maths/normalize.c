@@ -6,14 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 22:44:02 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/10 21:53:08 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/10 23:49:12 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
-#include "libft/maths.h"
 
-#include <math.h>
+#include "libft/maths.h"
 
 t_v3 ft_normalize3(t_v3 v)
 {
