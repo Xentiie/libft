@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 21:44:36 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/08 03:44:26 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/10 23:56:53 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void ft_draw_bitmap_text(t_image *out, t_iv4 rect, t_bitmap *bitmap, string str,
 	chars_per_line = (rect.z - rect.x + kerning.x) / char_size;
 	available_lines = (rect.w - rect.y + kerning.y) / line_size;
 
-	str_len = ft_imin(len, chars_per_line * available_lines);
+	str_len = ft_min(len, chars_per_line * available_lines);
 
 	bitmap_x_step = bitmap->char_width + bitmap->sep_width;
 	bitmap_y_step = bitmap->char_height + bitmap->sep_height;

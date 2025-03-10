@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 14:49:59 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/03 23:03:41 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/08 03:44:08 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void ft_stretch_image(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect
 void ft_stretch_image2(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect)
 {
 	t_iv4 dst_clipped;
+	MAYBE_UNUSED
 	t_iv4 src_clipped;
 	t_v2 dstsize;
 	t_v2 srcsize;

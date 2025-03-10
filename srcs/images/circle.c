@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 19:48:33 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/03 23:02:18 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/10 23:56:53 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ void ft_draw_circle_bound(t_image *img, t_iv2 pos, S32 radius, t_color col, t_iv
 	S32 y;
 	S32 d;
 
-	bound.x = ft_imax(bound.x, 0);
-	bound.y = ft_imax(bound.y, 0);
-	bound.z = ft_imin(bound.z, img->size.x);
-	bound.w = ft_imin(bound.w, img->size.y);
+	bound.x = ft_max(bound.x, 0);
+	bound.y = ft_max(bound.y, 0);
+	bound.z = ft_min(bound.z, img->size.x);
+	bound.w = ft_min(bound.w, img->size.y);
 
 	x = 0;
 	y = radius;
@@ -88,10 +88,10 @@ void ft_draw_circle_bound2(t_image *img, t_iv2 pos, S32 radius, t_color col, t_i
 	S32 y;
 	S32 d;
 
-	bound.x = ft_imax(bound.x, 0);
-	bound.y = ft_imax(bound.y, 0);
-	bound.z = ft_imin(bound.z, img->size.x);
-	bound.w = ft_imin(bound.w, img->size.y);
+	bound.x = ft_max(bound.x, 0);
+	bound.y = ft_max(bound.y, 0);
+	bound.z = ft_min(bound.z, img->size.x);
+	bound.w = ft_min(bound.w, img->size.y);
 
 	x = 0;
 	y = radius;

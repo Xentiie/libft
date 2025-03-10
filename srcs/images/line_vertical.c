@@ -3,27 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   line_vertical.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reclaire <reclaire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:22:58 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/23 22:27:49 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:29:18 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/images.h"
 #include "libft/maths.h"
 
-void ft_draw_line_vertical_bound(t_image *img, t_iv2 p1, S32 y2, t_color col, t_iv4 bound)
+static void draw_vert_line(t_image *img, t_iv2 p1, S32 y2, t_color col, t_iv4 bound)
 {
 	t_color *ptr;
 	S32 ylen;
 
-	bound.x = ft_imax(bound.x, 0);
-	bound.y = ft_imax(bound.y, 0);
-	bound.z = ft_imin(bound.z, img->size.x);
-	bound.w = ft_imin(bound.w, img->size.y);
-
-	if (p1.x < bound.x || p1.x >= bound.w)
+	if (p1.x < bound.x || p1.x >= bound.z)
 		return;
 
 	p1.y = ft_clamp(bound.y, bound.w, p1.y);
@@ -31,27 +26,17 @@ void ft_draw_line_vertical_bound(t_image *img, t_iv2 p1, S32 y2, t_color col, t_
 
 	ylen = ft_abs(p1.y - y2);
 
-	ptr = ft_get_pixel(img, p1.x, ft_imin(p1.y, y2));
+	ptr = ft_get_pixel(img, p1.x, ft_min(p1.y, y2));
 	for (S32 y = 0; y < ylen; y++, ptr += img->size.x)
 		*ptr = col;
 }
 
-void ft_draw_line_vertical(t_image *img, t_iv2 p1, S32 y2, t_color col)
-{
-	ft_draw_line_vertical_bound(img, p1, y2, col, ivec4(0, 0, img->size.x, img->size.y));
-}
-
-void ft_draw_line_vertical_bound2(t_image *img, t_iv2 p1, S32 y2, t_color col, t_iv4 bound)
+static void draw_vert_line2(t_image *img, t_iv2 p1, S32 y2, t_color col, t_iv4 bound)
 {
 	t_color *ptr;
 	S32 ylen;
 
-	bound.x = ft_imax(bound.x, 0);
-	bound.y = ft_imax(bound.y, 0);
-	bound.z = ft_imin(bound.z, img->size.x);
-	bound.w = ft_imin(bound.w, img->size.y);
-
-	if (p1.x < bound.x || p1.x >= bound.w)
+	if (p1.x < bound.x || p1.x >= bound.z)
 		return;
 
 	p1.y = ft_clamp(bound.y, bound.w, p1.y);
@@ -59,12 +44,29 @@ void ft_draw_line_vertical_bound2(t_image *img, t_iv2 p1, S32 y2, t_color col, t
 
 	ylen = ft_abs(p1.y - y2);
 
-	ptr = ft_get_pixel(img, p1.x, ft_imin(p1.y, y2));
+	ptr = ft_get_pixel(img, p1.x, ft_min(p1.y, y2));
 	for (S32 y = 0; y < ylen; y++, ptr += img->size.x)
 		*ptr = ft_alpha_blend(*ptr, col);
 }
 
+void ft_draw_line_vertical(t_image *img, t_iv2 p1, S32 y2, t_color col)
+{
+	draw_vert_line(img, p1, y2, col, ft_image_rect(img));
+}
+
+void ft_draw_line_vertical_bound(t_image *img, t_iv2 p1, S32 y2, t_color col, t_iv4 bound)
+{
+	bound = ft_clip_rect_rect(bound, ft_image_rect(img));
+	draw_vert_line(img, p1, y2, col, bound);
+}
+
 void ft_draw_line_vertical2(t_image *img, t_iv2 p1, S32 y2, t_color col)
 {
-	ft_draw_line_vertical_bound2(img, p1, y2, col, ivec4(0, 0, img->size.x, img->size.y));
+	draw_vert_line2(img, p1, y2, col, ft_image_rect(img));
+}
+
+void ft_draw_line_vertical_bound2(t_image *img, t_iv2 p1, S32 y2, t_color col, t_iv4 bound)
+{
+	bound = ft_clip_rect_rect(bound, ft_image_rect(img));
+	draw_vert_line2(img, p1, y2, col, bound);
 }

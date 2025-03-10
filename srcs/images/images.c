@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 14:15:22 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/08 03:43:49 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:01:30 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,3 +30,5 @@ bool ft_init_image(t_image *img, t_iv2 size)
 }
 
 void ft_destroy_image(t_image *img) { free(img->data); }
+
+extern t_iv4 ft_image_rect(t_image *img);
