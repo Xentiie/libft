@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 02:07:00 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/18 02:12:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/08 03:45:36 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ const_string ft_cpuid_strvendor(enum e_cpuid_vendor vendor_id)
 #undef mk_vendor_id_str
 	};
 
-	if (vendor_id < 0 || vendor_id >= __FT_CPUID_VENDOR_MAX)
+	if (vendor_id >= __FT_CPUID_VENDOR_MAX)
 		FT_RET_ERR(NULL, FT_ENOENT);
 	FT_RET_OK(vendor_id_str[vendor_id]);
 }
