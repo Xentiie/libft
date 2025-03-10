@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:20:53 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/05 02:55:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/08 03:44:45 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ t_color ft_rand_color(U32 seed)
 					 .a = 255};
 }
 
+MAYBE_UNUSED
 static t_color ablend_no_simd(t_color under, t_color over)
 {
 	return (t_color){
