@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:57:38 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/05 19:08:18 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/10 15:06:11 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@
 #if defined(_FT_EXTENDED_ALIAS)
 #include "libft/macros.h"
 #define __extended_alias_dummy(x) x
-#define EXTENDED_ALIAS(function_name, priority, ...) __attribute__((annotate("ft_extended_alias:" function_name ":" #priority ":" FT_MACRO_FOR_EACH_sep(__extended_alias_dummy, ":", __VA_ARGS__))))
+#define __extended_alias_dummy2(y, x) x
+#define EXTENDED_ALIAS(function_name, priority, cpuid_flags_lst, os_flags_lst) __attribute__((annotate("ft_extended_alias:" function_name ":" #priority ":" FT_MACRO_FOR_EACH_sep(__extended_alias_dummy, ",", FT_DEPAREN(cpuid_flags_lst) ":" FT_MACRO_FOR_EACH_sep_arg(__extended_alias_dummy2, ",",, FT_DEPAREN(os_flags_lst))))))
 #endif
 
 #endif
