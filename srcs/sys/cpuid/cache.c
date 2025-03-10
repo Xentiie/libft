@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 03:49:03 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/19 20:07:35 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/08 03:46:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@ bool ft_cpuid_get_cache_tlb_info(U32 maxinfos, U64 cpuinfos, struct s_cpuid_ctlb
 		{
 		case 0:
 		default:
-			printf("unknown: %#x\n", bytes[i]);
 			break;
 
 		case -1: /* tlb */
