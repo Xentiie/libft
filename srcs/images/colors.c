@@ -6,12 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:20:53 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/08 03:44:45 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:35:05 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/io.h"
-#include "libft/maths.h"
 #include "libft/images.h"
 
 t_color ft_rand_color(U32 seed)

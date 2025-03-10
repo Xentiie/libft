@@ -6,12 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 21:44:36 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/10 23:56:53 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:34:58 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/images.h"
-#include "libft/maths.h"
 #include "libft/strings.h"
 
 //#define BITMAP_TEXT_DEBUG 1

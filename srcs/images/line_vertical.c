@@ -6,12 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:22:58 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/11 00:29:18 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:34:51 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/images.h"
-#include "libft/maths.h"
 
 static void draw_vert_line(t_image *img, t_iv2 p1, S32 y2, t_color col, t_iv4 bound)
 {

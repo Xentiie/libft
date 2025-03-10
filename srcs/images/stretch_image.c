@@ -6,16 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 14:49:59 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/08 03:44:08 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:36:27 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/images.h"
-#include "libft/maths.h"
-
 #include "libft_int.h"
 
-#include <stdlib.h>
+#include "libft/images.h"
 
 void ft_stretch_image(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect)
 {

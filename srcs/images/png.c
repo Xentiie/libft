@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/13 02:47:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:36:02 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ if indexed color, can't parse if PLTE comes after data
 
 */
 
-#define _FT_RETURN
+#include "libft_int.h"
 
 #include "libft/compression/deflate.h"
 #include "libft/compression/gzip.h"

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 14:15:22 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/11 00:01:30 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:35:43 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "libft_int.h"
 
 #include "libft/images.h"
-#include "libft/maths.h"
 
 #include <stdlib.h>
 

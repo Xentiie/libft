@@ -6,12 +6,11 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 19:48:33 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/10 23:56:53 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:35:01 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/images.h"
-#include "libft/maths.h"
 
 inline static void draw_bounded_pixel(t_image *img, S32 x, S32 y, t_color col, t_iv4 bound)
 {

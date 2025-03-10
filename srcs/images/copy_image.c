@@ -6,16 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:15:23 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/10 23:56:53 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:35:30 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
-#define _FT_IMAGES_EXTENDED_DECLARATIONS
-
 #include "libft/images.h"
-#include "libft/maths.h"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wattributes"

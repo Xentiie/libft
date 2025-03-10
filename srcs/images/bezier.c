@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   bezier.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reclaire <reclaire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:22:26 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/23 22:26:58 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:34:55 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/images.h"
-#include "libft/maths.h"
 
 void ft_draw_bezier(t_image *img, t_color col, t_v2 p1, t_v2 p2, t_v2 p3, S32 res)
 {

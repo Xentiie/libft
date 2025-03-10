@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 23:26:42 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/11 00:31:07 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:35:27 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,14 +120,6 @@ extern void ft_copy_image2(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcre
 
 extern void ft_stretch_image(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect);
 extern void ft_stretch_image2(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect);
-
-#if defined(_FT_IMAGES_EXTENDED_DECLARATIONS)
-extern void ft_copy_image_abl(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrect);
-/* image copy, advanced alpha blend (2 pixels processed simultaneously) */
-extern void ft_copy_image_abl_avx(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrect);
-/* image copy, super advanced alpha blend (4 pixels processed simultaneously) */
-extern void ft_copy_image_abl_avx2(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrect);
-#endif
 
 /* lines */
 /* draws a line between `p1` and `p2`, bounded by `img->size` */
