@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 14:15:22 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/16 00:32:23 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/08 03:43:49 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ bool ft_init_image(t_image *img, t_iv2 size)
 {
 	img->size = size;
 	if (UNLIKELY(posix_memalign((void **)&img->data, 32, sizeof(t_color) * (size.x * size.y)) != 0))
-		FT_RET_ERR(FT_EOMEM, NULL);
+		FT_RET_ERR(FALSE, FT_EOMEM);
 	img->pixels = (t_color *)img->data;
 
 	FT_RET_OK(TRUE);
