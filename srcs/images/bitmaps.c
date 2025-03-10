@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 21:44:36 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/03 23:03:52 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/08 03:44:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void ft_draw_bitmap_text(t_image *out, t_iv4 rect, t_bitmap *bitmap, string str,
 
 	S32 bitmap_x_step;
 	S32 bitmap_y_step;
+	(void)col;
 
 	len = ft_strlen(str);
 	char_size = (bitmap->char_width * scale + kerning.x);
