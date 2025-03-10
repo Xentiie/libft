@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 19:57:43 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/15 23:10:11 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/08 04:02:40 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ S8 ft_is_debugger()
 	{
 		if (RUNNING_ON_VALGRIND)
 			__is_debugger = FT_DEBUG_VALGRIND;
-		else if (ptrace(PTRACE_TRACEME, 0, 1, 0) == -1) // TODO: untrace me
+		else if (ptrace(PTRACE_TRACEME, 0, 1, 0) == -1)
 			__is_debugger = FT_DEBUG_TRUE;
 		else
 			__is_debugger = FT_DEBUG_FALSE;
