@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/23 23:26:23 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/10 03:06:46 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,27 +20,6 @@
 #define FT_IO_UNBUFFERED 0
 #define FT_IO_LINE_BUFFERED 1
 #define FT_IO_FULL_BUFFERED 2
-
-#if defined(_FT_FILE_DEF)
-
-typedef struct s_file
-{
-	U8 buffering_mode;
-	U8 *buff;
-	U64 buff_size;
-	U64 buff_cnt;
-	filedesc fd;
-	bool binary_mode;
-	bool readable;
-	bool writeable;
-}	t_file;
-
-/*
-cleanup lock in lock ht, called from ft_fclose
-*/
-bool __ft_flockcleanup(t_file *fp);
-
-#endif
 
 _FT_GLOBAL_VAR_DEC(U64, _ft_bufsiz);
 
