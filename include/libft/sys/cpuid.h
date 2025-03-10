@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 02:08:17 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/07 08:33:40 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/10 03:17:31 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,13 @@
 #define FT_CPUID_EXTENDED_FLAGS 7
 
 /* Executes the `CPUID` instruction, with `reg` and `sub` as arguments, and outputs the result in `out` */
-extern void ft_cpuid(U32 reg, U32 sub, U32 out[4]);
+inline void ft_cpuid(U32 reg, U32 sub, U32 out[4])
+{
+	__asm__(
+		"cpuid\n"
+		: "=a"(out[0]), "=b"(out[1]), "=c"(out[2]), "=d"(out[3])
+		: "a"(reg), "1"(0), "2"(sub));
+}
 
 /* Returns the max `reg` value possible for `CPUID` (`ft_cpuid(0, 0)[EAX]`) */
 extern U32 ft_cpuid_get_max_infos();

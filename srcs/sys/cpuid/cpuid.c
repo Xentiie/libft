@@ -6,19 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 02:05:23 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/18 04:08:49 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/08 03:45:53 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cpuid_private.h"
 
-void ft_cpuid(U32 reg, U32 sub, U32 out[4])
-{
-	__asm__(
-		"cpuid\n"
-		: "=a"(out[0]), "=b"(out[1]), "=c"(out[2]), "=d"(out[3])
-		: "a"(reg), "1"(0), "2"(sub));
-}
+extern void ft_cpuid(U32 reg, U32 sub, U32 out[4]);
 
 U32 ft_cpuid_get_max_infos()
 {
@@ -41,6 +35,7 @@ U32 ft_cpuid_get_max_extended_infos()
 	return out[_EAX];
 }
 
+#if 0
 struct s_cpuid_dump
 {
 	U32 reg;
@@ -101,3 +96,4 @@ struct s_cpuid_dump *ft_cpuid_dump(U64 *cnt)
 		ft_cpuid(reg, sub, dump->data);
 	}
 }
+#endif
