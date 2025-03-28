@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:42:00 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/10 13:28:40 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/21 14:54:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,26 +46,6 @@ Sets ft_errno and returns NULL.
 string	ft_rpad(string str, char c, U64 n);
 
 /*
-Returns the error code associated with 'name'
-### On error
-Sets ft_errno and returns -1.
-### ft_errno
-- FT_EINVPTR if 'name' is NULL
-- FT_ENOENT if no error associated with 'name' was found
-*/
-S32 		ft_strtoerrno(const_string name);
-
-/*
-Returns the name of the error number 'err'
-### On error
-Sets ft_errno and returns NULL.
-### ft_errno
-- FT_ERANGE if 'err' is < 0
-- FT_ENOENT if no error associated with 'err' was found
-*/
-const_string		ft_errnotostr(S32 err);
-
-/*
 Returns the description of the error number 'err'
 ### On error
 Sets ft_errno and returns NULL.
@@ -85,6 +65,26 @@ Sets ft_errno and returns NULL.
 - FT_ENOENT if no error associated with 'ft_errno' was found
 */
 const_string 		ft_strerror2();
+
+/*
+Returns the error code associated with 'name'
+### On error
+Sets ft_errno and returns -1.
+### ft_errno
+- FT_EINVPTR if 'name' is NULL
+- FT_ENOENT if no error associated with 'name' was found
+*/
+S32 		ft_strtoerrno(const_string name);
+
+/*
+Returns the name of the error number 'err'
+### On error
+Sets ft_errno and returns NULL.
+### ft_errno
+- FT_ERANGE if 'err' is < 0
+- FT_ENOENT if no error associated with 'err' was found
+*/
+const_string		ft_errnotostr(S32 err);
 
 /*
 Append src behind dest. Dest must have enough space, including \0
