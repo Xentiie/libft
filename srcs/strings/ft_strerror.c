@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 14:52:06 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/20 14:36:20 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #if defined(FT_OS_LINUX)
 #include <errno.h>
 #include <string.h>
-#elif defined(FT_OS_WIN)
+#elif defined(FT_OS_WINDOWS)
 #include <windows.h>
 #include <winerror.h>
 #endif
@@ -71,7 +71,7 @@ const_string ft_strerror2()
 	else
 		return entries[err].desc;
 }
-#elif defined(FT_OS_WIN)
+#elif defined(FT_OS_WINDOWS)
 const_string ft_strerror2()
 {
 	S32 err;

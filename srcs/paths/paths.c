@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 05:54:01 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/31 15:58:27 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/20 14:36:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ bool ft_path_valid2(const_string path, S32 target)
 
 	if (target == 0)
 	{
-#if defined(FT_OS_WIN)
+#if defined(FT_OS_WINDOWS)
 		target = FT_TARGET_WIN;
 #elif defined(FT_OS_LINUX)
 		target = FT_TARGET_LINUX;

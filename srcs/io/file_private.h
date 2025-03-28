@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 08:44:37 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/10 03:06:29 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/20 14:36:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 #include <pthread.h>
 
-#if defined(FT_OS_WIN)
+#if defined(FT_OS_WINDOWS)
 #include <windows.h>
 #endif
 

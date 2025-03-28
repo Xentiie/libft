@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 20:19:41 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 16:05:47 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/20 14:36:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file_private.h"
 #include <errno.h>
 
-# if defined(FT_OS_WIN)
+# if defined(FT_OS_WINDOWS)
 #  include <windows.h>
 
 S64	ft_read(filedesc fd, void *buffer, U64 size)

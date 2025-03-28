@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 13:40:56 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/23 04:13:47 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/20 14:36:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file_private.h"
 #include "libft/strings.h"
 
-#if defined(FT_OS_WIN)
+#if defined(FT_OS_WINDOWS)
 #include <windows.h>
 
 S64 ft_write(filedesc fd, void *buffer, U64 size)

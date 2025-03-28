@@ -23,7 +23,7 @@
                 "C:/mingw64/x86_64-w64-mingw32/include/**"
             ],
             "defines": [
-                "FT_OS_WIN32",
+                "FT_OS_WINDOWS32",
                 "TEST",
                 "FT_INFLATE_CODES_GENERATOR"
             ],

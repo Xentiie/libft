@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:49:04 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/08 03:42:33 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/20 14:36:20 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include <stdlib.h>
 
-#if defined(FT_OS_WIN)
+#if defined(FT_OS_WINDOWS)
 #include <windows.h>
 #define __thread
 #endif
@@ -44,7 +44,7 @@ _FT_GLOBAL_VAR_DEF(t_file *, ft_fstderr);
 
 __attribute__((constructor(101))) static void __init_libft(S32 argc, string *argv, string *env)
 {
-#if defined(FT_OS_WIN)
+#if defined(FT_OS_WINDOWS)
 	(void)argc;
 	(void)argv;
 	(void)env;
@@ -58,7 +58,7 @@ __attribute__((constructor(101))) static void __init_libft(S32 argc, string *arg
 	ft_env = env;
 #endif
 
-#if defined(FT_OS_WIN)
+#if defined(FT_OS_WINDOWS)
 	ft_stdin = GetStdHandle(STD_INPUT_HANDLE);
 	ft_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 	ft_stderr = GetStdHandle(STD_ERROR_HANDLE);

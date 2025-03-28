@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:47:39 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 20:47:26 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/20 14:36:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include <stdlib.h>
 
-# if defined(FT_OS_WIN)
+# if defined(FT_OS_WINDOWS)
 #  include <windows.h>
 void	ft_close(filedesc fd)
 {

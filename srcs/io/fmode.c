@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/14 00:41:14 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 22:57:31 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/20 14:36:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#if defined(FT_OS_WIN)
+#if defined(FT_OS_WINDOWS)
 #define __S_IFMT   _S_IFMT
 #define __S_IFCHR  _S_IFCHR
 #define __S_IFDIR  _S_IFDIR

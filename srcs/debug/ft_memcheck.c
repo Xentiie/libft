@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 04:09:05 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/20 14:36:21 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
 //TODO: windows
-#if !defined(FT_OS_WIN)
+#if !defined(FT_OS_WINDOWS)
 
 #if defined(FT_DEBUG) && defined(FT_MEMCHECK)
 

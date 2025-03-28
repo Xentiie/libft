@@ -6,22 +6,22 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 16:16:11 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:09:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/20 14:36:20 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(FT__OS_H)
 #define FT__OS_H
 
-# if defined(FT_OS_UNKNOWN) || (!defined(FT_OS_WIN) && !defined(FT_APPLE) && !defined(FT_OS_LINUX))
+# if defined(FT_OS_UNKNOWN) || (!defined(FT_OS_WINDOWS) && !defined(FT_APPLE) && !defined(FT_OS_LINUX))
 
 #  if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-#   define FT_OS_WIN
+#   define FT_OS_WINDOWS
 #   define WIN32_LEAN_AND_MEAN 
 #   if defined(_WIN64)
-#    define FT_OS_WIN64 
+#    define FT_OS_WINDOWS64 
 #   else
-#    define FT_OS_WIN32
+#    define FT_OS_WINDOWS32
 #   endif
 
 #  elif __APPLE__

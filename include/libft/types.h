@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:47:30 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/10 23:54:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/20 14:36:20 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 typedef unsigned char U8;
 typedef unsigned short U16;
 typedef unsigned int U32;
-#if defined(FT_OS_WIN)
+#if defined(FT_OS_WINDOWS)
 typedef unsigned long long U64;
 typedef unsigned long long LU64;
 #else
@@ -44,7 +44,7 @@ typedef unsigned long long LU64;
 typedef signed char S8;
 typedef signed short S16;
 typedef signed int S32;
-#if defined(FT_OS_WIN)
+#if defined(FT_OS_WINDOWS)
 typedef signed long long S64;
 typedef signed long long LS64;
 #else
@@ -62,7 +62,7 @@ typedef int const *const_wstring;
 typedef int wchar;
 typedef U8 bool;
 
-#if defined(FT_OS_WIN)
+#if defined(FT_OS_WINDOWS)
 typedef void *filedesc;
 #elif defined(FT_OS_LINUX) || defined(FT_OS_MAC)
 typedef S32 filedesc;
