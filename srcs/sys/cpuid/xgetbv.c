@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 03:05:23 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/10 14:47:36 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/21 09:25:11 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,8 @@ bool ft_xgetbv(U32 ecx, U64 *out)
 		"xgetbv\n"
 		"shl rdx, 32\n"
 		"or  rdx, rax\n"
-		"mov QWORD PTR [%0], rdx\n"
-		:
-		: "r"(out), "c"(ecx)
-		: "rdx");
+		"mov QWORD PTR [%0], rdx\n" : : "r"(out),
+										"c"(ecx) : "rdx");
 
 	FT_RET_OK(TRUE);
 }
