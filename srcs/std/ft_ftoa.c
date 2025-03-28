@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 00:01:59 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/26 14:18:50 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include <stdio.h>
 #endif
 
-#define AFTERPOINT 5
+#define AFTERPOINT 9
 
 static void reverse(string str, U64 len)
 {
