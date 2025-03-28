@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:20:53 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/11 00:35:05 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/21 09:23:47 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,11 @@ static t_color ablend_simd(t_color under, t_color over)
 			Values in xmm registers: 4x16 bits. One letter = 16 bits. Exemple:
 				- 000R0G0B: 00[64->48] 0R[48->32] 0G[32->16] 0B[16->0]
 		*/
-		"vmovd        xmm0, eax\n"	   // Load 'under' color into xmm0
-		"vmovd        xmm1, ebx\n"	   // Load 'over' color into xmm1
+		"vmovd        xmm0, eax\n"		// Load 'under' color into xmm0
+		"vmovd        xmm1, ebx\n"		// Load 'over' color into xmm1
 		"vpsrld       xmm2, xmm1, 24\n" // Shift 'over' right *24 into xmm2 to retrieve only alpha
 
-//		"movq        ymm0, rax\n"
+		//		"movq        ymm0, rax\n"
 
 		/*
 		At this point:
@@ -75,10 +75,12 @@ static t_color ablend_simd(t_color under, t_color over)
 		//  (étudier la piste d'un chargement d'une constante dans la mémoire ? Faut tester
 		//  la rapidité)
 		//"movdqa       rax, [0x00FF00FF00FF00FF location]\n"
+
 		"mov          eax,  0xFF\n"
 		"vmovd        xmm3, eax\n"
 		"punpcklwd    xmm3, xmm3\n"
 		"punpcklwd    xmm3, xmm3\n"
+
 		"vpsubw       xmm2, xmm3, xmm2\n" // (255 - alpha)
 		"pmullw       xmm0, xmm2\n"		  // (255 - alpha) * under
 		"paddw        xmm1, xmm0\n"		  // (alpha * over) + ((255 - alpha) * under)
@@ -90,9 +92,7 @@ static t_color ablend_simd(t_color under, t_color over)
 		"and          eax, 0x00FFFFFF\n"
 		"or           eax, 0xFF000000\n"
 
-		: "=a"(result.v)
-		: "a"(under.v), "b"(over.v)
-		: "xmm0", "xmm1", "xmm2", "xmm3");
+		: "=a"(result.v) : "a"(under.v), "b"(over.v) : "xmm0", "xmm1", "xmm2", "xmm3");
 
 	return result;
 }
@@ -100,7 +100,7 @@ static t_color ablend_simd(t_color under, t_color over)
 typedef t_color (*f_ablend)(t_color, t_color);
 static f_ablend resolve_ablend()
 {
-	return ablend_simd;
+	return ablend_no_simd;
 }
 
 t_color ft_alpha_blend(t_color under, t_color over)

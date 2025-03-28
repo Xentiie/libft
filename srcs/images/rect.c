@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:22:47 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/11 00:36:15 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/21 09:24:49 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,14 +126,13 @@ void fill_rect_xmm(t_image *img, t_iv4 rect, t_color col)
 
 	asm(
 		"movd   xmm0, %0\n"
-		"pshufd xmm0, xmm0, 0\n"
-		: : "r"(col.v));
+		"pshufd xmm0, xmm0, 0\n" : : "r"(col.v));
 
 	for (S32 y = 0; y < ylen; y++, ptr += ystep)
 	{
 		S32 x;
 		for (x = 0; x < xlen; x += xstep, ptr += xstep)
-			asm("movdqu [%0], xmm0" : : "r"(ptr));
+			asm("movdqu [%0], xmm0\n" : : "r"(ptr));
 		for (; x < xlen + xlen_rem; x++, ptr++)
 			*ptr = col;
 	}
@@ -169,7 +168,7 @@ void fill_rect_ymm(t_image *img, t_iv4 rect, t_color col)
 	{
 		S32 x;
 		for (x = 0; x < xlen; x += xstep, ptr += xstep)
-			asm("vmovdqu %0, ymm0" : "=m"(*(ymm *)ptr));
+			asm("vmovdqu %0, ymm0\n" : "=m"(*(ymm *)ptr));
 		for (; x < xlen + xlen_rem; x++, ptr++)
 			*ptr = col;
 	}
@@ -230,7 +229,7 @@ void fill_rect2_xmm(t_image *img, t_iv4 rect, t_color col)
 	{
 		S32 x;
 		for (x = 0; x < xlen; x += xstep, ptr += xstep)
-			asm("movdqu [%0], xmm0" : : "r"(ptr));
+			asm("movdqu [%0], xmm0\n" : : "r"(ptr));
 		for (; x < xlen + xlen_rem; x++, ptr++)
 			*ptr = col;
 	}
