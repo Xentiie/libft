@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/07 09:41:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/21 09:23:13 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,12 @@
 -D _FT_GROWTH_FACTOR -> sets growth factor for stack
 */
 
-#define _FT_ERRNO_LOCATION
 #if !defined(_FT_NO_GLOBALS)
 #define _FT_NO_GLOBALS 1
+#endif
+
+#if _FT_NO_GLOBALS
+#define _FT_ERRNO_LOCATION
 #endif
 
 #include "_os.h"
@@ -53,7 +56,7 @@
 #pragma error "No __attribute__((constructor))"
 #endif
 
-#if defined(_FT_NO_GLOBALS) && _FT_NO_GLOBALS
+#if _FT_NO_GLOBALS
 #define _FT_GLOBAL_VAR_DEC(type, name) type *__global_##name();
 #define _FT_GLOBAL_VAR_DEF(type, name, ...)             \
 	type *__global_##name()                             \
@@ -161,7 +164,7 @@ extern __thread S32 ft_errno;
 
 // clang-format off
 #if !defined(_FT_AVOID_ALLOCA)
-# if defined(FT_OS_WIN) || defined(FT_OS_WIN_WSL)
+# if defined(FT_OS_WINDOWS) || defined(FT_OS_WINDOWS_WSL)
 #  include <malloc.h>
 # else
 #  include <alloca.h>
