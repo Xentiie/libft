@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 19:57:43 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/08 04:02:40 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/26 13:08:37 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 #include <signal.h>
 
-#if defined(FT_OS_WIN)
+#if defined(FT_OS_WINDOWS)
 #include <debugapi.h>
 #define SIGTRAP STATUS_BREAKPOINT
 
@@ -35,7 +35,7 @@ S8 ft_is_debugger()
 }
 #else
 #include <sys/ptrace.h>
-#include <valgrind/valgrind.h>
+//#include <valgrind/valgrind.h>
 
 #undef RUNNING_ON_VALGRIND
 #define RUNNING_ON_VALGRIND FALSE
@@ -55,7 +55,7 @@ S8 ft_is_debugger()
 	return __is_debugger;
 }
 
-#endif /* FT_OS_WIN */
+#endif /* FT_OS_WINDOWS */
 
 void ft_debug_break()
 {
