@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 14:08:44 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/24 06:21:12 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/26 14:24:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 #include <stdlib.h>
 
-#if defined(FT_OS_WIN)
+#if defined(FT_OS_WINDOWS)
 #include <malloc.h>
 #else
 #include <alloca.h>
@@ -30,14 +30,14 @@ static const_string l_base16 = "0123456789abcdef";
 static const_string u_base16 = "0123456789ABCDEF";
 
 #define GET_ARG(type) (*(type *)(&args[pos_nextarg == -1 ? nextarg++ : pos_nextarg]))
-#define BUF_SIZE	  U64_MAX_MAG + 1
+#define BUF_SIZE U64_MAX_MAG + 1
 
 MAYBE_UNUSED
 static S64 pad(char c, S64 s, t_fmtwr_i wr_i, void *data)
 {
 	char _padding[512];
-	S64	 out;
-	S64	 ret;
+	S64 out;
+	S64 ret;
 
 	out = 0;
 	ft_memset(_padding, c, MIN(s, (S64)sizeof(_padding)));
@@ -54,8 +54,8 @@ static S64 pad(char c, S64 s, t_fmtwr_i wr_i, void *data)
 static S64 pad_sp(S64 s, t_fmtwr_i wr_i, void *data)
 {
 	static char _padding[512] = {[0 ... 511] = ' '};
-	S64			out;
-	S64			ret;
+	S64 out;
+	S64 ret;
 
 	out = 0;
 	while (s > 0)
@@ -71,8 +71,8 @@ static S64 pad_sp(S64 s, t_fmtwr_i wr_i, void *data)
 static S64 pad_ze(S64 s, t_fmtwr_i wr_i, void *data)
 {
 	static char _padding[512] = {[0 ... 511] = '0'};
-	S64			out;
-	S64			ret;
+	S64 out;
+	S64 ret;
 
 	out = 0;
 	while (s > 0)
@@ -91,11 +91,11 @@ __attribute__((alias("__ftprintf_internal"))) S64 ft_viprintf(
 S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *data)
 {
 	const_string base;
-	U64			 basel;
+	U64 basel;
 
-	char		 buffer[BUF_SIZE];
+	char buffer[BUF_SIZE];
 	const_string str = NULL;
-	S64			 str_len = 0;
+	S64 str_len = 0;
 
 	const_string sv = fmt;
 
@@ -131,9 +131,9 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 		}
 		fmt++;
 
-		S32	 width = -1;
-		S32	 prec = -1;
-		S32	 flags = 0;
+		S32 width = -1;
+		S32 prec = -1;
+		S32 flags = 0;
 		char sign = '\0';
 		base = l_base16;
 		basel = 10;
@@ -221,8 +221,7 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 
 		case 'p':
 			basel = 16;
-			flags
-				= (flags & ~FL_T_LONGLONG) | FL_T_LONG | FL_UNSIGNED | FL_NUMBER | FL_HEX;
+			flags = (flags & ~FL_T_LONGLONG) | FL_T_LONG | FL_UNSIGNED | FL_NUMBER | FL_HEX;
 			break;
 		case 's':
 			str = GET_ARG(const_string);
@@ -246,7 +245,7 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 			break;
 
 		default:
-			//char tmp[2] = {'%', *fmt};
+			// char tmp[2] = {'%', *fmt};
 			cnt += wr_i("%", 1, data);
 			cnt += wr_i(fmt, 1, data);
 			fmt++;
@@ -308,16 +307,43 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 			ft_memcpy(buffer, tmp, str_len + 1);
 			str = buffer;
 			free(tmp);
+
+			n2 = 0;
+			if (prec == 0)
+			{
+				while (str[str_len] != '.')
+					str_len--;
+			}
+			else if (prec > 0)
+			{
+				n = str_len;
+				while (str[n] != '.')
+					n--;
+				if (str_len - n - 1 > prec)
+					str_len = (n + prec + 1);
+				else
+					n2 = prec - (str_len - n - 1);
+				//printf("%d - (%ld - %d - 1) = %d\n", prec, str_len, n, n2);
+				//printf("%d\n", n2);
+			}
+
 		}
 
 		if (flags & FL_UNSIGNED)
 			sign = '\0';
 
-		S64 real_len = str_len < prec ? prec : str_len;
+		S64 real_len;
+		if (flags & FL_FP)
+			real_len = str_len;
+		else
+			real_len = str_len < prec ? prec : str_len;
 		if (sign)
 			real_len++;
 		else if (flags & FL_HEX)
 			real_len += 2;
+
+		if (flags & FL_FP)
+			real_len += n2;
 
 		S64 p = width - real_len;
 		if ((flags & (FL_LEFTJUST | FL_ZEROPAD)) == 0)
@@ -331,8 +357,11 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 		if ((flags & (FL_LEFTJUST | FL_ZEROPAD)) == FL_ZEROPAD)
 			cnt += pad_ze(p, wr_i, data);
 
-		cnt += pad_ze(prec - str_len, wr_i, data);
+		if ((flags & FL_FP) == 0)
+			cnt += pad_ze(prec - str_len, wr_i, data);
 		cnt += wr_i(str, str_len, data);
+		if (flags & FL_FP && n2 != 0)
+			cnt += pad_ze(n2, wr_i, data);
 		if (flags & FL_LEFTJUST)
 			cnt += pad_sp(p, wr_i, data);
 
@@ -346,4 +375,4 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 	free(args);
 	return cnt;
 }
-//TODO: 0x 0X only if non zero
+// TODO: 0x 0X only if non zero

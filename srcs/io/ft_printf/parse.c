@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 18:23:46 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/31 18:46:31 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/26 13:15:08 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,13 +135,70 @@ S32 __ftprintf_parse_width(const_string *_fmt, S32 *arg_n, S32 *nextarg)
 
 S32 __ftprintf_parse_prec(const_string *_fmt, S32 *arg_n, S32 *nextarg)
 {
+	const_string fmt;
+	S32 n;
+
 	if (**_fmt != '.')
 	{
 		*arg_n = -1;
 		return -1;
 	}
 	(*_fmt)++;
-	return __ftprintf_parse_width(_fmt, arg_n, nextarg);
+
+	fmt = *_fmt;
+	n = 0;
+	switch (*fmt)
+	{
+	case '*':
+		fmt++;
+		if (ft_isdigit(*fmt))
+		{
+			while (ft_isdigit(*fmt))
+			{
+				n = n * 10 + (*fmt - '0');
+				fmt++;
+			}
+			if (*fmt == '$')
+			{
+				*_fmt = fmt + 1;
+				*arg_n = n - 1;
+				return -1;
+			}
+			else
+			{
+				*_fmt = (*_fmt) + 1;
+				*arg_n = (*nextarg)++;
+				return -1;
+			}
+		}
+		else
+		{
+			*_fmt = (*_fmt) + 1;
+			*arg_n = (*nextarg)++;
+			return -1;
+		}
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+		while (ft_isdigit(*fmt))
+		{
+			n = n * 10 + (*fmt - '0');
+			fmt++;
+		}
+		*arg_n = -1;
+		*_fmt = fmt;
+		return n;
+	default:
+		*arg_n = -1;
+		return -1;
+	}
 }
 
 S32 __ftprintf_parse_size_flags(const_string *_fmt)
