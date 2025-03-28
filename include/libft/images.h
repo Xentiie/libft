@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 23:26:42 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/11 00:35:27 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/27 01:30:15 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,17 @@ typedef union u_color
 	U32 v;
 	struct
 	{
+#if !defined(COLORS_FORMAT_MLX)
 		U8 b;
 		U8 g;
 		U8 r;
 		U8 a;
-
-		/*
+#else
 		U8 r;
 		U8 g;
 		U8 b;
 		U8 a;
-		*/
+#endif
 	};
 } t_color;
 
@@ -46,38 +46,6 @@ typedef struct s_image
 	};
 	t_iv2 size;
 } t_image;
-
-struct s_png_metadata
-{
-	/*
-	Each element of the list contains 2 strings, one behind another.
-	First one is the title, second is the text.
-	*/
-t_list *text_data;
-};
-
-typedef struct s_png_img
-{
-	U32 width;
-	U32 height;
-	U8 bit_depth;
-	U8 bpp;
-	U8 color_type;
-	U8 compression_method;
-	U8 filter_method;
-	U8 interlace_method;
-
-	U8 sample_depth;
-
-	/* Pixels data */
-	U8 *data;
-
-	/*
-	Each element of the list contains 2 strings, one behind another.
-	First one is the title, second is the text.
-	*/
-	t_list *text_data;
-} t_png_img;
 
 #define __ft_color5(_r, _g, _b, _a) ((t_color){.r = (_r), .g = (_g), .b = (_b), .a = (_a)})
 #define __ft_color4(_r, _g, _b, ...)                                                 \
@@ -186,9 +154,6 @@ extern void ft_draw_triangle(t_image *img, t_iv2 p1, t_iv2 p2, t_iv2 p3, t_color
 extern void ft_draw_triangle2(t_image *img, t_iv2 p1, t_iv2 p2, t_iv2 p3, t_color col);
 extern void ft_draw_triangle_bound(t_image *img, t_iv2 p1, t_iv2 p2, t_iv2 p3, t_color col, t_iv4 bound);
 extern void ft_draw_triangle_bound2(t_image *img, t_iv2 p1, t_iv2 p2, t_iv2 p3, t_color col, t_iv4 bound);
-
-extern t_png_img *ft_load_png(filedesc f, bool verbose);
-extern void ft_free_png_img(t_png_img *img);
 
 /* bitmaps */
 typedef struct s_bitmap
