@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:47:30 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/20 14:36:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/29 23:53:08 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,5 +155,8 @@ typedef struct s_mat2x2
 {
 	F32 m[2][2];
 } t_mat22;
+
+typedef float xmm __attribute__((vector_size(16), may_alias));
+typedef float ymm __attribute__((vector_size(32), may_alias));
 
 #endif
