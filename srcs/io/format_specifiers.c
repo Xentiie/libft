@@ -1,53 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   format_specifiers_utils.c                          :+:      :+:    :+:   */
+/*   format_specifiers.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:33:00 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/29 16:21:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/31 00:33:44 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/std.h"
 #include "libft/io.h"
-
-struct s_fmt_flag
-{
-	char c;
-	U32 flag;
-};
-
-/*
-Format specifier types, for printf like formatting, to use with `ft_parse_specifier`
-`begin` is the start of the specifier, or `NULL` if no format specifier was found, in which case all the other members values are undefined
-`length` is the length of the specifier
-`flags` is the combined specifier, specifier flags and size flags of the found specifier
-`width` is the requested width (padding), or `-1` if no width specified
-`width_argpos` is the specified width argument index, or `-1` if no argument index specified. Takes priority over `width` if `width_argpos!= -1`
-`prec` is the requested precision, or `-1` if no precision specified
-`prec_argpos` is the specified precision argument index, or `-1` if no argument index specified. Takes priority over `prec` if `prec_argpos!= -1`
-`argpos` is the specifier argument index
-*/
-struct s_fmt_spec
-{
-	/* NULL if none */
-	string begin;
-	U64 length;
-	U32 flags;
-
-	/* -1 if none */
-	S32 width;
-	/* -1 if none */
-	S32 width_argpos;
-	/* -1 if none */
-	S32 prec;
-	/* -1 if none */
-	S32 prec_argpos;
-
-	S32 argpos;
-};
+#include "libft/bits/format_specifiers.h"
 
 /* parses and returns the unsigned integer `X` in `X$`. returns `-1` if no argument position specifier is found */
 static S32 parse_specifier_argpos(const_string *_fmt)
@@ -74,50 +39,27 @@ static S32 parse_specifier_argpos(const_string *_fmt)
 	return -1;
 }
 
-static U32 parse_specifier_multiple(const_string *_fmt, struct s_fmt_flag *specifier_flags)
+static char parse_specifier(char fmt, struct s_fmt_flag *specifier, enum e_fmt_flag expected_type, U32 *flags)
 {
-	const_string fmt;
-	S32 flags;
 	U32 i;
 
-	fmt = *_fmt;
-	flags = 0;
-	while (*fmt)
-	{
-		for (i = 0; specifier_flags[i].c != 0; i++)
-		{
-			if (specifier_flags[i].c == *fmt)
-			{
-				flags |= specifier_flags[i].flag;
-				break;
-			}
-		}
-
-		if (specifier_flags[i].c == 0)
-			break;
-		fmt++;
-	}
-
-	*_fmt = fmt;
-	return flags;
-}
-
-static U32 parse_specifier_single(char fmt, struct s_fmt_flag *specifier, bool *valid)
-{
-	S32 flags;
-	U32 i;
-
-	flags = 0;
 	for (i = 0; specifier[i].c != 0; i++)
 	{
-		if (specifier[i].c == fmt)
+		if (specifier[i].type == expected_type)
 		{
-			flags |= specifier[i].flag;
+			if (specifier[i].c == fmt)
+		{
+			(*flags) |= specifier[i].flag;
 			break;
 		}
+		else if (specifier[i].type == FMT_SIZE && specifier[i].c > 127 && specifier[i].c - 127 == fmt)
+		{
+			(*flags) |= (specifier[i].flag << 1);
+			break;
+		}
+		}
 	}
-	*valid = specifier[i].c != 0;
-	return flags;
+	return specifier[i].c;
 }
 
 static S32 parse_width(const_string *_fmt, S32 *arg_n, S32 *nextarg)
@@ -195,59 +137,58 @@ static S32 parse_prec(const_string *_fmt, S32 *arg_n, S32 *nextarg)
 	return parse_width(_fmt, arg_n, nextarg);
 }
 
-struct s_fmt_spec ft_parse_specifier(const_string fmt, S32 *nextarg, struct s_fmt_flag *specifiers, struct s_fmt_flag *specifier_flags, struct s_fmt_flag *size_flags)
+char ft_parse_specifier(const_string fmt, S32 *nextarg, struct s_fmt_flag *specifiers, struct s_fmt_spec *out)
 {
-	struct s_fmt_spec out;
 	S32 pos_nextarg;
 	S32 n2;
 	S32 nextarg_save;
-	bool valid;
+	char ret;
 
 	nextarg_save = (*nextarg);
-	valid = FALSE;
-	while (*fmt && !valid)
+	ret = 0;
+	while (*fmt && ret == 0)
 	{
-		ft_bzero(&out, sizeof(struct s_fmt_spec));
 		*nextarg = nextarg_save;
 
 		while (*fmt && *fmt != '%')
 			fmt++;
 		if (*fmt == '\0' || *(fmt + 1) == '\0')
 		{
-			out.begin = NULL;
-			return out;
+			out->begin = NULL;
+			return 0;
 		}
 		if (*(fmt + 1) == '%')
 		{
 			fmt += 2;
 			continue;
 		}
-		out.begin = (string)fmt;
+		ft_bzero(out, sizeof(struct s_fmt_spec));
+		out->begin = (string)fmt;
 		fmt++;
 
-		out.argpos = parse_specifier_argpos(&fmt);
-		if (specifier_flags)
-			out.flags |= parse_specifier_multiple(&fmt, specifier_flags);
+		out->argpos = parse_specifier_argpos(&fmt);
+		while (parse_specifier(*fmt, specifiers, FMT_FLAG, &out->flags))
+			fmt++;
 
-		out.width = parse_width(&fmt, &out.width_argpos, nextarg);
-		out.prec = parse_prec(&fmt, &out.prec_argpos, nextarg);
+		out->width = parse_width(&fmt, &out->width_argpos, nextarg);
+		out->prec = parse_prec(&fmt, &out->prec_argpos, nextarg);
 
-		if (out.argpos == -1)
-			out.argpos = (*nextarg)++;
+		if (out->argpos == -1)
+			out->argpos = (*nextarg)++;
 
-		if (size_flags)
-			out.flags |= parse_specifier_multiple(&fmt, size_flags);
+		while (parse_specifier(*fmt, specifiers, FMT_SIZE, &out->flags))
+			fmt++;
 
-		out.flags |= parse_specifier_single(*fmt, specifiers, &valid);
+		ret = parse_specifier(*fmt, specifiers, FMT_SPEC, &out->flags);
 		fmt++;
 
-		if (valid)
-			out.length = fmt - out.begin;
+		if (ret != 0)
+			out->length = fmt - out->begin;
 	}
 
-	if (!valid)
-		out.begin = NULL;
-	return out;
+	if (ret == 0)
+		out->begin = NULL;
+	return ret;
 }
 
 #if defined(TEST)
@@ -255,32 +196,71 @@ struct s_fmt_spec ft_parse_specifier(const_string fmt, S32 *nextarg, struct s_fm
 
 int main()
 {
+#define FL_ALT (1 << 0)
+#define FL_ZEROPAD (1 << 1)
+#define FL_SPACEPAD (1 << 2)
+#define FL_LEFTJUST (1 << 3)
+#define FL_SHOWSIGN (1 << 4)
+#define FL_SPACESIGN (1 << 5)
+
+#define FL_T_SHORT (1 << 7)
+#define FL_T_LONG (1 << 8)
+#define FL_T_LONGLONG (1 << 9)
+
+#define FL_SPEC_UNSIGNED (1 << 10)
+
+#define FL_SPEC_N (1 << 11)
+#define FL_SPEC_STRING (2 << 11)
+#define FL_SPEC_NUMBER (3 << 11)
+#define FL_SPEC_FLOATING_POINT (4 << 11)
+#define FL_SPEC_HEX (5 << 11)
+
+	sizeof(struct s_fmt_flag);
+
 	struct s_fmt_flag specifiers[] = {
-		{.c = 's', .flag = 0x1},
-		{.c = 'd', .flag = 0x2},
-		{.c = 'c', .flag = 0x4},
-		{.c = 'u', .flag = 0x8},
-		{0},
-	};
+		{ .type = FMT_FLAG, .c = '#', .flag = FL_ALT },
+		{ .type = FMT_FLAG, .c = '0', .flag = FL_ZEROPAD },
+		{ .type = FMT_FLAG, .c = ' ', .flag = FL_SPACEPAD },
+		{ .type = FMT_FLAG, .c = '-', .flag = FL_LEFTJUST },
+		{ .type = FMT_FLAG, .c = '+', .flag = FL_SHOWSIGN },
+		{ .type = FMT_FLAG, .c = '\'', .flag = 0 },
+		{ .type = FMT_FLAG, .c = 'I', .flag = 0 },
 
-	struct s_fmt_flag specifiers_flags[] = {
-		{.c = '#', .flag = 0x10},
-		{.c = ' ', .flag = 0x20},
-		{.c = '0', .flag = 0x40},
-		{.c = '-', .flag = 0x80},
-		{.c = '+', .flag = 0x100},
-		{0},
-	};
+		{ .type = FMT_SIZE, .c = 'h', .flag = FL_T_SHORT },
+		{ .type = FMT_SIZE, .c = 'l' + 127, .flag = FL_T_LONG },
+		{ .type = FMT_SIZE, .c = 'j', .flag = FL_T_LONGLONG },
+		{ .type = FMT_SIZE, .c = 'z', .flag = FL_T_LONGLONG },
+		{ .type = FMT_SIZE, .c = 'Z', .flag = FL_T_LONGLONG },
+		{ .type = FMT_SIZE, .c = 't', .flag = FL_T_LONGLONG },
+		{ .type = FMT_SIZE, .c = 'L', .flag = FL_T_LONGLONG },
+		{ .type = FMT_SIZE, .c = 'q', .flag = FL_T_LONGLONG },
 
-	struct s_fmt_flag specifiers_sizes[] = {
-		{.c = 'h', .flag = 0x200},
-		{.c = 'l', .flag = 0x400},
-		{.c = 'j', .flag = 0x800},
-		{.c = 'z', .flag = 0x800},
-		{.c = 'Z', .flag = 0x800},
-		{.c = 't', .flag = 0x800},
-		{.c = 'L', .flag = 0x800},
-		{.c = 'q', .flag = 0x800},
+		{ .type = FMT_SPEC, .c = 'n', .flag = FL_SPEC_N },
+		{ .type = FMT_SPEC, .c = 'c', .flag = FL_SPEC_STRING },
+		{ .type = FMT_SPEC, .c = 'D', .flag = FL_T_LONG | FL_SPEC_NUMBER },
+		{ .type = FMT_SPEC, .c = 'd', .flag = FL_SPEC_NUMBER },
+		{ .type = FMT_SPEC, .c = 'i', .flag = FL_SPEC_NUMBER },
+
+		{.c = '#', .flag = FL_ALT, .type = FMT_FLAG},
+		{.c = '0', .flag = FL_ZEROPAD, .type = FMT_FLAG},
+		{.c = ' ', .flag = FL_SPACEPAD, .type = FMT_FLAG},
+		{.c = '-', .flag = 0x80, .type = FMT_FLAG},
+		{.c = '+', .flag = 0x100, .type = FMT_FLAG},
+
+		{.c = 's', .flag = 0x1, .type = FMT_SPEC},
+		{.c = 'd', .flag = 0x2, .type = FMT_SPEC},
+		{.c = 'c', .flag = 0x4, .type = FMT_SPEC},
+		{.c = 'u', .flag = 0x8, .type = FMT_SPEC},	
+	
+		{.c = 'h', .flag = 0x200, .type = FMT_SIZE},
+		{.c = 'l' + 127, .flag = 0x400, .type = FMT_SIZE},
+		{.c = 'j', .flag = 0x800, .type = FMT_SIZE},
+		{.c = 'z', .flag = 0x800, .type = FMT_SIZE},
+		{.c = 'Z', .flag = 0x800, .type = FMT_SIZE},
+		{.c = 't', .flag = 0x800, .type = FMT_SIZE},
+		{.c = 'L', .flag = 0x800, .type = FMT_SIZE},
+		{.c = 'q', .flag = 0x800, .type = FMT_SIZE},
+		{0},
 	};
 
 	struct s_fmt_spec out;
@@ -293,17 +273,15 @@ int main()
 		S32 nextarg = 0;
 		string ptr = ft_argv[i];
 
-		ft_printf("%1$-*1$.*1$d\n", 5);
-
 		while (TRUE)
 		{
-			out = ft_parse_specifier(ptr, &nextarg, specifiers, specifiers_flags, NULL);
+			char c = ft_parse_specifier(ptr, &nextarg, specifiers, &out);
 			if (out.begin == NULL)
 			{
 				ft_printf("done\n");
 				break;
 			}
-			ft_printf("%.*s (l:%lu)\n\t", out.length, out.begin, out.length, nextarg);
+			ft_printf("%.*s (l:%lu) (%#x)\n\t", out.length, out.begin, out.length, out.flags);
 
 			if (out.flags & 0x10)
 				ft_printf("alternative-form ");
