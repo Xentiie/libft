@@ -670,10 +670,40 @@ help()
 	printf "\t-O[level]\t\t\tset the optimisation level (default: 3)\n"
 }
 
+run_diff()
+{
+	path="$1"
+
+	for s in "${SOURCES[@]}"; do
+		other_path="$path/$s"
+
+		if [[ ! -f "$other_path" ]]; then
+			echo "File created: $s"
+			continue
+		fi
+
+		set +e
+		diff "$s" "$other_path" > /dev/null
+		d=$?
+		set -e
+		if (( d == 1 )); then
+			echo "File changed: $s"
+			if [ "$s" -nt "$other_path" ]; then
+				echo "	$s is more recent"
+			else
+				echo "	$other_path is more recent"
+			fi
+		elif (( d == 2 )); then
+			echo "Diff error: $s"
+		fi
+	done
+}
+
 configure() {
 	debug=true
 	optimisations=
 	colors_fmt_mlx=false
+	diff=
 
 	nextarg=""
 
@@ -694,6 +724,13 @@ configure() {
 
 		elif [[ "$arg" == "--colors-format-mlx" ]]; then
 			colors_fmt_mlx=true
+
+		elif [[ "$arg" == "--diff" ]]; then
+			diff=$nextarg
+			if [[ -z "$diff" ]]; then
+				cf_error "--diff requires an argument"
+				exit 1
+			fi
 
 		else
 			cf_error "unknown argument: '$arg'"
@@ -730,8 +767,14 @@ configure() {
 
 	shopt -s globstar
 	for f in srcs/**/*.c; do
+		if [[ $(basename "$(dirname "$f")") == "ft_printf2" ]]; then continue; fi
 		cf_add_source "$f"
 	done
+
+	if [[ -n "$diff" ]]; then
+		run_diff "$diff"
+		exit 0
+	fi
 }
 
 cf_run "$@"
