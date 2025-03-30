@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:22:47 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/21 09:24:49 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/31 00:39:28 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include "libft_int.h"
 
 #include "libft/images.h"
-#include "libft/sse.h"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wattributes"
