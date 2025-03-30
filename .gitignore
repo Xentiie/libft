@@ -7,18 +7,16 @@ a.out
 *.so
 *.dll
 
-config.mk
-
 *.gcno
 *.gcda
 
 #env
 .editorconfig
+.vscode/
 
-tests/error_logs/
-tests/perf_logs/
-
+#config
 *.mk
 apt.sh
 
-./test
+#debug
+libft-ghidra/
