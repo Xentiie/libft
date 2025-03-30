@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/11 00:36:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/31 00:38:52 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ TODO:
 if indexed color, can't parse if PLTE comes after data
 
 */
+
+#if 0
 
 #include "libft_int.h"
 
@@ -555,3 +557,5 @@ void ft_free_png_img(t_png_img *img)
 	ft_lstclear(&img->text_data, free);
 	free(img);
 }
+
+#endif
