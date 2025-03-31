@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 14:08:44 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/26 14:24:26 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/31 14:57:33 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,8 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 			break;
 		if (*(fmt + 1) == '%')
 		{
+			cnt += wr_i(sv, fmt - sv, data);
+			sv = fmt + 1;
 			fmt += 2;
 			continue;
 		}

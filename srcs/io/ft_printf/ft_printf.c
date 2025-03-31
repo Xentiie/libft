@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:43:53 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/27 22:21:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/31 01:20:36 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ S64 ft_vfprintf(t_file *file, const_string fmt, va_list args)
 
 S64 ft_vdprintf(filedesc fd, const_string fmt, va_list args)
 {
-	return __ftprintf_internal(fmt, args, write_interface_fd, &fd);
+	return ft_viprintf(fmt, args, write_interface_fd, &fd);
 }
 
 struct s_wr_i_str_data
@@ -167,7 +167,7 @@ S64 ft_vsprintf(string str, const_string fmt, va_list args)
 S64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args)
 {
 	struct s_wr_i_str_data data = {n, str};
-	U64 out = __ftprintf_internal(fmt, args, write_interface_str, &data);
+	U64 out = ft_viprintf(fmt, args, write_interface_str, &data);
 	if (data.n == 0 && n != 0)
 		*(data.str - 1) = '\0';
 	else
@@ -197,6 +197,8 @@ string ft_vsanprintf(U64 n, const_string fmt, va_list args)
 
 	return str;
 }
+
+
 
 #if defined(TEST)
 

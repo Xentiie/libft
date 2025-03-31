@@ -693,6 +693,7 @@ run_diff()
 			else
 				echo "	$other_path is more recent"
 			fi
+			echo "	diff $s $other_path"
 		elif (( d == 2 )); then
 			echo "Diff error: $s"
 		fi

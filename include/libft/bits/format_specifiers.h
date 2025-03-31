@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 11:40:50 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/31 00:20:08 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/03/31 01:43:42 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ struct s_fmt_spec
 	S32 prec_argpos;
 
 	S32 argpos;
+	char spec;
 };
 
 /*
@@ -68,7 +69,7 @@ The member `type` of `struct s_fmt_flag` specifies the valid location of the cha
 specifier                 precision   precision
 ```
 
-The returned character is the first valid FMT_SPEC format flag found, or 0 if no valid format flag were found.
+Returns TRUE if a valid format specifier was found, FALSE otherwise
 Additionnal infos are returned in `out`:
 - `out->begin`: pointer to the beginning of the format specifier (i.e. pointer to  '%')
 - `out->length`: length of the format specifier (include '%')
@@ -78,14 +79,16 @@ Additionnal infos are returned in `out`:
 - `out->prec`: precision field of the specifier (`-1` if none specified, or if the precision is specified in an argument)
 - `out->prec_argpos`: argument position of the precision field (`-1` if none specified)
 - `out->argpos`: argument position for this format specifier
+- `out->spec`: the final character in the format specifier
 
 Notes:
+If no valid specifiers are found, the value pointer to by `nextarg` stay unchanged, while the values in `out` are undefined. 
 Even if no valid specifiers are found, values pointed to by `nextarg` and `out` can change.
 
 FMT_SIZE: to allow multiple flags to combine (exemple: %lld, with double 'l'), if the member 'c' of a `struct s_fmt_flag` with
 `type == FMT_SIZE` is greater than 127, then it's actual character will be `c - 127`, and 2 consecutive size specifier for that
 character will be allowed. In that case, the bit flag set will be `flag << 1`.
 */
-char ft_parse_specifier(const_string fmt, S32 *nextarg, struct s_fmt_flag *specifiers, struct s_fmt_spec *out);
+bool ft_parse_specifier(const_string fmt, S32 *nextarg, struct s_fmt_flag *specifiers, struct s_fmt_spec *out);
 
 #endif

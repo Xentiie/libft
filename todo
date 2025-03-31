@@ -12,8 +12,7 @@ script pour generer tout le cpuid proprement
 Generer grande table des instructions en scrapant le manuel de Intel comme https://github.com/fay59/x86doc, puis
 automatiser detection extension avec libclang sur un fichier
 
-Detection OS support SSE, AVX...
-	- https://stackoverflow.com/questions/6121792/how-to-check-if-a-cpu-supports-the-sse3-instruction-set/22521619#22521619
+Generaliser format specifiers, mais sans perte de performance
 
 ----------------------FINITO---------------------------
 Detection support SSE, AVX... (__attribute__((ifunc, "...")))
