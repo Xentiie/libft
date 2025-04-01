@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:42:00 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/21 14:54:21 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/01 02:48:52 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,10 +199,11 @@ character of the first occurrence of to_find is returned.
 */
 extern const_string	ft_strnstr(const_string haystack, const_string needle, U64 len);
 
-/*
-Returns the length of string
-*/
+/* Returns the length of string */
 extern U64		ft_strlen(const_string str);
+
+/* Returns the length of string, no more than maxlen */
+extern U64		ft_strnlen(const_string str, U64 maxlen);
 
 /*
 Returns the index of the first occurrence of c in str, -1 if not found.
