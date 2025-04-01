@@ -6,12 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:33:00 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/31 15:52:10 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/01 02:54:39 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/std.h"
 #include "libft/io.h"
+#include "libft/strings.h"
+#include "libft/limits.h"
 #include "libft/bits/format_specifiers.h"
 
 /* parses and returns the unsigned integer `X` in `X$`. returns `-1` if no argument position specifier is found */
@@ -198,50 +200,56 @@ bool ft_parse_specifier(const_string fmt, S32 *nextarg, struct s_fmt_flag *speci
 		return TRUE;
 }
 
-U64 ft_write_specifier(string buf, U64 buflen, struct s_fmt_flag *specifiers_lst, struct s_fmt_spec *specifier)
+U8 ft_write_specifier(string buf, U64 buflen, struct s_fmt_flag *specifiers_lst, struct s_fmt_spec *specifier)
 {
-	U64 cnt;
+	U8 _buf[17];
+	U8 tmp;
+#define flush()                                      \
+	{                                                \
+		if (ft_strlcat(buf, _buf, buflen) >= buflen) \
+			return ft_strlen(buf) + 1;               \
+	}
 
-	cnt = ft_snprintf(buf, buflen, "%%%d$", specifier->argpos + 1) - 1;
-	if (cnt >= buflen)
-		return cnt;
+	if (buflen == 0)
+		return 0;
+	buf[0] = '\0';
 
+	_buf[0] = '%';
+	ft_snprintf(&_buf[1], sizeof(_buf) - 1, "%d$", specifier->argpos + 1);
+	flush();
+
+	tmp = 0;
 	for (struct s_fmt_flag *s = specifiers_lst; s->c != 0; s++)
 	{
 		if (s->type == FMT_FLAG && (s->flag & specifier->flags))
-		{
-			buf[cnt++] = s->c;
-			if (cnt >= buflen)
-				return cnt;
-		}
+			_buf[tmp++] = s->c;
 	}
+	_buf[tmp] = '\0';
+	flush();
 
 	if (specifier->width > -1)
 	{
-		cnt += ft_snprintf(&buf[cnt], buflen - cnt, "%d", specifier->width) - 1;
-		if (cnt >= buflen)
-			return cnt;
+		ft_snprintf(_buf, sizeof(_buf), "%d", specifier->width);
+		flush();
 	}
 	else if (specifier->width_argpos > -1)
 	{
-		cnt += ft_snprintf(&buf[cnt], buflen - cnt, "*%d$", specifier->width_argpos + 1) - 1;
-		if (cnt >= buflen)
-			return cnt;
+		ft_snprintf(_buf, sizeof(_buf), "*%d$", specifier->width_argpos);
+		flush();
 	}
 
 	if (specifier->prec > -1)
 	{
-		cnt += ft_snprintf(&buf[cnt], buflen - cnt, ".%d", specifier->width) - 1;
-		if (cnt >= buflen)
-			return cnt;
+		ft_snprintf(_buf, sizeof(_buf), ".%d", specifier->prec);
+		flush();
 	}
 	else if (specifier->prec_argpos > -1)
 	{
-		cnt += ft_snprintf(&buf[cnt], buflen - cnt, ".*%d$", specifier->prec_argpos + 1) - 1;
-		if (cnt >= buflen)
-			return cnt;
+		ft_snprintf(_buf, sizeof(_buf), ".*%d$", specifier->prec_argpos);
+		flush();
 	}
 
+	tmp = 0;
 	for (struct s_fmt_flag *s = specifiers_lst; s->c != 0; s++)
 	{
 		if (s->type == FMT_SIZE)
@@ -250,33 +258,32 @@ U64 ft_write_specifier(string buf, U64 buflen, struct s_fmt_flag *specifiers_lst
 			{
 				if (s->flag & specifier->flags)
 				{
-					buf[cnt++] = (s->c - 127);
-					if (cnt >= buflen)
-						return cnt;
+					_buf[0] = (s->c - 127);
+					tmp = 1;
 				}
 				else if ((s->flag << 1) & specifier->flags)
 				{
-					buf[cnt++] = (s->c - 127);
-					if (cnt >= buflen)
-						return cnt;
-					buf[cnt++] = (s->c - 127);
-					if (cnt >= buflen)
-						return cnt;
+					_buf[0] = (s->c - 127);
+					_buf[1] = (s->c - 127);
+					tmp = 2;
 				}
 				break;
 			}
 			else if (s->flag & specifier->flags)
 			{
-				buf[cnt++] = s->c;
-				if (cnt >= buflen)
-					return cnt;
-				break;
+				tmp = 1;
+				_buf[0] = s->c;
 			}
 		}
 	}
 
-	buf[cnt++] = specifier->spec;
-	return cnt;
+	_buf[tmp] = specifier->spec;
+	_buf[tmp + 1] = '\0';
+	flush();
+
+	return ft_strlen(buf) + 1;
+
+#undef flush
 }
 
 #if defined(TEST)
@@ -351,9 +358,9 @@ int main()
 				ft_printf("precision in argument %d ", out.prec_argpos);
 			ft_printf("\n\t");
 
-			U8 buf[256];
-			buf[ft_write_specifier(buf, sizeof(buf), specifiers, &out)] = '\0';
-			ft_printf("%s\n", buf);
+			U8 buf[15] = {0};
+			U8 spec_cnt = ft_write_specifier(buf, sizeof(buf), specifiers, &out);
+			ft_printf("%lu | %s\n", spec_cnt, buf);
 
 			ft_printf("\n");
 			ptr = out.begin + out.length;

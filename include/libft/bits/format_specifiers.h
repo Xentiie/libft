@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 11:40:50 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/31 01:43:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/01 02:55:53 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,5 +90,11 @@ FMT_SIZE: to allow multiple flags to combine (exemple: %lld, with double 'l'), i
 character will be allowed. In that case, the bit flag set will be `flag << 1`.
 */
 bool ft_parse_specifier(const_string fmt, S32 *nextarg, struct s_fmt_flag *specifiers, struct s_fmt_spec *out);
+
+/*
+Formats a parsed specifier back to a format string into buf, no more characters that buflen, using the infos in specifiers_lst. Returns
+the number of characters written.
+*/
+U8 ft_write_specifier(string buf, U64 buflen, struct s_fmt_flag *specifiers_lst, struct s_fmt_spec *specifier);
 
 #endif
