@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 23:26:42 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/27 01:30:15 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/02 15:08:11 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ extern void ft_copy_image2(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcre
 
 extern void ft_stretch_image(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect);
 extern void ft_stretch_image2(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect);
+extern void ft_stretch_image3(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect, t_color col);
 
 /* lines */
 /* draws a line between `p1` and `p2`, bounded by `img->size` */
@@ -169,6 +170,6 @@ typedef struct s_bitmap
 extern void ft_init_bitmap(t_bitmap *bitmap, t_image *img, t_iv2 char_size, U32 line_chars_count, t_iv2 sep_size);
 extern t_iv4 ft_bitmap_rect_char_lines(t_bitmap *bitmap, t_iv2 pos, U32 line_width, U32 lines_cnt);
 extern void ft_draw_bitmap_text(t_image *out, t_iv4 rect, t_bitmap *bitmap, string str, F32 scale, t_iv2 kerning, t_color col);
-
+extern void ft_draw_bitmap_text_with_col(t_image *out, t_iv4 rect, t_bitmap *bitmap, string str, F32 scale, t_iv2 kerning, t_color col);
 
 #endif
