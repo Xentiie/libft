@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 01:37:21 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/31 00:38:52 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/02 07:27:11 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ if indexed color, can't parse if PLTE comes after data
 
 */
 
-#if 0
+#if __INTELLISENSE__
 
 #include "libft_int.h"
 
