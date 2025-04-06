@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 11:07:21 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/23 04:17:23 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/03 15:23:11 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@
 
 //#define DEBUG
 
+#define _INFLATE_DEBUG
 #if defined(_INFLATE_DEBUG)
-#include <stdio.h>
+#include "libft/io.h"
 #define IFDEBUG(...) \
 	do               \
 	{                \
@@ -145,27 +146,6 @@ enum code_length_type
 
 #define MOD_ADLER 65521
 
-U32 adler32(const U8 *data, size_t len)
-{
-	U32 a = 1, b = 0;
-
-	while (len > 0)
-	{
-		size_t tlen = len > 5552 ? 5552 : len;
-		len -= tlen;
-		do
-		{
-			a += *data++;
-			b += a;
-		} while (--tlen);
-
-		a %= MOD_ADLER;
-		b %= MOD_ADLER;
-	}
-
-	return (b << 16) | a;
-}
-
 static bool code_length_to_code_table(U16 *code_lengths, U64 code_lengths_len, struct s_code *code_table_out, U16 max_code_length, enum code_length_type type)
 {
 	U16 *next_code = ft_alloca(sizeof(U16) * max_code_length + sizeof(U8) * max_code_length);
@@ -185,7 +165,7 @@ static bool code_length_to_code_table(U16 *code_lengths, U64 code_lengths_len, s
 		next_code[bits] = code;
 	}
 
-	IFDEBUG(if (type == CL) printf("	CL codes:\n"); else if (type == LL) printf("	LL codes:\n"); else printf("	Dist codes:\n");)
+	IFDEBUG(if (type == CL) ft_printf("	CL codes:\n"); else if (type == LL) ft_printf("	LL codes:\n"); else ft_printf("	Dist codes:\n");)
 
 	for (U64 i = 0; i < code_lengths_len; i++)
 	{
@@ -193,10 +173,10 @@ static bool code_length_to_code_table(U16 *code_lengths, U64 code_lengths_len, s
 		if (length != 0)
 		{
 			IFDEBUG(
-				printf("		%lu: ", i);
+				ft_printf("		%lu: ", i);
 				for (U16 j = 0; j < length; j++)
-					printf("%d", (next_code[length] >> (length - j - 1)) & 1);
-				printf("\n"))
+					ft_printf("%d", (next_code[length] >> (length - j - 1)) & 1);
+				ft_printf("\n"))
 
 			U8 op;
 			U16 val;
@@ -260,22 +240,22 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 		switch (inf_data->state)
 		{
 		case BLK_HEAD:
-			IFDEBUG(printf("Reading block:\n"))
+			IFDEBUG(ft_printf("Reading block:\n"))
 			NEEDBITS(3);
 
 			inf_data->last = BITS(1);
-			IFDEBUG(printf("	last: %s\n", inf_data->last ? "yes" : "no"))
+			IFDEBUG(ft_printf("	last: %s\n", inf_data->last ? "yes" : "no"))
 
 			DROPBITS(1);
 			switch (BITS(2))
 			{
 			case 0:
-				IFDEBUG(printf("	block type: uncompressed\n"))
+				IFDEBUG(ft_printf("	block type: uncompressed\n"))
 				inf_data->state = RD_UNCOMPRESS;
 				break;
 
 			case 1:
-				IFDEBUG(printf("	block type: fixed\n"))
+				IFDEBUG(ft_printf("	block type: fixed\n"))
 				inf_data->ll_codes = (struct s_code *)fixed_ll_codes;
 				inf_data->dist_codes = (struct s_code *)fixed_dist_codes;
 				inf_data->ll_codes_bits = 9;
@@ -284,12 +264,12 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 				break;
 
 			case 2:
-				IFDEBUG(printf("	block type: dynamic\n"))
+				IFDEBUG(ft_printf("	block type: dynamic\n"))
 				inf_data->state = N_LL_CODES;
 				break;
 
 			case 3:
-				IFDEBUG(printf("	block type: INVALID\n"))
+				IFDEBUG(ft_printf("	block type: INVALID\n"))
 				DROPBITS(2);
 				inf_data->state = INV;
 				ret = FT_INFLATE_RET_ERROR;
@@ -304,13 +284,13 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 
 			if ((hold & 0xFFFF) != ((hold >> 16) ^ 0xFFFF))
 			{
-				IFDEBUG(printf("	invalid size/~size\n"))
+				IFDEBUG(ft_printf("	invalid size/~size\n"))
 				inf_data->state = INV;
 				ret = FT_INFLATE_RET_ERROR;
 				goto inflate_leave;
 			}
 			inf_data->length = hold & 0xFFFF;
-			IFDEBUG(printf("	size: %u\n", inf_data->length))
+			IFDEBUG(ft_printf("	size: %u\n", inf_data->length))
 			inf_data->state = UNCOMPRESS_CPY;
 			/* fallthrough */
 
@@ -327,7 +307,7 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 					ret = FT_INFLATE_RET_NOT_DONE;
 					goto inflate_leave;
 				}
-				IFDEBUG(printf("	copying %u bytes\n", to_cpy))
+				IFDEBUG(ft_printf("	copying %u bytes\n", to_cpy))
 				ft_memcpy(stream->out + stream->out_used, next, to_cpy);
 
 				have -= to_cpy;
@@ -346,7 +326,7 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 			NEEDBITS(5);
 			inf_data->n_ll_codes = BITS(5) + 257;
 			DROPBITS(5);
-			IFDEBUG(printf("	Num ll codes: %u\n", inf_data->n_ll_codes))
+			IFDEBUG(ft_printf("	Num ll codes: %u\n", inf_data->n_ll_codes))
 			inf_data->state = N_DIST_CODES;
 			/* fallthrough */
 
@@ -354,7 +334,7 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 			NEEDBITS(5);
 			inf_data->n_dist_codes = BITS(5) + 1;
 			DROPBITS(5);
-			IFDEBUG(printf("	Num dist codes: %u\n", inf_data->n_dist_codes))
+			IFDEBUG(ft_printf("	Num dist codes: %u\n", inf_data->n_dist_codes))
 			inf_data->state = N_CL_CODES;
 			/* fallthrough */
 
@@ -362,7 +342,7 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 			NEEDBITS(4);
 			inf_data->n_cl_codes = BITS(4) + 4;
 			DROPBITS(4);
-			IFDEBUG(printf("	Num CL codes: %u\n", inf_data->n_cl_codes))
+			IFDEBUG(ft_printf("	Num CL codes: %u\n", inf_data->n_cl_codes))
 			inf_data->have = 0;
 			inf_data->state = CL_CODES;
 			/* fallthrough */
@@ -377,10 +357,10 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 			while (inf_data->have < 19)
 				inf_data->cl_code_length[cl_code_length_encoding_i[inf_data->have++]] = 0;
 			IFDEBUG(
-				printf("	CL code lengths (0 - 18):");
+				ft_printf("	CL code lengths (0 - 18):");
 				for (U8 i = 0; i < 19; i++)
-					printf(" %u", inf_data->cl_code_length[i]);
-				printf("\n");)
+					ft_printf(" %u", inf_data->cl_code_length[i]);
+				ft_printf("\n");)
 
 			inf_data->max_code_length = 0;
 			for (U64 i = 0; i < 19; i++)
@@ -424,7 +404,7 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 			case 16:;
 				NEEDBITS(2);
 
-				IFDEBUG(printf("	Symbol 16 (repeat count: %u)\n", BITS(2) + 3))
+				IFDEBUG(ft_printf("	Symbol 16 (repeat count: %u)\n", BITS(2) + 3))
 
 				for (U8 i = 0; i < BITS(2) + 3; i++)
 				{
@@ -439,7 +419,7 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 			case 17:;
 				NEEDBITS(3);
 
-				IFDEBUG(printf("	Symbol 17 (repeat count: %u)\n", BITS(3) + 3))
+				IFDEBUG(ft_printf("	Symbol 17 (repeat count: %u)\n", BITS(3) + 3))
 
 				for (U8 i = 0; i < BITS(3) + 3; i++)
 				{
@@ -455,7 +435,7 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 			case 18:;
 				NEEDBITS(7);
 
-				IFDEBUG(printf("	Symbol 18 (repeat count: %u)\n", BITS(7) + 11))
+				IFDEBUG(ft_printf("	Symbol 18 (repeat count: %u)\n", BITS(7) + 11))
 
 				for (U8 i = 0; i < BITS(7) + 11; i++)
 				{
@@ -470,7 +450,7 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 				break;
 			default:
 
-				// IFDEBUG(printf("	Symbol %u (%u)\n", code.val, code.nbits))
+				// IFDEBUG(ft_printf("	Symbol %u (%u)\n", code.val, code.nbits))
 
 				if (inf_data->have >= inf_data->n_ll_codes)
 					inf_data->dist_code_length[inf_data->have - inf_data->n_ll_codes] = code.val;
@@ -561,17 +541,17 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 				break;
 			case 0x40 >> 4:
 				// Backref
-				IFDEBUG(printf("	Backref:\n		code:%#x(%u)\n		base length: %u\n", BITS(code.nbits), code.nbits, code.val))
+				IFDEBUG(ft_printf("	Backref:\n		code:%#x(%u)\n		base length: %u\n", BITS(code.nbits), code.nbits, code.val))
 				inf_data->length = code.val;
 				inf_data->state = RD_EXTRA_LEN;
 				break;
 			case 0x20 >> 4:
 				// Code 256
-				IFDEBUG(printf("	End of block marker found\n"))
+				IFDEBUG(ft_printf("	End of block marker found\n"))
 				inf_data->state = BLK_HEAD;
 				break;
 			default:
-				IFDEBUG(printf("	Error: invalid code\n"))
+				IFDEBUG(ft_printf("	Error: invalid code\n"))
 				inf_data->state = INV;
 				ret = FT_INFLATE_RET_ERROR;
 				DROPBITS(code.nbits);
@@ -582,7 +562,7 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 
 		case RD_EXTRA_LEN:
 			NEEDBITS(code.op & 0xF);
-			IFDEBUG(printf("		extra length: %u\n", BITS(code.op & 0xF)));
+			IFDEBUG(ft_printf("		extra length: %u\n", BITS(code.op & 0xF)));
 			inf_data->length += BITS(code.op & 0xF);
 			DROPBITS(code.op & 0xF);
 			inf_data->state = RD_DIST;
@@ -597,27 +577,27 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 					break;
 				PULLBYTE();
 			}
-			IFDEBUG(printf("		code:%#x(%u)\n", BITS(code.nbits), code.nbits))
+			IFDEBUG(ft_printf("		code:%#x(%u)\n", BITS(code.nbits), code.nbits))
 			DROPBITS(code.nbits);
 			inf_data->dist = code.val;
-			IFDEBUG(printf("		base dist: %u\n", inf_data->dist))
+			IFDEBUG(ft_printf("		base dist: %u\n", inf_data->dist))
 			inf_data->state = RD_EXTRA_DIST;
 			/* fallthrough */
 
 		case RD_EXTRA_DIST:
 			NEEDBITS(code.op & 0xF);
 			inf_data->dist += BITS(code.op & 0xF);
-			IFDEBUG(printf("		extra dist: %u\n", inf_data->dist))
+			IFDEBUG(ft_printf("		extra dist: %u\n", inf_data->dist))
 			DROPBITS(code.op & 0xF);
 
-			IFDEBUG(printf("		FULL: %u:%u\n", inf_data->length, inf_data->dist))
+			IFDEBUG(ft_printf("		FULL: %u:%u\n", inf_data->length, inf_data->dist))
 			inf_data->state = CPY_BACKREF;
 			/* fallthrough */
 
 		case CPY_BACKREF:
 			if (inf_data->dist > inf_data->window_size)
 			{
-				IFDEBUG(printf("	INVALID BACKREF: too far back\n"))
+				IFDEBUG(ft_printf("	INVALID BACKREF: too far back\n"))
 				inf_data->state = INV;
 				ret = FT_INFLATE_RET_ERROR;
 				goto inflate_leave;
@@ -630,24 +610,24 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 
 			to_cpy = inf_data->length;
 
-			IFDEBUG(printf("	Copying backref:\n"));
-			IFDEBUG(printf("		to copy: %u\n", to_cpy));
+			IFDEBUG(ft_printf("	Copying backref:\n"));
+			IFDEBUG(ft_printf("		to copy: %u\n", to_cpy));
 
 			U8 *start_cpy = inf_data->win_next - inf_data->dist;
-			IFDEBUG(printf("		window start offset: %ld\n", (S64)(start_cpy - inf_data->window)));
+			IFDEBUG(ft_printf("		window start offset: %ld\n", (S64)(start_cpy - inf_data->window)));
 			if (start_cpy < inf_data->window)
 			{
 				start_cpy += FT_DEFLATE_WINDOW_SIZE;
-				IFDEBUG(printf("	start is under window, going around to: %ld\n", (S64)(start_cpy - inf_data->window)))
+				IFDEBUG(ft_printf("	start is under window, going around to: %ld\n", (S64)(start_cpy - inf_data->window)))
 			}
 
 			to_cpy = MIN(to_cpy, left);
-			// IFDEBUG(printf("		MIN(left): %u\n", to_cpy));
+			// IFDEBUG(ft_printf("		MIN(left): %u\n", to_cpy));
 			to_cpy = MIN(to_cpy, FT_DEFLATE_WINDOW_SIZE - (start_cpy - inf_data->window));
-			// IFDEBUG(printf("		MIN(FT_DEFLATE_WINDOW_SIZE - (start_cpy - inf_data->window)): %u\n", to_cpy));
+			// IFDEBUG(ft_printf("		MIN(FT_DEFLATE_WINDOW_SIZE - (start_cpy - inf_data->window)): %u\n", to_cpy));
 			to_cpy = MIN(to_cpy, FT_DEFLATE_WINDOW_SIZE - (inf_data->win_next - inf_data->window) + 1);
-			// IFDEBUG(printf("		MIN(FT_DEFLATE_WINDOW_SIZE - (inf_data->win_next - inf_data->window)): %u\n", to_cpy));
-			IFDEBUG(printf("		final to copy: %u\n", to_cpy));
+			// IFDEBUG(ft_printf("		MIN(FT_DEFLATE_WINDOW_SIZE - (inf_data->win_next - inf_data->window)): %u\n", to_cpy));
+			IFDEBUG(ft_printf("		final to copy: %u\n", to_cpy));
 			if (to_cpy == 0)
 			{
 				ret = FT_INFLATE_RET_NOT_DONE;
@@ -688,8 +668,8 @@ FUNCTION_HOT S32 ft_inflate(t_deflate_stream *stream)
 
 			IFDEBUG(
 				if (ft_isprint(code.val))
-					printf("	lit: %c\n", code.val);
-				else printf("	lit: %#x\n", code.val);)
+					ft_printf("	lit: %c\n", code.val);
+				else ft_printf("	lit: %#x\n", code.val);)
 			inf_data->state = RD_CODE;
 			break;
 
@@ -797,33 +777,33 @@ S32 ft_inflate_fast(t_deflate_stream *stream)
 
 			IFDEBUG(
 				if (ft_isprint(code.val))
-					printf("[fast]	lit: %c\n", code.val);
-				else printf("[fast]	lit: %#x\n", code.val);)
+					ft_printf("[fast]	lit: %c\n", code.val);
+				else ft_printf("[fast]	lit: %#x\n", code.val);)
 			break;
 		case 0x40 >> 4:
 			// Backref
 			length = code.val;
-			IFDEBUG(printf("[fast]	Backref:\n		code:?(%u)\n		base length: %u\n", code.nbits, code.val))
+			IFDEBUG(ft_printf("[fast]	Backref:\n		code:?(%u)\n		base length: %u\n", code.nbits, code.val))
 			length += val & ((1U << (code.op & 0xF)) - 1);
-			IFDEBUG(printf("[fast]		extra length: %lu\n", val & ((1U << (code.op & 0xF)) - 1)));
+			IFDEBUG(ft_printf("[fast]		extra length: %lu\n", val & ((1U << (code.op & 0xF)) - 1)));
 			val >>= (code.op & 0xF);
 			stream->bits -= (code.op & 0xF);
 
 			code = inf_data->dist_codes[val & ((1U << inf_data->dist_codes_bits) - 1)];
-			IFDEBUG(printf("[fast]		code:%#lx(%u)\n", val & ((1U << inf_data->ll_codes_bits) - 1), code.nbits));
+			IFDEBUG(ft_printf("[fast]		code:%#lx(%u)\n", val & ((1U << inf_data->ll_codes_bits) - 1), code.nbits));
 			val >>= code.nbits;
 			stream->bits -= code.nbits;
 			dist = code.val;
-			IFDEBUG(printf("[fast]		base dist: %u\n", code.val))
+			IFDEBUG(ft_printf("[fast]		base dist: %u\n", code.val))
 			dist += val & ((1U << (code.op & 0xF)) - 1);
-			IFDEBUG(printf("[fast]		extra dist: %lu\n", val & ((1U << (code.op & 0xF)) - 1)));
+			IFDEBUG(ft_printf("[fast]		extra dist: %lu\n", val & ((1U << (code.op & 0xF)) - 1)));
 			val >>= (code.op & 0xF);
 			stream->bits -= (code.op & 0xF);
-			IFDEBUG(printf("[fast]		FULL: %u:%u\n", length, dist))
+			IFDEBUG(ft_printf("[fast]		FULL: %u:%u\n", length, dist))
 
 			if (UNLIKELY(inf_data->dist > inf_data->window_size))
 			{
-				IFDEBUG(printf("[fast]	INVALID BACKREF: too far back\n"))
+				IFDEBUG(ft_printf("[fast]	INVALID BACKREF: too far back\n"))
 				stream->inflate->state = INV;
 				return -1;
 			}
@@ -832,21 +812,21 @@ S32 ft_inflate_fast(t_deflate_stream *stream)
 			{
 				U16 to_cpy = length;
 
-				IFDEBUG(printf("[fast]	Copying backref:\n"));
-				IFDEBUG(printf("[fast]		to copy: %u\n", to_cpy));
+				IFDEBUG(ft_printf("[fast]	Copying backref:\n"));
+				IFDEBUG(ft_printf("[fast]		to copy: %u\n", to_cpy));
 
 				U8 *start_cpy = inf_data->win_next - dist;
-				IFDEBUG(printf("[fast]		window start offset: %ld\n", (S64)(start_cpy - inf_data->window)));
+				IFDEBUG(ft_printf("[fast]		window start offset: %ld\n", (S64)(start_cpy - inf_data->window)));
 				if (UNLIKELY(start_cpy < inf_data->window))
 				{
 					start_cpy += FT_DEFLATE_WINDOW_SIZE;
-					IFDEBUG(printf("[fast]	start is under window, going around to: %ld\n", (S64)(start_cpy - inf_data->window)))
+					IFDEBUG(ft_printf("[fast]	start is under window, going around to: %ld\n", (S64)(start_cpy - inf_data->window)))
 				}
 
 				to_cpy = MIN(to_cpy, stream->out_size - stream->out_used);
 				to_cpy = MIN(to_cpy, FT_DEFLATE_WINDOW_SIZE - (start_cpy - inf_data->window));
 				to_cpy = MIN(to_cpy, FT_DEFLATE_WINDOW_SIZE - (inf_data->win_next - inf_data->window) + 1);
-				IFDEBUG(printf("[fast]		final to copy: %u\n", to_cpy));
+				IFDEBUG(ft_printf("[fast]		final to copy: %u\n", to_cpy));
 				if (UNLIKELY(to_cpy == 0))
 				{
 					stream->inflate->state = INV;
@@ -870,12 +850,12 @@ S32 ft_inflate_fast(t_deflate_stream *stream)
 			break;
 		case 0x20 >> 4:
 			// Code 256
-			IFDEBUG(printf("[fast]	End of block marker found\n"))
+			IFDEBUG(ft_printf("[fast]	End of block marker found\n"))
 			inf_data->state = BLK_HEAD;
 			inf_data->hold = val;
 			return 1;
 		default:
-			IFDEBUG(printf("[fast]	Error: invalid code\n"))
+			IFDEBUG(ft_printf("[fast]	Error: invalid code\n"))
 			stream->inflate->state = INV;
 			return -1;
 		}
