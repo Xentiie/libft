@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/10 03:06:46 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/03 12:07:36 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,6 +195,8 @@ typedef S64 (*f_printf_write_interface)(const_string str, U64 str_len, void *dat
 extern S64 ft_iprintf(f_printf_write_interface write_interface, void *data, const_string fmt, ...);
 extern S64 ft_viprintf(const_string fmt, va_list args, f_printf_write_interface write_interface, void *data);
 #endif
+
+void ft_perror(const_string str);
 
 /*
 Checks the type of a file from a bitfield `md` (returned by `stat`)
