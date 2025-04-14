@@ -1,29 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file_private.h                                     :+:      :+:    :+:   */
+/*   bool_defines.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/22 08:44:37 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/14 20:23:35 by reclaire         ###   ########.fr       */
+/*   Created: 2025/04/14 18:47:19 by reclaire          #+#    #+#             */
+/*   Updated: 2025/04/14 20:09:01 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#if !defined(FT_FILE_PRIVATE_H)
-#define FT_FILE_PRIVATE_H
-
-#define _GNU_SOURCE
-#include "libft_int.h"
-#include "libft/io.h"
-#include "libft/bits/filestream.h"
-
-#include <pthread.h>
-
-#if FT_OS_WINDOWS
-#include <windows.h>
+#if !defined(TRUE)
+# define TRUE 1
 #endif
 
-bool __parse_mode(const_string mode, bool *readable, bool *writeable, bool *append, bool *binary_mode);
-
+#if !defined(FALSE)
+# define FALSE 0
 #endif

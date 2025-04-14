@@ -1,29 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file_private.h                                     :+:      :+:    :+:   */
+/*   t_file.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/22 08:44:37 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/14 20:23:35 by reclaire         ###   ########.fr       */
+/*   Created: 2025/03/10 03:05:44 by reclaire          #+#    #+#             */
+/*   Updated: 2025/04/14 18:55:02 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#if !defined(FT_FILE_PRIVATE_H)
-#define FT_FILE_PRIVATE_H
+#if !defined(FT_BITS_FILESTREAM)
+#define FT_BITS_FILESTREAM
 
-#define _GNU_SOURCE
-#include "libft_int.h"
-#include "libft/io.h"
-#include "libft/bits/filestream.h"
+#include "libft/types.h"
 
-#include <pthread.h>
+typedef struct s_file
+{
+	U8 buffering_mode;
+	U8 *buff;
+	U64 buff_size;
+	U64 buff_cnt;
+	filedesc fd;
+	bool binary_mode;
+	bool readable;
+	bool writeable;
+} t_file;
 
-#if FT_OS_WINDOWS
-#include <windows.h>
-#endif
-
-bool __parse_mode(const_string mode, bool *readable, bool *writeable, bool *append, bool *binary_mode);
+/* cleanup lock in lock ht, called from ft_fclose */
+bool __ft_flockcleanup(t_file *fp);
 
 #endif

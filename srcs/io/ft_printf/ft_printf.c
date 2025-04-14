@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:43:53 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/31 01:20:36 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:25:01 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,21 +197,3 @@ string ft_vsanprintf(U64 n, const_string fmt, va_list args)
 
 	return str;
 }
-
-
-
-#if defined(TEST)
-
-// gcc -g  -DFT_OS_LINUX -DTEST  -I../../ -L../../  *.c  -lft -lm
-int main()
-{
-#define TEST_STR(fmt, ...) { ft_printf(fmt, __VA_ARGS__); printf("  "); printf(fmt, __VA_ARGS__); printf("\n"); }
-	TEST_STR("|%5c|", 'a');
-	TEST_STR("|%05c|", 'a');
-	TEST_STR("|% 5c|", 'a');
-	TEST_STR("|%-5c|", 'a');
-	TEST_STR("|%- 5c|", 'a');
-	TEST_STR("|%-05c|", 'a');
-}
-
-#endif

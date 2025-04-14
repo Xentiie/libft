@@ -6,35 +6,19 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:47:30 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/29 23:53:08 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:18:18 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_TYPES_H)
 #define LIBFT_TYPES_H
 
-#include "_os.h"
-
-#if !defined(NULL)
-#define NULL ((void *)0)
-#endif
-
-#if !defined(TRUE)
-#define TRUE 1
-#endif
-
-#if !defined(FALSE)
-#define FALSE 0
-#endif
-
-#if !defined(LOCALHOST)
-#define LOCALHOST "localhost"
-#endif
+#include "libft/bits/os_defines.h"
 
 typedef unsigned char U8;
 typedef unsigned short U16;
 typedef unsigned int U32;
-#if defined(FT_OS_WINDOWS)
+#if FT_OS_WINDOWS
 typedef unsigned long long U64;
 typedef unsigned long long LU64;
 #else
@@ -44,7 +28,7 @@ typedef unsigned long long LU64;
 typedef signed char S8;
 typedef signed short S16;
 typedef signed int S32;
-#if defined(FT_OS_WINDOWS)
+#if FT_OS_WINDOWS
 typedef signed long long S64;
 typedef signed long long LS64;
 #else
@@ -62,10 +46,12 @@ typedef int const *const_wstring;
 typedef int wchar;
 typedef U8 bool;
 
-#if defined(FT_OS_WINDOWS)
+#if FT_OS_WINDOWS
 typedef void *filedesc;
-#elif defined(FT_OS_LINUX) || defined(FT_OS_MAC)
+#elif FT_OS_POSIX
 typedef S32 filedesc;
+#else
+/* Leave `filedesc` undefined, will cause error, as we don't know what to define as filedesc */
 #endif
 typedef struct s_file t_file;
 

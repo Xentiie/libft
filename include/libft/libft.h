@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/21 09:23:13 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:07:54 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,54 +22,19 @@
 -D _FT_GROWTH_FACTOR -> sets growth factor for stack
 */
 
-#if !defined(_FT_NO_GLOBALS)
-#define _FT_NO_GLOBALS 1
-#endif
+#include "libft/bits/os_defines.h"
 
-#if _FT_NO_GLOBALS
-#define _FT_ERRNO_LOCATION
-#endif
+#define _FT_PRIVATE_BITS
+#include "libft/bits/private/no_globals.h"
+#include "libft/bits/private/errno_location.h"
 
-#include "_os.h"
-#include "types.h"
+#include "libft/bits/private/builtins_defines.h"
+#include "libft/bits/private/attributes_defines.h"
 
-#ifdef __has_builtin
-#define FT_HAS_BUILTIN(x) __has_builtin(x)
-#else
-#pragma warn "No FT_HAS_BUILTIN"
-#define FT_HAS_BUILTIN(x) FALSE
-#endif
+#include "libft/bits/private/intellisense.h" /* VSCode Intellisense fixs */
+#undef _FT_PRIVATE_BITS
 
-#ifdef __has_attribute
-#define FT_HAS_ATTRIBUTE(x) __has_attribute(x)
-#else
-#pragma warn "No FT_HAS_ATTRIBUTE"
-#define FT_HAS_ATTRIBUTE(x) FALSE
-#endif
-
-#if __INTELLISENSE__
-/* Stupid vscode intellisense who thinks __attribute__((constructor)) takes no arguments */
-#pragma diag_suppress 1094
-#endif
-
-#if !FT_HAS_ATTRIBUTE(constructor)
-#pragma error "No __attribute__((constructor))"
-#endif
-
-#if _FT_NO_GLOBALS
-#define _FT_GLOBAL_VAR_DEC(type, name) type *__global_##name();
-#define _FT_GLOBAL_VAR_DEF(type, name, ...)             \
-	type *__global_##name()                             \
-	{                                                   \
-		static type __##name __VA_OPT__(= __VA_ARGS__); \
-		return &__##name;                               \
-	}
-#define _FT_GLOBAL_VAR(name) (*(__global_##name()))
-#else
-#define _FT_GLOBAL_VAR_DEC(type, name) extern type name;
-#define _FT_GLOBAL_VAR_DEF(type, name, ...) type name __VA_OPT__(= __VA_ARGS__);
-#define _FT_GLOBAL_VAR(name) (name)
-#endif
+#include "libft/types.h"
 
 _FT_GLOBAL_VAR_DEC(S32, ft_argc);
 _FT_GLOBAL_VAR_DEC(string *, ft_argv);
@@ -78,20 +43,6 @@ _FT_GLOBAL_VAR_DEC(string *, ft_env);
 #define ft_argc _FT_GLOBAL_VAR(ft_argc)
 #define ft_argv _FT_GLOBAL_VAR(ft_argv)
 #define ft_env _FT_GLOBAL_VAR(ft_env)
-
-#define FT_INIT_ARGV(argc, argv, env) \
-	ft_argc = argc;                   \
-	ft_argv = argv;                   \
-	ft_env = env;
-
-/*Error code returned by some ft functions*/
-// #define _FT_ERRNO_LOCATION /* TODO: */
-#if defined(_FT_ERRNO_LOCATION)
-S32 *__ft_errno_location();
-#define ft_errno (*__ft_errno_location())
-#else
-extern __thread S32 ft_errno;
-#endif
 
 #define FT_OK 0		  /* No error */
 #define FT_EOMEM 1	  /* Out of memory */
@@ -104,81 +55,15 @@ extern __thread S32 ft_errno;
 #define FT_ENOINIT 8  /* Libft value not initialized */
 #define FT_EOSPACE 9  /* Out of space */
 
-#if FT_HAS_ATTRIBUTE(hot)
-#define FUNCTION_HOT __attribute__((hot))
-#else
-#define FUNCTION_HOT
-#endif
-
-#if FT_HAS_ATTRIBUTE(cold)
-#define FUNCTION_COLD __attribute__((cold))
-#else
-#define FUNCTION_COLD
-#endif
-
-#if FT_HAS_ATTRIBUTE(pure)
-#define FUNCTION_PURE __attribute__((pure))
-#else
-#define FUNCTION_PURE
-#endif
-
-#if FT_HAS_ATTRIBUTE(unused)
-#define MAYBE_UNUSED __attribute__((unused))
-#else
-#define MAYBE_UNUSED
-#endif
-
-#if FT_HAS_ATTRIBUTE(aligned)
-#define ft_aligned(X) __attribute__((aligned(X)))
-#else
-// TODO: check for SSE functions that requires alignement
-#pragma warn "Careful: no __attribute__((aligned)), will break stuff"
-#define ft_aligned(X)
-#endif
-
-// #define _FT_NO_IF_PREDICT
-#if !FT_HAS_BUILTIN(__builtin_expect) || defined(_FT_NO_IF_PREDICT)
-#if !defined(_FT_NO_IF_PREDICT)
-#pragma warn "No IF_PREDICT"
-#endif
-#define IF_PREDICT(cond, expect) (cond)
-#define IF_PREDICT_B(cond, expect) (cond)
-#else
-#define IF_PREDICT(cond, expect) __builtin_expect((cond), expect)
-#define IF_PREDICT_B(cond, expect) __builtin_expect(!!(cond), expect)
-#endif
 #define UNLIKELY(cond) IF_PREDICT(cond, FALSE)
 #define LIKELY(cond) IF_PREDICT(cond, TRUE)
 
-// clang-format off
-#if defined(_FT_RETURN)
-# define FT_RET_OK(ret) do { ft_errno=FT_OK; return ret; } while (0)
-# if defined(DEBUG)
-#  include "libft/debug.h"
-#  define FT_RET_ERR(ret, err) do { ft_errno = err ; ft_debug_break(); return ret; } while (0)
-# else
-#  define FT_RET_ERR(ret, err) do { ft_errno = err ; return ret; } while (0)
-# endif
-#endif
-// clang-format on
-
-// clang-format off
-#if !defined(_FT_AVOID_ALLOCA)
-# if defined(FT_OS_WINDOWS) || defined(FT_OS_WINDOWS_WSL)
-#  include <malloc.h>
-# else
-#  include <alloca.h>
-# endif
-# define ft_alloca(...) alloca(__VA_ARGS__)
-# define ft_afree(...)
-#else
-# define ft_alloca(...) malloc(__VA_ARGS__)
-# define ft_afree(...) free(__VA_ARGS__)
-#endif
-// clang-format on
-
 #if !defined(_FT_GROWTH_FACTOR)
 #define _FT_GROWTH_FACTOR 2
+#endif
+
+#if !defined(packed_enum)
+#define packed_enum __attribute__((packed)) enum
 #endif
 
 /*

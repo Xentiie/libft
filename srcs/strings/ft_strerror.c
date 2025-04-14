@@ -6,17 +6,17 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 14:52:06 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/20 14:36:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:27:45 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 #include "libft/strings.h"
 
-#if defined(FT_OS_LINUX)
+#if FT_OS_LINUX
 #include <errno.h>
 #include <string.h>
-#elif defined(FT_OS_WINDOWS)
+#elif FT_OS_WINDOWS
 #include <windows.h>
 #include <winerror.h>
 #endif
@@ -55,7 +55,7 @@ const_string ft_strerror(S32 err)
 	return entries[err].desc;
 }
 
-#if defined(FT_OS_LINUX)
+#if FT_OS_LINUX
 const_string ft_strerror2()
 {
 	S32 err;
@@ -71,7 +71,7 @@ const_string ft_strerror2()
 	else
 		return entries[err].desc;
 }
-#elif defined(FT_OS_WINDOWS)
+#elif FT_OS_WINDOWS
 const_string ft_strerror2()
 {
 	S32 err;

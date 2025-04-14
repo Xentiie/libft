@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 13:47:45 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/20 14:36:21 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:24:18 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include <stdlib.h>
 
-#if defined(FT_OS_WINDOWS)
+#if FT_OS_WINDOWS
 #include <windows.h>
 
 filedesc ft_open_old(const_string path, const_string mode)

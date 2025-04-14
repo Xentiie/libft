@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 14:08:44 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/31 14:57:33 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:26:04 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,8 @@
 
 #include <stdlib.h>
 
-#if defined(FT_OS_WINDOWS)
-#include <malloc.h>
-#else
-#include <alloca.h>
-#endif
-
-#if defined(TEST)
-#include <stdio.h>
-#endif
-
-static const_string l_base16 = "0123456789abcdef";
-static const_string u_base16 = "0123456789ABCDEF";
+#define BASE16_LOWERCASE "0123456789abcdef"
+#define BASE16_UPPERCASE "0123456789ABCDEF"
 
 #define GET_ARG(type) (*(type *)(&args[pos_nextarg == -1 ? nextarg++ : pos_nextarg]))
 #define BUF_SIZE U64_MAX_MAG + 1
@@ -137,7 +127,7 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 		S32 prec = -1;
 		S32 flags = 0;
 		char sign = '\0';
-		base = l_base16;
+		base = BASE16_LOWERCASE;
 		basel = 10;
 
 		pos_nextarg = __ftprintf_parse_specifier_n(&fmt);
@@ -198,7 +188,7 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 			break;
 
 		case 'X':
-			base = u_base16;
+			base = BASE16_UPPERCASE;
 			flags |= FL_HEX_M;
 			/* fallthrough */
 		case 'x':

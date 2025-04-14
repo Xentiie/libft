@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 19:57:43 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/26 13:08:37 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:22:15 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 #include <signal.h>
 
-#if defined(FT_OS_WINDOWS)
+#if FT_OS_WINDOWS
 #include <debugapi.h>
 #define SIGTRAP STATUS_BREAKPOINT
 

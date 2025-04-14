@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 20:19:41 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/20 14:36:21 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:24:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file_private.h"
 #include <errno.h>
 
-# if defined(FT_OS_WINDOWS)
+# if FT_OS_WINDOWS
 #  include <windows.h>
 
 S64	ft_read(filedesc fd, void *buffer, U64 size)
@@ -24,8 +24,7 @@ S64	ft_read(filedesc fd, void *buffer, U64 size)
 	FT_RET_OK(bytes_read);
 }
 
-# elif defined(FT_OS_LINUX) || defined(FT_OS_MAC)
-#  include <unistd.h>
+# elif FT_OS_POSIX
 
 S64 ft_read(filedesc fd, void *buffer, U64 size)
 {

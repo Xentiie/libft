@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:49:04 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/20 14:36:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:21:43 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include <stdlib.h>
 
-#if defined(FT_OS_WINDOWS)
+#if FT_OS_WINDOWS
 #include <windows.h>
 #define __thread
 #endif
@@ -44,7 +44,7 @@ _FT_GLOBAL_VAR_DEF(t_file *, ft_fstderr);
 
 __attribute__((constructor(101))) static void __init_libft(S32 argc, string *argv, string *env)
 {
-#if defined(FT_OS_WINDOWS)
+#if FT_OS_WINDOWS
 	(void)argc;
 	(void)argv;
 	(void)env;
@@ -52,17 +52,17 @@ __attribute__((constructor(101))) static void __init_libft(S32 argc, string *arg
 	ft_argc = __argc;
 	ft_argv = __argv;
 	ft_env = environ;
-#elif defined(FT_OS_LINUX)
+#elif FT_OS_LINUX
 	ft_argc = argc;
 	ft_argv = argv;
 	ft_env = env;
 #endif
 
-#if defined(FT_OS_WINDOWS)
+#if FT_OS_WINDOWS
 	ft_stdin = GetStdHandle(STD_INPUT_HANDLE);
 	ft_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 	ft_stderr = GetStdHandle(STD_ERROR_HANDLE);
-#elif defined(FT_OS_LINUX) || defined(FT_OS_MAC)
+#elif FT_OS_POSIX
 	ft_stdin = (filedesc)0;
 	ft_stdout = (filedesc)1;
 	ft_stderr = (filedesc)2;

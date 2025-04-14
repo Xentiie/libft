@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 20:13:26 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/20 14:36:20 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:26:23 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "libft_int.h"
 
 #define _GNU_SOURCE
-#if defined(FT_OS_WINDOWS)
+#if FT_OS_WINDOWS
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #else
@@ -22,7 +22,7 @@
 typedef filedesc SOCKET;
 #endif
 
-#if defined(FT_OS_WINDOWS)
+#if FT_OS_WINDOWS
 static bool WSA_init = FALSE; // TODO: thread safety
 static S32 __init_WSA()
 {
@@ -44,7 +44,7 @@ static S32 __init_WSA()
 }
 #endif
 
-#if defined(FT_OS_WINDOWS)
+#if FT_OS_WINDOWS
 S32 ft_resolve_hostname(void *addr_out, string host, string port)
 {
 	__init_WSA();
@@ -70,7 +70,7 @@ S32 ft_resolve_hostname(void *addr_out, string host, string port)
 }
 #endif
 
-#if defined(FT_OS_WINDOWS)
+#if FT_OS_WINDOWS
 filedesc ft_socket(S32 domain, S32 type, S32 protocol)
 {
 	filedesc sock;
@@ -93,7 +93,7 @@ filedesc ft_socket(S32 domain, S32 type, S32 protocol)
 }
 #endif
 
-#if defined(FT_OS_WINDOWS)
+#if FT_OS_WINDOWS
 bool ft_connect(filedesc socket, const void *addr, U64 addr_len)
 {
 	__init_WSA();
