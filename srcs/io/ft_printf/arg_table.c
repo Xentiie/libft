@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 19:40:41 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/31 18:46:31 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/18 01:35:17 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ bool __ftprintf_build_arg_table(const_string fmt, va_list vaargs, U64 **args)
 		case 'x':
 		case 'u':
 		case 'o':
+		case 'b':
 			if (flags & FL_T_LONGLONG)
 				addtype(&types, &types_size, &types_max, T_LU64, pos_nextarg == -1 ? nextarg++ : pos_nextarg);
 			else
@@ -184,7 +185,7 @@ bool __ftprintf_build_arg_table(const_string fmt, va_list vaargs, U64 **args)
 			*((S32 *)&(out[i])) = va_arg(vaargs, S32);
 			break;
 		case T_U8:
-			*((S32 *)&(out[i])) = va_arg(vaargs, S32);
+			*((U32 *)&(out[i])) = va_arg(vaargs, U32);
 			break;
 		case TP_S8:
 			*((S16 **)&(out[i])) = va_arg(vaargs, S16 *);

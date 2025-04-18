@@ -6,13 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 11:07:21 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/03 15:23:11 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 02:28:50 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "deflate_int.h"
 #include "fixed_codes.h"
 #include "libft/crypt/crc.h"
+#include "libft/bits/alloca.h"
 #include <stdlib.h>
 
 //#define DEBUG

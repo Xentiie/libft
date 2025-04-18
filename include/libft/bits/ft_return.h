@@ -6,12 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 20:06:27 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/14 20:07:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:46:13 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#if !defined(FT_BITS_RETURN_H)
-#define FT_BITS_RETURN_H
+#if !defined(FT_BITS_FT_RETURN_H)
+#define FT_BITS_FT_RETURN_H
 
 /* Resets `ft_errno` and returns `ret` */
 # define FT_RET_OK(ret) do { ft_errno=FT_OK; return ret; } while (0)

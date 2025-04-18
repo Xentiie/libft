@@ -6,12 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 11:40:50 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/01 02:55:53 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:46:00 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#if !defined(FT_FORMAT_SPECIFIERS_H)
-#define FT_FORMAT_SPECIFIERS_H
+#if !defined(FT_BITS_FORMAT_SPECIFIERS_H)
+#define FT_BITS_FORMAT_SPECIFIERS_H
 
 #include "libft/libft.h"
 

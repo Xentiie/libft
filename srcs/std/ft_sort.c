@@ -6,11 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 16:23:40 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/10 17:02:03 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 02:33:22 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
+
+#include "libft/bits/alloca.h"
 
 #include <stdlib.h>
 

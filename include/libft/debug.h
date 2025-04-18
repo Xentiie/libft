@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:59:45 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/15 23:10:14 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:50:41 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_DEBUG_H)
 #define LIBFT_DEBUG_H
 
-#include "libft.h"
+#include "libft/libft.h"
 
 #if defined(DEBUG)
 #define FT_IFDEBUG(...) __VA_ARGS__

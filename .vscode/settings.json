@@ -14,7 +14,8 @@
         "functional": "c",
         "initializer_list": "c",
         "utility": "c",
-        "random": "c"
+        "random": "c",
+        "typeinfo": "c"
     },
     "python.analysis.autoImportCompletions": false
 }

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/14 20:07:54 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:45:05 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,25 +24,24 @@
 
 #include "libft/bits/os_defines.h"
 
-#define _FT_PRIVATE_BITS
-#include "libft/bits/private/no_globals.h"
-#include "libft/bits/private/errno_location.h"
+#include "libft/bits/globals.h"
 
-#include "libft/bits/private/builtins_defines.h"
-#include "libft/bits/private/attributes_defines.h"
+#include "libft/bits/builtins_defines.h"
+#include "libft/bits/attributes_defines.h"
 
-#include "libft/bits/private/intellisense.h" /* VSCode Intellisense fixs */
-#undef _FT_PRIVATE_BITS
+#include "libft/bits/IDE.h" /* IDE C extension fix */
 
 #include "libft/types.h"
 
 _FT_GLOBAL_VAR_DEC(S32, ft_argc);
 _FT_GLOBAL_VAR_DEC(string *, ft_argv);
 _FT_GLOBAL_VAR_DEC(string *, ft_env);
+_FT_GLOBAL_VAR_DEC(S32, ft_errno);
 
 #define ft_argc _FT_GLOBAL_VAR(ft_argc)
 #define ft_argv _FT_GLOBAL_VAR(ft_argv)
 #define ft_env _FT_GLOBAL_VAR(ft_env)
+#define ft_errno _FT_GLOBAL_VAR(ft_errno)
 
 #define FT_OK 0		  /* No error */
 #define FT_EOMEM 1	  /* Out of memory */

@@ -36,6 +36,7 @@
 #define FL_FP (1 << 12)
 #define FL_HEX (1 << 13)
 #define FL_HEX_M (1 << 14)
+#define FL_BINARY (1 << 15)
 
 typedef S64 (*t_fmtwr_i)(const_string str, U64 str_len, void *data);
 bool __ftprintf_build_arg_table(const_string fmt, va_list vaargs, U64 **args);

@@ -6,12 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:20:53 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/21 09:23:47 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 02:29:36 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/io.h"
 #include "libft/images.h"
+
+#include "libft/bits/extended_aliases.h"
 
 t_color ft_rand_color(U32 seed)
 {

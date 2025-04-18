@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/04 16:57:57 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 19:11:22 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:50:51 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_JSON_H)
 #define LIBFT_JSON_H
 
-#include "libft.h"
+#include "libft/libft.h"
 
 enum e_json_error;
 enum e_json_type;

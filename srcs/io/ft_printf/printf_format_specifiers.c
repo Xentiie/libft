@@ -6,13 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 01:17:13 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/31 01:36:48 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 02:32:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/bits/printf_format_specifiers.h"
 
-struct s_fmt_flag *ft_printf_format_specifiers()
+const struct s_fmt_flag *ft_printf_format_specifiers()
 {
 	static const struct s_fmt_flag specifiers[] = {
 		{.type = FMT_FLAG, .c = '#', .flag = FL_ALT},

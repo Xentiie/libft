@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:33:00 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/01 02:54:39 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 02:32:11 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,9 +132,6 @@ static S32 parse_width(const_string *_fmt, S32 *arg_n, S32 *nextarg)
 
 static S32 parse_prec(const_string *_fmt, S32 *arg_n, S32 *nextarg)
 {
-	const_string fmt;
-	S32 n;
-
 	if (**_fmt != '.')
 	{
 		*arg_n = -1;
@@ -147,8 +144,6 @@ static S32 parse_prec(const_string *_fmt, S32 *arg_n, S32 *nextarg)
 
 bool ft_parse_specifier(const_string fmt, S32 *nextarg, struct s_fmt_flag *specifiers, struct s_fmt_spec *out)
 {
-	S32 pos_nextarg;
-	S32 n2;
 	S32 nextarg_save;
 
 	nextarg_save = (*nextarg);
@@ -206,7 +201,7 @@ U8 ft_write_specifier(string buf, U64 buflen, struct s_fmt_flag *specifiers_lst,
 	U8 tmp;
 #define flush()                                      \
 	{                                                \
-		if (ft_strlcat(buf, _buf, buflen) >= buflen) \
+		if (ft_strlcat((string)buf, (string)_buf, buflen) >= buflen) \
 			return ft_strlen(buf) + 1;               \
 	}
 
@@ -215,7 +210,7 @@ U8 ft_write_specifier(string buf, U64 buflen, struct s_fmt_flag *specifiers_lst,
 	buf[0] = '\0';
 
 	_buf[0] = '%';
-	ft_snprintf(&_buf[1], sizeof(_buf) - 1, "%d$", specifier->argpos + 1);
+	ft_snprintf((string)(_buf + 1), sizeof(_buf) - 1, "%d$", specifier->argpos + 1);
 	flush();
 
 	tmp = 0;
@@ -229,23 +224,23 @@ U8 ft_write_specifier(string buf, U64 buflen, struct s_fmt_flag *specifiers_lst,
 
 	if (specifier->width > -1)
 	{
-		ft_snprintf(_buf, sizeof(_buf), "%d", specifier->width);
+		ft_snprintf((string)_buf, sizeof(_buf), "%d", specifier->width);
 		flush();
 	}
 	else if (specifier->width_argpos > -1)
 	{
-		ft_snprintf(_buf, sizeof(_buf), "*%d$", specifier->width_argpos);
+		ft_snprintf((string)_buf, sizeof(_buf), "*%d$", specifier->width_argpos);
 		flush();
 	}
 
 	if (specifier->prec > -1)
 	{
-		ft_snprintf(_buf, sizeof(_buf), ".%d", specifier->prec);
+		ft_snprintf((string)_buf, sizeof(_buf), ".%d", specifier->prec);
 		flush();
 	}
 	else if (specifier->prec_argpos > -1)
 	{
-		ft_snprintf(_buf, sizeof(_buf), ".*%d$", specifier->prec_argpos);
+		ft_snprintf((string)_buf, sizeof(_buf), ".*%d$", specifier->prec_argpos);
 		flush();
 	}
 

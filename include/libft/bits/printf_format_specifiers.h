@@ -6,9 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 01:18:01 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/31 01:32:01 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 02:33:04 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#if !defined(FT_BITS_PRINTF_FORMAT_SPECIFIERS_H)
+#define FT_BITS_PRINTF_FORMAT_SPECIFIERS_H
 
 #include "libft/bits/format_specifiers.h"
 
@@ -29,4 +32,6 @@
 #define FL_SPEC_HEX_U (1 << 13)
 #define FL_SPEC_FLOATING_POINT (1 << 14)
 
-struct s_fmt_flag *ft_printf_format_specifiers();
+const struct s_fmt_flag *ft_printf_format_specifiers();
+
+#endif

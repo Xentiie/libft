@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2025/02/14 02:45:43 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:50:51 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_STD_H)
 #define LIBFT_STD_H
 
-#include "libft.h"
+#include "libft/libft.h"
 
 void *ft_calloc(U64 n, U64 size);
 

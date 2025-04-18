@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   t_file.h                                           :+:      :+:    :+:   */
+/*   filestream.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 03:05:44 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/14 18:55:02 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:45:48 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#if !defined(FT_BITS_FILESTREAM)
-#define FT_BITS_FILESTREAM
+#if !defined(FT_BITS_FILESTREAM_H)
+#define FT_BITS_FILESTREAM_H
 
 #include "libft/types.h"
 

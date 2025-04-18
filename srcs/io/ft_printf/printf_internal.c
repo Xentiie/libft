@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 14:08:44 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/14 20:26:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/18 01:42:53 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 #define BASE16_UPPERCASE "0123456789ABCDEF"
 
 #define GET_ARG(type) (*(type *)(&args[pos_nextarg == -1 ? nextarg++ : pos_nextarg]))
-#define BUF_SIZE U64_MAX_MAG + 1
+// #define BUF_SIZE U64_MAX_MAG + 1
+#define BUF_SIZE ((64 /* %b can represent a binary number for up to 64 characters */) + 1)
 
 MAYBE_UNUSED
 static S64 pad(char c, S64 s, t_fmtwr_i wr_i, void *data)
@@ -236,6 +237,10 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 			sign = '\0';
 			break;
 
+		case 'b':
+			flags |= FL_UNSIGNED | FL_BINARY;
+			break;
+
 		default:
 			// char tmp[2] = {'%', *fmt};
 			cnt += wr_i("%", 1, data);
@@ -283,6 +288,31 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 			}
 		}
 
+		if (flags & FL_BINARY)
+		{
+			LU64 value;
+			U8 size;
+
+			value = (LU64)(flags & FL_T_LONGLONG ? GET_ARG(LU64)
+						   : flags & FL_T_LONG	 ? GET_ARG(U64)
+												 : GET_ARG(U32));
+			size = (flags & FL_T_LONGLONG ? ((1 << (sizeof(LU64) - 1)) * 8)
+					: flags & FL_T_LONG	  ? ((1 << (sizeof(U64) - 1)) * 8)
+					: flags & FL_T_SHORT  ? ((1 << (sizeof(U16) - 1)) * 8)
+										  : ((1 << (sizeof(U32) - 1)) * 8));
+
+			if (prec != -1 && prec < size)
+				size = prec;
+
+			for (U8 i = 0; i < size; i++)
+			{
+				//buffer[i] = ((value << (size - i - 1)) & 1) + '0';
+				buffer[i] = ((value << i) & 1) + '0';
+			}
+			str_len = size;
+			//str_len = 0;
+		}
+
 		if (flags & FL_FP)
 		{
 			F64 value;
@@ -315,10 +345,9 @@ S64 __ftprintf_internal(const_string fmt, va_list vaargs, t_fmtwr_i wr_i, void *
 					str_len = (n + prec + 1);
 				else
 					n2 = prec - (str_len - n - 1);
-				//printf("%d - (%ld - %d - 1) = %d\n", prec, str_len, n, n2);
-				//printf("%d\n", n2);
+				// printf("%d - (%ld - %d - 1) = %d\n", prec, str_len, n, n2);
+				// printf("%d\n", n2);
 			}
-
 		}
 
 		if (flags & FL_UNSIGNED)

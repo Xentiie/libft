@@ -6,13 +6,15 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:15:23 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/11 00:35:30 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 02:29:42 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
 #include "libft/images.h"
+
+#include "libft/bits/extended_aliases.h"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wattributes"

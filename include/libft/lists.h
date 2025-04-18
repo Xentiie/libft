@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:16:43 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/19 04:02:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:52:06 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_LISTS_H)
-# define LIBFT_LISTS_H
+#define LIBFT_LISTS_H
 
-# include "libft.h"
+#include "libft/libft.h"
 
 typedef struct s_list
 {
@@ -31,8 +31,8 @@ Sets ft_errno and returns FALSE.
 - FT_EINVPTR if ft_lstdelone fails
 ### TODO
 */
-extern bool		ft_lstremoveif(t_list **lst, void (*del)(void *),
-							bool (*f)(), void *ref);
+extern bool ft_lstremoveif(t_list **lst, void (*del)(void *),
+						   bool (*f)(), void *ref);
 
 /*
 Removes an element from a chained list by it's content. If del is not NULL,
@@ -44,7 +44,7 @@ Sets ft_errno and returns FALSE.
 - FT_EINVPTR if ft_lstdelone fails
 ### TODO
 */
-extern bool		ft_lstremove2(t_list **lst, void *content, void (*del)(void *));
+extern bool ft_lstremove2(t_list **lst, void *content, void (*del)(void *));
 
 /*
 Removes an element from a chained list. If del is not NULL,
@@ -56,7 +56,7 @@ Sets ft_errno and returns FALSE.
 - FT_EINVPTR if ft_lstdelone fails
 ### TODO
 */
-extern bool		ft_lstremove(t_list **lst, t_list *elem, void (*del)(void *));
+extern bool ft_lstremove(t_list **lst, t_list *elem, void (*del)(void *));
 
 /*
 Removes an element from a chained list, but does not free neither the content or the element
@@ -66,14 +66,14 @@ Sets ft_errno and returns FALSE.
 - FT_EINVPTR if 'lst' or 'elem' is NULL
 ### TODO
 */
-extern bool		ft_lst_softremove(t_list **lst, t_list *elem);
+extern bool ft_lst_softremove(t_list **lst, t_list *elem);
 
-#  if defined(FT_ARRAYS)
+#if defined(FT_ARRAYS)
 /*
 Converts a list to an array
 */
-extern int		ft_lst_to_array(t_list *lst, t_array array, U64 elem_size);
-#  endif
+extern int ft_lst_to_array(t_list *lst, t_array array, U64 elem_size);
+#endif
 
 /*
 Creates and returns a new array containing
@@ -84,7 +84,7 @@ Sets ft_errno and returns NULL.
 - FT_EOMEM if out of memory
 ### TODO
 */
-extern void		**ft_lsttoarray(t_list *lst, U64 *len);
+extern void **ft_lsttoarray(t_list *lst, U64 *len);
 
 /*
 Creates a new list element using content
@@ -94,7 +94,7 @@ Sets ft_errno and returns NULL.
 - FT_EOMEM if out of memory
 ### TODO
 */
-extern t_list	*ft_lstnew(void *content);
+extern t_list *ft_lstnew(void *content);
 
 /*
 Inserts a element 'new' in front of 'at', updating *lst if needed
@@ -115,7 +115,7 @@ Sets ft_errno.
 - FT_EINVPTR if 'lst' or 'new' is NULL.
 ### TODO
 */
-extern void		ft_lstadd_front(t_list **lst, t_list *new);
+extern void ft_lstadd_front(t_list **lst, t_list *new);
 
 /*
 Adds new at the end of lst.
@@ -125,7 +125,7 @@ Sets ft_errno.
 - FT_EINVPTR if 'lst' is NULL.
 ### TODO
 */
-extern void		ft_lstadd_back(t_list **lst, t_list *new);
+extern void ft_lstadd_back(t_list **lst, t_list *new);
 
 /*
 Same as ft_lstadd_back, but retains a pointer to *lst, and it's last element, to avoid
@@ -138,13 +138,13 @@ Sets ft_errno.
 - FT_EINVPTR if 'lst' is NULL.
 ### TODO
 */
-extern void		ft_lstadd_back_chained(t_list **lst, t_list *new);
+extern void ft_lstadd_back_chained(t_list **lst, t_list *new);
 
 /*
 Same as ft_lstadd_back, but adds the element behind last, and returns new.
 Used to avoid searching for last every time.
 */
-extern t_list	*ft_lstadd_back_ls(t_list *last, t_list *new);
+extern t_list *ft_lstadd_back_ls(t_list *last, t_list *new);
 
 /*
 Removes last element (free) and returns it's content
@@ -158,7 +158,7 @@ No error possible
 ### ft_errno
 ### TODO
 */
-extern U64		ft_lstsize(t_list *lst);
+extern U64 ft_lstsize(t_list *lst);
 
 /*
 Returns the last element of lst.
@@ -168,7 +168,7 @@ Sets ft_errno and returns NULL.
 - FT_EINVPTR if 'lst' is NULL.
 ### TODO
 */
-extern t_list	*ft_lstlast(t_list *lst);
+extern t_list *ft_lstlast(t_list *lst);
 
 /*
 Deletes an element from lst, using del on it's content.
@@ -178,7 +178,7 @@ Sets ft_errno.
 - FT_EINVPTR if 'lst' is NULL.
 ### TODO
 */
-extern void		ft_lstdelone(t_list *lst, void (*del)(void *));
+extern void ft_lstdelone(t_list *lst, void (*del)(void *));
 
 /*
 Iterates through lst, deleting every element (see ft_lstdelone).
@@ -188,7 +188,7 @@ Sets ft_errno.
 - FT_EINVPTR if 'lst' is NULL.
 ### TODO
 */
-extern void		ft_lstclear(t_list **lst, void (*del)(void *));
+extern void ft_lstclear(t_list **lst, void (*del)(void *));
 
 /*
 Iterates through lst, using f on each element's content.
@@ -198,7 +198,7 @@ Sets ft_errno.
 - FT_EINVPTR if 'lst' or 'f' is NULL.
 ### TODO
 */
-extern void		ft_lstiter(t_list *lst, void (*f)(void *));
+extern void ft_lstiter(t_list *lst, void (*f)(void *));
 
 /*
 Finds an element by calling 'f' with each element's content as first argument, and 'ref' as second.
@@ -207,7 +207,7 @@ If 'f' returns TRUE, returns the element. If no elements are found, returns NULL
 Sets ft_errno and returns NULL.
 ### TODO
 */
-extern t_list	*ft_lstfind(t_list *lst, bool (*f)(void *, void *), void *ref);
+extern t_list *ft_lstfind(t_list *lst, bool (*f)(void *, void *), void *ref);
 
 /*
 Finds an element where the content's address is equal to the address of 'ptr'.
@@ -216,8 +216,7 @@ If no elements are found, returns NULL.
 Sets ft_errno and returns NULL.
 ### TODO
 */
-extern t_list	*ft_lstfind2(t_list *lst, void *ptr);
-
+extern t_list *ft_lstfind2(t_list *lst, void *ptr);
 
 /*
 Iterates through "lst", applies "f" on every
@@ -230,7 +229,7 @@ Sets ft_errno and returns NULL.
 - FT_EOMEM if out of memory.
 ### TODO
 */
-extern t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
+extern t_list *ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
 /*
 Sorts a list inplace from smallest to largest using the 'key' function.
@@ -240,6 +239,6 @@ Sets ft_errno.
 ### ft_errno
 - FT_EINVPTR if 'lst' or 'key' is NULL.
 */
-void			ft_lstsort(t_list **lst, S32 (*key)(void *, void *));
+void ft_lstsort(t_list **lst, S32 (*key)(void *, void *));
 
 #endif

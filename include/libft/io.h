@@ -6,14 +6,17 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/03 12:07:36 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:50:51 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_IO_H)
 #define LIBFT_IO_H
 
-#include "libft.h"
+#include "libft/bits/globals.h"
+
+#include "libft/libft.h"
+
 #include <sys/types.h>
 #include <stdarg.h>
 

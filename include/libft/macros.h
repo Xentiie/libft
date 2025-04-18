@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:46:29 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/05 17:52:09 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:50:51 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_MACROS_H)
 #define LIBFT_MACROS_H
 
-#include "libft.h"
+#include "libft/libft.h"
 
 // EXPENSION
 #define FT_EXP(x) x

@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:15:51 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/18 15:37:14 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:50:51 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_TIME_H)
 #define LIBFT_TIME_H
 
-#include "libft.h"
+#include "libft/libft.h"
 
 #define FT_MINUTE_SEC (60)
 #define FT_HOUR_SEC (60 * FT_MINUTE_SEC)

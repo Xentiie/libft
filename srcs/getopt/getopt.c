@@ -6,14 +6,17 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 14:44:13 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/23 22:33:54 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 02:29:11 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
+
 #include "libft/getopt.h"
 #include "libft/strings.h"
 #include "libft/io.h"
+
+#include "libft/bits/alloca.h"
 
 #if defined(TEST)
 #include <getopt.h>

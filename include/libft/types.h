@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:47:30 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/14 20:18:18 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:53:33 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,13 @@
 #define LIBFT_TYPES_H
 
 #include "libft/bits/os_defines.h"
+
+#if FT_OS_WINDOWS
+//TODO: handle TLS for windows with MINGW
+#define threadlocal
+#else
+#define threadlocal __thread
+#endif
 
 typedef unsigned char U8;
 typedef unsigned short U16;

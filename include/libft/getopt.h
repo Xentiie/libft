@@ -6,14 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 01:30:07 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/23 22:33:01 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:50:51 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #if !defined(LIBFT_GETOPT_H)
 #define LIBFT_GETOPT_H
 
-#include "libft.h"
+#include "libft/libft.h"
 
 _FT_GLOBAL_VAR_DEC(S32, ft_optopt)
 _FT_GLOBAL_VAR_DEC(S32, ft_optind)

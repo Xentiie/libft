@@ -6,11 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:49:04 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/14 20:21:43 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:34:50 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
+
 #include "libft/io.h"
 
 #include <stdlib.h>
@@ -23,16 +24,7 @@
 _FT_GLOBAL_VAR_DEF(S32, ft_argc, -1);
 _FT_GLOBAL_VAR_DEF(string *, ft_argv, NULL);
 _FT_GLOBAL_VAR_DEF(string *, ft_env, NULL);
-
-#if defined(_FT_ERRNO_LOCATION)
-S32 *__ft_errno_location()
-{
-	static __thread S32 __ft_errno;
-	return &(__ft_errno);
-}
-#else
-__thread S32 ft_errno;
-#endif
+_FT_GLOBAL_VAR_DEF_THREADLOCAL(S32, ft_errno, FT_OK);
 
 _FT_GLOBAL_VAR_DEF(filedesc, ft_stdin);
 _FT_GLOBAL_VAR_DEF(filedesc, ft_stdout);
