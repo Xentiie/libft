@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 23:46:21 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/05 00:18:38 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/04/24 21:59:04 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,15 @@ void *ft_stack_push(t_stack *stack)
 	FT_RET_OK(_stack_top(stack));
 }
 
+U64 ft_stack_push2(t_stack *stack)
+{
+	U8 *elem;
+
+	if ((elem = ft_stack_push(stack)) == NULL)
+		return NULL;
+	return elem - stack->data;
+}
+
 void *ft_stack_pop(t_stack *stack)
 {
 	void *out;
@@ -70,4 +79,13 @@ void *ft_stack_pop(t_stack *stack)
 	out = _stack_top(stack);
 	stack->cnt--;
 	return out;
+}
+
+U64 ft_stack_pop2(t_stack *stack)
+{
+	U8 *elem;
+
+	if ((elem = ft_stack_pop(stack)) == NULL)
+		return NULL;
+	return elem - stack->data;
 }
