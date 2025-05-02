@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 14:49:59 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/02 04:45:15 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/02 04:55:38 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,16 +65,16 @@ void ft_stretch_image(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect
 	yfact = 1.0f / (F32) dstsize.y * srcsize.y;
 
 	x_vals = ft_alloca(sizeof(S32) * (dst_clipped.z - dst_clipped.x));
-	for (S32 x = dst_rect.x; x < dst_rect.z; x++)
-		x_vals[x - dst_rect.x] = (S32) (src_rect.x + (x - dst_rect.x) * xfact);
+	for (S32 x = dst_clipped.x; x < dst_clipped.z; x++)
+		x_vals[x - dst_clipped.x] = (S32) (src_rect.x + (x - dst_clipped.x) * xfact);
 
 	for (S32 dsty = dst_clipped.y; dsty < dst_clipped.w; dsty++)
 	{
 		for (S32 dstx = dst_clipped.x; dstx < dst_clipped.z; dstx++)
 		{
 			dst_addr = ft_get_pixel(dst, dstx, dsty);
-			src_addr = ft_get_pixel(src, x_vals[dstx - dst_rect.x],
-									((S32) (src_rect.y + (dsty - dst_rect.y) * yfact)));
+			src_addr = ft_get_pixel(src, x_vals[dstx - dst_clipped.x],
+									((S32) (src_rect.y + (dsty - dst_clipped.y) * yfact)));
 			*dst_addr = *src_addr;
 		}
 	}
@@ -138,8 +138,8 @@ void ft_stretch_image2(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rec
 		for (S32 dstx = dst_clipped.x; dstx < dst_clipped.z; dstx++)
 		{
 			dst_addr = ft_get_pixel(dst, dstx, dsty);
-			src_addr = ft_get_pixel(src, x_vals[dstx - dst_rect.x],
-									((S32) (src_rect.y + (dsty - dst_rect.y) * yfact)));
+			src_addr = ft_get_pixel(src, x_vals[dstx - dst_clipped.x],
+									((S32) (src_rect.y + (dsty - dst_clipped.y) * yfact)));
 			*dst_addr = ft_alpha_blend2(*dst_addr, *src_addr);
 		}
 	}
@@ -195,16 +195,16 @@ void ft_stretch_image3(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rec
 	yfact = 1.0f / (F32) dstsize.y * srcsize.y;
 
 	x_vals = ft_alloca(sizeof(S32) * (dst_clipped.z - dst_clipped.x));
-	for (S32 x = dst_rect.x; x < dst_rect.z; x++)
-		x_vals[x - dst_rect.x] = (S32) (src_rect.x + (x - dst_rect.x) * xfact);
+	for (S32 x = dst_clipped.x; x < dst_clipped.z; x++)
+		x_vals[x - dst_clipped.x] = (S32) (src_rect.x + (x - dst_clipped.x) * xfact);
 
 	for (S32 dsty = dst_clipped.y; dsty < dst_clipped.w; dsty++)
 	{
 		for (S32 dstx = dst_clipped.x; dstx < dst_clipped.z; dstx++)
 		{
 			dst_addr = ft_get_pixel(dst, dstx, dsty);
-			src_addr = ft_get_pixel(src, x_vals[dstx - dst_rect.x],
-									((S32) (src_rect.y + (dsty - dst_rect.y) * yfact)));
+			src_addr = ft_get_pixel(src, x_vals[dstx - dst_clipped.x],
+									((S32) (src_rect.y + (dsty - dst_clipped.y) * yfact)));
 
 			t_color tmp = ft_color(src_addr->r * col.r / 255, src_addr->g * col.g / 255, src_addr->b * col.b / 255, src_addr->a * col.a / 255);
 			*dst_addr = ft_alpha_blend2(*dst_addr, tmp);
