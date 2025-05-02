@@ -6,13 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 14:49:59 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/15 02:30:28 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/02 04:45:15 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
 #include "libft/images.h"
+#include "libft/io.h"
 
 #include "libft/bits/alloca.h"
 
@@ -129,8 +130,8 @@ void ft_stretch_image2(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rec
 	yfact = 1.0f / (F32) dstsize.y * srcsize.y;
 
 	x_vals = ft_alloca(sizeof(S32) * (dst_clipped.z - dst_clipped.x));
-	for (S32 x = dst_rect.x; x < dst_rect.z; x++)
-		x_vals[x - dst_rect.x] = (S32) (src_rect.x + (x - dst_rect.x) * xfact);
+	for (S32 x = dst_clipped.x; x < dst_clipped.z; x++)
+		x_vals[x - dst_clipped.x] = (S32) (src_rect.x + (x - dst_clipped.x) * xfact);
 
 	for (S32 dsty = dst_clipped.y; dsty < dst_clipped.w; dsty++)
 	{
