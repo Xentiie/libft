@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:49:34 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/15 01:50:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/06 12:50:37 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -458,5 +458,7 @@ extern void ft_error_errno(S32 retcode, string fmt, ...);
 
 /* Formats and prints the message `fmt`, and `if (retcode > 0) exit(retcode);` */
 extern void ft_error_errno2(S32 retcode, string fmt, ...);
+
+extern t_iv4 ft_clip_rect(t_iv4 rect, t_iv4 limits);
 
 #endif
