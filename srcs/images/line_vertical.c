@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:22:58 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/11 00:34:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/06 00:27:35 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void draw_vert_line(t_image *img, t_iv2 p1, S32 y2, t_color col, t_iv4 bo
 	ylen = ft_abs(p1.y - y2);
 
 	ptr = ft_get_pixel(img, p1.x, ft_min(p1.y, y2));
-	for (S32 y = 0; y < ylen; y++, ptr += img->size.x)
+	for (S32 y = 0; y <= ylen; y++, ptr += img->size.x)
 		*ptr = col;
 }
 
@@ -44,7 +44,7 @@ static void draw_vert_line2(t_image *img, t_iv2 p1, S32 y2, t_color col, t_iv4 b
 	ylen = ft_abs(p1.y - y2);
 
 	ptr = ft_get_pixel(img, p1.x, ft_min(p1.y, y2));
-	for (S32 y = 0; y < ylen; y++, ptr += img->size.x)
+	for (S32 y = 0; y <= ylen; y++, ptr += img->size.x)
 		*ptr = ft_alpha_blend(*ptr, col);
 }
 
