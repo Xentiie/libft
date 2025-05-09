@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/15 01:50:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/10 00:49:45 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include "libft/libft.h"
 
 #include <sys/types.h>
+/* we only need the definition of va_list type */
+#define __need_va_list
 #include <stdarg.h>
 
 #define FT_IO_UNBUFFERED 0
