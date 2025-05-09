@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 14:49:59 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/02 04:55:38 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/06 12:52:03 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,26 +163,28 @@ void ft_stretch_image3(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rec
 	t_color *src_addr;
 
 	{	  /* clip rectangles */
-		{ /* clip dst rect */
-			dst_clipped = dst_rect;
-			dst_clipped.x = ft_clamp(0, dst->size.x, dst_rect.x);
-			dst_clipped.y = ft_clamp(0, dst->size.y, dst_rect.y);
-			dst_clipped.z = ft_clamp(0, dst->size.x, dst_rect.z);
-			dst_clipped.w = ft_clamp(0, dst->size.y, dst_rect.w);
-		}
-
-		{ /* clip src rect */
-			src_clipped = src_rect;
-			src_clipped.x = ft_clamp(0, src->size.x, src_rect.x);
-			src_clipped.y = ft_clamp(0, src->size.y, src_rect.y);
-			src_clipped.z = ft_clamp(0, src->size.x, src_rect.z);
-			src_clipped.w = ft_clamp(0, src->size.y, src_rect.w);
-
-			src_clipped.x = ft_clamp(0, dst->size.x, src_rect.x);
-			src_clipped.y = ft_clamp(0, dst->size.y, src_rect.y);
-			src_clipped.z = ft_clamp(0, dst->size.x, src_rect.z);
-			src_clipped.w = ft_clamp(0, dst->size.y, src_rect.w);
-		}
+		dst_clipped = ft_clip_rect(dst_rect, ft_image_rect(dst));
+		src_clipped = ft_clip_rect(src_rect, ft_image_rect(dst));
+		//{ /* clip dst rect */
+		//	dst_clipped = dst_rect;
+		//	dst_clipped.x = ft_clamp(0, dst->size.x, dst_rect.x);
+		//	dst_clipped.y = ft_clamp(0, dst->size.y, dst_rect.y);
+		//	dst_clipped.z = ft_clamp(0, dst->size.x, dst_rect.z);
+		//	dst_clipped.w = ft_clamp(0, dst->size.y, dst_rect.w);
+		//}
+//
+		//{ /* clip src rect */
+		//	src_clipped = src_rect;
+		//	src_clipped.x = ft_clamp(0, src->size.x, src_rect.x);
+		//	src_clipped.y = ft_clamp(0, src->size.y, src_rect.y);
+		//	src_clipped.z = ft_clamp(0, src->size.x, src_rect.z);
+		//	src_clipped.w = ft_clamp(0, src->size.y, src_rect.w);
+//
+		//	src_clipped.x = ft_clamp(0, dst->size.x, src_rect.x);
+		//	src_clipped.y = ft_clamp(0, dst->size.y, src_rect.y);
+		//	src_clipped.z = ft_clamp(0, dst->size.x, src_rect.z);
+		//	src_clipped.w = ft_clamp(0, dst->size.y, src_rect.w);
+		//}
 	}
 
 	dstsize.x = dst_rect.z - dst_rect.x;
