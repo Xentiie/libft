@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 20:01:40 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/10 00:49:45 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/21 20:16:17 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,20 +185,20 @@ extern S64 ft_fprintf(t_file *file, const_string fmt, ...) __attribute__((format
 extern S64 ft_dprintf(filedesc fd, const_string fmt, ...) __attribute__((format(printf, 2, 3)));
 extern S64 ft_sprintf(string str, const_string fmt, ...) __attribute__((format(printf, 2, 3)));
 extern S64 ft_snprintf(string str, U64 n, const_string fmt, ...) __attribute__((format(printf, 3, 4)));
-extern string ft_saprintf(const_string fmt, ...);
-extern string ft_sanprintf(U64 n, const_string fmt, ...);
+extern string ft_saprintf(const_string fmt, ...) __attribute__((format(printf, 1, 2)));
+extern string ft_sanprintf(U64 n, const_string fmt, ...) __attribute__((format(printf, 2, 3)));
 
-extern S64 ft_vprintf(const_string fmt, va_list args);
-extern S64 ft_vfprintf(t_file *file, const_string fmt, va_list args);
-extern S64 ft_vdprintf(filedesc fd, const_string fmt, va_list args);
-extern S64 ft_vsprintf(string str, const_string fmt, va_list args);
-extern S64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args);
-extern string ft_vsaprintf(const_string fmt, va_list args);
-extern string ft_vsanprintf(U64 n, const_string fmt, va_list args);
+extern S64 ft_vprintf(const_string fmt, va_list args) __attribute__((format(printf, 1, 0)));
+extern S64 ft_vfprintf(t_file *file, const_string fmt, va_list args) __attribute__((format(printf, 2, 0)));
+extern S64 ft_vdprintf(filedesc fd, const_string fmt, va_list args) __attribute__((format(printf, 2, 0)));
+extern S64 ft_vsprintf(string str, const_string fmt, va_list args) __attribute__((format(printf, 2, 0)));
+extern S64 ft_vsnprintf(string str, U64 n, const_string fmt, va_list args) __attribute__((format(printf, 3, 0)));
+extern string ft_vsaprintf(const_string fmt, va_list args) __attribute__((format(printf, 1, 0)));
+extern string ft_vsanprintf(U64 n, const_string fmt, va_list args) __attribute__((format(printf, 2, 0)));
 #if defined(_FT_IPRINTF)
 typedef S64 (*f_printf_write_interface)(const_string str, U64 str_len, void *data);
-extern S64 ft_iprintf(f_printf_write_interface write_interface, void *data, const_string fmt, ...);
-extern S64 ft_viprintf(const_string fmt, va_list args, f_printf_write_interface write_interface, void *data);
+extern S64 ft_iprintf(f_printf_write_interface write_interface, void *data, const_string fmt, ...) __attribute__((format(printf, 3, 4)));
+extern S64 ft_viprintf(const_string fmt, va_list args, f_printf_write_interface write_interface, void *data) __attribute__((format(printf, 1, 0)));
 #endif
 
 void ft_perror(const_string str);
