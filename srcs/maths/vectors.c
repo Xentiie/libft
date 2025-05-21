@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 22:43:55 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/10 22:50:16 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/21 20:22:05 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include "libft/maths.h"
 
+#if 0
 extern t_v2 vec2(F32 x, F32 y);
 extern t_v3 vec3(F32 x, F32 y, F32 z);
 extern t_v4 vec4(F32 x, F32 y, F32 z, F32 w);
@@ -70,3 +71,4 @@ extern t_iv4 ivec4_mod(t_iv4 a, t_iv4 b);
 extern F32 vec2_mag(t_v2 v);
 extern F32 vec3_mag(t_v3 v);
 extern F32 vec4_mag(t_v4 v);
+#endif

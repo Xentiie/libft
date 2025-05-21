@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:45:20 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/15 01:50:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/21 20:22:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,12 +99,12 @@
 #define FT_F32_ISQNAN(flt) (FT_F32_ISNAN(flt) && ((__f32_to_u32(flt) & 0x00400000) == 0x00400000))
 #endif
 
-inline t_v2 vec2(F32 x, F32 y) { return (t_v2){.x = x, .y = y}; }
-inline t_v3 vec3(F32 x, F32 y, F32 z) { return (t_v3){.x = x, .y = y, .z = z}; }
-inline t_v4 vec4(F32 x, F32 y, F32 z, F32 w) { return (t_v4){.x = x, .y = y, .z = z, .w = w}; }
-inline t_iv2 ivec2(S32 x, S32 y) { return (t_iv2){.x = x, .y = y}; }
-inline t_iv3 ivec3(S32 x, S32 y, S32 z) { return (t_iv3){.x = x, .y = y, .z = z}; }
-inline t_iv4 ivec4(S32 x, S32 y, S32 z, S32 w) { return (t_iv4){.x = x, .y = y, .z = z, .w = w}; }
+inline ALWAYS_INLINE t_v2 vec2(F32 x, F32 y) { return (t_v2){.x = x, .y = y}; }
+inline ALWAYS_INLINE t_v3 vec3(F32 x, F32 y, F32 z) { return (t_v3){.x = x, .y = y, .z = z}; }
+inline ALWAYS_INLINE t_v4 vec4(F32 x, F32 y, F32 z, F32 w) { return (t_v4){.x = x, .y = y, .z = z, .w = w}; }
+inline ALWAYS_INLINE t_iv2 ivec2(S32 x, S32 y) { return (t_iv2){.x = x, .y = y}; }
+inline ALWAYS_INLINE t_iv3 ivec3(S32 x, S32 y, S32 z) { return (t_iv3){.x = x, .y = y, .z = z}; }
+inline ALWAYS_INLINE t_iv4 ivec4(S32 x, S32 y, S32 z, S32 w) { return (t_iv4){.x = x, .y = y, .z = z, .w = w}; }
 
 #define vec2_zero vec2(0, 0)
 #define vec2_one vec2(1, 1)
@@ -130,117 +130,117 @@ inline t_iv4 ivec4(S32 x, S32 y, S32 z, S32 w) { return (t_iv4){.x = x, .y = y, 
 #define ivec4_one ivec4(1, 1, 1, 1)
 #define ivec4_two ivec4(2, 2, 2, 2)
 
-inline t_iv2 vec2_int(t_v2 v) { return ivec2(v.x, v.y); }
-inline t_iv3 vec3_int(t_v3 v) { return ivec3(v.x, v.y, v.z); }
-inline t_iv4 vec4_int(t_v4 v) { return ivec4(v.x, v.y, v.z, v.w); }
-inline t_v2 ivec2_flt(t_iv2 v) { return vec2(v.x, v.y); }
-inline t_v3 ivec3_flt(t_iv3 v) { return vec3(v.x, v.y, v.z); }
-inline t_v4 ivec4_flt(t_iv4 v) { return vec4(v.x, v.y, v.z, v.w); }
+inline ALWAYS_INLINE t_iv2 vec2_int(t_v2 v) { return ivec2(v.x, v.y); }
+inline ALWAYS_INLINE t_iv3 vec3_int(t_v3 v) { return ivec3(v.x, v.y, v.z); }
+inline ALWAYS_INLINE t_iv4 vec4_int(t_v4 v) { return ivec4(v.x, v.y, v.z, v.w); }
+inline ALWAYS_INLINE t_v2 ivec2_flt(t_iv2 v) { return vec2(v.x, v.y); }
+inline ALWAYS_INLINE t_v3 ivec3_flt(t_iv3 v) { return vec3(v.x, v.y, v.z); }
+inline ALWAYS_INLINE t_v4 ivec4_flt(t_iv4 v) { return vec4(v.x, v.y, v.z, v.w); }
 
-inline t_v2 vec2_add(t_v2 a, t_v2 b) { return vec2(a.x + b.x, a.y + b.y); }
-inline t_v3 vec3_add(t_v3 a, t_v3 b) { return vec3(a.x + b.x, a.y + b.y, a.z + b.z); }
-inline t_v4 vec4_add(t_v4 a, t_v4 b) { return vec4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w); }
-inline t_iv2 ivec2_add(t_iv2 a, t_iv2 b) { return ivec2(a.x + b.x, a.y + b.y); }
-inline t_iv3 ivec3_add(t_iv3 a, t_iv3 b) { return ivec3(a.x + b.x, a.y + b.y, a.z + b.z); }
-inline t_iv4 ivec4_add(t_iv4 a, t_iv4 b) { return ivec4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w); }
+inline ALWAYS_INLINE t_v2 vec2_add(t_v2 a, t_v2 b) { return vec2(a.x + b.x, a.y + b.y); }
+inline ALWAYS_INLINE t_v3 vec3_add(t_v3 a, t_v3 b) { return vec3(a.x + b.x, a.y + b.y, a.z + b.z); }
+inline ALWAYS_INLINE t_v4 vec4_add(t_v4 a, t_v4 b) { return vec4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w); }
+inline ALWAYS_INLINE t_iv2 ivec2_add(t_iv2 a, t_iv2 b) { return ivec2(a.x + b.x, a.y + b.y); }
+inline ALWAYS_INLINE t_iv3 ivec3_add(t_iv3 a, t_iv3 b) { return ivec3(a.x + b.x, a.y + b.y, a.z + b.z); }
+inline ALWAYS_INLINE t_iv4 ivec4_add(t_iv4 a, t_iv4 b) { return ivec4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w); }
 
-inline t_v2 vec2_sub(t_v2 a, t_v2 b) { return vec2(a.x - b.x, a.y - b.y); }
-inline t_v3 vec3_sub(t_v3 a, t_v3 b) { return vec3(a.x - b.x, a.y - b.y, a.z - b.z); }
-inline t_v4 vec4_sub(t_v4 a, t_v4 b) { return vec4(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w); }
-inline t_iv2 ivec2_sub(t_iv2 a, t_iv2 b) { return ivec2(a.x - b.x, a.y - b.y); }
-inline t_iv3 ivec3_sub(t_iv3 a, t_iv3 b) { return ivec3(a.x - b.x, a.y - b.y, a.z - b.z); }
-inline t_iv4 ivec4_sub(t_iv4 a, t_iv4 b) { return ivec4(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w); }
+inline ALWAYS_INLINE t_v2 vec2_sub(t_v2 a, t_v2 b) { return vec2(a.x - b.x, a.y - b.y); }
+inline ALWAYS_INLINE t_v3 vec3_sub(t_v3 a, t_v3 b) { return vec3(a.x - b.x, a.y - b.y, a.z - b.z); }
+inline ALWAYS_INLINE t_v4 vec4_sub(t_v4 a, t_v4 b) { return vec4(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w); }
+inline ALWAYS_INLINE t_iv2 ivec2_sub(t_iv2 a, t_iv2 b) { return ivec2(a.x - b.x, a.y - b.y); }
+inline ALWAYS_INLINE t_iv3 ivec3_sub(t_iv3 a, t_iv3 b) { return ivec3(a.x - b.x, a.y - b.y, a.z - b.z); }
+inline ALWAYS_INLINE t_iv4 ivec4_sub(t_iv4 a, t_iv4 b) { return ivec4(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w); }
 
-inline t_v2 vec2_div(t_v2 a, t_v2 b) { return vec2(a.x / b.x, a.y / b.y); }
-inline t_v3 vec3_div(t_v3 a, t_v3 b) { return vec3(a.x / b.x, a.y / b.y, a.z / b.z); }
-inline t_v4 vec4_div(t_v4 a, t_v4 b) { return vec4(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w); }
-inline t_iv2 ivec2_div(t_iv2 a, t_iv2 b) { return ivec2(a.x / b.x, a.y / b.y); }
-inline t_iv3 ivec3_div(t_iv3 a, t_iv3 b) { return ivec3(a.x / b.x, a.y / b.y, a.z / b.z); }
-inline t_iv4 ivec4_div(t_iv4 a, t_iv4 b) { return ivec4(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w); }
+inline ALWAYS_INLINE t_v2 vec2_div(t_v2 a, t_v2 b) { return vec2(a.x / b.x, a.y / b.y); }
+inline ALWAYS_INLINE t_v3 vec3_div(t_v3 a, t_v3 b) { return vec3(a.x / b.x, a.y / b.y, a.z / b.z); }
+inline ALWAYS_INLINE t_v4 vec4_div(t_v4 a, t_v4 b) { return vec4(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w); }
+inline ALWAYS_INLINE t_iv2 ivec2_div(t_iv2 a, t_iv2 b) { return ivec2(a.x / b.x, a.y / b.y); }
+inline ALWAYS_INLINE t_iv3 ivec3_div(t_iv3 a, t_iv3 b) { return ivec3(a.x / b.x, a.y / b.y, a.z / b.z); }
+inline ALWAYS_INLINE t_iv4 ivec4_div(t_iv4 a, t_iv4 b) { return ivec4(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w); }
 
-inline t_v2 vec2_mul(t_v2 a, t_v2 b) { return vec2(a.x * b.x, a.y * b.y); }
-inline t_v3 vec3_mul(t_v3 a, t_v3 b) { return vec3(a.x * b.x, a.y * b.y, a.z * b.z); }
-inline t_v4 vec4_mul(t_v4 a, t_v4 b) { return vec4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w); }
-inline t_iv2 ivec2_mul(t_iv2 a, t_iv2 b) { return ivec2(a.x * b.x, a.y * b.y); }
-inline t_iv3 ivec3_mul(t_iv3 a, t_iv3 b) { return ivec3(a.x * b.x, a.y * b.y, a.z * b.z); }
-inline t_iv4 ivec4_mul(t_iv4 a, t_iv4 b) { return ivec4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w); }
+inline ALWAYS_INLINE t_v2 vec2_mul(t_v2 a, t_v2 b) { return vec2(a.x * b.x, a.y * b.y); }
+inline ALWAYS_INLINE t_v3 vec3_mul(t_v3 a, t_v3 b) { return vec3(a.x * b.x, a.y * b.y, a.z * b.z); }
+inline ALWAYS_INLINE t_v4 vec4_mul(t_v4 a, t_v4 b) { return vec4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w); }
+inline ALWAYS_INLINE t_iv2 ivec2_mul(t_iv2 a, t_iv2 b) { return ivec2(a.x * b.x, a.y * b.y); }
+inline ALWAYS_INLINE t_iv3 ivec3_mul(t_iv3 a, t_iv3 b) { return ivec3(a.x * b.x, a.y * b.y, a.z * b.z); }
+inline ALWAYS_INLINE t_iv4 ivec4_mul(t_iv4 a, t_iv4 b) { return ivec4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w); }
 
-inline t_v2 vec2_scl(t_v2 a, F32 b) { return vec2(a.x * b, a.y * b); }
-inline t_v3 vec3_scl(t_v3 a, F32 b) { return vec3(a.x * b, a.y * b, a.z * b); }
-inline t_v4 vec4_scl(t_v4 a, F32 b) { return vec4(a.x * b, a.y * b, a.z * b, a.w * b); }
-inline t_iv2 ivec2_scl(t_iv2 a, S32 b) { return ivec2(a.x * b, a.y * b); }
-inline t_iv3 ivec3_scl(t_iv3 a, S32 b) { return ivec3(a.x * b, a.y * b, a.z * b); }
-inline t_iv4 ivec4_scl(t_iv4 a, S32 b) { return ivec4(a.x * b, a.y * b, a.z * b, a.w * b); }
+inline ALWAYS_INLINE t_v2 vec2_scl(t_v2 a, F32 b) { return vec2(a.x * b, a.y * b); }
+inline ALWAYS_INLINE t_v3 vec3_scl(t_v3 a, F32 b) { return vec3(a.x * b, a.y * b, a.z * b); }
+inline ALWAYS_INLINE t_v4 vec4_scl(t_v4 a, F32 b) { return vec4(a.x * b, a.y * b, a.z * b, a.w * b); }
+inline ALWAYS_INLINE t_iv2 ivec2_scl(t_iv2 a, S32 b) { return ivec2(a.x * b, a.y * b); }
+inline ALWAYS_INLINE t_iv3 ivec3_scl(t_iv3 a, S32 b) { return ivec3(a.x * b, a.y * b, a.z * b); }
+inline ALWAYS_INLINE t_iv4 ivec4_scl(t_iv4 a, S32 b) { return ivec4(a.x * b, a.y * b, a.z * b, a.w * b); }
 
-inline t_iv2 ivec2_mod(t_iv2 a, t_iv2 b) { return ivec2(a.x % b.x, a.y % b.y); }
-inline t_iv3 ivec3_mod(t_iv3 a, t_iv3 b) { return ivec3(a.x % b.x, a.y % b.y, a.z % b.z); }
-inline t_iv4 ivec4_mod(t_iv4 a, t_iv4 b) { return ivec4(a.x % b.x, a.y % b.y, a.z % b.z, a.w % b.w); }
+inline ALWAYS_INLINE t_iv2 ivec2_mod(t_iv2 a, t_iv2 b) { return ivec2(a.x % b.x, a.y % b.y); }
+inline ALWAYS_INLINE t_iv3 ivec3_mod(t_iv3 a, t_iv3 b) { return ivec3(a.x % b.x, a.y % b.y, a.z % b.z); }
+inline ALWAYS_INLINE t_iv4 ivec4_mod(t_iv4 a, t_iv4 b) { return ivec4(a.x % b.x, a.y % b.y, a.z % b.z, a.w % b.w); }
 
-inline F32 vec2_mag(t_v2 v) { return sqrt(v.x * v.x + v.y * v.y); }
-inline F32 vec3_mag(t_v3 v) { return sqrt(v.x * v.x + v.y * v.y + v.z * v.z); }
-inline F32 vec4_mag(t_v4 v) { return sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w); }
+inline ALWAYS_INLINE F32 vec2_mag(t_v2 v) { return sqrt(v.x * v.x + v.y * v.y); }
+inline ALWAYS_INLINE F32 vec3_mag(t_v3 v) { return sqrt(v.x * v.x + v.y * v.y + v.z * v.z); }
+inline ALWAYS_INLINE F32 vec4_mag(t_v4 v) { return sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w); }
 
-inline F32 ft_frac(F32 v) { return (v - ((S64)v)); }
-inline t_v2 ft_frac2(t_v2 v) { return (vec2(ft_frac(v.x), ft_frac(v.y))); }
+inline ALWAYS_INLINE F32 ft_frac(F32 v) { return (v - ((S64)v)); }
+inline ALWAYS_INLINE t_v2 ft_frac2(t_v2 v) { return (vec2(ft_frac(v.x), ft_frac(v.y))); }
 
 #define ft_sin sin
-inline t_v2 ft_sin2(t_v2 v) { return (vec2(ft_sin(v.x), ft_sin(v.y))); }
-inline t_v3 ft_sin3(t_v3 v) { return (vec3(ft_sin(v.x), ft_sin(v.y), ft_sin(v.z))); }
-inline t_v4 ft_sin4(t_v4 v) { return (vec4(ft_sin(v.x), ft_sin(v.y), ft_sin(v.z), ft_sin(v.w))); }
-inline t_iv2 ft_isin2(t_iv2 v) { return (ivec2(ft_sin(v.x), ft_sin(v.y))); }
-inline t_iv3 ft_isin3(t_iv3 v) { return (ivec3(ft_sin(v.x), ft_sin(v.y), ft_sin(v.z))); }
-inline t_iv4 ft_isin4(t_iv4 v) { return (ivec4(ft_sin(v.x), ft_sin(v.y), ft_sin(v.z), ft_sin(v.w))); }
+inline ALWAYS_INLINE t_v2 ft_sin2(t_v2 v) { return (vec2(ft_sin(v.x), ft_sin(v.y))); }
+inline ALWAYS_INLINE t_v3 ft_sin3(t_v3 v) { return (vec3(ft_sin(v.x), ft_sin(v.y), ft_sin(v.z))); }
+inline ALWAYS_INLINE t_v4 ft_sin4(t_v4 v) { return (vec4(ft_sin(v.x), ft_sin(v.y), ft_sin(v.z), ft_sin(v.w))); }
+inline ALWAYS_INLINE t_iv2 ft_isin2(t_iv2 v) { return (ivec2(ft_sin(v.x), ft_sin(v.y))); }
+inline ALWAYS_INLINE t_iv3 ft_isin3(t_iv3 v) { return (ivec3(ft_sin(v.x), ft_sin(v.y), ft_sin(v.z))); }
+inline ALWAYS_INLINE t_iv4 ft_isin4(t_iv4 v) { return (ivec4(ft_sin(v.x), ft_sin(v.y), ft_sin(v.z), ft_sin(v.w))); }
 
 #define ft_cos cos
-inline t_v2 ft_cos2(t_v2 v) { return (vec2(ft_cos(v.x), ft_cos(v.y))); }
-inline t_v3 ft_cos3(t_v3 v) { return (vec3(ft_cos(v.x), ft_cos(v.y), ft_cos(v.z))); }
-inline t_v4 ft_cos4(t_v4 v) { return (vec4(ft_cos(v.x), ft_cos(v.y), ft_cos(v.z), ft_cos(v.w))); }
-inline t_iv2 ft_icos2(t_iv2 v) { return (ivec2(ft_cos(v.x), ft_cos(v.y))); }
-inline t_iv3 ft_icos3(t_iv3 v) { return (ivec3(ft_cos(v.x), ft_cos(v.y), ft_cos(v.z))); }
-inline t_iv4 ft_icos4(t_iv4 v) { return (ivec4(ft_cos(v.x), ft_cos(v.y), ft_cos(v.z), ft_cos(v.w))); }
+inline ALWAYS_INLINE t_v2 ft_cos2(t_v2 v) { return (vec2(ft_cos(v.x), ft_cos(v.y))); }
+inline ALWAYS_INLINE t_v3 ft_cos3(t_v3 v) { return (vec3(ft_cos(v.x), ft_cos(v.y), ft_cos(v.z))); }
+inline ALWAYS_INLINE t_v4 ft_cos4(t_v4 v) { return (vec4(ft_cos(v.x), ft_cos(v.y), ft_cos(v.z), ft_cos(v.w))); }
+inline ALWAYS_INLINE t_iv2 ft_icos2(t_iv2 v) { return (ivec2(ft_cos(v.x), ft_cos(v.y))); }
+inline ALWAYS_INLINE t_iv3 ft_icos3(t_iv3 v) { return (ivec3(ft_cos(v.x), ft_cos(v.y), ft_cos(v.z))); }
+inline ALWAYS_INLINE t_iv4 ft_icos4(t_iv4 v) { return (ivec4(ft_cos(v.x), ft_cos(v.y), ft_cos(v.z), ft_cos(v.w))); }
 
-inline F32 ft_degrees(F32 radians) { return (radians * FT_RAD_TO_DEG); }
-inline t_v2 ft_degrees2(t_v2 radians) { return vec2(radians.x * FT_RAD_TO_DEG, radians.y * FT_RAD_TO_DEG); }
-inline t_v3 ft_degrees3(t_v3 radians) { return vec3(radians.x * FT_RAD_TO_DEG, radians.y * FT_RAD_TO_DEG, radians.z * FT_RAD_TO_DEG); }
-inline t_v4 ft_degrees4(t_v4 radians) { return vec4(radians.x * FT_RAD_TO_DEG, radians.y * FT_RAD_TO_DEG, radians.z * FT_RAD_TO_DEG, radians.w * FT_RAD_TO_DEG); }
-inline t_iv2 ft_idegrees2(t_iv2 radians) { return ivec2(radians.x * FT_RAD_TO_DEG, radians.y * FT_RAD_TO_DEG); }
-inline t_iv3 ft_idegrees3(t_iv3 radians) { return ivec3(radians.x * FT_RAD_TO_DEG, radians.y * FT_RAD_TO_DEG, radians.z * FT_RAD_TO_DEG); }
-inline t_iv4 ft_idegrees4(t_iv4 radians) { return ivec4(radians.x * FT_RAD_TO_DEG, radians.y * FT_RAD_TO_DEG, radians.z * FT_RAD_TO_DEG, radians.w * FT_RAD_TO_DEG); }
+inline ALWAYS_INLINE F32 ft_degrees(F32 radians) { return (radians * FT_RAD_TO_DEG); }
+inline ALWAYS_INLINE t_v2 ft_degrees2(t_v2 radians) { return vec2(radians.x * FT_RAD_TO_DEG, radians.y * FT_RAD_TO_DEG); }
+inline ALWAYS_INLINE t_v3 ft_degrees3(t_v3 radians) { return vec3(radians.x * FT_RAD_TO_DEG, radians.y * FT_RAD_TO_DEG, radians.z * FT_RAD_TO_DEG); }
+inline ALWAYS_INLINE t_v4 ft_degrees4(t_v4 radians) { return vec4(radians.x * FT_RAD_TO_DEG, radians.y * FT_RAD_TO_DEG, radians.z * FT_RAD_TO_DEG, radians.w * FT_RAD_TO_DEG); }
+inline ALWAYS_INLINE t_iv2 ft_idegrees2(t_iv2 radians) { return ivec2(radians.x * FT_RAD_TO_DEG, radians.y * FT_RAD_TO_DEG); }
+inline ALWAYS_INLINE t_iv3 ft_idegrees3(t_iv3 radians) { return ivec3(radians.x * FT_RAD_TO_DEG, radians.y * FT_RAD_TO_DEG, radians.z * FT_RAD_TO_DEG); }
+inline ALWAYS_INLINE t_iv4 ft_idegrees4(t_iv4 radians) { return ivec4(radians.x * FT_RAD_TO_DEG, radians.y * FT_RAD_TO_DEG, radians.z * FT_RAD_TO_DEG, radians.w * FT_RAD_TO_DEG); }
 
-inline F32 ft_radians(F32 degrees) { return (degrees * FT_DEG_TO_RAD); }
-inline t_v2 ft_radians2(t_v2 degrees) { return (vec2(degrees.x * FT_DEG_TO_RAD, degrees.y * FT_DEG_TO_RAD)); }
-inline t_v3 ft_radians3(t_v3 degrees) { return (vec3(degrees.x * FT_DEG_TO_RAD, degrees.y * FT_DEG_TO_RAD, degrees.z * FT_DEG_TO_RAD)); }
-inline t_v4 ft_radians4(t_v4 degrees) { return (vec4(degrees.x * FT_DEG_TO_RAD, degrees.y * FT_DEG_TO_RAD, degrees.z * FT_DEG_TO_RAD, degrees.w * FT_DEG_TO_RAD)); }
-inline t_iv2 ft_iradians2(t_iv2 degrees) { return (ivec2(degrees.x * FT_DEG_TO_RAD, degrees.y * FT_DEG_TO_RAD)); }
-inline t_iv3 ft_iradians3(t_iv3 degrees) { return (ivec3(degrees.x * FT_DEG_TO_RAD, degrees.y * FT_DEG_TO_RAD, degrees.z * FT_DEG_TO_RAD)); }
-inline t_iv4 ft_iradians4(t_iv4 degrees) { return (ivec4(degrees.x * FT_DEG_TO_RAD, degrees.y * FT_DEG_TO_RAD, degrees.z * FT_DEG_TO_RAD, degrees.w * FT_DEG_TO_RAD)); }
+inline ALWAYS_INLINE F32 ft_radians(F32 degrees) { return (degrees * FT_DEG_TO_RAD); }
+inline ALWAYS_INLINE t_v2 ft_radians2(t_v2 degrees) { return (vec2(degrees.x * FT_DEG_TO_RAD, degrees.y * FT_DEG_TO_RAD)); }
+inline ALWAYS_INLINE t_v3 ft_radians3(t_v3 degrees) { return (vec3(degrees.x * FT_DEG_TO_RAD, degrees.y * FT_DEG_TO_RAD, degrees.z * FT_DEG_TO_RAD)); }
+inline ALWAYS_INLINE t_v4 ft_radians4(t_v4 degrees) { return (vec4(degrees.x * FT_DEG_TO_RAD, degrees.y * FT_DEG_TO_RAD, degrees.z * FT_DEG_TO_RAD, degrees.w * FT_DEG_TO_RAD)); }
+inline ALWAYS_INLINE t_iv2 ft_iradians2(t_iv2 degrees) { return (ivec2(degrees.x * FT_DEG_TO_RAD, degrees.y * FT_DEG_TO_RAD)); }
+inline ALWAYS_INLINE t_iv3 ft_iradians3(t_iv3 degrees) { return (ivec3(degrees.x * FT_DEG_TO_RAD, degrees.y * FT_DEG_TO_RAD, degrees.z * FT_DEG_TO_RAD)); }
+inline ALWAYS_INLINE t_iv4 ft_iradians4(t_iv4 degrees) { return (ivec4(degrees.x * FT_DEG_TO_RAD, degrees.y * FT_DEG_TO_RAD, degrees.z * FT_DEG_TO_RAD, degrees.w * FT_DEG_TO_RAD)); }
 
-inline S32 ft_abs(S32 n) { return abs(n); }
-inline F32 ft_fabs(F32 n) { return fabs(n); }
-inline t_v2 ft_abs2(t_v2 n) { return vec2(fabs(n.x), fabs(n.y)); }
-inline t_v3 ft_abs3(t_v3 n) { return vec3(fabs(n.x), fabs(n.y), fabs(n.z)); }
-inline t_v4 ft_abs4(t_v4 n) { return vec4(fabs(n.x), fabs(n.y), fabs(n.z), fabs(n.w)); }
-inline t_iv2 ft_iabs2(t_iv2 n) { return ivec2(abs(n.x), abs(n.y)); }
-inline t_iv3 ft_iabs3(t_iv3 n) { return ivec3(abs(n.x), abs(n.y), abs(n.z)); }
-inline t_iv4 ft_iabs4(t_iv4 n) { return ivec4(abs(n.x), abs(n.y), abs(n.z), abs(n.w)); }
+inline ALWAYS_INLINE S32 ft_abs(S32 n) { return abs(n); }
+inline ALWAYS_INLINE F32 ft_fabs(F32 n) { return fabs(n); }
+inline ALWAYS_INLINE t_v2 ft_abs2(t_v2 n) { return vec2(fabs(n.x), fabs(n.y)); }
+inline ALWAYS_INLINE t_v3 ft_abs3(t_v3 n) { return vec3(fabs(n.x), fabs(n.y), fabs(n.z)); }
+inline ALWAYS_INLINE t_v4 ft_abs4(t_v4 n) { return vec4(fabs(n.x), fabs(n.y), fabs(n.z), fabs(n.w)); }
+inline ALWAYS_INLINE t_iv2 ft_iabs2(t_iv2 n) { return ivec2(abs(n.x), abs(n.y)); }
+inline ALWAYS_INLINE t_iv3 ft_iabs3(t_iv3 n) { return ivec3(abs(n.x), abs(n.y), abs(n.z)); }
+inline ALWAYS_INLINE t_iv4 ft_iabs4(t_iv4 n) { return ivec4(abs(n.x), abs(n.y), abs(n.z), abs(n.w)); }
 
-inline F32 ft_fmin(F32 a, F32 b) { return a < b ? a : b; }
-inline S32 ft_min(S32 a, S32 b) { return a < b ? a : b; }
-inline F32 ft_fmax(F32 a, F32 b) { return a > b ? a : b; }
-inline S32 ft_max(S32 a, S32 b) { return a > b ? a : b; }
+inline ALWAYS_INLINE F32 ft_fmin(F32 a, F32 b) { return a < b ? a : b; }
+inline ALWAYS_INLINE S32 ft_min(S32 a, S32 b) { return a < b ? a : b; }
+inline ALWAYS_INLINE F32 ft_fmax(F32 a, F32 b) { return a > b ? a : b; }
+inline ALWAYS_INLINE S32 ft_max(S32 a, S32 b) { return a > b ? a : b; }
 
-inline F32 ft_ceil(F32 n) { return ceilf(n); }
-inline t_v2 ft_ceil2(t_v2 n) { return vec2(ceilf(n.x), ceilf(n.y)); }
-inline t_v3 ft_ceil3(t_v3 n) { return vec3(ceilf(n.x), ceilf(n.y), ceilf(n.z)); }
-inline t_v4 ft_ceil4(t_v4 n) { return vec4(ceilf(n.x), ceilf(n.y), ceilf(n.z), ceilf(n.w)); }
+inline ALWAYS_INLINE F32 ft_ceil(F32 n) { return ceilf(n); }
+inline ALWAYS_INLINE t_v2 ft_ceil2(t_v2 n) { return vec2(ceilf(n.x), ceilf(n.y)); }
+inline ALWAYS_INLINE t_v3 ft_ceil3(t_v3 n) { return vec3(ceilf(n.x), ceilf(n.y), ceilf(n.z)); }
+inline ALWAYS_INLINE t_v4 ft_ceil4(t_v4 n) { return vec4(ceilf(n.x), ceilf(n.y), ceilf(n.z), ceilf(n.w)); }
 
-inline F32 ft_floor(F32 n) { return floorf(n); }
-inline t_v2 ft_floor2(t_v2 n) { return vec2(floorf(n.x), floorf(n.y)); }
-inline t_v3 ft_floor3(t_v3 n) { return vec3(floorf(n.x), floorf(n.y), floorf(n.z)); }
-inline t_v4 ft_floor4(t_v4 n) { return vec4(floorf(n.x), floorf(n.y), floorf(n.z), floorf(n.w)); }
+inline ALWAYS_INLINE F32 ft_floor(F32 n) { return floorf(n); }
+inline ALWAYS_INLINE t_v2 ft_floor2(t_v2 n) { return vec2(floorf(n.x), floorf(n.y)); }
+inline ALWAYS_INLINE t_v3 ft_floor3(t_v3 n) { return vec3(floorf(n.x), floorf(n.y), floorf(n.z)); }
+inline ALWAYS_INLINE t_v4 ft_floor4(t_v4 n) { return vec4(floorf(n.x), floorf(n.y), floorf(n.z), floorf(n.w)); }
 
-inline S32 ft_clamp(S32 min, S32 max, S32 v) { return ft_max(min, ft_min(max, v)); }
-inline F32 ft_clampf(F32 min, F32 max, F32 v) { return ft_fmax(min, ft_fmin(max, v)); }
+inline ALWAYS_INLINE S32 ft_clamp(S32 min, S32 max, S32 v) { return ft_max(min, ft_min(max, v)); }
+inline ALWAYS_INLINE F32 ft_clampf(F32 min, F32 max, F32 v) { return ft_fmax(min, ft_fmin(max, v)); }
 
 /* Returns a random point on a circle of r=1 */
 extern t_v2 ft_rand_circle(U32 seed);
