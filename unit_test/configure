@@ -1,0 +1,718 @@
+#!/bin/bash
+cd "$(dirname $0)"
+set -e
+
+VER=2.0.2
+
+abspath() {
+	realpath "$1"
+}
+
+relpath() {
+	realpath --relative-to="$(pwd)" -m "$1"
+}
+
+#Usage: filter_duplicate <element> <list_elem1> <list_elem2> ...
+filter_duplicate() {
+	out=()
+	filter=$1
+	shift
+
+	while (($#)); do
+		if [[ "$1" != "$filter" ]]; then
+			out+=("$1")
+		fi
+		shift
+	done
+	echo "${out[@]}"
+}
+
+cf_map() {
+	out=()
+	for word in $1; do
+		out+=($($2 $word))
+	done
+	echo "${out[@]}"
+}
+
+# echo 'nom: premier arg'
+# suivit d'une backtrace
+#
+# le deuxieme arg spécifie combien d'appels on skip dans la backtrace, du plus récent
+CONFIGURE_SCRIPT_NAME="$0"
+cf_error() {
+	skip=1
+	if [[ "$#" -ge 2 ]]; then
+		skip=$(($2+1))
+	fi
+
+	echo "$CONFIGURE_SCRIPT_NAME: $1" >&2
+	for ((i=skip; i<${#FUNCNAME[@]}; i++)); do
+		echo "  at ${FUNCNAME[i]} (${BASH_SOURCE[i]}:${BASH_LINENO[i-1]})" >&2
+	done
+}
+
+# ===VERBOSE===
+VERBOSE="false"
+
+cf_log() {
+	if [[ "$VERBOSE" == "true" ]]; then
+		echo "$@"
+	fi
+}
+
+# ===NAME===
+NAME=""
+
+cf_set_name() {
+	NAME="$1"
+}
+
+cf_dump_name() {
+	echo "$NAME"
+}
+
+cf_fmt_name() {
+	echo "$NAME"
+}
+
+# ===TARGET OS===
+VALID_OS=("linux" "windows")
+TARGET_OS=""
+
+cf_set_valid_os() {
+	VALID_OS=("$@")
+}
+
+cf_check_valid_os() {
+	valid="false"
+	for os in "${VALID_OS[@]}"; do
+		if [[ "$1" == "$os" ]]; then
+			valid="true"
+			break
+		fi
+	done
+
+	[ "$valid" == "true" ]
+}
+
+cf_fmt_valid_os() {
+	echo "${VALID_OS[@]}"
+}
+
+cf_set_target_os() {
+	cf_check_valid_os "$1"
+	TARGET_OS="$1"
+}
+
+cf_get_target_os() {
+	echo "$TARGET_OS"
+}
+
+cf_get_current_os() {
+	if [ -f "/proc/sys/fs/binfmt_misc/WSLInterop" ]; then
+		echo "windows"
+	else
+		echo "linux"
+	fi
+}
+
+# ===CC===
+declare -A CC
+CC["linux"]="gcc"
+CC["windows"]="x86_64-w64-mingw32-gcc"
+
+#usage: cf_set_cc target_os cc
+cf_set_cc() {
+	cf_check_valid_os "$1"
+	CC["$1"]="$2"
+}
+
+#usage: cf_set_cc target_os
+cf_get_cc() {
+	cf_check_valid_os "$1"
+	echo "${CC[$1]}"
+}
+
+# ===RM===
+RM="rm -rf"
+
+cf_set_rm() {
+	RM="$1"
+}
+
+# ===FLAGS===
+CFLAGS=()
+
+cf_add_cflag() {
+	CFLAGS+=("$1")
+}
+
+cf_dump_cflags() {
+	echo "${CFLAGS[@]}"
+}
+
+cf_fmt_cflags() {
+	echo "${CFLAGS[@]}"
+}
+
+# ===LIBS===
+LIBS=()
+
+cf_add_lib() {
+	tmp=$(filter_duplicate "$1" "${LIBS[@]}")
+	IFS=' ' read -r -a LIBS <<< "$tmp"
+	LIBS+=("$1")
+}
+
+cf_dump_libs() {
+	echo "${LIBS[@]}"
+}
+
+cf_fmt_libs() {
+	fmt() {
+		lib=$1
+		if [[ $lib == "lib"* ]]; then
+			lib="${lib#"lib"}"
+		fi
+		echo "-l$lib"
+	}
+	cf_map "${LIBS[*]}" fmt
+}
+
+# ===OUTPUT LIBS===
+OUTPUT_LIBS=()
+
+cf_add_output_lib() {
+	OUTPUT_LIBS+=("$1")
+}
+
+cf_dump_output_libs() {
+	echo "${OUTPUT_LIBS[@]}"
+}
+
+cf_fmt_output_libs() {
+	echo "${OUTPUT_LIBS[@]}"
+}
+
+# ===LIBS PATHS===
+LIBS_PATHS=()
+
+cf_add_lib_path() {
+	if [[ ! -d "$1" ]]; then
+		cf_error "path '$1' doesn't exist" 1
+		return 1
+	fi
+	local path
+	path="$(abspath "$1")"
+	tmp=$(filter_duplicate "$path" "${LIBS_PATHS[@]}")
+	IFS=' ' read -r -a LIBS_PATHS <<< "$tmp"
+	LIBS_PATHS+=("$path")
+}
+
+cf_dump_lib_paths() {
+	echo "${LIBS_PATHS[@]}"
+}
+
+cf_fmt_lib_paths() {
+	fmt() {
+		path=$(relpath "$1")
+		echo "-L$path"
+	}
+	cf_map "${LIBS_PATHS[*]}" fmt
+}
+
+# ===OUTPUT LIBS PATHS===
+OUTPUT_LIBS_PATHS=()
+
+cf_add_output_lib_path() {
+	if [ ! -d "$1" ]; then
+		cf_error "path '$1' doesn't exist" 1
+		return 1
+	fi
+	OUTPUT_LIBS_PATHS+=("$(abspath "$1")")
+}
+
+cf_dump_output_lib_paths() {
+	echo "${OUTPUT_LIBS_PATHS[@]}"
+}
+
+cf_fmt_output_lib_paths() {
+	fmt() {
+		path=$(relpath "$1")
+		echo "$path"
+	}
+	cf_map "${OUTPUT_LIBS_PATHS[*]}" fmt
+}
+
+# ===INCLUDES===
+INCLUDES=()
+
+cf_add_include() {
+	if [ ! -d "$1" ]; then
+		cf_error "path '$1' doesn't exist" 1
+		return 1
+	fi
+	INCLUDES+=("$(abspath "$1")")
+}
+
+cf_dump_includes() {
+	echo "${INCLUDES[@]}"
+}
+
+cf_fmt_includes() {
+	fmt() {
+		inc=$(relpath "$1")
+		echo "-I$inc"
+	}
+	cf_map "${INCLUDES[*]}" fmt
+}
+
+# ===OUTPUT INCLUDES===
+OUTPUT_INCLUDES=()
+
+cf_add_output_include() {
+	if [ ! -d "$1" ]; then
+		cf_error "path '$1' doesn't exist" 1
+		return 1
+	fi
+	OUTPUT_INCLUDES+=("$(abspath "$1")")
+}
+
+cf_dump_output_includes() {
+	echo "${OUTPUT_INCLUDES[@]}"
+}
+
+cf_fmt_output_includes() {
+	fmt() {
+		inc=$(relpath "$1")
+		echo "$inc"
+	}
+	cf_map "${OUTPUT_INCLUDES[*]}" fmt
+}
+
+# ===PACKAGES===
+IMPORTED_INCLUDES=()
+
+cf_dump_imported_includes() {
+	echo "${IMPORTED_INCLUDES[@]}"
+}
+
+cf_fmt_imported_includes() {
+	fmt() {
+		inc=$(relpath "$1")
+		echo "$inc"
+	}
+	cf_map "${IMPORTED_INCLUDES[*]}" fmt
+}
+
+cf_run_pkg_configure()
+{
+	path="$1"
+
+	if [[ ! -f "$path/configure" ]]; then
+		cf_error "$path/configure not found"
+		return 1
+	fi
+
+	stderr_tmp=$(mktemp)
+	set +e
+	output=$("$path/configure" "${@:2}" 2> "$stderr_tmp")
+	ret=$?
+	set -e
+
+	if [[ $ret -ne 0 ]] || [[ -s $stderr_tmp ]]; then
+		cf_error "an error happened while fetching dump from package '$path'. Return code: $ret"
+
+		if [[ -s $stderr_tmp ]]; then
+			echo "stderr output:" >&2
+			cat "$stderr_tmp" >&2
+		fi
+		return 1
+	fi
+
+	echo "$output"
+}
+
+IMPORTS=()
+#Usage: cf_add_pkg <path>
+cf_add_pkg() {
+	path="$1"
+	if [[ ! -f "$path/configure" ]]; then
+		cf_error "$path: no suitable configure"
+		return 1
+	fi
+
+	output=$(cf_run_pkg_configure "$path" --dump)
+	pkg_ver=$(cf_run_pkg_configure "$path" --version)
+
+	if [[ "$pkg_ver" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+		if [[ "$pkg_ver" != "$VER" ]]; then
+			echo "Warning: package '$path' configure script version differs: '$pkg_ver' != $VER"
+		fi
+	else
+		echo "Warning: couldn't retrieve version from package '$path'"
+	fi
+
+	pkg_includes=$(echo "$output" | grep -oP '(?<=INCLUDES=).*' || cf_error "couldn't parse INCLUDES from $path/configure")
+	for i in $pkg_includes; do
+		cf_add_include "$i"
+		IMPORTED_INCLUDES+=("$i")
+	done
+
+	pkg_libs=$(echo "$output" | grep -oP '(?<=LIBS=).*'  || cf_error "couldn't parse LIBS from $path/configure")
+	for i in $pkg_libs; do
+		cf_add_lib "$i"
+	done
+
+	pkg_libs_paths=$(echo "$output" | grep -oP '(?<=LIBS_PATHS=).*'  || cf_error "couldn't parse LIBS_PATHS from $path/configure")
+	for i in $pkg_libs_paths; do
+		cf_add_lib_path "$i"
+	done
+	IMPORTS+=("$path")
+}
+
+# ===SOURCES===
+SOURCES=()
+
+cf_add_source() {
+	if [[ ! -f "$1" ]]; then
+		cf_error "path '$1' doesn't exist"
+		return 1
+	fi
+	SOURCES+=("$1")
+}
+
+cf_dump_sources() {
+	echo "${SOURCES[@]}"
+}
+
+cf_fmt_sources() {
+	echo "${SOURCES[@]}"
+}
+
+# ===OBJS PATH===
+OBJS_PATH="objs"
+
+cf_set_objs_path() {
+	OBJS_PATH="$1"
+}
+
+# ===WRITER===
+MAKEFILE="config.mk"
+INDENT=0
+
+cf_set_makefile() {
+	MAKEFILE="$1"
+}
+
+cf_init_makefile() {
+	echo -n > $MAKEFILE #creates and/or clears the file
+}
+
+cf_inc_indent() {
+	INDENT=$((INDENT+1))
+}
+
+cf_dec_indent() {
+	INDENT=$((INDENT-1))
+}
+
+cf_append() {
+	for ((i=0; i<INDENT; i++)); do
+		printf "\t" >> $MAKEFILE
+	done
+	printf "$@" >> $MAKEFILE
+}
+
+# ===MAKEFILE UTILS===
+CURRENT_RULE_NAME=""
+
+#Usage: cf_begin_rule <rule name> [--prereq <rule name>]
+cf_begin_rule() {
+	if [[ -z "$1" ]]; then
+		cf_error "Empty rule name"
+		return 1
+	fi
+	CURRENT_RULE_NAME="$1"
+
+	positionals=()
+	prereqs=()
+	while [[ $# -gt 0 ]]; do
+		case $1 in
+			--prereq)
+				prereqs+=("$2")
+				shift
+				shift
+				;;
+			-*)
+				cf_error "unknown option $1" 1
+				return 1
+				;;
+			*)
+				if [[ "${#positionals[@]}" -gt 1 ]]; then
+					cf_error "unknown option $1" 1
+					return 1
+				fi
+				positionals+=("$1")
+				shift
+				;;
+		esac
+	done
+	cf_append "${positionals[0]}: ${prereqs[*]}\n"
+	cf_inc_indent
+}
+
+#Usage: cf_end_rule [phony]
+cf_end_rule() {
+	cf_dec_indent
+	if [ -n "$1" ]; then
+		cf_append ".PHONY: %s\n" "$CURRENT_RULE_NAME"
+	fi
+	cf_append "\n"
+}
+
+cf_mkf_var() {
+	echo '$('"$1"')'
+}
+
+# ===CF_RUN===
+cf_help() {
+	printf "%s - configure script\n" "$NAME"
+	printf "\t-d --dump\t\t\tdumps the project's requirements\n"
+	printf "\t   --dump-json\t\t\tnot yet implemented\n"
+	printf "\t-t --target\t\t\tspecifies a target OS\n"
+	printf "\t-v --verbose\t\t\tenables verbose output\n"
+	printf "\t-R --recursive-configure\trecursively calls the configure script for each dependencies\n"
+	printf "\t   --help\t\t\tshows this help screen\n"
+	printf "\t   --version\t\t\tprints this configure script's version\n\n"
+	[[ $(type -t help) == function ]] && help
+}
+
+cf_run() {
+	#any of ["make", "dump", "dump-json"]
+	mode="make"
+
+	args=()
+	nextarg=""
+	for (( i=0; i < $# + 1; i++ )); do
+		arg="${!i}"
+		j="$((i+1))"
+		nextarg="${!j}"
+	
+		if [[ "$arg" == "--help" ]]; then
+			configure dummy > /dev/null
+			cf_help
+			exit 0
+
+		elif [[ "$arg" == "-d" ]] || [[ "$arg" == "--dump" ]]; then
+			mode="dump"
+		elif [[ "$arg" == "--dump-json" ]]; then
+			mode="dump-json"
+
+		elif [[ "$arg" == "-t" ]] || [[ "$arg" == "--target" ]]; then
+			if [[ ! $(cf_check_valid_os "$nextarg") ]]; then
+				echo -n "Invalid option for -t: $nextarg. Valid options are $(cf_fmt_valid_os)"
+			fi
+			cf_set_target_os "$nextarg"
+			((i++))
+
+		elif [[ "$arg" == "-v" ]] || [[ "$arg" == "--verbose" ]]; then
+			VERBOSE="true"
+
+		elif [[ "$arg" == "-R" ]] || [[ "$arg" == "--recursive-configure" ]]; then
+			mode=recursive-configure
+
+		elif [[ "$arg" == "--version" ]]; then
+			echo "$VER"
+			exit 0
+
+		else
+			args+=("$arg")
+		fi
+	done
+
+	configure "${args[@]}"
+
+	cf_log "mode: $mode"
+	case "$mode" in
+		"make")
+			cf_run_make
+			;;
+		"recursive-configure")
+			cf_run_recursive_configure
+			;;
+		"dump")
+			cf_run_dump
+			;;
+		"dump-json")
+			cf_run_dump_json
+			;;
+	esac
+}
+
+cf_run_make() {
+	cf_init_makefile
+	if [ -z "$TARGET_OS" ]; then
+		cf_set_target_os "$(cf_get_current_os)"
+		cf_log "Selected target OS: $TARGET_OS"
+	else
+		cf_log "Specified target OS: $TARGET_OS"
+	fi
+
+	cf_add_cflag "-DFT_OS_${TARGET_OS^^}"
+
+	#get all .o files
+	objs=()
+	for i in "${!SOURCES[@]}"; do
+		filename="${SOURCES[i]%.c}"
+		objs+=("$OBJS_PATH/$filename.o")
+	done
+
+	#get all unique .o directories
+	declare -A objs_paths_dict=()
+	for s in "${objs[@]}"; do
+		objpath=$(dirname "$s")
+	    objs_paths_dict[$objpath]=1
+	done
+	objs_paths=(${!objs_paths_dict[*]})
+
+	os=$(cf_get_target_os)
+	cf_append ".DEFAULT_GOAL=all\n"
+	cf_append "NAME=%s\n" "$(cf_fmt_name)"
+	cf_append "CFLAGS=%s\n" "$(cf_fmt_cflags)"
+	cf_append "INCLUDES=%s\n" "$(cf_fmt_includes)"
+	cf_append "LIBS=%s\n" "$(cf_fmt_libs)"
+	cf_append "LIBS_PATHS=%s\n" "$(cf_fmt_lib_paths)"
+	cf_append "RM=%s\n" "$RM"
+	cf_append "CC=%s\n" "${CC[$os]}"
+	cf_append "SRCS=%s\n" "${SOURCES[*]}"
+	cf_append "OBJS=%s\n" "${objs[*]}"
+	cf_append "OBJS_PATHS=%s\n" "${objs_paths[*]}"
+
+	cf_begin_rule "all" \
+		--prereq "objs" \
+		--prereq "packages" \
+		--prereq "$(cf_mkf_var NAME)"
+	cf_end_rule phony
+
+	all_pkg_rules=()
+	for p in "${IMPORTS[@]}"; do
+		pkg_name="_$(basename "$p")"
+		all_pkg_rules+=("--prereq" "$pkg_name")
+		cf_begin_rule "$pkg_name"
+			cf_append '%s -C %s\n' "$(cf_mkf_var MAKE)" "$p"
+		cf_end_rule phony
+	done
+
+	cf_begin_rule "packages" "${all_pkg_rules[@]}"
+	cf_end_rule phony
+
+	cf_begin_rule "objs" \
+		--prereq "$(cf_mkf_var OBJS_PATHS)"
+	cf_end_rule
+
+	objs_paths_len=${#objs_paths[@]}
+	for ((_i=0; _i<objs_paths_len; _i++)); do
+		cf_begin_rule "${objs_paths[$_i]}"
+		cf_append "mkdir -p %s\n" "${objs_paths[$_i]}"
+		cf_end_rule
+	done
+
+	cf_begin_rule "clean"
+		cf_append "%s %s\n" "$(cf_mkf_var RM)" "$(cf_mkf_var OBJS)"
+	cf_end_rule phony
+
+	cf_begin_rule "fclean" \
+		--prereq "clean"
+		cf_append "%s %s\n" "$(cf_mkf_var RM)" "$(cf_mkf_var NAME)"
+	cf_end_rule phony
+
+	cf_begin_rule "re" \
+		--prereq "fclean" \
+		--prereq 'all'
+	cf_end_rule phony
+
+	for i in "${!SOURCES[@]}"; do
+		src="${SOURCES[$i]}"
+		obj="${objs[$i]}"
+
+		cf_begin_rule "$obj" --prereq "$src"
+			cf_append "%s %s %s -c %s -o %s\n" "$(cf_mkf_var CC)" "$(cf_mkf_var CFLAGS)" "$(cf_mkf_var INCLUDES)" "$src" "$obj"
+		cf_end_rule
+	done
+}
+
+cf_run_recursive_configure()
+{
+	for i in "${IMPORTS[@]}"; do
+		echo "Running $i/configure"
+		cf_run_pkg_configure "$i"
+	done
+}
+
+cf_run_dump() {
+	printf "INCLUDES=%s\n" "$(cf_dump_output_includes) $(cf_dump_imported_includes)"
+	printf "LIBS=%s %s\n" "$(cf_dump_output_libs)" "$(cf_dump_libs)"
+	printf "LIBS_PATHS=%s %s\n" "$(cf_dump_output_lib_paths)" "$(cf_dump_lib_paths)"
+}
+
+cf_run_dump_json() {
+	echo nope
+}
+
+#====CONFIGURE====
+
+help()
+{
+	printf "\t-n --no-debug\t\t\tdoesn't set the DEBUG define\n"
+	printf "\t   --colors-format-mlx\tuses the mlx color format (RGBA)\n"
+	printf "\t-O[level]\t\t\tset the optimisation level (default: 3)\n"
+}
+
+run_diff()
+{
+	path="$1"
+
+	for s in "${SOURCES[@]}"; do
+		other_path="$path/$s"
+
+		if [[ ! -f "$other_path" ]]; then
+			echo "File created: $s"
+			continue
+		fi
+
+		set +e
+		diff "$s" "$other_path" > /dev/null
+		d=$?
+		set -e
+		if (( d == 1 )); then
+			echo "File changed: $s"
+			if [ "$s" -nt "$other_path" ]; then
+				echo "	$s is more recent"
+			else
+				echo "	$other_path is more recent"
+			fi
+			echo "	diff $s $other_path"
+		elif (( d == 2 )); then
+			echo "Diff error: $s"
+		fi
+	done
+}
+
+configure() {
+
+	cf_set_name "unit_test"
+
+	cf_add_cflag "-Wall"
+	cf_add_cflag "-Wextra"
+
+	cf_add_pkg "../"
+
+	shopt -s globstar
+	for f in srcs/**/*.c; do
+		cf_add_source "$f"
+	done
+}
+
+cf_run "$@"
