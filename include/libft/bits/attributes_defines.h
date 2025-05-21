@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 18:57:30 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/14 20:08:51 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/18 01:20:43 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,13 @@
 // TODO: check for SSE functions that requires alignement
 #pragma warn "Careful: no __attribute__((aligned)), will break stuff"
 #define ALIGNED(X)
+#endif
+
+#if FT_HAS_ATTRIBUTE(__always_inline__)
+#define ALWAYS_INLINE __attribute__((__always_inline__))
+#else
+#pragma warn "No attribute __always_inline__ :("
+#define ALWAYS_INLINE
 #endif
 
 #endif
