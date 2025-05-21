@@ -2,74 +2,98 @@ import clang.cindex
 import sys
 import json
 import os
+from collections import defaultdict
 
-def get_function_signature(node) -> tuple[str, list[str]]:
-    return_type = node.result_type.spelling
-    parameters = []
-    for param in node.get_arguments():
-        param_name = param.spelling
-        param_type = param.type.spelling
-        parameters.append((param_name, param_type))
-    return (return_type, parameters)
 
-def format_arguments(args:list[tuple[str, str]]):
-    return ', '.join([f'{s[1]} {s[0]}' for s in args])
+class CFunctionParam:
+    def __init__(self, param):
+        self.name = param.spelling
+        self.type = param.type.spelling
 
-def format_signature(signature:tuple[str, list[str]], func_name:str):
-    return f"{signature[0]} {func_name}({format_arguments(signature[1])})"
+class CFunction:
+    def __init__(self, node: clang.cindex.Cursor):
+        self.name = node.spelling
+        self.return_type = node.result_type.spelling
+
+        self.parameters: list[CFunctionParam] = []
+        for param in node.get_arguments():
+            self.parameters.append(CFunctionParam(param))
+
+    def format_arguments(self):
+        arguments_list = [f'{p.type} {p.name}' for p in self.parameters]
+        return ', '.join(arguments_list)
+        
+
+    # Formats a C function signature
+    def format_signature(self):
+        arguments_list = [f'{p.type} {p.name}' for p in self.parameters]
+        return f"{self.return_type} {self.name}({self.format_arguments()})"
 
 class ExtendedAlias:
     target:str
-    alias_name:str
-    signature:tuple[str, list[str]]
+    func:CFunction
     prio:int
     cpuid_flags:list[str]
     os_flags:list[str]
 
-    def __init__(self, target:str, alias_name:str, signature:tuple[str, list[str]], prio:int, cpuid_flags:list[str], os_flags:list[str]):
+    def __init__(self, target:str, func: CFunction, prio:int, cpuid_flags:list[str], os_flags:list[str]):
         self.target = target
-        self.alias_name = alias_name
+        self.func = func
         self.prio = prio
         self.cpuid_flags = cpuid_flags
         self.os_flags = os_flags
-        self.signature = signature
+
+    # Formats the conditions (checks the required flags...)
+    def format_conditions(self):
+        if (len(self.os_flags) == 0 and len(self.cpuid_flags) == 0):
+            return "1"
+        flags = [f"os_flags.{e}" for e in self.os_flags] + [f"cpuid_flags->{e}" for e in self.cpuid_flags]
+        return " && ".join(flags)
 
     def __str__(self):
-        return f"ExtendedAlias({self.target}, {self.alias_name}, {format_signature(self.signature, self.target)}, {self.prio}, {self.cpuid_flags})"
+        return f"ExtendedAlias({self.target}, {self.func.name}, {self.func.format_signature()}, {self.prio}, {self.cpuid_flags})"
 
     def __repr__(self):
         return str(self)
 
-
-
 def find_aliases_in_file(filepath:str) -> list[ExtendedAlias]:
     index = clang.cindex.Index.create()
-    tu = index.parse(filepath, ["-I./include", "-I./srcs"])
-    aliases: list[str] = []
+
+    root_path = os.path.relpath(os.getcwd(), os.path.dirname(os.path.dirname(__file__)))
+    tu = index.parse(filepath, [f"-I{root_path}/include", f"-I{root_path}/srcs"])
+    aliases: list[ExtendedAlias] = []
     for cursor in tu.cursor.get_children():
         if cursor.location.file and cursor.location.file.name != filepath:
             continue
 
-        if cursor.kind == clang.cindex.CursorKind.FUNCTION_DECL:
-            func_sign = get_function_signature(cursor)
+        if cursor.kind == clang.cindex.CursorKind.FUNCTION_DECL: # type: ignore
             for child in cursor.get_children():
-                if child.kind == clang.cindex.CursorKind.ANNOTATE_ATTR:
-                    alias_name:str = cursor.spelling
+                if child.kind == clang.cindex.CursorKind.ANNOTATE_ATTR: # type: ignore
                     annotation:str = child.displayname
 
+                    # Expected format
+                    # ft_extended_alias:target:prio:cpuid_flag_1,cpuid_flag_2:os_flag_1,os_flag_2
+
+                    #split the string
                     try:
                         prefix, target, prio, cpuid_flags, os_flags = annotation.split(':')
                         cpuid_flags = cpuid_flags.split(',')
                         os_flags = os_flags.split(',')
                     except:
                         continue
+
+                    #validate prefix
                     if (prefix != "ft_extended_alias"):
                         continue
+
+                    #handle empty lists
                     if (len(cpuid_flags) == 1 and cpuid_flags[0] == ""):
                         cpuid_flags = []
                     if (len(os_flags) == 1 and os_flags[0] == ""):
                         os_flags = []
-                    aliases.append(ExtendedAlias(target, alias_name, func_sign, int(prio), cpuid_flags, os_flags))
+
+                    new_alias = ExtendedAlias(target, CFunction(cursor), int(prio), cpuid_flags, os_flags)
+                    aliases.append(ExtendedAlias(target, CFunction(cursor), int(prio), cpuid_flags, os_flags))
     return aliases
 
 if __name__ == "__main__":
@@ -78,75 +102,22 @@ if __name__ == "__main__":
         exit(1)
 
     aliases = find_aliases_in_file(sys.argv[1])
-    aliases_dict:dict[str, list[ExtendedAlias]] = {}
+    aliases_dict:dict[str, list[ExtendedAlias]] = defaultdict(list)
     for a in aliases:
-        try:
-            aliases_dict[a.target].append(a)
-        except:
-            aliases_dict[a.target] = [a]
+        aliases_dict[a.target].append(a)    
 
     for k in aliases_dict:
        aliases_dict[k].sort(key=lambda alias: alias.prio, reverse=True)
 
     print(json.dumps(aliases_dict, default=str, indent=4), end="\n\n")
 
-    _indent = 0
-    def enter_scope_quiet():
-        global _indent
-        _indent += 1
-    def exit_scope_quiet():
-        global _indent
-        _indent -= 1
-    def enter_scope():
-        print_indent("{")
-        enter_scope_quiet()
-    def exit_scope():
-        exit_scope_quiet()
-        print_indent("}")
+    print(f"""Code:
+/* Auto-generated by {os.path.relpath(__file__, os.getcwd())} */
 
-    def print_indent(*args, indent=_indent, **kwargs):
-        if (len(args) == 0):
-            print()
-            return
-        print("\t" * indent, end="")
-        print(*args, **kwargs)
-
-    def print_no_nl(*args, **kwargs):
-        print_indent(*args, **kwargs, end="")
-
-    def if_debug_begin():
-        print("#if defined(DEBUG)")
-    def if_debug_end():
-        print("#endif")
-
-    def if_debug_print(*args, **kwargs):
-        if_debug_begin()
-        print(*args, **kwargs)
-        if_debug_end()
-
-    def if_ndebug_begin():
-        print("#if !defined(DEBUG)")
-    def if_ndebug_end():
-        print("#endif")
-
-    def if_ndebug_print(*args, **kwargs):
-        if_ndebug_begin()
-        print(*args, **kwargs)
-        if_ndebug_end()
-
-    def generate_include(include_path:str):
-        return f"#include \"{include_path}\""
-
-    def generate_condition(alias:ExtendedAlias):
-        flags = [f"os_flags.{e}" for e in alias.os_flags] + [f"cpuid_flags->{e}" for e in alias.cpuid_flags]
-        return " && ".join(flags)
-
-    print("CODE:")
-    print_indent(f"/* Auto-generated by {os.path.relpath(__file__, os.getcwd())} */")
-    print_indent(generate_include("libft/sys/cpuid.h"))
-    print_indent(generate_include("libft/sys/xsave.h"))
-    if_debug_print(generate_include("libft/io.h"))
-    print_indent()
+#include "libft/sys/cpuid.h"
+#include "libft/sys/xsave.h"
+#include "libft/io.h"
+""")
 
     for k in aliases_dict:
 
@@ -154,50 +125,54 @@ if __name__ == "__main__":
             print(f"WARNING: '{aliases_dict[k][0].target}' has no default, skipping !")
             continue
 
-        if_debug_print(f"static void *__resolved_{aliases_dict[k][0].target} = NULL;")
-        print_indent(f"static {aliases_dict[k][0].signature[0]} (*resolve_{aliases_dict[k][0].target}(void))({format_arguments(aliases_dict[k][0].signature[1])})")
-        enter_scope()
+        print(f"""#if defined(DEBUG)
+static void *__resolved_{aliases_dict[k][0].target} = NULL;
+#endif
+static {aliases_dict[k][0].func.return_type} (*resolve_{aliases_dict[k][0].target}(void))({aliases_dict[k][0].func.format_arguments()})
+{{
+""")
 
-        if_ndebug_print(f"void *__resolved_{aliases_dict[k][0].target} = NULL;")
-        print_indent("struct s_cpuid_flags *cpuid_flags;")
-        print_indent("struct s_xcr0_flags os_flags;")
-        print_indent()
-        print_indent("cpuid_flags = ft_cpuid_get_cached_flags();")
-        print_indent("ft_xgetbv(0, &os_flags.flags);")
+        print(f"""#if !defined(DEBUG)
+\tvoid *__resolved_{aliases_dict[k][0].target} = NULL;
+#endif
+\tstruct s_cpuid_flags *cpuid_flags;
+\tstruct s_xcr0_flags os_flags;
+
+\tcpuid_flags = ft_cpuid_get_cached_flags();
+\tft_xgetbv(0, &os_flags.flags);""")
+
         for i, alias in enumerate(aliases_dict[k]):
 
             if (i == 0):
-                print_no_nl("if (")
-                print_indent(generate_condition(alias) + ")", indent=0)
+                print(f"\tif ({alias.format_conditions()})")
             elif (i == len(aliases_dict[k]) - 1):
-                print_indent("else")
+                print("\telse")
             else:
-                print_no_nl("else if (")
-                print_indent(generate_condition(alias) + ")", indent=0)
+                print(f"\telse if ({alias.format_conditions()})")
+            print(f"\t\t__resolved_{aliases_dict[k][0].target} = {alias.func.name};")
 
-            enter_scope_quiet()
-            print_indent(f"__resolved_{aliases_dict[k][0].target} = {alias.alias_name};")
-            exit_scope_quiet()
+        print(f"""\treturn __resolved_{aliases_dict[k][0].target};
+}}
 
-        print_indent(f"return __resolved_{aliases_dict[k][0].target};")
-        exit_scope()
-        print_indent()
-        print_indent(f"{format_signature(aliases_dict[k][0].signature, aliases_dict[k][0].target)}\n\t__attribute__((ifunc(\"resolve_{aliases_dict[k][0].target}\")));")
-        print_indent()
+{aliases_dict[k][0].func.return_type} {aliases_dict[k][0].target}({aliases_dict[k][0].func.format_arguments()})
+    __attribute__((ifunc(\"resolve_{aliases_dict[k][0].target}\")));""")
 
-    if_debug_begin()
-    print_indent(f"__attribute__((constructor)) static void __debug_ifunc()")
-    enter_scope()
+    print(f"""
+#if defined(DEBUG)
+__attribute__((constructor)) static void __debug_ifunc()
+{{""")
     for k in aliases_dict:
-        print_indent(f"ft_printf(\"{aliases_dict[k][0].target}:\");")
+        print(f"\tft_printf(\"{aliases_dict[k][0].target}:\");")
+    
         for i, alias in enumerate(aliases_dict[k]):
-
             if (i == 0):
-                print_indent(f"if (__resolved_{aliases_dict[k][0].target} == {alias.alias_name}) ft_printf(\"{alias.alias_name}\\n\");")
+                print(f"\tif (__resolved_{aliases_dict[k][0].target} == {alias.func.name})\n\t\tft_printf(\"{alias.func.name}\\n\");")
             elif (i == len(aliases_dict[k]) - 1):
-                print_indent(f"else ft_printf(\"{alias.alias_name}\\n\");")
+                print(f"\telse\n\t\tft_printf(\"{alias.func.name}\\n\");")
             else:
-                print_indent(f"else if (__resolved_{aliases_dict[k][0].target} == {alias.alias_name}) ft_printf(\"{alias.alias_name}\\n\");")
-    exit_scope()
-    if_debug_end()
-        
+                print(f"\telse if (__resolved_{aliases_dict[k][0].target} == {alias.func.name})\n\t\tft_printf(\"{alias.func.name}\\n\");")
+
+    print("""
+}
+#endif
+""")
