@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:22:47 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/15 02:29:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/21 03:09:48 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,81 +14,132 @@
 #include "libft_int.h"
 
 #include "libft/images.h"
+#include "libft/io.h"
 
 #include "libft/bits/extended_aliases.h"
 
+#include "libft/bits/variants/ft_draw_rect.h"
+#include "libft/bits/variants/ft_fill_rect.h"
+#include "libft/bits/variants/ft_draw_line_horizontal.h"
+#include "libft/bits/variants/ft_draw_line_vertical.h"
+
+#include <stdarg.h>
+
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wattributes"
 #pragma GCC diagnostic ignored "-Wvolatile-register-var"
 
-void ft_draw_rect_bound(t_image *img, t_iv4 rect, t_color col, t_iv4 bound)
+void ft_draw_rect(t_image *img, t_iv4 rect, t_color col, U8 flags, ...)
 {
-	rect.x = ft_max(rect.x, bound.x);
-	rect.y = ft_max(rect.y, bound.y);
-	rect.z = ft_min(rect.z, bound.z);
-	rect.w = ft_min(rect.w, bound.w);
+	t_iv4 clip_rect;
+	va_list lst;
+	S32 x_start, x_end;
+	S32 y_start, y_end;
 
-	ft_draw_rect(img, rect, col);
+	/* If we aren't ignoring alpha and color's alpha is 0, ignore */
+	if (!(flags & FT_DRAW_FLAG_NO_TRANSPARENCY) && col.a == 0)
+		return;
+
+	{ /* Clipping */
+
+		{ /* Get clip rect */
+			clip_rect = ft_image_rect(img);
+
+			va_start(lst, flags);
+			if (flags & FT_DRAW_FLAG_CLIP)
+			{
+				t_iv4 r = va_arg(lst, t_iv4);
+				clip_rect = ft_clip_rect_rect(r, clip_rect);
+			}
+			va_end(lst);
+		}
+	}
+
+	x_start = rect.x;
+	if (x_start < clip_rect.x)
+		x_start = clip_rect.x;
+	x_end = rect.z;
+	if (x_end > clip_rect.z)
+		x_end = clip_rect.z;
+
+	y_start = rect.y;
+	if (y_start < clip_rect.y)
+		y_start = clip_rect.y;
+	y_end = rect.w;
+	if (y_end > clip_rect.w)
+		y_end = clip_rect.w;
+
+	if (x_start > x_end || y_start > y_end)
+		return;
+
+	if ((flags & FT_DRAW_FLAG_NO_TRANSPARENCY) || col.a == 255)
+	{
+		if (y_start == rect.y) /* If no clipping for y_start */
+			__ft_draw_line_horizontal_no_alpha(img, ivec2(x_start, rect.y), x_end, col);
+		if (y_end == rect.w) /* If no clipping for y_end */
+			__ft_draw_line_horizontal_no_alpha(img, ivec2(x_start, rect.w), x_end, col);
+
+		if (x_start == rect.x) /* If no clipping for x_start */
+			__ft_draw_line_vertical_no_alpha(img, ivec2(rect.x, y_start), y_end, col);
+		if (x_end == rect.z) /* If no clipping for x_end */
+			__ft_draw_line_vertical_no_alpha(img, ivec2(rect.z, y_start), y_end, col);
+	}
+	else
+	{
+		if (y_start == rect.y) /* If no clipping for y_start */
+			__ft_draw_line_horizontal_alpha(img, ivec2(x_start, rect.y), x_end, col);
+		if (y_end == rect.w) /* If no clipping for y_end */
+			__ft_draw_line_horizontal_alpha(img, ivec2(x_start, rect.w), x_end, col);
+
+		if (x_start == rect.x) /* If no clipping for x_start */
+			__ft_draw_line_vertical_alpha(img, ivec2(rect.x, y_start), y_end, col);
+		if (x_end == rect.z) /* If no clipping for x_end */
+			__ft_draw_line_vertical_alpha(img, ivec2(rect.z, y_start), y_end, col);
+	}
 }
 
-void ft_draw_rect(t_image *img, t_iv4 rect, t_color col)
+void ft_fill_rect(t_image *img, t_iv4 rect, t_color col, U8 flags, ...)
 {
-	ft_draw_line_horizontal(img, ivec2(rect.x, rect.y), rect.z, col);
-	ft_draw_line_horizontal(img, ivec2(rect.x, rect.w), rect.z, col);
-	ft_draw_line_vertical(img, ivec2(rect.x, rect.y), rect.w, col);
-	ft_draw_line_vertical(img, ivec2(rect.z, rect.y), rect.w, col);
+	t_iv4 clip_rect;
+	va_list lst;
+
+	/* If we aren't ignoring alpha and color's alpha is 0, ignore */
+	if (!(flags & FT_DRAW_FLAG_NO_TRANSPARENCY) && col.a == 0)
+		return;
+
+	{ /* Clipping */
+
+		{ /* Get clip rect */
+			clip_rect = ft_image_rect(img);
+
+			va_start(lst, flags);
+			if (flags & FT_DRAW_FLAG_CLIP)
+			{
+				t_iv4 r = va_arg(lst, t_iv4);
+				clip_rect = ft_clip_rect_rect(r, clip_rect);
+			}
+			va_end(lst);
+		}
+
+		rect = ft_clip_rect_rect(rect, clip_rect);
+
+		/* Rect is invalid, ignore */
+		if (rect.x > rect.z || rect.y > rect.w)
+			return;
+	}
+
+	if ((flags & FT_DRAW_FLAG_NO_TRANSPARENCY) || col.a == 255)
+		__ft_fill_rect_no_alpha(img, rect, col);
+	else
+		__ft_fill_rect_alpha(img, rect, col);
 }
 
-void ft_draw_rect_bound2(t_image *img, t_iv4 rect, t_color col, t_iv4 bound)
-{
-	rect.x = ft_max(rect.x, bound.x);
-	rect.y = ft_max(rect.y, bound.y);
-	rect.z = ft_min(rect.z, bound.z);
-	rect.w = ft_min(rect.w, bound.w);
-
-	ft_draw_rect2(img, rect, col);
-}
-
-void ft_draw_rect2(t_image *img, t_iv4 rect, t_color col)
-{
-	ft_draw_line_horizontal2(img, ivec2(rect.x, rect.y), rect.z, col);
-	ft_draw_line_horizontal2(img, ivec2(rect.x, rect.w), rect.z, col);
-	ft_draw_line_vertical2(img, ivec2(rect.x, rect.y), rect.w, col);
-	ft_draw_line_vertical2(img, ivec2(rect.z, rect.y), rect.w, col);
-}
-
-void ft_fill_rect_bound(t_image *img, t_iv4 rect, t_color col, t_iv4 bound)
-{
-	rect.x = ft_max(rect.x, bound.x);
-	rect.y = ft_max(rect.y, bound.y);
-	rect.z = ft_min(rect.z, bound.z);
-	rect.w = ft_min(rect.w, bound.w);
-
-	ft_fill_rect(img, rect, col);
-}
-
-void ft_fill_rect_bound2(t_image *img, t_iv4 rect, t_color col, t_iv4 bound)
-{
-	rect.x = ft_max(rect.x, bound.x);
-	rect.y = ft_max(rect.y, bound.y);
-	rect.z = ft_min(rect.z, bound.z);
-	rect.w = ft_min(rect.w, bound.w);
-
-	ft_fill_rect2(img, rect, col);
-}
-
-EXTENDED_ALIAS("ft_fill_rect", 0, (), ())
-static void fill_rect(t_image *img, t_iv4 rect, t_color col)
+EXTENDED_ALIAS("__ft_fill_rect_no_alpha", 0, (), ())
+void __ft_fill_rect_no_alpha_base(t_image *img, t_iv4 rect, t_color col)
 {
 	t_color *ptr;
 	S32 ystep;
 	S32 ylen;
 	S32 xlen;
-
-	rect.x = ft_clamp(0, img->size.x, rect.x);
-	rect.y = ft_clamp(0, img->size.y, rect.y);
-	rect.z = ft_clamp(0, img->size.x, rect.z);
-	rect.w = ft_clamp(0, img->size.y, rect.w);
 
 	ptr = ft_get_pixel(img, rect.x, rect.y);
 
@@ -100,8 +151,8 @@ static void fill_rect(t_image *img, t_iv4 rect, t_color col)
 			*ptr = col;
 }
 
-EXTENDED_ALIAS("ft_fill_rect", 1, ("sse2"), ("sse"))
-void fill_rect_xmm(t_image *img, t_iv4 rect, t_color col)
+EXTENDED_ALIAS("__ft_fill_rect_no_alpha", 1, ("sse2"), ("sse"))
+void __ft_fill_rect_no_alpha_x4(t_image *img, t_iv4 rect, t_color col)
 {
 	const S32 xstep = 4; /* xmm = 128 bits = 4 U32 = 4 pixels */
 	register volatile xmm dummy_variable_for_stupid_gcc_to_deny_use_of_xmm0 asm("xmm0");
@@ -111,11 +162,6 @@ void fill_rect_xmm(t_image *img, t_iv4 rect, t_color col)
 	S32 ylen;
 	S32 xlen;
 	S32 xlen_rem;
-
-	rect.x = ft_clamp(0, img->size.x, rect.x);
-	rect.y = ft_clamp(0, img->size.y, rect.y);
-	rect.z = ft_clamp(0, img->size.x, rect.z);
-	rect.w = ft_clamp(0, img->size.y, rect.w);
 
 	ptr = ft_get_pixel(img, rect.x, rect.y);
 
@@ -139,8 +185,8 @@ void fill_rect_xmm(t_image *img, t_iv4 rect, t_color col)
 	}
 }
 
-EXTENDED_ALIAS("ft_fill_rect", 2, ("avx", "avx2"), ("avx"))
-void fill_rect_ymm(t_image *img, t_iv4 rect, t_color col)
+EXTENDED_ALIAS("__ft_fill_rect_no_alpha", 2, ("avx", "avx2"), ("avx"))
+void __ft_fill_rect_no_alpha_x8(t_image *img, t_iv4 rect, t_color col)
 {
 	const S32 xstep = 8; /* ymm = 256 bits = 8 U32 = 8 pixels */
 	register volatile xmm dummy_variable_for_stupid_gcc_to_deny_use_of_ymm0 asm("ymm0");
@@ -150,11 +196,6 @@ void fill_rect_ymm(t_image *img, t_iv4 rect, t_color col)
 	S32 ylen;
 	S32 xlen;
 	S32 xlen_rem;
-
-	rect.x = ft_clamp(0, img->size.x, rect.x);
-	rect.y = ft_clamp(0, img->size.y, rect.y);
-	rect.z = ft_clamp(0, img->size.x, rect.z);
-	rect.w = ft_clamp(0, img->size.y, rect.w);
 
 	ptr = ft_get_pixel(img, rect.x, rect.y);
 
@@ -175,16 +216,11 @@ void fill_rect_ymm(t_image *img, t_iv4 rect, t_color col)
 	}
 }
 
-EXTENDED_ALIAS("ft_fill_rect2", 0, (), ())
-static void fill_rect2(t_image *img, t_iv4 rect, t_color col)
+EXTENDED_ALIAS("__ft_fill_rect_alpha", 0, (), ())
+void __ft_fill_rect_alpha_base(t_image *img, t_iv4 rect, t_color col)
 {
 	t_color *ptr;
 	S32 ystep;
-
-	rect.x = ft_clamp(0, img->size.x, rect.x);
-	rect.y = ft_clamp(0, img->size.y, rect.y);
-	rect.z = ft_clamp(0, img->size.x, rect.z);
-	rect.w = ft_clamp(0, img->size.y, rect.w);
 
 	ptr = ft_get_pixel(img, rect.x, rect.y);
 	ystep = img->size.x - (rect.z - rect.x);
@@ -196,8 +232,8 @@ static void fill_rect2(t_image *img, t_iv4 rect, t_color col)
 	}
 }
 
-EXTENDED_ALIAS("ft_fill_rect2", 1, ("sse2"), ("sse"))
-void fill_rect2_xmm(t_image *img, t_iv4 rect, t_color col)
+EXTENDED_ALIAS("__ft_fill_rect_alpha", 1, ("sse2"), ("sse"))
+void __ft_fill_rect_alpha_x4(t_image *img, t_iv4 rect, t_color col)
 {
 	const S32 xstep = 4; /* xmm = 128 bits = 4 U32 = 4 pixels */
 	register volatile xmm dummy_variable_for_stupid_gcc_to_deny_use_of_xmm0 asm("xmm0");
@@ -208,15 +244,30 @@ void fill_rect2_xmm(t_image *img, t_iv4 rect, t_color col)
 	S32 xlen;
 	S32 xlen_rem;
 
-	rect.x = ft_clamp(0, img->size.x, rect.x);
-	rect.y = ft_clamp(0, img->size.y, rect.y);
-	rect.z = ft_clamp(0, img->size.x, rect.z);
-	rect.w = ft_clamp(0, img->size.y, rect.w);
+	t_iv4 aaa;
+
+	0b10110000;
+	0x0d176;
 
 	ptr = ft_get_pixel(img, rect.x, rect.y);
 
+	asm(
+		"movd	xmm0, [%0]\n"
+
+		"pshufd xmm1, xmm0, 0b10110000\n"
+		"pshufd xmm2, xmm0, 0b00010000\n"
+		"psubd  xmm2, xmm1\n"
+
+		"movd	[%1], xmm2\n"
+
+		: : "r"(&aaa), "r"(&rect) : "xmm0");
+
 	ylen = rect.w - rect.y;
 	xlen = rect.z - rect.x;
+
+	ft_printf("%d %d\n", xlen, ylen);
+	ft_printf("%d %d\n", aaa.x, aaa.y);
+
 	xlen_rem = xlen % xstep;
 	xlen -= xlen_rem;
 	ystep = img->size.x - (rect.z - rect.x);
@@ -236,8 +287,8 @@ void fill_rect2_xmm(t_image *img, t_iv4 rect, t_color col)
 	}
 }
 
-EXTENDED_ALIAS("ft_fill_rect2", 1, ("avx2", "sse2"), ("sse", "avx"))
-static void fill_rect2_avx2(t_image *img, t_iv4 rect, t_color col)
+EXTENDED_ALIAS("__ft_fill_rect_alpha", 0, (), ())
+static void __ft_fill_rect_alpha_ft_alpha_blend(t_image *img, t_iv4 rect, t_color col)
 {
 	t_color *ptr;
 	S32 ystep;
@@ -260,19 +311,19 @@ static void fill_rect2_avx2(t_image *img, t_iv4 rect, t_color col)
 #pragma GCC diagnostics pop
 
 /* Auto-generated by build-aux/extended_aliases.py */
+
 #include "libft/sys/cpuid.h"
 #include "libft/sys/xsave.h"
-#if defined(DEBUG)
 #include "libft/io.h"
-#endif
 
 #if defined(DEBUG)
-static void *__resolved_ft_fill_rect = NULL;
+static void *__resolved___ft_fill_rect_no_alpha = NULL;
 #endif
-static void (*resolve_ft_fill_rect(void))(t_image *img, t_iv4 rect, t_color col)
+static void (*resolve___ft_fill_rect_no_alpha(void))(t_image *img, t_iv4 rect, t_color col)
 {
+
 #if !defined(DEBUG)
-	void *__resolved_ft_fill_rect = NULL;
+	void *__resolved___ft_fill_rect_no_alpha = NULL;
 #endif
 	struct s_cpuid_flags *cpuid_flags;
 	struct s_xcr0_flags os_flags;
@@ -280,54 +331,58 @@ static void (*resolve_ft_fill_rect(void))(t_image *img, t_iv4 rect, t_color col)
 	cpuid_flags = ft_cpuid_get_cached_flags();
 	ft_xgetbv(0, &os_flags.flags);
 	if (os_flags.avx && cpuid_flags->avx && cpuid_flags->avx2)
-		__resolved_ft_fill_rect = fill_rect_ymm;
+		__resolved___ft_fill_rect_no_alpha = __ft_fill_rect_no_alpha_x8;
 	else if (os_flags.sse && cpuid_flags->sse2)
-		__resolved_ft_fill_rect = fill_rect_xmm;
+		__resolved___ft_fill_rect_no_alpha = __ft_fill_rect_no_alpha_x4;
 	else
-		__resolved_ft_fill_rect = fill_rect;
-	return __resolved_ft_fill_rect;
+		__resolved___ft_fill_rect_no_alpha = __ft_fill_rect_no_alpha_base;
+	return __resolved___ft_fill_rect_no_alpha;
 }
 
-void ft_fill_rect(t_image *img, t_iv4 rect, t_color col)
-	__attribute__((ifunc("resolve_ft_fill_rect")));
-
+void __ft_fill_rect_no_alpha(t_image *img, t_iv4 rect, t_color col)
+	__attribute__((ifunc("resolve___ft_fill_rect_no_alpha")));
 #if defined(DEBUG)
-static void *__resolved_ft_fill_rect2 = NULL;
+static void *__resolved___ft_fill_rect_alpha = NULL;
 #endif
-static void (*resolve_ft_fill_rect2(void))(t_image *img, t_iv4 rect, t_color col)
+static void (*resolve___ft_fill_rect_alpha(void))(t_image *img, t_iv4 rect, t_color col)
 {
+
 #if !defined(DEBUG)
-	void *__resolved_ft_fill_rect2 = NULL;
+	void *__resolved___ft_fill_rect_alpha = NULL;
 #endif
 	struct s_cpuid_flags *cpuid_flags;
 	struct s_xcr0_flags os_flags;
 
 	cpuid_flags = ft_cpuid_get_cached_flags();
 	ft_xgetbv(0, &os_flags.flags);
-	if (os_flags.sse && os_flags.avx && cpuid_flags->avx2 && cpuid_flags->sse2)
-		__resolved_ft_fill_rect2 = fill_rect2_avx2;
+	if (os_flags.sse && cpuid_flags->sse2)
+		__resolved___ft_fill_rect_alpha = __ft_fill_rect_alpha_x4;
+	else if (1)
+		__resolved___ft_fill_rect_alpha = __ft_fill_rect_alpha_base;
 	else
-		__resolved_ft_fill_rect2 = fill_rect2;
-	return __resolved_ft_fill_rect2;
+		__resolved___ft_fill_rect_alpha = __ft_fill_rect_alpha_ft_alpha_blend;
+	return __resolved___ft_fill_rect_alpha;
 }
 
-void ft_fill_rect2(t_image *img, t_iv4 rect, t_color col)
-	__attribute__((ifunc("resolve_ft_fill_rect2")));
+void __ft_fill_rect_alpha(t_image *img, t_iv4 rect, t_color col)
+	__attribute__((ifunc("resolve___ft_fill_rect_alpha")));
 
 #if defined(DEBUG)
 __attribute__((constructor)) static void __debug_ifunc()
 {
-	ft_printf("ft_fill_rect:");
-	if (__resolved_ft_fill_rect == fill_rect_ymm)
-		ft_printf("fill_rect_ymm\n");
-	else if (__resolved_ft_fill_rect == fill_rect_xmm)
-		ft_printf("fill_rect_xmm\n");
+	ft_printf("__ft_fill_rect_no_alpha:");
+	if (__resolved___ft_fill_rect_no_alpha == __ft_fill_rect_no_alpha_x8)
+		ft_printf("__ft_fill_rect_no_alpha_x8\n");
+	else if (__resolved___ft_fill_rect_no_alpha == __ft_fill_rect_no_alpha_x4)
+		ft_printf("__ft_fill_rect_no_alpha_x4\n");
 	else
-		ft_printf("fill_rect\n");
-	ft_printf("ft_fill_rect2:");
-	if (__resolved_ft_fill_rect2 == fill_rect2_avx2)
-		ft_printf("fill_rect2_avx2\n");
+		ft_printf("__ft_fill_rect_no_alpha_base\n");
+	ft_printf("__ft_fill_rect_alpha:");
+	if (__resolved___ft_fill_rect_alpha == __ft_fill_rect_alpha_x4)
+		ft_printf("__ft_fill_rect_alpha_x4\n");
+	else if (__resolved___ft_fill_rect_alpha == __ft_fill_rect_alpha_base)
+		ft_printf("__ft_fill_rect_alpha_base\n");
 	else
-		ft_printf("fill_rect2\n");
+		ft_printf("__ft_fill_rect_alpha_ft_alpha_blend\n");
 }
 #endif

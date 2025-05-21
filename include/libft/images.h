@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 23:26:42 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/02 15:08:11 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/20 23:23:36 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,11 @@ typedef struct s_image
  * If `red + green + blue + alpha` specified: returns `(r, g, b, a)` */
 #define ft_color(...) __ft_color2(__VA_ARGS__)
 
+/* The function should expect a `t_iv4` argument representing the bound of the element. No pixels will be drawn outside that boundary. */
+#define FT_DRAW_FLAG_CLIP (1 << 0)
+/* The function will not compute transparency. */
+#define FT_DRAW_FLAG_NO_TRANSPARENCY (1 << 1)
+
 /* initializes an image */
 extern bool ft_init_image(t_image *img, t_iv2 size);
 /* destroys an image */
@@ -86,75 +91,38 @@ extern void ft_copy_image(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrec
  * no out-of-bounds memory access */
 extern void ft_copy_image2(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrect);
 
+extern void ft_stretch_image_new(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect, U8 flags, ...);
+
 extern void ft_stretch_image(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect);
 extern void ft_stretch_image2(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect);
 extern void ft_stretch_image3(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect, t_color col);
 
 /* lines */
 /* draws a line between `p1` and `p2`, bounded by `img->size` */
-extern void ft_draw_line(t_image *img, t_iv2 p1, t_iv2 p2, t_color col);
-/* draws a line between `p1` and `p2`, bounded by `img->size` and `bound` */
-extern void ft_draw_line_bound(t_image *img, t_iv2 p1, t_iv2 p2, t_color col, t_iv4 bound);
-/* draws an alpha blended line between `p1` and `p2`, bounded by `img->size` */
-extern void ft_draw_line2(t_image *img, t_iv2 p1, t_iv2 p2, t_color col);
-/* draws an alpha blended line between `p1` and `p2`, bounded by `img->size` and `bound` */
-extern void ft_draw_line_bound2(t_image *img, t_iv2 p1, t_iv2 p2, t_color col, t_iv4 bound);
+extern void ft_draw_line(t_image *img, t_iv2 p1, t_iv2 p2, t_color col, U8 flags, ...);
 
 /* draws an horizontal line between `p1.x` and `x2`, bounded by `img->size` */
-extern void ft_draw_line_horizontal(t_image *img, t_iv2 p1, S32 x2, t_color col);
-/* draws an horizontal line between `p1.x` and `x2`, bounded by `img->size` and `bound` */
-extern void ft_draw_line_horizontal_bound(t_image *img, t_iv2 p1, S32 x2, t_color col, t_iv4 bound);
-/* draws an alpha blended horizontal line between `p1.x` and `x2`, bounded by `img->size` */
-extern void ft_draw_line_horizontal2(t_image *img, t_iv2 p1, S32 x2, t_color col);
-/* draws an alpha blended horizontal line between `p1.x` and `x2`, bounded by `img->size` and `bound` */
-extern void ft_draw_line_horizontal_bound2(t_image *img, t_iv2 p1, S32 x2, t_color col, t_iv4 bound);
+extern void ft_draw_line_horizontal(t_image *img, t_iv2 p1, S32 x2, t_color col, U8 flags, ...);
 
 /* draws an vertical line between `p1.x` and `x2`, bounded by `img->size` */
-extern void ft_draw_line_vertical(t_image *img, t_iv2 p1, S32 x2, t_color col);
-/* draws an vertical line between `p1.x` and `x2`, bounded by `img->size` and `bound` */
-extern void ft_draw_line_vertical_bound(t_image *img, t_iv2 p1, S32 x2, t_color col, t_iv4 bound);
-/* draws an alpha blended vertical line between `p1.x` and `x2`, bounded by `img->size` */
-extern void ft_draw_line_vertical2(t_image *img, t_iv2 p1, S32 x2, t_color col);
-/* draws an alpha blended vertical line between `p1.x` and `x2`, bounded by `img->size` and `bound` */
-extern void ft_draw_line_vertical_bound2(t_image *img, t_iv2 p1, S32 x2, t_color col, t_iv4 bound);
+extern void ft_draw_line_vertical(t_image *img, t_iv2 p1, S32 y2, t_color col, U8 flags, ...);
 
-/* Draws a rectangle */
-extern void ft_draw_rect(t_image *img, t_iv4 rect, t_color col);
-/* Draws a rectangle with alpha-blending */
-extern void ft_draw_rect2(t_image *img, t_iv4 rect, t_color col);
-/* Draws a rectangle, clipped by `bound` */
-extern void ft_draw_rect_bound(t_image *img, t_iv4 rect, t_color col, t_iv4 bound);
-/* Draws a rectangle with alpha-blending, clipped by `bound` */
-extern void ft_draw_rect_bound2(t_image *img, t_iv4 rect, t_color col, t_iv4 bound);
+/* Draws a rectangle. */
+extern void ft_draw_rect(t_image *img, t_iv4 rect, t_color col, U8 flags, ...);
 
-/* Fills a rectangle */
-extern void ft_fill_rect(t_image *img, t_iv4 rect, t_color col);
-/* Fills a rectangle with alpha-blending */
-extern void ft_fill_rect2(t_image *img, t_iv4 rect, t_color col);
-/* Fills a rectangle, clipped by `bound` */
-extern void ft_fill_rect_bound(t_image *img, t_iv4 rect, t_color col, t_iv4 bound);
-/* Fills a rectangle with alpha-blending, clipped by `bound` */
-extern void ft_fill_rect_bound2(t_image *img, t_iv4 rect, t_color col, t_iv4 bound);
+/* Draws a filled rectangle. */
+extern void ft_fill_rect(t_image *img, t_iv4 rect, t_color col, U8 flags, ...);
 
-extern void ft_draw_bezier(t_image *img, t_color col, t_v2 p1, t_v2 p2, t_v2 p3, S32 res);
-extern void ft_draw_bezier2(t_image *img, t_color col, t_v2 p1, t_v2 p2, t_v2 p3, S32 res);
-extern void ft_draw_bezier_bound(t_image *img, t_color col, t_v2 p1, t_v2 p2, t_v2 p3, S32 res, t_iv4 bound);
-extern void ft_draw_bezier_bound2(t_image *img, t_color col, t_v2 p1, t_v2 p2, t_v2 p3, S32 res, t_iv4 bound);
+extern void ft_draw_bezier(t_image *img, t_color col, t_v2 p1, t_v2 p2, t_v2 p3, S32 res, U8 flags, ...);
 
 extern void ft_draw_circle_bound(t_image *img, t_iv2 pos, S32 radius, t_color col, t_iv4 bound);
 extern void ft_draw_circle(t_image *img, t_iv2 pos, S32 radius, t_color col);
 extern void ft_draw_circle_bound2(t_image *img, t_iv2 pos, S32 radius, t_color col, t_iv4 bound);
 extern void ft_draw_circle2(t_image *img, t_iv2 pos, S32 radius, t_color col);
 
-extern void ft_draw_disc_bound(t_image *img, t_iv2 pos, S32 radius, t_color col, t_iv4 bound);
-extern void ft_draw_disc(t_image *img, t_iv2 pos, S32 radius, t_color col);
-extern void ft_draw_disc_bound2(t_image *img, t_iv2 pos, S32 radius, t_color col, t_iv4 rect);
-extern void ft_draw_disc2(t_image *img, t_iv2 pos, S32 radius, t_color col);
+extern void ft_draw_disc(t_image *img, t_iv2 pos, S32 radius, t_color col, U8 flags, ...);
 
-extern void ft_draw_triangle(t_image *img, t_iv2 p1, t_iv2 p2, t_iv2 p3, t_color col);
-extern void ft_draw_triangle2(t_image *img, t_iv2 p1, t_iv2 p2, t_iv2 p3, t_color col);
-extern void ft_draw_triangle_bound(t_image *img, t_iv2 p1, t_iv2 p2, t_iv2 p3, t_color col, t_iv4 bound);
-extern void ft_draw_triangle_bound2(t_image *img, t_iv2 p1, t_iv2 p2, t_iv2 p3, t_color col, t_iv4 bound);
+extern void ft_draw_triangle(t_image *img, t_iv2 p1, t_iv2 p2, t_iv2 p3, t_color col, U8 flags, ...);
 
 /* bitmaps */
 typedef struct s_bitmap
