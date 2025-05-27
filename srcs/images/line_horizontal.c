@@ -6,11 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:22:58 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/20 14:42:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/23 22:58:35 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/images.h"
+#include "libft/io.h"
 
 #include "libft/bits/extended_aliases.h"
 #include "libft/bits/variants/ft_draw_line_horizontal.h"
@@ -30,6 +31,8 @@ void ft_draw_line_horizontal(t_image *img, t_iv2 p1, S32 x2, t_color col, U8 fla
 
 		{ /* Get clip rect */
 			clip_rect = ft_image_rect(img);
+			clip_rect.z -= 1;
+			clip_rect.w -= 1;
 
 			va_start(lst, flags);
 			if (flags & FT_DRAW_FLAG_CLIP)
@@ -44,10 +47,11 @@ void ft_draw_line_horizontal(t_image *img, t_iv2 p1, S32 x2, t_color col, U8 fla
 		if (clip_rect.x >= clip_rect.z || clip_rect.y >= clip_rect.w)
 			return;
 
+
 		/* If line is completely outside the boundary, ignore */
-		if (p1.y < clip_rect.y || p1.y >= clip_rect.w ||
+		if (p1.y < clip_rect.y || p1.y > clip_rect.w ||
 			(p1.x < clip_rect.x && x2 < clip_rect.x) ||
-			(p1.x > clip_rect.z && x2 >= clip_rect.z))
+			(p1.x > clip_rect.z && x2 > clip_rect.z))
 			return;
 
 		/* Clip */
@@ -62,7 +66,7 @@ void ft_draw_line_horizontal(t_image *img, t_iv2 p1, S32 x2, t_color col, U8 fla
 	}
 
 	/* Flip line direction if needed */
-	if (p1.x < x2)
+	if (p1.x > x2)
 	{
 		S32 tmp;
 		tmp = x2;
@@ -84,7 +88,7 @@ void __ft_draw_line_horizontal_no_alpha_base(t_image *img, t_iv2 p1, S32 x2, t_c
 
 	xlen = x2 - p1.x;
 	ptr = ft_get_pixel(img, p1.x, p1.y);
-	for (S32 i = 0; i < xlen; i++, ptr++)
+	for (S32 i = 0; i <= xlen; i++, ptr++)
 		*ptr = col;
 }
 
@@ -96,7 +100,7 @@ void __ft_draw_line_horizontal_alpha_base(t_image *img, t_iv2 p1, S32 x2, t_colo
 
 	xlen = x2 - p1.x;
 	ptr = ft_get_pixel(img, p1.x, p1.y);
-	for (S32 i = 0; i < xlen; i++, ptr++)
+	for (S32 i = 0; i <= xlen; i++, ptr++)
 		*ptr = ft_alpha_blend(*ptr, col);
 }
 

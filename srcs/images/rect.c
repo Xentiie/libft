@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:22:47 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/21 03:09:48 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/25 16:01:12 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wvolatile-register-var"
 
+//TODO: le rect n'est pas inclusif. Doit avoir le meme fonctionnement que ft_draw_rect
+
 void ft_draw_rect(t_image *img, t_iv4 rect, t_color col, U8 flags, ...)
 {
 	t_iv4 clip_rect;
@@ -43,6 +45,8 @@ void ft_draw_rect(t_image *img, t_iv4 rect, t_color col, U8 flags, ...)
 
 		{ /* Get clip rect */
 			clip_rect = ft_image_rect(img);
+			clip_rect.z--;
+			clip_rect.w--;
 
 			va_start(lst, flags);
 			if (flags & FT_DRAW_FLAG_CLIP)
@@ -216,7 +220,7 @@ void __ft_fill_rect_no_alpha_x8(t_image *img, t_iv4 rect, t_color col)
 	}
 }
 
-EXTENDED_ALIAS("__ft_fill_rect_alpha", 0, (), ())
+EXTENDED_ALIAS("__ft_fill_rect_alpha", 1, (), ())
 void __ft_fill_rect_alpha_base(t_image *img, t_iv4 rect, t_color col)
 {
 	t_color *ptr;
@@ -246,9 +250,6 @@ void __ft_fill_rect_alpha_x4(t_image *img, t_iv4 rect, t_color col)
 
 	t_iv4 aaa;
 
-	0b10110000;
-	0x0d176;
-
 	ptr = ft_get_pixel(img, rect.x, rect.y);
 
 	asm(
@@ -264,9 +265,6 @@ void __ft_fill_rect_alpha_x4(t_image *img, t_iv4 rect, t_color col)
 
 	ylen = rect.w - rect.y;
 	xlen = rect.z - rect.x;
-
-	ft_printf("%d %d\n", xlen, ylen);
-	ft_printf("%d %d\n", aaa.x, aaa.y);
 
 	xlen_rem = xlen % xstep;
 	xlen -= xlen_rem;
@@ -356,9 +354,9 @@ static void (*resolve___ft_fill_rect_alpha(void))(t_image *img, t_iv4 rect, t_co
 	cpuid_flags = ft_cpuid_get_cached_flags();
 	ft_xgetbv(0, &os_flags.flags);
 	if (os_flags.sse && cpuid_flags->sse2)
-		__resolved___ft_fill_rect_alpha = __ft_fill_rect_alpha_x4;
-	else if (1)
 		__resolved___ft_fill_rect_alpha = __ft_fill_rect_alpha_base;
+	else if (1)
+		__resolved___ft_fill_rect_alpha = __ft_fill_rect_alpha_x4;
 	else
 		__resolved___ft_fill_rect_alpha = __ft_fill_rect_alpha_ft_alpha_blend;
 	return __resolved___ft_fill_rect_alpha;

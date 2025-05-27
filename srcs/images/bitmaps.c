@@ -6,12 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 21:44:36 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/15 20:49:17 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/26 15:11:38 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/images.h"
 #include "libft/strings.h"
+
+#include <stdarg.h>
 
 // #define BITMAP_TEXT_DEBUG 1
 
@@ -32,91 +34,79 @@ t_iv4 ft_bitmap_rect_char_lines(t_bitmap *bitmap, t_iv2 pos, U32 line_width, U32
 				 pos.y + (lines_cnt * (bitmap->sep_height + bitmap->char_height)));
 }
 
-void ft_draw_bitmap_text_with_col(t_image *out, t_iv4 rect, t_bitmap *bitmap, string str, F32 scale, t_iv2 kerning, t_color col)
-{
-	S32 char_size;
-	S32 line_size;
-	S32 chars_per_line;
-	U64 len;
-	S32 str_len;
-
-	S32 bitmap_x_step;
-	S32 bitmap_y_step;
-
-	len = ft_strlen(str);
-	char_size = (bitmap->char_width * scale + kerning.x);
-	line_size = (bitmap->char_height * scale + kerning.y);
-
-	chars_per_line = (rect.z - rect.x + kerning.x) / char_size;
-	str_len = ft_min(len, chars_per_line);
-
-	bitmap_x_step = bitmap->char_width + bitmap->sep_width;
-	bitmap_y_step = bitmap->char_height + bitmap->sep_height;
-
-	for (S32 i = 0; i < str_len; i++)
-	{
-		S8 v = str[i];
-		if (v < 32)
-			v = ' ';
-		v -= 32;
-
-		t_iv2 out_pos = ivec2(rect.x + ((i % chars_per_line) * char_size),
-							  rect.y + ((i / chars_per_line) * line_size));
-		t_iv2 bitmap_pos = ivec2((v % bitmap->line_width) * bitmap_x_step,
-								 (v / bitmap->line_width) * bitmap_y_step);
-
-		t_iv4 out_rect = ivec4(out_pos.x, out_pos.y, out_pos.x + bitmap->char_width * scale,
-							   out_pos.y + bitmap->char_height * scale);
-		t_iv4 bitmap_rect = ivec4(bitmap_pos.x, bitmap_pos.y, bitmap_pos.x + bitmap->char_width,
-								  bitmap_pos.y + bitmap->char_height);
-		ft_stretch_image3(out, out_rect, bitmap->img, bitmap_rect, col);
-		//ft_stretch_image2(out, out_rect, bitmap->img, bitmap_rect);
-	}
-}
-
 void ft_draw_bitmap_text(t_image *out, t_iv4 rect, t_bitmap *bitmap, string str, F32 scale,
-						 t_iv2 kerning, t_color col)
+						 t_iv2 kerning, U8 flags, ...)
 {
-	S32 char_size;
-	S32 line_size;
-	S32 chars_per_line;
-	S32 available_lines;
-	U64 len;
-	S32 str_len;
+	va_list lst;
+	/* Clipping rect. */
+	t_iv4 clip_rect;
 
-	S32 bitmap_x_step;
-	S32 bitmap_y_step;
-	(void) col;
+	/* The current character to draw. */
+	char c;
+	/* The current drawing position on `out`. */
+	t_iv2 pos;
+	/* The color to add to the bitmap. */
+	t_color col;
 
-	len = ft_strlen(str);
-	char_size = (bitmap->char_width * scale + kerning.x);
-	line_size = (bitmap->char_height * scale + kerning.y);
+	/* The amount of pixels to skip in the bitmap image to go to the next character. */
+	t_iv2 char_step;
+	/* Character position in bitmap image. */
+	t_iv4 char_pos;
+	/* Character rect in bitmap image. */
+	t_iv4 char_rect;
 
-	chars_per_line = (rect.z - rect.x + kerning.x) / char_size;
-	available_lines = (rect.w - rect.y + kerning.y) / line_size;
+	/* The amount of pixels to skip in the destination image to go to the next character. */
+	t_iv2 out_step;
+	/* Character rect in `out`. (scaled) */
+	t_iv4 out_rect;
 
-	str_len = ft_min(len, chars_per_line * available_lines);
+	clip_rect = ft_image_rect(out);
+	va_start(lst, flags);
+	if (flags & FT_DRAW_FLAG_CLIP)
+		clip_rect = ft_clip_rect_rect(clip_rect, va_arg(lst, t_iv4));
+	if (flags & FT_DRAW_FLAG_COLOR)
+		col = va_arg(lst, t_color);
+	va_end(lst);
 
-	bitmap_x_step = bitmap->char_width + bitmap->sep_width;
-	bitmap_y_step = bitmap->char_height + bitmap->sep_height;
+	pos = ivec2(rect.x, rect.y);
 
-	for (S32 i = 0; i < str_len; i++)
+	char_step = ivec2(
+		bitmap->char_width + bitmap->sep_width,
+		bitmap->char_height + bitmap->sep_height);
+	out_step = ivec2(
+		bitmap->char_width * scale + kerning.x,
+		bitmap->char_height * scale + kerning.y);
+
+	flags |= FT_DRAW_FLAG_CLIP;
+	clip_rect = ft_clip_rect_rect(rect, clip_rect);
+
+	c = *str;
+	while (c && pos.x < rect.z && pos.y < rect.w)
 	{
-		S8 v = str[i];
-		if (v < 32)
-			v = ' ';
-		v -= 32;
+		if (c < 32 || c == 127)
+			c = ' ';
+		c -= 32;
 
-		t_iv2 out_pos = ivec2(rect.x + ((i % chars_per_line) * char_size),
-							  rect.y + ((i / chars_per_line) * line_size));
-		t_iv2 bitmap_pos = ivec2((v % bitmap->line_width) * bitmap_x_step + 1,
-								 (v / bitmap->line_width) * bitmap_y_step + 1);
+		char_rect.x = (c % bitmap->line_width) * char_step.x;
+		char_rect.y = (c / bitmap->line_width) * char_step.y;
+		char_rect.z = char_rect.x + bitmap->char_width;
+		char_rect.w = char_rect.y + bitmap->char_height;
 
-		t_iv4 out_rect = ivec4(out_pos.x, out_pos.y, out_pos.x + bitmap->char_width * scale,
-							   out_pos.y + bitmap->char_height * scale);
-		t_iv4 bitmap_rect = ivec4(bitmap_pos.x, bitmap_pos.y, bitmap_pos.x + bitmap->char_width,
-								  bitmap_pos.y + bitmap->char_height);
+		if (flags & FT_DRAW_FLAG_BITMAP_WRAP && pos.x + out_step.x >= rect.z)
+		{
+			pos.x = rect.x;
+			pos.y += out_step.y;
+		}
 
-		ft_stretch_image2(out, out_rect, bitmap->img, bitmap_rect);
+		out_rect.x = pos.x;
+		out_rect.y = pos.y;
+		out_rect.z = pos.x + out_step.x;
+		out_rect.w = pos.y + out_step.y;
+
+		ft_stretch_image(out, out_rect, bitmap->img, char_rect, flags, clip_rect, col);
+
+		str++;
+		c = *str;
+		pos.x += out_step.x;
 	}
 }

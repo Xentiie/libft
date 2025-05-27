@@ -6,11 +6,12 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:22:58 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/20 14:41:49 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/23 22:58:55 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/images.h"
+#include "libft/io.h"
 
 #include "libft/bits/extended_aliases.h"
 #include "libft/bits/variants/ft_draw_line_vertical.h"
@@ -30,6 +31,9 @@ void ft_draw_line_vertical(t_image *img, t_iv2 p1, S32 y2, t_color col, U8 flags
 
 		{ /* Get clip rect */
 			clip_rect = ft_image_rect(img);
+			clip_rect.z -= 1;
+			clip_rect.w -= 1;
+			ft_printf("%d %d %d %d\n", clip_rect.x, clip_rect.y, clip_rect.z, clip_rect.w);
 
 			va_start(lst, flags);
 			if (flags & FT_DRAW_FLAG_CLIP)
@@ -38,6 +42,7 @@ void ft_draw_line_vertical(t_image *img, t_iv2 p1, S32 y2, t_color col, U8 flags
 				clip_rect = ft_clip_rect_rect(r, clip_rect);
 			}
 			va_end(lst);
+			ft_printf("%d %d %d %d\n", clip_rect.x, clip_rect.y, clip_rect.z, clip_rect.w);
 		}
 
 		/* Clip rect is invalid, ignore */
@@ -45,9 +50,9 @@ void ft_draw_line_vertical(t_image *img, t_iv2 p1, S32 y2, t_color col, U8 flags
 			return;
 
 		/* If line is completely outside the boundary, ignore */
-		if (p1.x < clip_rect.x || p1.x >= clip_rect.z ||
+		if (p1.x < clip_rect.x || p1.x > clip_rect.z ||
 			(p1.y < clip_rect.y && y2 < clip_rect.y) ||
-			(p1.y > clip_rect.w && y2 >= clip_rect.w))
+			(p1.y > clip_rect.w && y2 > clip_rect.w))
 			return;
 
 		/* Clip */
@@ -62,7 +67,7 @@ void ft_draw_line_vertical(t_image *img, t_iv2 p1, S32 y2, t_color col, U8 flags
 	}
 
 	/* Flip line direction if needed */
-	if (p1.y < y2)
+	if (p1.y > y2)
 	{
 		S32 tmp;
 		tmp = y2;

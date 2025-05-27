@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:22:58 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/20 04:08:11 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/22 02:06:22 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,11 @@ void ft_draw_line(t_image *img, t_iv2 p1, t_iv2 p2, t_color col, U8 flags, ...)
 		va_end(lst);
 	}
 
+	if (p1.y == p2.y)
+		ft_draw_line_horizontal(img, p1, p2.x, col, flags & FT_DRAW_FLAG_CLIP, clip_rect);
+	else if (p1.x == p2.x)
+		ft_draw_line_vertical(img, p1, p2.y, col, flags & FT_DRAW_FLAG_CLIP, clip_rect);
+	else
 	if (ft_clip_line_rect(&p1, &p2, clip_rect))
 	{
 		if ((flags & FT_DRAW_FLAG_NO_TRANSPARENCY) || col.a == 255)

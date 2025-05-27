@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:45:20 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/21 20:22:32 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/21 23:15:22 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,40 +18,83 @@
 #include <stdlib.h>
 #include <math.h>
 
+/* pi */
 #define FT_PI 3.1415927f
+/* pi * 2 */
 #define FT_PI_2 6.2831854f
+/* degrees to radians ratio */
 #define FT_DEG_TO_RAD 0.017453292f
+/* radians to degrees ratio */
 #define FT_RAD_TO_DEG 57.295779f
 
-/* https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html#index-_005f_005fbuiltin_005finf
+/*
+ * https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html#index-_005f_005fbuiltin_005finf
  *  n = 1 of the bits must be 1
  *  ? = either 0 or 1
  */
+
+/* Converts a F32 to a U32. */
 #define __f32_to_u32(flt) \
 	((union {             \
 		 F32 f;           \
 		 U32 b;           \
-	 }){.f = flt}         \
+	 }){.f = (flt)}       \
 		 .b)
+
+/* Converts a U32 to a F32. */
 #define __u32_to_f32(bits) \
 	((union {              \
 		 F32 f;            \
 		 U32 b;            \
-	 }){.b = bits}         \
+	 }){.b = (bits)}       \
 		 .f)
 
-#define FT_F32_PZERO __u32_to_f32(0x00000000) /* 0 00000000 00000000000000000000000 */
-#define FT_F32_NZERO __u32_to_f32(0x80000000) /* 1 00000000 00000000000000000000000 */
+/* Mask for the sign bit in a F32. */
+#define FT_F32_SIGN_BIT_MASK (0x80000000)
+/* Mask for the exponant bits in a F32. */
+#define FT_F32_EXPONANT_BITS_MASK (0x7F800000)
+/* Mask for the fraction bits in a F32. */
+#define FT_F32_FRACTION_BITS_MASK (0x007FFFFF)
+
+
+/*
+Zero: bits 1 to 31 sets to 0.
+0 00000000 00000000000000000000000: negative zero.
+1 00000000 00000000000000000000000: positive zero.
+*/
+
+/* Positive zero. */
+#define FT_F32_PZERO __u32_to_f32(0x00000000)
+/* Negative zero. */
+#define FT_F32_NZERO __u32_to_f32(0x00000000 | FT_F32_SIGN_BIT_MASK)
+
+/*
+Infinity: bits 24 to 31 sets to 1.
+0 11111111 00000000000000000000000: negative infinity.
+1 11111111 00000000000000000000000: positive infinity.
+*/
 
 #if defined(INFINITY)
-#define FT_F32_PINFINITY INFINITY  /* 0 11111111 00000000000000000000000 */
-#define FT_F32_NINFINITY -INFINITY /* 1 11111111 00000000000000000000000 */
+/* Positive infinity. */
+#define FT_F32_PINFINITY INFINITY
+/* Negative infinity. */
+#define FT_F32_NINFINITY -INFINITY
+/* Alias for FT_F32_PINFINITY (positive infinity). */
 #define FT_F32_INF FT_F32_PINFINITY
 #else
-#define FT_F32_PINFINITY __u32_to_f32(0x7F800000) /* 0 11111111 00000000000000000000000 */
-#define FT_F32_NINFINITY __u32_to_f32(0xFF800000) /* 1 11111111 00000000000000000000000 */
+/* Positive infinity. */
+#define FT_F32_PINFINITY __u32_to_f32(FT_F32_EXPONANT_BITS_MASK)
+/* Negative infinity. */
+#define FT_F32_NINFINITY __u32_to_f32(FT_F32_EXPONANT_BITS_MASK | FT_F32_SIGN_BIT_MASK)
+/* Alias for FT_F32_PINFINITY (positive infinity). */
 #define FT_F32_INF FT_F32_PINFINITY
 #endif
+
+/*
+Infinity: bits 24 to 31 sets to 1.
+0 11111111 00000000000000000000000: negative infinity.
+1 11111111 00000000000000000000000: positive infinity.
+*/
 
 #if defined(NAN)
 #define FT_F32_PQNAN NAN  /* 0 11111111 1?????????????????????? */
@@ -99,87 +142,154 @@
 #define FT_F32_ISQNAN(flt) (FT_F32_ISNAN(flt) && ((__f32_to_u32(flt) & 0x00400000) == 0x00400000))
 #endif
 
+/* Returns a new `t_v2`, with elements set to `x` and `y`. */
 inline ALWAYS_INLINE t_v2 vec2(F32 x, F32 y) { return (t_v2){.x = x, .y = y}; }
+/* Returns a new `t_v3`, with elements set to `x`, `y` and `z`. */
 inline ALWAYS_INLINE t_v3 vec3(F32 x, F32 y, F32 z) { return (t_v3){.x = x, .y = y, .z = z}; }
+/* Returns a new `t_v4`, with elements set to `x`, `y`, `z` and `w`. */
 inline ALWAYS_INLINE t_v4 vec4(F32 x, F32 y, F32 z, F32 w) { return (t_v4){.x = x, .y = y, .z = z, .w = w}; }
+/* Returns a new `t_iv2`, with elements set to `x` and `y`. */
 inline ALWAYS_INLINE t_iv2 ivec2(S32 x, S32 y) { return (t_iv2){.x = x, .y = y}; }
+/* Returns a new `t_iv3`, with elements set to `x`, `y` and `z`. */
 inline ALWAYS_INLINE t_iv3 ivec3(S32 x, S32 y, S32 z) { return (t_iv3){.x = x, .y = y, .z = z}; }
+/* Returns a new `t_iv4`, with elements set to `x`, `y`, `z` and `w`. */
 inline ALWAYS_INLINE t_iv4 ivec4(S32 x, S32 y, S32 z, S32 w) { return (t_iv4){.x = x, .y = y, .z = z, .w = w}; }
 
+/* `t_v2`, with all elements set to 0. */
 #define vec2_zero vec2(0, 0)
+/* `t_v2`, with all elements set to 1. */
 #define vec2_one vec2(1, 1)
+/* `t_v2`, with all elements set to 2. */
 #define vec2_two vec2(2, 2)
 
+/* `t_v3`, with all elements set to 0. */
 #define vec3_zero vec3(0, 0, 0)
+/* `t_v3`, with all elements set to 1. */
 #define vec3_one vec3(1, 1, 1)
+/* `t_v3`, with all elements set to 2. */
 #define vec3_two vec3(2, 2, 2)
 
+/* `t_v4`, with all elements set to 0. */
 #define vec4_zero vec4(0, 0, 0, 0)
+/* `t_v4`, with all elements set to 1. */
 #define vec4_one vec4(1, 1, 1, 1)
+/* `t_v4`, with all elements set to 2. */
 #define vec4_two vec4(2, 2, 2, 2)
 
+/* `t_iv2`, with all elements set to 0. */
 #define ivec2_zero ivec2(0, 0)
+/* `t_iv2`, with all elements set to 1. */
 #define ivec2_one ivec2(1, 1)
+/* `t_iv2`, with all elements set to 2. */
 #define ivec2_two ivec2(2, 2)
 
+/* `t_iv3`, with all elements set to 0. */
 #define ivec3_zero ivec3(0, 0, 0)
+/* `t_iv3`, with all elements set to 1. */
 #define ivec3_one ivec3(1, 1, 1)
+/* `t_iv3`, with all elements set to 2. */
 #define ivec3_two ivec3(2, 2, 2)
 
+/* `t_iv4`, with all elements set to 0. */
 #define ivec4_zero ivec4(0, 0, 0, 0)
+/* `t_iv4`, with all elements set to 1. */
 #define ivec4_one ivec4(1, 1, 1, 1)
+/* `t_iv4`, with all elements set to 2. */
 #define ivec4_two ivec4(2, 2, 2, 2)
 
+/* Converts a `t_v2` to a `t_iv2`. */
 inline ALWAYS_INLINE t_iv2 vec2_int(t_v2 v) { return ivec2(v.x, v.y); }
+/* Converts a `t_v3` to a `t_iv3`. */
 inline ALWAYS_INLINE t_iv3 vec3_int(t_v3 v) { return ivec3(v.x, v.y, v.z); }
+/* Converts a `t_v4` to a `t_iv4`. */
 inline ALWAYS_INLINE t_iv4 vec4_int(t_v4 v) { return ivec4(v.x, v.y, v.z, v.w); }
+/* Converts a `t_iv2` to a `t_v2`. */
 inline ALWAYS_INLINE t_v2 ivec2_flt(t_iv2 v) { return vec2(v.x, v.y); }
+/* Converts a `t_iv3` to a `t_v3`. */
 inline ALWAYS_INLINE t_v3 ivec3_flt(t_iv3 v) { return vec3(v.x, v.y, v.z); }
+/* Converts a `t_iv4` to a `t_v4`. */
 inline ALWAYS_INLINE t_v4 ivec4_flt(t_iv4 v) { return vec4(v.x, v.y, v.z, v.w); }
 
+/* Performs element-wise addition of `a` and `b`. */
 inline ALWAYS_INLINE t_v2 vec2_add(t_v2 a, t_v2 b) { return vec2(a.x + b.x, a.y + b.y); }
+/* Performs element-wise addition of `a` and `b`. */
 inline ALWAYS_INLINE t_v3 vec3_add(t_v3 a, t_v3 b) { return vec3(a.x + b.x, a.y + b.y, a.z + b.z); }
+/* Performs element-wise addition of `a` and `b`. */
 inline ALWAYS_INLINE t_v4 vec4_add(t_v4 a, t_v4 b) { return vec4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w); }
+/* Performs element-wise addition of `a` and `b`. */
 inline ALWAYS_INLINE t_iv2 ivec2_add(t_iv2 a, t_iv2 b) { return ivec2(a.x + b.x, a.y + b.y); }
+/* Performs element-wise addition of `a` and `b`. */
 inline ALWAYS_INLINE t_iv3 ivec3_add(t_iv3 a, t_iv3 b) { return ivec3(a.x + b.x, a.y + b.y, a.z + b.z); }
+/* Performs element-wise addition of `a` and `b`. */
 inline ALWAYS_INLINE t_iv4 ivec4_add(t_iv4 a, t_iv4 b) { return ivec4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w); }
 
+/* Performs element-wise subtraction of `b` from `a`. */
 inline ALWAYS_INLINE t_v2 vec2_sub(t_v2 a, t_v2 b) { return vec2(a.x - b.x, a.y - b.y); }
+/* Performs element-wise subtraction of `b` from `a`. */
 inline ALWAYS_INLINE t_v3 vec3_sub(t_v3 a, t_v3 b) { return vec3(a.x - b.x, a.y - b.y, a.z - b.z); }
+/* Performs element-wise subtraction of `b` from `a`. */
 inline ALWAYS_INLINE t_v4 vec4_sub(t_v4 a, t_v4 b) { return vec4(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w); }
+/* Performs element-wise subtraction of `b` from `a`. */
 inline ALWAYS_INLINE t_iv2 ivec2_sub(t_iv2 a, t_iv2 b) { return ivec2(a.x - b.x, a.y - b.y); }
+/* Performs element-wise subtraction of `b` from `a`. */
 inline ALWAYS_INLINE t_iv3 ivec3_sub(t_iv3 a, t_iv3 b) { return ivec3(a.x - b.x, a.y - b.y, a.z - b.z); }
+/* Performs element-wise subtraction of `b` from `a`. */
 inline ALWAYS_INLINE t_iv4 ivec4_sub(t_iv4 a, t_iv4 b) { return ivec4(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w); }
 
+/* Performs element-wise division of `a` by `b`. */
 inline ALWAYS_INLINE t_v2 vec2_div(t_v2 a, t_v2 b) { return vec2(a.x / b.x, a.y / b.y); }
+/* Performs element-wise division of `a` by `b`. */
 inline ALWAYS_INLINE t_v3 vec3_div(t_v3 a, t_v3 b) { return vec3(a.x / b.x, a.y / b.y, a.z / b.z); }
+/* Performs element-wise division of `a` by `b`. */
 inline ALWAYS_INLINE t_v4 vec4_div(t_v4 a, t_v4 b) { return vec4(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w); }
+/* Performs element-wise division of `a` by `b`. */
 inline ALWAYS_INLINE t_iv2 ivec2_div(t_iv2 a, t_iv2 b) { return ivec2(a.x / b.x, a.y / b.y); }
+/* Performs element-wise division of `a` by `b`. */
 inline ALWAYS_INLINE t_iv3 ivec3_div(t_iv3 a, t_iv3 b) { return ivec3(a.x / b.x, a.y / b.y, a.z / b.z); }
+/* Performs element-wise division of `a` by `b`. */
 inline ALWAYS_INLINE t_iv4 ivec4_div(t_iv4 a, t_iv4 b) { return ivec4(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w); }
 
+/* Performs element-wise multiplication of `a` and `b`. */
 inline ALWAYS_INLINE t_v2 vec2_mul(t_v2 a, t_v2 b) { return vec2(a.x * b.x, a.y * b.y); }
+/* Performs element-wise multiplication of `a` and `b`. */
 inline ALWAYS_INLINE t_v3 vec3_mul(t_v3 a, t_v3 b) { return vec3(a.x * b.x, a.y * b.y, a.z * b.z); }
+/* Performs element-wise multiplication of `a` and `b`. */
 inline ALWAYS_INLINE t_v4 vec4_mul(t_v4 a, t_v4 b) { return vec4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w); }
+/* Performs element-wise multiplication of `a` and `b`. */
 inline ALWAYS_INLINE t_iv2 ivec2_mul(t_iv2 a, t_iv2 b) { return ivec2(a.x * b.x, a.y * b.y); }
+/* Performs element-wise multiplication of `a` and `b`. */
 inline ALWAYS_INLINE t_iv3 ivec3_mul(t_iv3 a, t_iv3 b) { return ivec3(a.x * b.x, a.y * b.y, a.z * b.z); }
+/* Performs element-wise multiplication of `a` and `b`. */
 inline ALWAYS_INLINE t_iv4 ivec4_mul(t_iv4 a, t_iv4 b) { return ivec4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w); }
 
+/* Multiplies all elements of `a` with `b`. */
 inline ALWAYS_INLINE t_v2 vec2_scl(t_v2 a, F32 b) { return vec2(a.x * b, a.y * b); }
+/* Multiplies all elements of `a` with `b`. */
 inline ALWAYS_INLINE t_v3 vec3_scl(t_v3 a, F32 b) { return vec3(a.x * b, a.y * b, a.z * b); }
+/* Multiplies all elements of `a` with `b`. */
 inline ALWAYS_INLINE t_v4 vec4_scl(t_v4 a, F32 b) { return vec4(a.x * b, a.y * b, a.z * b, a.w * b); }
+/* Multiplies all elements of `a` with `b`. */
 inline ALWAYS_INLINE t_iv2 ivec2_scl(t_iv2 a, S32 b) { return ivec2(a.x * b, a.y * b); }
+/* Multiplies all elements of `a` with `b`. */
 inline ALWAYS_INLINE t_iv3 ivec3_scl(t_iv3 a, S32 b) { return ivec3(a.x * b, a.y * b, a.z * b); }
+/* Multiplies all elements of `a` with `b`. */
 inline ALWAYS_INLINE t_iv4 ivec4_scl(t_iv4 a, S32 b) { return ivec4(a.x * b, a.y * b, a.z * b, a.w * b); }
 
+/* Performs element-wise modulo of `a` and `b`. */
 inline ALWAYS_INLINE t_iv2 ivec2_mod(t_iv2 a, t_iv2 b) { return ivec2(a.x % b.x, a.y % b.y); }
+/* Performs element-wise modulo of `a` and `b`. */
 inline ALWAYS_INLINE t_iv3 ivec3_mod(t_iv3 a, t_iv3 b) { return ivec3(a.x % b.x, a.y % b.y, a.z % b.z); }
+/* Performs element-wise modulo of `a` and `b`. */
 inline ALWAYS_INLINE t_iv4 ivec4_mod(t_iv4 a, t_iv4 b) { return ivec4(a.x % b.x, a.y % b.y, a.z % b.z, a.w % b.w); }
 
+/* Computes the magnitude of `v`. */
 inline ALWAYS_INLINE F32 vec2_mag(t_v2 v) { return sqrt(v.x * v.x + v.y * v.y); }
+/* Computes the magnitude of `v`. */
 inline ALWAYS_INLINE F32 vec3_mag(t_v3 v) { return sqrt(v.x * v.x + v.y * v.y + v.z * v.z); }
+/* Computes the magnitude of `v`. */
 inline ALWAYS_INLINE F32 vec4_mag(t_v4 v) { return sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w); }
 
+/* Returns the fractional part of `v`. */
 inline ALWAYS_INLINE F32 ft_frac(F32 v) { return (v - ((S64)v)); }
 inline ALWAYS_INLINE t_v2 ft_frac2(t_v2 v) { return (vec2(ft_frac(v.x), ft_frac(v.y))); }
 
@@ -272,10 +382,10 @@ inline F32 ft_dot3(t_v3 a, t_v3 b) { return (a.x * b.x + a.y * b.y + a.z * b.z);
 inline F32 ft_dot3_4(t_v4 a, t_v4 b) { return (a.x * b.x + a.y * b.y + a.z * b.z); }
 
 inline t_v3 ft_cross3(t_v3 a, t_v3 b) { return vec3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x); }
-inline F32 ft_dist2(t_v2 p1, t_v2 p2) { return (sqrtf(powf(p1.x - p2.x, 2) + powf(p1.y - p2.y, 2))); }
-inline F32 ft_dist3(t_v3 p1, t_v3 p2) { return (sqrtf(powf(p1.x - p2.x, 2) + powf(p1.y - p2.y, 2) + powf(p1.y - p2.y, 2))); }
 inline F32 ft_sqrdist2(t_v2 p1, t_v2 p2) { return (powf(p1.x - p2.x, 2) + powf(p1.y - p2.y, 2)); }
 inline F32 ft_sqrdist3(t_v3 p1, t_v3 p2) { return (powf(p1.x - p2.x, 2) + powf(p1.y - p2.y, 2) + powf(p1.y - p2.y, 2)); }
+inline F32 ft_dist2(t_v2 p1, t_v2 p2) { return (sqrtf(ft_sqrdist2(p1, p2))); }
+inline F32 ft_dist3(t_v3 p1, t_v3 p2) { return (sqrtf(ft_sqrdist3(p1, p2))); }
 
 /* Returns the distance from p to line [s1;s2] */
 extern F32 ft_dist_line(t_v2 p, t_v2 s1, t_v2 s2);

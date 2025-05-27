@@ -6,40 +6,40 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 14:49:59 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/21 20:07:44 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/22 20:09:05 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
 #include "libft/images.h"
-#include "libft/io.h"
 
 #include "libft/bits/extended_aliases.h"
-#include "libft/bits/alloca.h"
+#include "libft/bits/variants/ft_stretch_image.h"
 
 #include <stdarg.h>
 
-void ft_stretch_image_new(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect, U8 flags, ...)
+void ft_stretch_image(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect, U8 flags, ...)
 {
 	t_iv4 clip_rect;
+	t_color col;
 	va_list lst;
 
 	t_v2 scl_factor;
 	t_v2 src_start;
+
+	va_start(lst, flags);
 
 	{ /* Clipping */
 
 		{ /* Get clip rect */
 			clip_rect = ft_image_rect(dst);
 
-			va_start(lst, flags);
 			if (flags & FT_DRAW_FLAG_CLIP)
 			{
 				t_iv4 r = va_arg(lst, t_iv4);
 				clip_rect = ft_clip_rect_rect(r, clip_rect);
 			}
-			va_end(lst);
 		}
 	}
 
@@ -70,10 +70,23 @@ void ft_stretch_image_new(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_
 	src_start.x += src_rect.x;
 	src_start.y += src_rect.y;
 
-	if ((flags & FT_DRAW_FLAG_NO_TRANSPARENCY))
-		__ft_stretch_image_no_alpha(dst, dst_rect, src, scl_factor, src_start);
+	if (flags & FT_DRAW_FLAG_COLOR)
+	{
+		col = va_arg(lst, t_color);
+		if (flags & FT_DRAW_FLAG_NO_TRANSPARENCY)
+			__ft_stretch_image_col_no_alpha(dst, dst_rect, src, scl_factor, src_start, col);
+		else
+			__ft_stretch_image_col_alpha(dst, dst_rect, src, scl_factor, src_start, col);
+	}
 	else
-		__ft_stretch_image_alpha(dst, dst_rect, src, scl_factor, src_start);
+	{
+		if (flags & FT_DRAW_FLAG_NO_TRANSPARENCY)
+			__ft_stretch_image_no_alpha(dst, dst_rect, src, scl_factor, src_start);
+		else
+			__ft_stretch_image_alpha(dst, dst_rect, src, scl_factor, src_start);
+	}
+
+	va_end(lst);
 }
 
 EXTENDED_ALIAS("__ft_stretch_image_no_alpha", 0, (), ())
@@ -113,6 +126,62 @@ void __ft_stretch_image_alpha_base(t_image *dst, t_iv4 dst_rect, t_image *src, t
 			dst_addr = ft_get_pixel(dst, dst_x, dst_y);
 			src_addr = ft_get_pixel(src, (S32)(src_x), src_y);
 			*dst_addr = ft_alpha_blend(*dst_addr, *src_addr);
+		}
+	}
+}
+
+EXTENDED_ALIAS("__ft_stretch_image_col_no_alpha", 0, (), ())
+void __ft_stretch_image_col_no_alpha_base(t_image *dst, t_iv4 dst_rect, t_image *src, t_v2 scl_factor, t_v2 src_start, t_color col)
+{
+	t_color c;
+
+	for (S32 dst_y = dst_rect.y; dst_y < dst_rect.w; dst_y++)
+	{
+		S32 src_y = (dst_y - dst_rect.y) * scl_factor.y + src_start.y;
+
+		F32 src_x = src_start.x;
+		for (S32 dst_x = dst_rect.x; dst_x < dst_rect.z; dst_x++, src_x += scl_factor.x)
+		{
+			t_color *dst_addr;
+			t_color *src_addr;
+
+			dst_addr = ft_get_pixel(dst, dst_x, dst_y);
+			src_addr = ft_get_pixel(src, (S32)(src_x), src_y);
+
+			c = *src_addr;
+			c.r *= col.r / 255;
+			c.g *= col.g / 255;
+			c.b *= col.b / 255;
+
+			*dst_addr = c;
+		}
+	}
+}
+
+EXTENDED_ALIAS("__ft_stretch_image_col_alpha", 0, (), ())
+void __ft_stretch_image_col_alpha_base(t_image *dst, t_iv4 dst_rect, t_image *src, t_v2 scl_factor, t_v2 src_start, t_color col)
+{
+	t_color c;
+	U8 a;
+
+	for (S32 dst_y = dst_rect.y; dst_y < dst_rect.w; dst_y++)
+	{
+		S32 src_y = (dst_y - dst_rect.y) * scl_factor.y + src_start.y;
+
+		F32 src_x = src_start.x;
+		for (S32 dst_x = dst_rect.x; dst_x < dst_rect.z; dst_x++, src_x += scl_factor.x)
+		{
+			t_color *dst_addr;
+			t_color *src_addr;
+
+			dst_addr = ft_get_pixel(dst, dst_x, dst_y);
+			src_addr = ft_get_pixel(src, (S32)(src_x), src_y);
+
+			c = *src_addr;
+			a = c.a;
+			c = ft_alpha_blend(c, col);
+			c.a = a;
+			*dst_addr = ft_alpha_blend(*dst_addr, c);
 		}
 	}
 }
@@ -165,6 +234,48 @@ static void (*resolve___ft_stretch_image_alpha(void))(t_image * dst, t_iv4 dst_r
 
 void __ft_stretch_image_alpha(t_image * dst, t_iv4 dst_rect, t_image * src, t_v2 scl_factor, t_v2 src_start)
     __attribute__((ifunc("resolve___ft_stretch_image_alpha")));
+#if defined(DEBUG)
+static void *__resolved___ft_stretch_image_col_no_alpha = NULL;
+#endif
+static void (*resolve___ft_stretch_image_col_no_alpha(void))(t_image * dst, t_iv4 dst_rect, t_image * src, t_v2 scl_factor, t_v2 src_start, t_color col)
+{
+
+#if !defined(DEBUG)
+        void *__resolved___ft_stretch_image_col_no_alpha = NULL;
+#endif
+        struct s_cpuid_flags *cpuid_flags;
+        struct s_xcr0_flags os_flags;
+
+        cpuid_flags = ft_cpuid_get_cached_flags();
+        ft_xgetbv(0, &os_flags.flags);
+        if (1)
+                __resolved___ft_stretch_image_col_no_alpha = __ft_stretch_image_col_no_alpha_base;
+        return __resolved___ft_stretch_image_col_no_alpha;
+}
+
+void __ft_stretch_image_col_no_alpha(t_image * dst, t_iv4 dst_rect, t_image * src, t_v2 scl_factor, t_v2 src_start, t_color col)
+    __attribute__((ifunc("resolve___ft_stretch_image_col_no_alpha")));
+#if defined(DEBUG)
+static void *__resolved___ft_stretch_image_col_alpha = NULL;
+#endif
+static void (*resolve___ft_stretch_image_col_alpha(void))(t_image * dst, t_iv4 dst_rect, t_image * src, t_v2 scl_factor, t_v2 src_start, t_color col)
+{
+
+#if !defined(DEBUG)
+        void *__resolved___ft_stretch_image_col_alpha = NULL;
+#endif
+        struct s_cpuid_flags *cpuid_flags;
+        struct s_xcr0_flags os_flags;
+
+        cpuid_flags = ft_cpuid_get_cached_flags();
+        ft_xgetbv(0, &os_flags.flags);
+        if (1)
+                __resolved___ft_stretch_image_col_alpha = __ft_stretch_image_col_alpha_base;
+        return __resolved___ft_stretch_image_col_alpha;
+}
+
+void __ft_stretch_image_col_alpha(t_image * dst, t_iv4 dst_rect, t_image * src, t_v2 scl_factor, t_v2 src_start, t_color col)
+    __attribute__((ifunc("resolve___ft_stretch_image_col_alpha")));
 
 #if defined(DEBUG)
 __attribute__((constructor)) static void __debug_ifunc()
@@ -175,207 +286,12 @@ __attribute__((constructor)) static void __debug_ifunc()
         ft_printf("__ft_stretch_image_alpha:");
         if (__resolved___ft_stretch_image_alpha == __ft_stretch_image_alpha_base)
                 ft_printf("__ft_stretch_image_alpha_base\n");
+        ft_printf("__ft_stretch_image_col_no_alpha:");
+        if (__resolved___ft_stretch_image_col_no_alpha == __ft_stretch_image_col_no_alpha_base)
+                ft_printf("__ft_stretch_image_col_no_alpha_base\n");
+        ft_printf("__ft_stretch_image_col_alpha:");
+        if (__resolved___ft_stretch_image_col_alpha == __ft_stretch_image_col_alpha_base)
+                ft_printf("__ft_stretch_image_col_alpha_base\n");
 
 }
 #endif
-
-
-
-void ft_stretch_image(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect)
-{
-	t_iv4 dst_clipped;
-	t_v2 dstsize;
-	t_v2 srcsize;
-
-	S32 *x_vals;
-	F32 xfact;
-	F32 yfact;
-
-	t_color *dst_addr;
-	t_color *src_addr;
-
-	{	  /* clip rectangles */
-		{ /* clip dst rect */
-			dst_clipped = dst_rect;
-			dst_clipped.x = ft_clamp(0, dst->size.x, dst_rect.x);
-			dst_clipped.y = ft_clamp(0, dst->size.y, dst_rect.y);
-			dst_clipped.z = ft_clamp(0, dst->size.x, dst_rect.z);
-			dst_clipped.w = ft_clamp(0, dst->size.y, dst_rect.w);
-		}
-
-#if 0
-		{ /* clip src rect */
-			src_clipped = src_rect;
-			src_clipped.x = ft_clamp(0, src->size.x, src_rect.x);
-			src_clipped.y = ft_clamp(0, src->size.y, src_rect.y);
-			src_clipped.z = ft_clamp(0, src->size.x, src_rect.z);
-			src_clipped.w = ft_clamp(0, src->size.y, src_rect.w);
-
-			src_clipped.x = ft_clamp(0, dst->size.x, src_rect.x);
-			src_clipped.y = ft_clamp(0, dst->size.y, src_rect.y);
-			src_clipped.z = ft_clamp(0, dst->size.x, src_rect.z);
-			src_clipped.w = ft_clamp(0, dst->size.y, src_rect.w);
-		}
-#endif
-	}
-
-	dstsize.x = dst_rect.z - dst_rect.x;
-	dstsize.y = dst_rect.w - dst_rect.y;
-
-	srcsize.x = src_rect.z - src_rect.x;
-	srcsize.y = src_rect.w - src_rect.y;
-
-	xfact = 1.0f / (F32)dstsize.x * srcsize.x;
-	yfact = 1.0f / (F32)dstsize.y * srcsize.y;
-
-	x_vals = ft_alloca(sizeof(S32) * (dst_clipped.z - dst_clipped.x));
-	for (S32 x = dst_clipped.x; x < dst_clipped.z; x++)
-		x_vals[x - dst_clipped.x] = (S32)(src_rect.x + (x - dst_clipped.x) * xfact);
-
-	for (S32 dsty = dst_clipped.y; dsty < dst_clipped.w; dsty++)
-	{
-		for (S32 dstx = dst_clipped.x; dstx < dst_clipped.z; dstx++)
-		{
-			dst_addr = ft_get_pixel(dst, dstx, dsty);
-			src_addr = ft_get_pixel(src, x_vals[dstx - dst_clipped.x],
-									((S32)(src_rect.y + (dsty - dst_clipped.y) * yfact)));
-			*dst_addr = *src_addr;
-		}
-	}
-
-	ft_afree(x_vals);
-}
-
-void ft_stretch_image2(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect)
-{
-	t_iv4 dst_clipped;
-	MAYBE_UNUSED
-	t_iv4 src_clipped;
-	t_v2 dstsize;
-	t_v2 srcsize;
-
-	S32 *x_vals;
-	F32 xfact;
-	F32 yfact;
-
-	t_color *dst_addr;
-	t_color *src_addr;
-
-	{	  /* clip rectangles */
-		{ /* clip dst rect */
-			dst_clipped = dst_rect;
-			dst_clipped.x = ft_clamp(0, dst->size.x, dst_rect.x);
-			dst_clipped.y = ft_clamp(0, dst->size.y, dst_rect.y);
-			dst_clipped.z = ft_clamp(0, dst->size.x, dst_rect.z);
-			dst_clipped.w = ft_clamp(0, dst->size.y, dst_rect.w);
-		}
-
-		{ /* clip src rect */
-			src_clipped = src_rect;
-			src_clipped.x = ft_clamp(0, src->size.x, src_rect.x);
-			src_clipped.y = ft_clamp(0, src->size.y, src_rect.y);
-			src_clipped.z = ft_clamp(0, src->size.x, src_rect.z);
-			src_clipped.w = ft_clamp(0, src->size.y, src_rect.w);
-
-			src_clipped.x = ft_clamp(0, dst->size.x, src_rect.x);
-			src_clipped.y = ft_clamp(0, dst->size.y, src_rect.y);
-			src_clipped.z = ft_clamp(0, dst->size.x, src_rect.z);
-			src_clipped.w = ft_clamp(0, dst->size.y, src_rect.w);
-		}
-	}
-
-	dstsize.x = dst_rect.z - dst_rect.x;
-	dstsize.y = dst_rect.w - dst_rect.y;
-
-	srcsize.x = src_rect.z - src_rect.x;
-	srcsize.y = src_rect.w - src_rect.y;
-
-	xfact = 1.0f / (F32)dstsize.x * srcsize.x;
-	yfact = 1.0f / (F32)dstsize.y * srcsize.y;
-
-	x_vals = ft_alloca(sizeof(S32) * (dst_clipped.z - dst_clipped.x));
-	for (S32 x = dst_clipped.x; x < dst_clipped.z; x++)
-		x_vals[x - dst_clipped.x] = (S32)(src_rect.x + (x - dst_clipped.x) * xfact);
-
-	for (S32 dsty = dst_clipped.y; dsty < dst_clipped.w; dsty++)
-	{
-		for (S32 dstx = dst_clipped.x; dstx < dst_clipped.z; dstx++)
-		{
-			dst_addr = ft_get_pixel(dst, dstx, dsty);
-			src_addr = ft_get_pixel(src, x_vals[dstx - dst_clipped.x],
-									((S32)(src_rect.y + (dsty - dst_clipped.y) * yfact)));
-			*dst_addr = ft_alpha_blend2(*dst_addr, *src_addr);
-		}
-	}
-
-	ft_afree(x_vals);
-}
-
-void ft_stretch_image3(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect, t_color col)
-{
-	t_iv4 dst_clipped;
-	MAYBE_UNUSED
-	t_iv4 src_clipped;
-	t_v2 dstsize;
-	t_v2 srcsize;
-
-	S32 *x_vals;
-	F32 xfact;
-	F32 yfact;
-
-	t_color *dst_addr;
-	t_color *src_addr;
-
-	{ /* clip rectangles */
-		dst_clipped = ft_clip_rect(dst_rect, ft_image_rect(dst));
-		src_clipped = ft_clip_rect(src_rect, ft_image_rect(dst));
-		//{ /* clip dst rect */
-		//	dst_clipped = dst_rect;
-		//	dst_clipped.x = ft_clamp(0, dst->size.x, dst_rect.x);
-		//	dst_clipped.y = ft_clamp(0, dst->size.y, dst_rect.y);
-		//	dst_clipped.z = ft_clamp(0, dst->size.x, dst_rect.z);
-		//	dst_clipped.w = ft_clamp(0, dst->size.y, dst_rect.w);
-		//}
-		//
-		//{ /* clip src rect */
-		//	src_clipped = src_rect;
-		//	src_clipped.x = ft_clamp(0, src->size.x, src_rect.x);
-		//	src_clipped.y = ft_clamp(0, src->size.y, src_rect.y);
-		//	src_clipped.z = ft_clamp(0, src->size.x, src_rect.z);
-		//	src_clipped.w = ft_clamp(0, src->size.y, src_rect.w);
-		//
-		//	src_clipped.x = ft_clamp(0, dst->size.x, src_rect.x);
-		//	src_clipped.y = ft_clamp(0, dst->size.y, src_rect.y);
-		//	src_clipped.z = ft_clamp(0, dst->size.x, src_rect.z);
-		//	src_clipped.w = ft_clamp(0, dst->size.y, src_rect.w);
-		//}
-	}
-
-	dstsize.x = dst_rect.z - dst_rect.x;
-	dstsize.y = dst_rect.w - dst_rect.y;
-
-	srcsize.x = src_rect.z - src_rect.x;
-	srcsize.y = src_rect.w - src_rect.y;
-
-	xfact = 1.0f / (F32)dstsize.x * srcsize.x;
-	yfact = 1.0f / (F32)dstsize.y * srcsize.y;
-
-	x_vals = ft_alloca(sizeof(S32) * (dst_clipped.z - dst_clipped.x));
-	for (S32 x = dst_clipped.x; x < dst_clipped.z; x++)
-		x_vals[x - dst_clipped.x] = (S32)(src_rect.x + (x - dst_clipped.x) * xfact);
-
-	for (S32 dsty = dst_clipped.y; dsty < dst_clipped.w; dsty++)
-	{
-		for (S32 dstx = dst_clipped.x; dstx < dst_clipped.z; dstx++)
-		{
-			dst_addr = ft_get_pixel(dst, dstx, dsty);
-			src_addr = ft_get_pixel(src, x_vals[dstx - dst_clipped.x],
-									((S32)(src_rect.y + (dsty - dst_clipped.y) * yfact)));
-
-			t_color tmp = ft_color(src_addr->r * col.r / 255, src_addr->g * col.g / 255, src_addr->b * col.b / 255, src_addr->a);
-			*dst_addr = ft_alpha_blend2(*dst_addr, tmp);
-		}
-	}
-
-	ft_afree(x_vals);
-}

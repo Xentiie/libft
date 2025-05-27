@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 23:26:42 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/20 23:23:36 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/26 15:18:53 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,53 +64,135 @@ typedef struct s_image
  * If `red + green + blue + alpha` specified: returns `(r, g, b, a)` */
 #define ft_color(...) __ft_color2(__VA_ARGS__)
 
+/*
+Draw functions:
+Draw functions accept a `flags` parameter, which is a bitwise combination
+of the flags mentionned below. These flags will enable / disable certain
+features of the draw function.
+For each flag that is set, a corresponding variadic
+argument may have to be provided in the variable argument list.
+
+The arguments **must** be passed in the order of flag bit positions,
+from least significant bit (LSB) to most significant bit (MSB). This means
+that if `FT_DRAW_FLAG1` (bit 0), `FT_DRAW_FLAG2` (bit 1), and `FT_DRAW_FLAG3` (bit 2)
+are all set, the arguments must be provided in the order corresponding to these bits:
+
+Examples:
+```c
+ft_draw_function(FT_DRAW_FLAG1 | FT_DRAW_FLAG3, arg_for_flag1, arg_for_flag3);
+ft_draw_function(FT_DRAW_FLAG3 | FT_DRAW_FLAG1, arg_for_flag1, arg_for_flag3);
+ft_draw_function(FT_DRAW_FLAG3 | FT_DRAW_FLAG1 | FT_DRAW_FLAG2, arg_for_flag1, arg_for_flag2, arg_for_flag3);
+```
+
+Incorrect ordering or omitting expected arguments may lead to undefined behavior.
+*/
+#define FT_DRAW_FUNCTIONS_DOCUMENTATION
+
 /* The function should expect a `t_iv4` argument representing the bound of the element. No pixels will be drawn outside that boundary. */
 #define FT_DRAW_FLAG_CLIP (1 << 0)
 /* The function will not compute transparency. */
 #define FT_DRAW_FLAG_NO_TRANSPARENCY (1 << 1)
+/* The function should expect a `t_color` argument. */
+#define FT_DRAW_FLAG_COLOR (1 << 2)
+/* Wrap mode for `ft_draw_bitmap_text`. The text will wrap back to the next line if it goes out of bounds. */
+#define FT_DRAW_FLAG_BITMAP_WRAP (1 << 3)
+/* Multiline text for `ft_draw_bitmap_text`. */
+#define FT_DRAW_FLAG_BITMAP_MULTILINE (1 << 4)
 
-/* initializes an image */
+/*
+Initializes an image.
+### On error
+Returns FALSE and sets ft_errno.
+### ft_errno
+- FT_EOMEM if out of memory.
+*/
 extern bool ft_init_image(t_image *img, t_iv2 size);
-/* destroys an image */
+
+/* Destroys an image. */
 extern void ft_destroy_image(t_image *img);
+
+/* Shortcut for `ivec4(0, 0, img.size.x, img.size.y)`. */
 inline t_iv4 ft_image_rect(t_image *img) { return ivec4(0, 0, img->size.x, img->size.y); };
-/* returns the pixel address at coordinates xy */
+
+/* Returns the pixel address at coordinates `x/y` */
 #define ft_get_pixel(img, _x, _y) ((img)->pixels + ((_y) * ((img)->size.x) + (_x)))
 
+/* Returns a randomly generated color based on `seed`. */
 extern t_color ft_rand_color(U32 seed);
 
-/* alpha-blending between 2 colors. Assumes under's alpha to be 255 */
+/* Alpha-blending between 2 colors. Assumes under's alpha to be 255. */
 extern t_color ft_alpha_blend(t_color under, t_color over);
-/* full alpha-blending between 2 colors, computing the new alpha value */
+
+/* Full alpha-blending between 2 colors, computing the new alpha value. */
 extern t_color ft_alpha_blend2(t_color under, t_color over);
 
-/* copies the region `srcrect` in `src` to `dst` at position `dstpos`, no alpha blending
- * no out-of-bounds memory access */
+/*
+Copies the region `srcrect` in `src` to `dst` at position `dstpos`.
+No alpha blending.
+No out-of-bounds memory access.
+*/
 extern void ft_copy_image(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrect);
-/* copies the region `srcrect` in `src` to `dst` at position `dstpos`, with alpha blending
- * no out-of-bounds memory access */
+
+/*
+Copies the region `srcrect` in `src` to `dst` at position `dstpos`.
+With alpha blending.
+No out-of-bounds memory access.
+*/
 extern void ft_copy_image2(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrect);
 
-extern void ft_stretch_image_new(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect, U8 flags, ...);
+/*
+Stretches `src_rect` in `src` to `dst_rect` in `dst`.
+Will not draw outside of `img`.
+#### Draw function: see `FT_DRAW_FUNCTIONS_DOCUMENTATION`.
+- `FT_DRAW_FLAG_CLIP`: Expects a `t_iv4` argument. Ignore (don't draw) any pixels outside of the specified rect.
+- `FT_DRAW_FLAG_NO_TRANSPARENCY`: Ignores color transparency.
+- `FT_DRAW_FLAG_COLOR`: Overlays a color while copying.
+*/
+extern void ft_stretch_image(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect, U8 flags, ...);
 
-extern void ft_stretch_image(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect);
-extern void ft_stretch_image2(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect);
-extern void ft_stretch_image3(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect, t_color col);
-
-/* lines */
-/* draws a line between `p1` and `p2`, bounded by `img->size` */
+/*
+Draws a line between `p1` and `p2`, inclusive.
+Will not draw outside of `img`.
+#### Draw function: see `FT_DRAW_FUNCTIONS_DOCUMENTATION`.
+- `FT_DRAW_FLAG_CLIP`: Expects a `t_iv4` argument. Ignore (don't draw) any pixels outside of the specified rect.
+- `FT_DRAW_FLAG_NO_TRANSPARENCY`: Ignores color transparency.
+*/
 extern void ft_draw_line(t_image *img, t_iv2 p1, t_iv2 p2, t_color col, U8 flags, ...);
 
-/* draws an horizontal line between `p1.x` and `x2`, bounded by `img->size` */
+/*
+Draws a horizontal line between `p1.x` and `x2`, inclusive.
+Will not draw outside of `img`.
+#### Draw function: see `FT_DRAW_FUNCTIONS_DOCUMENTATION`.
+- `FT_DRAW_FLAG_CLIP`: Expects a `t_iv4` argument. Ignore (don't draw) any pixels outside of the specified rect.
+- `FT_DRAW_FLAG_NO_TRANSPARENCY`: Ignores color transparency.
+*/
 extern void ft_draw_line_horizontal(t_image *img, t_iv2 p1, S32 x2, t_color col, U8 flags, ...);
 
-/* draws an vertical line between `p1.x` and `x2`, bounded by `img->size` */
+/*
+Draws a vertical line between `p1.y` and `y2`, inclusive.
+Will not draw outside of `img`.
+#### Draw function: see `FT_DRAW_FUNCTIONS_DOCUMENTATION`.
+- `FT_DRAW_FLAG_CLIP`: Expects a `t_iv4` argument. Ignore (don't draw) any pixels outside of the specified rect.
+- `FT_DRAW_FLAG_NO_TRANSPARENCY`: Ignores color transparency.
+*/
 extern void ft_draw_line_vertical(t_image *img, t_iv2 p1, S32 y2, t_color col, U8 flags, ...);
 
-/* Draws a rectangle. */
+/*
+Draws a rectangle.
+Will not draw outside of `img`.
+#### Draw function: see `FT_DRAW_FUNCTIONS_DOCUMENTATION`.
+- `FT_DRAW_FLAG_CLIP`: Expects a `t_iv4` argument. Ignore (don't draw) any pixels outside of the specified rect.
+- `FT_DRAW_FLAG_NO_TRANSPARENCY`: Ignores color transparency.
+*/
 extern void ft_draw_rect(t_image *img, t_iv4 rect, t_color col, U8 flags, ...);
 
-/* Draws a filled rectangle. */
+/*
+Draws a filled rectangle.
+Will not draw outside of `img`.
+#### Draw function: see `FT_DRAW_FUNCTIONS_DOCUMENTATION`.
+- `FT_DRAW_FLAG_CLIP`: Expects a `t_iv4` argument. Ignore (don't draw) any pixels outside of the specified rect.
+- `FT_DRAW_FLAG_NO_TRANSPARENCY`: Ignores color transparency.
+*/
 extern void ft_fill_rect(t_image *img, t_iv4 rect, t_color col, U8 flags, ...);
 
 extern void ft_draw_bezier(t_image *img, t_color col, t_v2 p1, t_v2 p2, t_v2 p3, S32 res, U8 flags, ...);
@@ -120,6 +202,13 @@ extern void ft_draw_circle(t_image *img, t_iv2 pos, S32 radius, t_color col);
 extern void ft_draw_circle_bound2(t_image *img, t_iv2 pos, S32 radius, t_color col, t_iv4 bound);
 extern void ft_draw_circle2(t_image *img, t_iv2 pos, S32 radius, t_color col);
 
+/*
+Draws a filled disc.
+Will not draw outside of `img`.
+#### Draw function: see `FT_DRAW_FUNCTIONS_DOCUMENTATION`.
+- `FT_DRAW_FLAG_CLIP`: Expects a `t_iv4` argument. Ignore (don't draw) any pixels outside of the specified rect.
+- `FT_DRAW_FLAG_NO_TRANSPARENCY`: Ignores color transparency.
+*/
 extern void ft_draw_disc(t_image *img, t_iv2 pos, S32 radius, t_color col, U8 flags, ...);
 
 extern void ft_draw_triangle(t_image *img, t_iv2 p1, t_iv2 p2, t_iv2 p3, t_color col, U8 flags, ...);
@@ -135,9 +224,26 @@ typedef struct s_bitmap
 	U32 line_width;
 } t_bitmap;
 
+/*
+Initializes a bitmap with the specified parameters.
+`char_size`: the size of each characters, in pixels.
+`line_chars_count`: the number of characters in on line in the specified image.
+`sep_size`: the number of pixels separating each characters.
+*/
 extern void ft_init_bitmap(t_bitmap *bitmap, t_image *img, t_iv2 char_size, U32 line_chars_count, t_iv2 sep_size);
+
 extern t_iv4 ft_bitmap_rect_char_lines(t_bitmap *bitmap, t_iv2 pos, U32 line_width, U32 lines_cnt);
-extern void ft_draw_bitmap_text(t_image *out, t_iv4 rect, t_bitmap *bitmap, string str, F32 scale, t_iv2 kerning, t_color col);
-extern void ft_draw_bitmap_text_with_col(t_image *out, t_iv4 rect, t_bitmap *bitmap, string str, F32 scale, t_iv2 kerning, t_color col);
+
+/*
+Renders the text `str` using `bitmap` with the specified parameters.
+This function accepts every `FT_DRAW_FLAG_BITMAP_*` flags.
+Will not draw outside of `img`, nor outside of `rect`.
+#### Draw function: see `FT_DRAW_FUNCTIONS_DOCUMENTATION`.
+- `FT_DRAW_FLAG_CLIP`: Expects a `t_iv4` argument. Ignore (don't draw) any pixels outside of the specified rect.
+- `FT_DRAW_FLAG_COLOR`: Overlays a color while copying.
+- `FT_DRAW_FLAG_BITMAP_WRAP`: Wraps the text inside the specified rect.
+*/
+extern void ft_draw_bitmap_text(t_image *out, t_iv4 rect, t_bitmap *bitmap, string str, F32 scale,
+								t_iv2 kerning, U8 flags, ...);
 
 #endif

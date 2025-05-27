@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:20:53 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/15 02:29:36 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/27 14:46:05 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ static t_color ablend_simd(t_color under, t_color over)
 typedef t_color (*f_ablend)(t_color, t_color);
 static f_ablend resolve_ablend()
 {
-	return ablend_no_simd;
+	return ablend_simd;
 }
 
 t_color ft_alpha_blend(t_color under, t_color over)
