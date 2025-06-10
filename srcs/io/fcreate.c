@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 22:50:27 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/29 16:00:36 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:03 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ t_file *ft_fcreate(filedesc fd, const_string mode)
 	bool readable, writeable, append, binary_mode;
 	t_file *file;
 
-	if (UNLIKELY((file = malloc(sizeof(t_file))) == NULL))
+	if (UNLIKELY((file = ftalloc(sizeof(t_file))) == NULL))
 		goto exit_omem;
 
 	if (!__parse_mode(mode, &readable, &writeable, &append, &binary_mode))

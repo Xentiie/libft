@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 02:08:17 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/10 03:17:31 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/02 16:40:38 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ extern U32 ft_cpuid_get_max_infos();
 /* Returns the max `reg` value possible for `CPUID` for extended infos (`ft_cpuid(0x80000000, 0)[EAX]`)*/
 extern U32 ft_cpuid_get_max_extended_infos();
 
-enum __attribute__((packed)) e_cpuid_vendor
+packed_enum e_cpuid_vendor
 {
 	FT_CPUID_VENDOR_UNKNOWN,
 	FT_CPUID_VENDOR_INTEL,
@@ -392,7 +392,7 @@ Sets ft_errno, and returns FALSE.
 extern bool ft_cpuid_get_flags(U32 maxinfos, struct s_cpuid_flags *flags);
 extern struct s_cpuid_flags *ft_cpuid_get_cached_flags();
 
-enum __attribute__((packed)) e_cpuid_cache_type
+packed_enum e_cpuid_cache_type
 {
 	FT_CPUID_CACHE_INSTRUCTION,
 	FT_CPUID_CACHE_DATA,

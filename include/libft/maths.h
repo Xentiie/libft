@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:45:20 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/21 23:15:22 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/30 04:49:55 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -446,6 +446,12 @@ inline t_iv2 ft_irectsize(t_iv4 rect) { return ivec2(rect.z - rect.x, rect.w - r
 inline t_v2 ft_rectsize(t_v4 rect) { return vec2(rect.z - rect.x, rect.w - rect.y); }
 inline t_iv4 ft_clip_rect_rect(t_iv4 rect, t_iv4 bound) { return ivec4(ft_max(rect.x, bound.x), ft_max(rect.y, bound.y), ft_min(rect.z, bound.z), ft_min(rect.w, bound.w)); }
 inline t_v4 ft_clip_rect_rect_flt(t_v4 rect, t_v4 bound) { return vec4(ft_fmax(rect.x, bound.x), ft_fmax(rect.y, bound.y), ft_fmin(rect.z, bound.z), ft_fmin(rect.w, bound.w)); }
+
+inline t_iv4 ft_offset_rect(t_iv4 rect, t_iv2 ofs) { return ivec4(rect.x + ofs.x, rect.y + ofs.y, rect.z + ofs.x, rect.w + ofs.y); }
+inline t_v4 ft_offset_rect_flt(t_v4 rect, t_v2 ofs) { return vec4(rect.x + ofs.x, rect.y + ofs.y, rect.z + ofs.x, rect.w + ofs.y); }
+
+inline ALWAYS_INLINE t_iv4 ft_resize_rect(t_iv4 rect, t_iv4 delta) { return ivec4(rect.x - delta.x, rect.y - delta.y, rect.z + delta.z, rect.w + delta.w); }
+inline t_v4 ft_resize_rect_flt(t_v4 rect, t_v4 delta) { return vec4(rect.x - delta.x, rect.y - delta.y, rect.z + delta.z, rect.w + delta.w); }
 
 extern t_v4 ft_plane_eq(t_v3 p1, t_v3 p2, t_v3 p3);
 

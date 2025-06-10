@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 19:03:18 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:13:32 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void ft_print_huffman_node(t_huffman_node *node, bool nl)
 
 static t_huffman_node *make_branch(t_huffman_node *left, t_huffman_node *right)
 {
-	t_huffman_node *branch = malloc(sizeof(t_huffman_node));
+	t_huffman_node *branch = ftalloc(sizeof(t_huffman_node));
 	if (!branch)
 		return NULL;
 	branch->left = left;
@@ -130,7 +130,7 @@ t_huffman_node *ft_create_huffman_tree(U8 *data, U64 len, t_huffman_node ***out_
 			if (freq_table[i])
 				count++;
 
-		if (UNLIKELY((nodes = malloc(sizeof(t_huffman_node *) * count)) == NULL))
+		if (UNLIKELY((nodes = ftalloc(sizeof(t_huffman_node *) * count)) == NULL))
 			FT_RET_ERR(NULL, FT_EOMEM);
 #define FAIL_CLEANUP(n, err)       \
 	do                             \
@@ -146,7 +146,7 @@ t_huffman_node *ft_create_huffman_tree(U8 *data, U64 len, t_huffman_node ***out_
 		{
 			if (freq_table[i] == 0)
 				continue;
-			if (UNLIKELY((nodes[j] = malloc(sizeof(t_huffman_node))) == NULL))
+			if (UNLIKELY((nodes[j] = ftalloc(sizeof(t_huffman_node))) == NULL))
 				FAIL_CLEANUP(j, FT_EOMEM);
 			nodes[j]->symbol = i;
 			nodes[j]->n = freq_table[i];

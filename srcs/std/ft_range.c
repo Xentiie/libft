@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 21:11:58 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ S32	*ft_range(S32 min, S32 max)
 	size = max - min;
 	if (size <= 0)
 		return (NULL);
-	if (UNLIKELY((output = malloc(sizeof(S32) * size + 1)) == NULL))
+	if (UNLIKELY((output = ftalloc(sizeof(S32) * size + 1)) == NULL))
 		FT_RET_ERR(NULL, FT_EOMEM);
 
 	counter = min;

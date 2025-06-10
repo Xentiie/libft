@@ -15,7 +15,11 @@
         "initializer_list": "c",
         "utility": "c",
         "random": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "chrono": "c",
+        "semaphore": "c",
+        "algorithm": "c",
+        "format": "c"
     },
     "python.analysis.autoImportCompletions": false
 }

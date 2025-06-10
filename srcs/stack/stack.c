@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 23:46:21 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/24 21:59:04 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ bool ft_stack_init(t_stack *stack, U64 elem_size, U64 init_size)
 	stack->cnt = 0;
 	stack->alloc = init_size;
 	stack->elem_size = elem_size;
-	if (UNLIKELY((stack->data = malloc(elem_size * stack->alloc)) == NULL))
+	if (UNLIKELY((stack->data = ftalloc(elem_size * stack->alloc)) == NULL))
 		FT_RET_ERR(FALSE, FT_EOMEM);
 	FT_RET_OK(TRUE);
 }
@@ -50,7 +50,7 @@ void *ft_stack_push(t_stack *stack)
 
 	if (stack->cnt >= stack->alloc)
 	{
-		if (UNLIKELY((new = malloc(stack->elem_size * stack->alloc * _FT_GROWTH_FACTOR)) == NULL))
+		if (UNLIKELY((new = ftalloc(stack->elem_size * stack->alloc * _FT_GROWTH_FACTOR)) == NULL))
 			FT_RET_ERR(NULL, FT_EOMEM);
 		ft_memcpy(new, stack->data, stack->elem_size * stack->cnt);
 		free(stack->data);

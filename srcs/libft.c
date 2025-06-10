@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:49:04 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/02 04:48:44 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:13:17 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@ _FT_GLOBAL_VAR_DEF(filedesc, ft_stderr);
 _FT_GLOBAL_VAR_DEF(t_file *, ft_fstdin);
 _FT_GLOBAL_VAR_DEF(t_file *, ft_fstdout);
 _FT_GLOBAL_VAR_DEF(t_file *, ft_fstderr);
+
+_FT_GLOBAL_VAR_DEF_THREADLOCAL(f_ft_allocator, ftalloc, malloc)
+_FT_GLOBAL_VAR_DEF_THREADLOCAL(f_ft_free, ftfree, free)
 
 __attribute__((constructor(101))) static void __init_libft(S32 argc, string *argv, string *env)
 {

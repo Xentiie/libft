@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 01:47:44 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/14 20:24:13 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:10 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void lock_ht_cleanup()
 
 static void lock_ht_init()
 {
-	if (UNLIKELY((lock_ht = malloc(sizeof(t_lock_ht))) == NULL))
+	if (UNLIKELY((lock_ht = ftalloc(sizeof(t_lock_ht))) == NULL))
 		return;
 
 	ft_bzero(lock_ht->buckets, sizeof(lock_ht->buckets));
@@ -93,7 +93,7 @@ bool ft_ffilelock(t_file *file)
 	lookup = lock_ht_lookup(ht, file);
 	if ((node = *lookup) == NULL)
 	{
-		if (UNLIKELY((node = malloc(sizeof(*node))) == NULL))
+		if (UNLIKELY((node = ftalloc(sizeof(*node))) == NULL))
 			goto exit_err;
 
 		node->next = NULL;

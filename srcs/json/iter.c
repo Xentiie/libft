@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 01:49:56 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 03:24:43 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ struct s_json_iterator *ft_json_iter_init(struct s_json_object *obj)
 	if (obj->type != JSON_OBJ)
 		FT_RET_ERR(FALSE, FT_EINVOP);
 
-	if (UNLIKELY((it = malloc(sizeof(struct s_json_iterator))) == NULL))
+	if (UNLIKELY((it = ftalloc(sizeof(struct s_json_iterator))) == NULL))
 		FT_RET_ERR(FALSE, FT_EOMEM);
 
 	ft_json_iter_reset(it, obj);

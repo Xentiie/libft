@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:20:53 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/27 14:46:05 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/30 16:44:14 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,118 @@ t_color ft_rand_color(U32 seed)
 					 .b = ft_frand(seed + 2) * 255,
 					 .a = 255};
 }
+
+t_color_hsv ft_hsv_from_unit_circle(t_v2 p, F32 val)
+{
+	F32 r;
+	F32 angle;
+	t_color_hsv col;
+
+	r = sqrtf(p.x * p.x + p.y * p.y);
+	angle = atan2f(p.y, p.x);
+
+	col.hue = (angle / (2.0f * FT_PI)) + 0.5f;
+	col.sat = r;
+	col.val = val;
+
+	return col;
+}
+
+t_color_hsv ft_hsv_from_circle(t_v2 p, F32 radius, F32 val)
+{
+	t_v2 d;
+
+	d.x = p.x / radius;
+	d.y = p.y / radius;
+
+	return ft_hsv_from_unit_circle(d, val);
+}
+
+t_color_hsv ft_hsv_from_rect(t_v2 p, t_v4 rect, F32 val)
+{
+	t_v2 c;
+	t_v2 d;
+	F32 radius;
+
+	c.x = rect.x + (rect.z - rect.x) / 2.0f;
+	c.y = rect.y + (rect.w - rect.y) / 2.0f;
+	if (c.x > c.y)
+		radius = c.x - rect.x;
+	else
+		radius = c.y - rect.y;
+
+	d.x = p.x - c.x;
+	d.y = p.y - c.y;
+
+	return ft_hsv_from_circle(d, radius, val);
+}
+
+t_color_hsv ft_rgb_to_hsv(t_color col)
+{
+	F32 r, g, b;
+	F32 min, max, delta;
+	t_color_hsv out;
+
+	r = col.r / 255.0f;
+	g = col.g / 255.0f;
+	b = col.b / 255.0f;
+
+	min = ft_fmin(r, ft_fmin(g, b));
+	max = ft_fmax(r, ft_fmax(g, b));
+	delta = max - min;
+
+	if (delta == 0.0f)
+		out.hue = 0.0f; // undefined hue
+	else if (max == r)
+		out.hue = fmodf(((g - b) / delta), 6.0f) / 6.0f;
+	else if (max == g)
+		out.hue = (((b - r) / delta) + 2.0f) / 6.0f;
+	else // max == b
+		out.hue = (((r - g) / delta) + 4.0f) / 6.0f;
+
+	if (out.hue < 0.0f)
+		out.hue += 1.0f;
+	out.sat = (max == 0.0f) ? 0.0f : (delta / max);
+	out.val = max;
+
+	return out;
+}
+
+t_color ft_hsv_to_rgb(t_color_hsv col)
+{
+	S32 i;
+	F32 r, g, b;
+	F32 f, p, q, t;
+	t_color out;
+
+	i = (S32)(col.hue * 6.0f);
+	f = col.hue * 6.0f - i;
+	p = col.val * (1.0f - col.sat);
+	q = col.val * (1.0f - f * col.sat);
+	t = col.val * (1.0f - (1.0f - f) * col.sat);
+
+	switch (i % 6)
+	{
+		// clang-format off
+		case 0: r = col.val; g = t; b = p; break;
+		case 1: r = q; g = col.val; b = p; break;
+		case 2: r = p; g = col.val; b = t; break;
+		case 3: r = p; g = q; b = col.val; break;
+		case 4: r = t; g = p; b = col.val; break;
+		case 5: r = col.val; g = p; b = q; break;
+		default: r = g = b = 0; break; // should never happen
+		//clang-format: on
+	}
+
+	out.r = (U8)(r * 255.0f);
+	out.g = (U8)(g * 255.0f);
+	out.b = (U8)(b * 255.0f);
+	out.a = 255;
+
+	return out;
+}
+
+
 
 MAYBE_UNUSED
 static t_color ablend_no_simd(t_color under, t_color over)

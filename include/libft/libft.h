@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:56:09 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/15 01:45:05 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/03 00:09:22 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ _FT_GLOBAL_VAR_DEC(S32, ft_errno);
 #endif
 
 #if !defined(packed_enum)
-#define packed_enum __attribute__((packed)) enum
+#define packed_enum enum __attribute__((packed))
 #endif
 
 /*

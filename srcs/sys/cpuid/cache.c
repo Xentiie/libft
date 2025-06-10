@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 03:49:03 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/08 03:46:34 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ bool ft_cpuid_get_cache_tlb_info(U32 maxinfos, U64 cpuinfos, struct s_cpuid_ctlb
 	{                                                                                            \
 		if (cache_alloc == 0)                                                                    \
 			cache_alloc = 1;                                                                     \
-		if (UNLIKELY((newptr = malloc(sizeof(struct s_cpuid_cache) * cache_alloc * 2)) == NULL)) \
+		if (UNLIKELY((newptr = ftalloc(sizeof(struct s_cpuid_cache) * cache_alloc * 2)) == NULL)) \
 			FT_RET_ERR(FALSE, FT_EOMEM);                                                         \
 		ft_memcpy(newptr, infos->caches, sizeof(struct s_cpuid_cache) * infos->cache_cnt);       \
 		free(infos->caches);                                                                     \
@@ -57,7 +57,7 @@ bool ft_cpuid_get_cache_tlb_info(U32 maxinfos, U64 cpuinfos, struct s_cpuid_ctlb
 	{                                                                                        \
 		if (tlb_alloc == 0)                                                                  \
 			tlb_alloc = 1;                                                                   \
-		if (UNLIKELY((newptr = malloc(sizeof(struct s_cpuid_tlb) * tlb_alloc * 2)) == NULL)) \
+		if (UNLIKELY((newptr = ftalloc(sizeof(struct s_cpuid_tlb) * tlb_alloc * 2)) == NULL)) \
 			FT_RET_ERR(FALSE, FT_EOMEM);                                                     \
 		ft_memcpy(newptr, infos->tlbs, sizeof(struct s_cpuid_tlb) * infos->tlb_cnt);         \
 		free(infos->tlbs);                                                                   \

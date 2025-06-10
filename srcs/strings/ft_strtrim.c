@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 15:52:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ string	ft_strtrim(const_string s1, const_string set)
 		FT_RET_OK(new);
 	}
 
-	new = malloc((end - start + 1) * sizeof(char));
+	new = ftalloc((end - start + 1) * sizeof(char));
 	if (new == NULL)
 		FT_RET_ERR(NULL, FT_EOMEM);
 	

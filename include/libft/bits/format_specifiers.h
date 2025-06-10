@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 11:40:50 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/15 01:46:00 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/02 16:40:33 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include "libft/libft.h"
 
-enum __attribute__((packed)) e_fmt_flag
+packed_enum e_fmt_flag
 {
 	FMT_FLAG,
 	FMT_SIZE,

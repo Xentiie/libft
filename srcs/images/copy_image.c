@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:15:23 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/15 02:29:42 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/30 04:53:48 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,7 +236,8 @@ static void (*resolve_ft_copy_image2(void))(t_image *dst, t_iv2 dstpos, t_image 
 	cpuid_flags = ft_cpuid_get_cached_flags();
 	ft_xgetbv(0, &os_flags.flags);
 	if (os_flags.avx && cpuid_flags->avx2)
-		__resolved_ft_copy_image2 = copy_image2_ymm;
+		__resolved_ft_copy_image2 = copy_image2;
+		//__resolved_ft_copy_image2 = copy_image2_ymm;
 	else if (os_flags.sse && cpuid_flags->sse2 && cpuid_flags->ssse3 && cpuid_flags->sse4_1)
 		__resolved_ft_copy_image2 = copy_image2_xmm;
 	else

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 20:49:50 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/06 00:18:15 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ string ft_utoa(U64 n)
 	string out;
 
 	n_digits = _ft_utoa(NULL, 0, 0, n, NULL, S64_MAX);
-	if (UNLIKELY((out = malloc(sizeof(char) * (n_digits + 1))) == NULL))
+	if (UNLIKELY((out = ftalloc(sizeof(char) * (n_digits + 1))) == NULL))
 		FT_RET_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 
@@ -95,7 +95,7 @@ string ft_utoa_l(U64 n, U64 *len)
 	U64 l;
 
 	n_digits = _ft_utoa(NULL, 0, 0, n, NULL, S64_MAX);
-	if (UNLIKELY((out = malloc(sizeof(char) * (n_digits + 1))) == NULL))
+	if (UNLIKELY((out = ftalloc(sizeof(char) * (n_digits + 1))) == NULL))
 		FT_RET_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 
@@ -127,7 +127,7 @@ string ft_utoa_b(U64 n, const_string base)
 	string out;
 
 	n_digits = _ft_utoa(base, 0, 0, n, NULL, S64_MAX);
-	if (UNLIKELY((out = malloc(sizeof(char) * (n_digits + 1))) == NULL))
+	if (UNLIKELY((out = ftalloc(sizeof(char) * (n_digits + 1))) == NULL))
 		FT_RET_ERR(NULL, FT_EOMEM);
 	out[n_digits] = '\0';
 
@@ -179,7 +179,7 @@ int main()
 
 	printf("\n");
 
-	str = malloc(sizeof(char) * (S32_MAX_MAG + 2));
+	str = ftalloc(sizeof(char) * (S32_MAX_MAG + 2));
 	for (int i = 0; i < sizeof(tests) / sizeof(*tests); i++)
 	{
 		ft_bzero(str, sizeof(char) * (S32_MAX_MAG + 2));

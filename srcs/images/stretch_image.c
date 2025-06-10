@@ -6,13 +6,14 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 14:49:59 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/22 20:09:05 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/29 15:29:16 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
 #include "libft/images.h"
+#include "libft/io.h"
 
 #include "libft/bits/extended_aliases.h"
 #include "libft/bits/variants/ft_stretch_image.h"

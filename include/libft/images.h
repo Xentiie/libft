@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 23:26:42 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/26 15:18:53 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/04 04:13:47 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,24 +18,33 @@
 #include "libft/maths.h"
 #include "libft/macros.h"
 
+/* should be the default */
+//#define COLORS_FORMAT_MLX
 typedef union u_color
 {
 	U32 v;
 	struct
 	{
-#if !defined(COLORS_FORMAT_MLX)
-		U8 b;
-		U8 g;
+#if defined(COLORS_FORMAT_MLX)
 		U8 r;
+		U8 g;
+		U8 b;
 		U8 a;
 #else
-		U8 r;
-		U8 g;
 		U8 b;
+		U8 g;
+		U8 r;
 		U8 a;
 #endif
 	};
 } t_color;
+
+typedef struct s_color_hsv
+{
+	F32 hue;
+	F32 sat;
+	F32 val;
+} t_color_hsv;
 
 typedef struct s_image
 {
@@ -99,6 +108,33 @@ Incorrect ordering or omitting expected arguments may lead to undefined behavior
 /* Multiline text for `ft_draw_bitmap_text`. */
 #define FT_DRAW_FLAG_BITMAP_MULTILINE (1 << 4)
 
+/* Returns a randomly generated color based on `seed`. */
+extern t_color ft_rand_color(U32 seed);
+
+/* Converts a 2D point on the unit circle and a value into an HSV color.
+ * The point determines hue and saturation; `val` sets the value (brightness). */
+extern t_color_hsv ft_hsv_from_unit_circle(t_v2 p, F32 val);
+
+/* Converts a 2D point on the circle (at center `p` and radius `radius`) and a value into an HSV color.
+ * The point determines hue and saturation; `val` sets the value (brightness). */
+extern t_color_hsv ft_hsv_from_circle(t_v2 p, F32 radius, F32 val);
+
+/* Converts a point within a rectangular region into an HSV color.
+ * The point is mapped relative to the rect's center and scaled to fit a circular hue-saturation space.
+ * The point determines hue and saturation; `val` sets the value (brightness). */
+extern t_color_hsv ft_hsv_from_rect(t_v2 p, t_v4 rect, F32 val);
+
+/* Converts a RGB color to a HSV color. */
+extern t_color_hsv ft_rgb_to_hsv(t_color col);
+/* Converts a HSV color to a RGB color. */
+extern t_color ft_hsv_to_rgb(t_color_hsv col);
+
+/* Alpha-blending between 2 colors. Assumes under's alpha to be 255. */
+extern t_color ft_alpha_blend(t_color under, t_color over);
+
+/* Full alpha-blending between 2 colors, computing the new alpha value. */
+extern t_color ft_alpha_blend2(t_color under, t_color over);
+
 /*
 Initializes an image.
 ### On error
@@ -117,14 +153,6 @@ inline t_iv4 ft_image_rect(t_image *img) { return ivec4(0, 0, img->size.x, img->
 /* Returns the pixel address at coordinates `x/y` */
 #define ft_get_pixel(img, _x, _y) ((img)->pixels + ((_y) * ((img)->size.x) + (_x)))
 
-/* Returns a randomly generated color based on `seed`. */
-extern t_color ft_rand_color(U32 seed);
-
-/* Alpha-blending between 2 colors. Assumes under's alpha to be 255. */
-extern t_color ft_alpha_blend(t_color under, t_color over);
-
-/* Full alpha-blending between 2 colors, computing the new alpha value. */
-extern t_color ft_alpha_blend2(t_color under, t_color over);
 
 /*
 Copies the region `srcrect` in `src` to `dst` at position `dstpos`.

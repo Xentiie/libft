@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 00:01:59 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/26 14:18:50 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ string ft_ftoa(float n)
 	if (FT_F32_ISQNAN(n))
 		return ft_strdup("#QNAN");
 
-	if (UNLIKELY((out = malloc(sizeof(char) * (AFTERPOINT * 2 + 3))) == NULL))
+	if (UNLIKELY((out = ftalloc(sizeof(char) * (AFTERPOINT * 2 + 3))) == NULL))
 		FT_RET_ERR(NULL, FT_EOMEM);
 
 	ft_bzero(out, sizeof(char) * (AFTERPOINT * 2 + 3));
@@ -127,7 +127,7 @@ string ft_ftoa_l(float n, U64 *len)
 	if (FT_F32_ISQNAN(n))
 		return ft_strdup("#QNAN");
 
-	if (UNLIKELY((out = malloc(sizeof(char) * (AFTERPOINT * 2 + 3))) == NULL))
+	if (UNLIKELY((out = ftalloc(sizeof(char) * (AFTERPOINT * 2 + 3))) == NULL))
 		FT_RET_ERR(NULL, FT_EOMEM);
 
 	ft_bzero(out, sizeof(char) * (AFTERPOINT * 2 + 3));

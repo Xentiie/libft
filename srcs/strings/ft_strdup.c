@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 14:51:38 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/05 08:49:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ string ft_strdup_l(const_string str, U64 *len)
 	}
 
 	*len = ft_strlen(str);
-	if (UNLIKELY((dup = malloc(sizeof(U8) * ((*len) + 1))) == NULL))
+	if (UNLIKELY((dup = ftalloc(sizeof(U8) * ((*len) + 1))) == NULL))
 	{
 		*len = 0;
 		FT_RET_ERR(NULL, FT_EOMEM);
@@ -66,7 +66,7 @@ string ft_strndup_l(const_string str, U64 n, U64 *len)
 	while (l < n && str[l])
 		l++;
 
-	if (UNLIKELY((dup = malloc((sizeof(U8) * (l + 1)))) == NULL))
+	if (UNLIKELY((dup = ftalloc((sizeof(U8) * (l + 1)))) == NULL))
 	{
 		if (len)
 			*len = 0;

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/14 01:48:30 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ string	ft_lpad(string str, char c, U64 n)
 		FT_RET_ERR(NULL, FT_EINVPTR);
 
 	U64 size = ft_strlen(str);
-	string out = malloc(sizeof(char) * (size + n + 1));
+	string out = ftalloc(sizeof(char) * (size + n + 1));
 	if (out == NULL)
 		FT_RET_ERR(NULL, FT_EOMEM);
 	out[size + n] = '\0';
@@ -37,7 +37,7 @@ string	ft_rpad(string str, char c, U64 n)
 		FT_RET_ERR(NULL, FT_EINVPTR);
 
 	U64 size = ft_strlen(str);
-	string out = malloc(sizeof(char) * (size + n + 1));
+	string out = ftalloc(sizeof(char) * (size + n + 1));
 	if (out == NULL)
 		FT_RET_ERR(NULL, FT_EOMEM);
 	out[size + n] = '\0';

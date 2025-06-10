@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 15:39:44 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/26 02:20:59 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ string ft_substr(const_string s, U64 start, U64 len)
 			FT_RET_ERR(NULL, FT_EOMEM);
 		FT_RET_OK(r);
 	}
-	if (UNLIKELY((r = malloc(sizeof(char) * (len + 1))) == NULL))
+	if (UNLIKELY((r = ftalloc(sizeof(char) * (len + 1))) == NULL))
 		FT_RET_ERR(NULL, FT_EOMEM);
 
 	ft_strlcpy(r, (s + start), len + 1);

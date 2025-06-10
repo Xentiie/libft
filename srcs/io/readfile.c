@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 22:55:52 by reclaire          #+#    #+#             */
-/*   Updated: 2024/12/29 16:04:31 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:14 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ U8 *__readfile_impl(filedesc fd, U64 *out_size, bool append_0)
 	U8 *data, *tmp;
 
 	alloc = sizeof(buffer);
-	if (UNLIKELY((data = malloc(sizeof(U8) * alloc)) == NULL))
+	if (UNLIKELY((data = ftalloc(sizeof(U8) * alloc)) == NULL))
 		goto exit_err;
 
 	total_rd = 0;
@@ -30,7 +30,7 @@ U8 *__readfile_impl(filedesc fd, U64 *out_size, bool append_0)
 	{
 		if ((S64)alloc < (total_rd + rd))
 		{
-			if (UNLIKELY((tmp = malloc(sizeof(U8) * alloc * 2)) == NULL))
+			if (UNLIKELY((tmp = ftalloc(sizeof(U8) * alloc * 2)) == NULL))
 				goto exit_err_cleanup;
 			ft_memcpy(tmp, data, total_rd);
 			free(data);
@@ -46,7 +46,7 @@ U8 *__readfile_impl(filedesc fd, U64 *out_size, bool append_0)
 
 	if ((S64)alloc > total_rd)
 	{
-		if (UNLIKELY((tmp = malloc(sizeof(U8) * (total_rd + append_0))) == NULL))
+		if (UNLIKELY((tmp = ftalloc(sizeof(U8) * (total_rd + append_0))) == NULL))
 			goto exit_err_cleanup;
 		ft_memcpy(tmp, data, total_rd);
 		free(data);

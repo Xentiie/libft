@@ -6,13 +6,13 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 02:36:05 by reclaire          #+#    #+#             */
-/*   Updated: 2024/11/09 23:09:26 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:06:45 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_int.h"
 
-//TODO: ft_str_isnbr / ft_str_isflt: nombre en puissance de 10 genre 1e8 ou 3.14e10
+//TODO: ft_str_isflt: nombre en puissance de 10 genre 1e8 ou 3.14e10
 
 bool ft_str_isascii(const_string str)
 {
@@ -49,6 +49,8 @@ bool ft_str_isalpha(const_string str)
 
 bool ft_str_isdigit(const_string str)
 {
+	if (*str == '\0')
+		return FALSE;
 	while (*str)
 	{
 		if (!ft_isdigit(*str))
@@ -60,6 +62,8 @@ bool ft_str_isdigit(const_string str)
 
 bool ft_str_isalnum(const_string str)
 {
+	if (*str == '\0')
+		return FALSE;
 	while (*str)
 	{
 		if (!ft_isalnum(*str))
@@ -71,6 +75,8 @@ bool ft_str_isalnum(const_string str)
 
 bool ft_str_iswhitespace(const_string str)
 {
+	if (*str == '\0')
+		return FALSE;
 	while (*str)
 	{
 		if (!ft_iswhitespace(*str))
@@ -82,13 +88,31 @@ bool ft_str_iswhitespace(const_string str)
 
 bool ft_str_isnbr(const_string str)
 {
+	if (*str == '\0')
+		return FALSE;
+
 	while (*str == '-' || *str == '+')
 		str++;
-	return ft_str_isdigit(str);
+
+	while (ft_isdigit(*str))
+		str++;
+
+	if (*str == 'e')
+	{
+		str++;
+		if (*str == '-' || *str == '+')
+			str++;
+		return ft_str_isdigit(str);
+	}
+
+	return *str == '\0';
 }
 
 bool ft_str_isflt(const_string str)
 {
+	if (*str == '\0')
+		return FALSE;
+
 	while (*str == '-' || *str == '+')
 		str++;
 
@@ -106,6 +130,8 @@ bool ft_str_isflt(const_string str)
 
 bool ft_str_ishex(const_string str)
 {
+	if (*str == '\0')
+		return FALSE;
 	if (*str == '0' && *(str + 1) == 'x')
 		str += 2;
 	while (*str)

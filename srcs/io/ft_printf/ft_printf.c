@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:43:53 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/14 20:25:01 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:25 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,7 @@ string ft_vsanprintf(U64 n, const_string fmt, va_list args)
 	va_end(dup);
 	if (ret > n)
 		ret = n;
-	if (UNLIKELY((str = malloc(sizeof(U8) * ret)) == NULL))
+	if (UNLIKELY((str = ftalloc(sizeof(U8) * ret)) == NULL))
 		FT_RET_ERR(NULL, FT_EOMEM);
 	ft_vsnprintf(str, ret, fmt, args);
 

@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/04 05:30:40 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 19:07:23 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ struct s_json_object *ft_json_new()
 {
 	struct s_json_object *obj;
 
-	if (UNLIKELY((obj = malloc(sizeof(struct s_json_object))) == NULL))
+	if (UNLIKELY((obj = ftalloc(sizeof(struct s_json_object))) == NULL))
 		FT_RET_ERR(NULL, FT_EOMEM);
 	ft_bzero(obj, sizeof(struct s_json_object));
 	return obj;
@@ -305,12 +305,12 @@ bool ft_json_append(struct s_json_object *obj, struct s_json_object *new)
 	{
 		obj->array.len = 0;
 		obj->array.alloc = 4;
-		if (UNLIKELY((obj->array.objs = malloc(sizeof(struct s_json_object *) * obj->array.alloc)) == NULL))
+		if (UNLIKELY((obj->array.objs = ftalloc(sizeof(struct s_json_object *) * obj->array.alloc)) == NULL))
 			FT_RET_ERR(FALSE, FT_EOMEM);
 	}
 	else if (obj->array.len >= obj->array.alloc)
 	{
-		if (UNLIKELY((new_objs = malloc(sizeof(struct s_json_object *) * obj->array.alloc * 2)) == NULL))
+		if (UNLIKELY((new_objs = ftalloc(sizeof(struct s_json_object *) * obj->array.alloc * 2)) == NULL))
 			FT_RET_ERR(FALSE, FT_EOMEM);
 		ft_memcpy(new_objs, obj->array.objs, sizeof(struct s_json_object *) * obj->array.len);
 		free(obj->array.objs);

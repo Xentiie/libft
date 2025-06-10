@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 03:32:38 by reclaire          #+#    #+#             */
-/*   Updated: 2024/09/03 03:02:49 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/04 03:20:27 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,14 @@ U64 ft_adler32(U8 *data, U64 len, U64 adler)
         struct {
             U32 low;
             U32 high;
-        } parts;
+        };
     } adler_u;
 
     adler_u.full = adler;
     if (adler)
     {
-        b = adler_u.parts.low;
-        a = adler_u.parts.high;
+        b = adler_u.low;
+        a = adler_u.high;
     }
     else
     {
@@ -43,12 +43,22 @@ U64 ft_adler32(U8 *data, U64 len, U64 adler)
         b = (b + a) % MOD_ADLER;
     }
 
-    adler_u.parts.low = b;
-    adler_u.parts.high = a;
+    adler_u.low = b;
+    adler_u.high = a;
     return adler_u.full;
 }
 
 U32 ft_adler32_end(U64 adler)
 {
-	return ((*(U32 *)adler) << 16) | *(U32 *)(adler + 1);
+    union {
+        U64 full;
+        struct {
+            U32 low;
+            U32 high;
+        };
+    } adler_u;
+
+	adler_u.full = adler;
+
+	return (adler_u.low << 16) | adler_u.high;
 }

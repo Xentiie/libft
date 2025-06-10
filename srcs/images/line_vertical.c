@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:22:58 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/23 22:58:55 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/05/28 16:06:35 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ void ft_draw_line_vertical(t_image *img, t_iv2 p1, S32 y2, t_color col, U8 flags
 			clip_rect = ft_image_rect(img);
 			clip_rect.z -= 1;
 			clip_rect.w -= 1;
-			ft_printf("%d %d %d %d\n", clip_rect.x, clip_rect.y, clip_rect.z, clip_rect.w);
 
 			va_start(lst, flags);
 			if (flags & FT_DRAW_FLAG_CLIP)
@@ -42,7 +41,6 @@ void ft_draw_line_vertical(t_image *img, t_iv2 p1, S32 y2, t_color col, U8 flags
 				clip_rect = ft_clip_rect_rect(r, clip_rect);
 			}
 			va_end(lst);
-			ft_printf("%d %d %d %d\n", clip_rect.x, clip_rect.y, clip_rect.z, clip_rect.w);
 		}
 
 		/* Clip rect is invalid, ignore */

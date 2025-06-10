@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 08:50:16 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/24 03:58:26 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:06 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ bool ft_fsetbuf(t_file *f, U8 *buf, U64 size, S16 bufmode)
 			ft_fflush(f);
 			free(f->buff);
 			new_size = size == 0 ? _ft_bufsiz : size;
-			if (UNLIKELY((new = malloc(sizeof(U8) * new_size)) == NULL))
+			if (UNLIKELY((new = ftalloc(sizeof(U8) * new_size)) == NULL))
 				FT_RET_ERR(FALSE, FT_EOMEM);
 			f->buff = new;
 			f->buff_size = new_size;

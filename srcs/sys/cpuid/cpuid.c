@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 02:05:23 by reclaire          #+#    #+#             */
-/*   Updated: 2025/03/08 03:45:53 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:34 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,14 @@ struct s_cpuid_dump *ft_cpuid_dump(U64 *cnt)
 	max = out[_EAX];
 
 	dump_alloc = max;
-	if (UNLIKELY((dump = malloc(sizeof(struct s_cpuid_dump) * dump_alloc)) == NULL))
+	if (UNLIKELY((dump = ftalloc(sizeof(struct s_cpuid_dump) * dump_alloc)) == NULL))
 		FT_RET_ERR(NULL, FT_EOMEM);
 
 	while (reg <= max)
 	{
 		if (reg >= dump_alloc)
 		{
-			if (UNLIKELY((dump_new = malloc(sizeof(struct s_cpuid_dump) * dump_alloc * 2)) == NULL))
+			if (UNLIKELY((dump_new = ftalloc(sizeof(struct s_cpuid_dump) * dump_alloc * 2)) == NULL))
 			{
 				free(dump);
 				FT_RET_ERR(NULL, FT_EOMEM);

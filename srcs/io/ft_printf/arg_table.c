@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 19:40:41 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/18 01:35:17 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:17 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static void growtypes(S32 **types, S32 *types_size)
 	S32 old_size = *types_size;
 
 	*types_size *= 2;
-	new_table = malloc(sizeof(S32) * *types_size); //TODO: remonter les erreurs d'allocation
+	new_table = ftalloc(sizeof(S32) * *types_size); //TODO: remonter les erreurs d'allocation
 	ft_memcpy(new_table, *types, old_size * sizeof(S32));
 
 	if (old_size != STATIC_SIZE)
@@ -171,7 +171,7 @@ bool __ftprintf_build_arg_table(const_string fmt, va_list vaargs, U64 **args)
 
 	types_max += 1;
 	//TODO: buffer static global, mais faire gaffe au races conditions
-	if (UNLIKELY((out = malloc(sizeof(U64) * types_max)) == NULL))
+	if (UNLIKELY((out = ftalloc(sizeof(U64) * types_max)) == NULL))
 		return FALSE;
 
 	for (int i = 0; i < types_max; i++)

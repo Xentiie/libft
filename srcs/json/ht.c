@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 01:45:12 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/07 02:48:00 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:28 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,11 @@ struct s_json_ht *__ftjson_init_ht()
 {
 	struct s_json_ht *ht;
 
-	if (UNLIKELY((ht = malloc(sizeof(struct s_json_ht))) == NULL))
+	if (UNLIKELY((ht = ftalloc(sizeof(struct s_json_ht))) == NULL))
 		FT_RET_ERR(NULL, FT_EOMEM);
 
 	ht->buckets_len = BUCKETS_INIT;
-	if (UNLIKELY((ht->buckets = malloc(sizeof(struct s_json_member *) * ht->buckets_len)) == NULL))
+	if (UNLIKELY((ht->buckets = ftalloc(sizeof(struct s_json_member *) * ht->buckets_len)) == NULL))
 	{
 		free(ht);
 		FT_RET_ERR(NULL, FT_EOMEM);
@@ -72,7 +72,7 @@ bool __ftjson_insert_ht(struct s_json_member **node, const_string key, struct s_
 {
 	struct s_json_member *new;
 
-	if (UNLIKELY((new = malloc(sizeof(struct s_json_member))) == NULL))
+	if (UNLIKELY((new = ftalloc(sizeof(struct s_json_member))) == NULL))
 		FT_RET_ERR(FALSE, FT_EOMEM);
 
 	if (UNLIKELY((new->key = ft_strdup(key)) == NULL))

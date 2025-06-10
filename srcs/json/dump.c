@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dump.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yyyyyy <yyyyyy@42.fr>                      +#+  +:+       +#+        */
+/*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 01:43:28 by reclaire          #+#    #+#             */
-/*   Updated: 2025/01/22 19:46:05 by yyyyyy           ###   ########.fr       */
+/*   Updated: 2025/06/08 02:14:26 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static bool __json_dump_grow(string *out, U64 *alloc, U64 *len, U64 strlen)
 
 	if (*len + strlen >= *alloc)
 	{
-		if (UNLIKELY((new = malloc(sizeof(U8) * *alloc * 2)) == NULL))
+		if (UNLIKELY((new = ftalloc(sizeof(U8) * *alloc * 2)) == NULL))
 			FT_RET_ERR(FALSE, FT_EOMEM);
 		ft_memcpy(new, *out, *len);
 		free(*out);
@@ -141,7 +141,7 @@ string ft_json_dump(struct s_json_object *obj, U64 *len)
 	U64	   alloc;
 
 	alloc = 1024;
-	if (UNLIKELY((out = malloc(sizeof(U8) * alloc)) == NULL))
+	if (UNLIKELY((out = ftalloc(sizeof(U8) * alloc)) == NULL))
 		FT_RET_ERR(NULL, FT_EOMEM);
 	*out = '\0';
 
