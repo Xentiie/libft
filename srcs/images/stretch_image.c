@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 14:49:59 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/29 15:29:16 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/10 02:10:53 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,27 +29,22 @@ void ft_stretch_image(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect
 	t_v2 scl_factor;
 	t_v2 src_start;
 
-	va_start(lst, flags);
+	clip_rect = ft_image_rect(dst);
 
-	{ /* Clipping */
-
-		{ /* Get clip rect */
-			clip_rect = ft_image_rect(dst);
-
-			if (flags & FT_DRAW_FLAG_CLIP)
-			{
-				t_iv4 r = va_arg(lst, t_iv4);
-				clip_rect = ft_clip_rect_rect(r, clip_rect);
-			}
-		}
+	{ /* Flags */
+		va_start(lst, flags);
+		if (flags & FT_DRAW_FLAG_CLIP)
+			clip_rect = ft_clip_rect_rect(va_arg(lst, t_iv4), clip_rect);
+		if (flags & FT_DRAW_FLAG_COLOR)
+			col = va_arg(lst, t_color);
+		va_end(lst);
 	}
 
 	src_start = vec2_zero;
 
 	scl_factor = vec2_div(
 		vec2(src_rect.z - src_rect.x, src_rect.w - src_rect.y),
-		vec2(dst_rect.z - dst_rect.x, dst_rect.w - dst_rect.y)
-	);
+		vec2(dst_rect.z - dst_rect.x, dst_rect.w - dst_rect.y));
 
 	if (dst_rect.x < clip_rect.x)
 	{
@@ -73,7 +68,6 @@ void ft_stretch_image(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect
 
 	if (flags & FT_DRAW_FLAG_COLOR)
 	{
-		col = va_arg(lst, t_color);
 		if (flags & FT_DRAW_FLAG_NO_TRANSPARENCY)
 			__ft_stretch_image_col_no_alpha(dst, dst_rect, src, scl_factor, src_start, col);
 		else
@@ -86,8 +80,6 @@ void ft_stretch_image(t_image *dst, t_iv4 dst_rect, t_image *src, t_iv4 src_rect
 		else
 			__ft_stretch_image_alpha(dst, dst_rect, src, scl_factor, src_start);
 	}
-
-	va_end(lst);
 }
 
 EXTENDED_ALIAS("__ft_stretch_image_no_alpha", 0, (), ())
@@ -196,103 +188,102 @@ void __ft_stretch_image_col_alpha_base(t_image *dst, t_iv4 dst_rect, t_image *sr
 #if defined(DEBUG)
 static void *__resolved___ft_stretch_image_no_alpha = NULL;
 #endif
-static void (*resolve___ft_stretch_image_no_alpha(void))(t_image * dst, t_iv4 dst_rect, t_image * src, t_v2 scl_factor, t_v2 src_start)
+static void (*resolve___ft_stretch_image_no_alpha(void))(t_image *dst, t_iv4 dst_rect, t_image *src, t_v2 scl_factor, t_v2 src_start)
 {
 
 #if !defined(DEBUG)
-        void *__resolved___ft_stretch_image_no_alpha = NULL;
+	void *__resolved___ft_stretch_image_no_alpha = NULL;
 #endif
-        struct s_cpuid_flags *cpuid_flags;
-        struct s_xcr0_flags os_flags;
+	struct s_cpuid_flags *cpuid_flags;
+	struct s_xcr0_flags os_flags;
 
-        cpuid_flags = ft_cpuid_get_cached_flags();
-        ft_xgetbv(0, &os_flags.flags);
-        if (1)
-                __resolved___ft_stretch_image_no_alpha = __ft_stretch_image_no_alpha_base;
-        return __resolved___ft_stretch_image_no_alpha;
+	cpuid_flags = ft_cpuid_get_cached_flags();
+	ft_xgetbv(0, &os_flags.flags);
+	if (1)
+		__resolved___ft_stretch_image_no_alpha = __ft_stretch_image_no_alpha_base;
+	return __resolved___ft_stretch_image_no_alpha;
 }
 
-void __ft_stretch_image_no_alpha(t_image * dst, t_iv4 dst_rect, t_image * src, t_v2 scl_factor, t_v2 src_start)
-    __attribute__((ifunc("resolve___ft_stretch_image_no_alpha")));
+void __ft_stretch_image_no_alpha(t_image *dst, t_iv4 dst_rect, t_image *src, t_v2 scl_factor, t_v2 src_start)
+	__attribute__((ifunc("resolve___ft_stretch_image_no_alpha")));
 #if defined(DEBUG)
 static void *__resolved___ft_stretch_image_alpha = NULL;
 #endif
-static void (*resolve___ft_stretch_image_alpha(void))(t_image * dst, t_iv4 dst_rect, t_image * src, t_v2 scl_factor, t_v2 src_start)
+static void (*resolve___ft_stretch_image_alpha(void))(t_image *dst, t_iv4 dst_rect, t_image *src, t_v2 scl_factor, t_v2 src_start)
 {
 
 #if !defined(DEBUG)
-        void *__resolved___ft_stretch_image_alpha = NULL;
+	void *__resolved___ft_stretch_image_alpha = NULL;
 #endif
-        struct s_cpuid_flags *cpuid_flags;
-        struct s_xcr0_flags os_flags;
+	struct s_cpuid_flags *cpuid_flags;
+	struct s_xcr0_flags os_flags;
 
-        cpuid_flags = ft_cpuid_get_cached_flags();
-        ft_xgetbv(0, &os_flags.flags);
-        if (1)
-                __resolved___ft_stretch_image_alpha = __ft_stretch_image_alpha_base;
-        return __resolved___ft_stretch_image_alpha;
+	cpuid_flags = ft_cpuid_get_cached_flags();
+	ft_xgetbv(0, &os_flags.flags);
+	if (1)
+		__resolved___ft_stretch_image_alpha = __ft_stretch_image_alpha_base;
+	return __resolved___ft_stretch_image_alpha;
 }
 
-void __ft_stretch_image_alpha(t_image * dst, t_iv4 dst_rect, t_image * src, t_v2 scl_factor, t_v2 src_start)
-    __attribute__((ifunc("resolve___ft_stretch_image_alpha")));
+void __ft_stretch_image_alpha(t_image *dst, t_iv4 dst_rect, t_image *src, t_v2 scl_factor, t_v2 src_start)
+	__attribute__((ifunc("resolve___ft_stretch_image_alpha")));
 #if defined(DEBUG)
 static void *__resolved___ft_stretch_image_col_no_alpha = NULL;
 #endif
-static void (*resolve___ft_stretch_image_col_no_alpha(void))(t_image * dst, t_iv4 dst_rect, t_image * src, t_v2 scl_factor, t_v2 src_start, t_color col)
+static void (*resolve___ft_stretch_image_col_no_alpha(void))(t_image *dst, t_iv4 dst_rect, t_image *src, t_v2 scl_factor, t_v2 src_start, t_color col)
 {
 
 #if !defined(DEBUG)
-        void *__resolved___ft_stretch_image_col_no_alpha = NULL;
+	void *__resolved___ft_stretch_image_col_no_alpha = NULL;
 #endif
-        struct s_cpuid_flags *cpuid_flags;
-        struct s_xcr0_flags os_flags;
+	struct s_cpuid_flags *cpuid_flags;
+	struct s_xcr0_flags os_flags;
 
-        cpuid_flags = ft_cpuid_get_cached_flags();
-        ft_xgetbv(0, &os_flags.flags);
-        if (1)
-                __resolved___ft_stretch_image_col_no_alpha = __ft_stretch_image_col_no_alpha_base;
-        return __resolved___ft_stretch_image_col_no_alpha;
+	cpuid_flags = ft_cpuid_get_cached_flags();
+	ft_xgetbv(0, &os_flags.flags);
+	if (1)
+		__resolved___ft_stretch_image_col_no_alpha = __ft_stretch_image_col_no_alpha_base;
+	return __resolved___ft_stretch_image_col_no_alpha;
 }
 
-void __ft_stretch_image_col_no_alpha(t_image * dst, t_iv4 dst_rect, t_image * src, t_v2 scl_factor, t_v2 src_start, t_color col)
-    __attribute__((ifunc("resolve___ft_stretch_image_col_no_alpha")));
+void __ft_stretch_image_col_no_alpha(t_image *dst, t_iv4 dst_rect, t_image *src, t_v2 scl_factor, t_v2 src_start, t_color col)
+	__attribute__((ifunc("resolve___ft_stretch_image_col_no_alpha")));
 #if defined(DEBUG)
 static void *__resolved___ft_stretch_image_col_alpha = NULL;
 #endif
-static void (*resolve___ft_stretch_image_col_alpha(void))(t_image * dst, t_iv4 dst_rect, t_image * src, t_v2 scl_factor, t_v2 src_start, t_color col)
+static void (*resolve___ft_stretch_image_col_alpha(void))(t_image *dst, t_iv4 dst_rect, t_image *src, t_v2 scl_factor, t_v2 src_start, t_color col)
 {
 
 #if !defined(DEBUG)
-        void *__resolved___ft_stretch_image_col_alpha = NULL;
+	void *__resolved___ft_stretch_image_col_alpha = NULL;
 #endif
-        struct s_cpuid_flags *cpuid_flags;
-        struct s_xcr0_flags os_flags;
+	struct s_cpuid_flags *cpuid_flags;
+	struct s_xcr0_flags os_flags;
 
-        cpuid_flags = ft_cpuid_get_cached_flags();
-        ft_xgetbv(0, &os_flags.flags);
-        if (1)
-                __resolved___ft_stretch_image_col_alpha = __ft_stretch_image_col_alpha_base;
-        return __resolved___ft_stretch_image_col_alpha;
+	cpuid_flags = ft_cpuid_get_cached_flags();
+	ft_xgetbv(0, &os_flags.flags);
+	if (1)
+		__resolved___ft_stretch_image_col_alpha = __ft_stretch_image_col_alpha_base;
+	return __resolved___ft_stretch_image_col_alpha;
 }
 
-void __ft_stretch_image_col_alpha(t_image * dst, t_iv4 dst_rect, t_image * src, t_v2 scl_factor, t_v2 src_start, t_color col)
-    __attribute__((ifunc("resolve___ft_stretch_image_col_alpha")));
+void __ft_stretch_image_col_alpha(t_image *dst, t_iv4 dst_rect, t_image *src, t_v2 scl_factor, t_v2 src_start, t_color col)
+	__attribute__((ifunc("resolve___ft_stretch_image_col_alpha")));
 
 #if defined(DEBUG)
 __attribute__((constructor)) static void __debug_ifunc()
 {
-        ft_printf("__ft_stretch_image_no_alpha:");
-        if (__resolved___ft_stretch_image_no_alpha == __ft_stretch_image_no_alpha_base)
-                ft_printf("__ft_stretch_image_no_alpha_base\n");
-        ft_printf("__ft_stretch_image_alpha:");
-        if (__resolved___ft_stretch_image_alpha == __ft_stretch_image_alpha_base)
-                ft_printf("__ft_stretch_image_alpha_base\n");
-        ft_printf("__ft_stretch_image_col_no_alpha:");
-        if (__resolved___ft_stretch_image_col_no_alpha == __ft_stretch_image_col_no_alpha_base)
-                ft_printf("__ft_stretch_image_col_no_alpha_base\n");
-        ft_printf("__ft_stretch_image_col_alpha:");
-        if (__resolved___ft_stretch_image_col_alpha == __ft_stretch_image_col_alpha_base)
-                ft_printf("__ft_stretch_image_col_alpha_base\n");
-
+	ft_printf("__ft_stretch_image_no_alpha:");
+	if (__resolved___ft_stretch_image_no_alpha == __ft_stretch_image_no_alpha_base)
+		ft_printf("__ft_stretch_image_no_alpha_base\n");
+	ft_printf("__ft_stretch_image_alpha:");
+	if (__resolved___ft_stretch_image_alpha == __ft_stretch_image_alpha_base)
+		ft_printf("__ft_stretch_image_alpha_base\n");
+	ft_printf("__ft_stretch_image_col_no_alpha:");
+	if (__resolved___ft_stretch_image_col_no_alpha == __ft_stretch_image_col_no_alpha_base)
+		ft_printf("__ft_stretch_image_col_no_alpha_base\n");
+	ft_printf("__ft_stretch_image_col_alpha:");
+	if (__resolved___ft_stretch_image_col_alpha == __ft_stretch_image_col_alpha_base)
+		ft_printf("__ft_stretch_image_col_alpha_base\n");
 }
 #endif

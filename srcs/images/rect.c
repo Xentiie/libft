@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:22:47 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/25 16:01:12 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/10 02:11:44 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,20 +110,18 @@ void ft_fill_rect(t_image *img, t_iv4 rect, t_color col, U8 flags, ...)
 	if (!(flags & FT_DRAW_FLAG_NO_TRANSPARENCY) && col.a == 0)
 		return;
 
+	clip_rect = ft_image_rect(img);
+
+	{ /* Flags */
+		va_start(lst, flags);
+		if (flags & FT_DRAW_FLAG_CLIP)
+			clip_rect = ft_clip_rect_rect(va_arg(lst, t_iv4), clip_rect);
+		if (flags & FT_DRAW_FLAG_COLOR)
+			col = va_arg(lst, t_color);
+		va_end(lst);
+	}
+
 	{ /* Clipping */
-
-		{ /* Get clip rect */
-			clip_rect = ft_image_rect(img);
-
-			va_start(lst, flags);
-			if (flags & FT_DRAW_FLAG_CLIP)
-			{
-				t_iv4 r = va_arg(lst, t_iv4);
-				clip_rect = ft_clip_rect_rect(r, clip_rect);
-			}
-			va_end(lst);
-		}
-
 		rect = ft_clip_rect_rect(rect, clip_rect);
 
 		/* Rect is invalid, ignore */
