@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 23:26:42 by reclaire          #+#    #+#             */
-/*   Updated: 2025/06/04 04:13:47 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/10 09:53:59 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,21 +155,17 @@ inline t_iv4 ft_image_rect(t_image *img) { return ivec4(0, 0, img->size.x, img->
 
 
 /*
-Copies the region `srcrect` in `src` to `dst` at position `dstpos`.
-No alpha blending.
-No out-of-bounds memory access.
+Copies the region `src_rect` in `src` to `dst` at position `dst_pos`.
+Will not draw outside of `img`.
+#### Draw function: see `FT_DRAW_FUNCTIONS_DOCUMENTATION`.
+- `FT_DRAW_FLAG_CLIP`: Expects a `t_iv4` argument. Ignore (don't draw) any pixels outside of the specified rect.
+- `FT_DRAW_FLAG_NO_TRANSPARENCY`: Ignores color transparency.
+- `FT_DRAW_FLAG_COLOR`: Overlays a color while copying.
 */
-extern void ft_copy_image(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrect);
+extern void ft_copy_image(t_image *dst, t_iv2 dst_pos, t_image *src, t_iv4 src_rect, U8 flags, ...);
 
 /*
-Copies the region `srcrect` in `src` to `dst` at position `dstpos`.
-With alpha blending.
-No out-of-bounds memory access.
-*/
-extern void ft_copy_image2(t_image *dst, t_iv2 dstpos, t_image *src, t_iv4 srcrect);
-
-/*
-Stretches `src_rect` in `src` to `dst_rect` in `dst`.
+Stretches the region `src_rect` in `src` to `dst_rect` in `dst`.
 Will not draw outside of `img`.
 #### Draw function: see `FT_DRAW_FUNCTIONS_DOCUMENTATION`.
 - `FT_DRAW_FLAG_CLIP`: Expects a `t_iv4` argument. Ignore (don't draw) any pixels outside of the specified rect.
