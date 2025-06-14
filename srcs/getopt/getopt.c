@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 14:44:13 by reclaire          #+#    #+#             */
-/*   Updated: 2025/04/15 02:29:11 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/13 23:09:23 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,6 +225,10 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, const t_lo
 			// Check if opt has an argument
 			if (*(optstr_loc + 1) == ':')
 			{
+				bool allow_optional = FALSE;
+				if (*(optstr_loc + 2) == ':')
+					allow_optional = TRUE;
+
 				// Check if argument is in same arg
 				if (*(nextchar + 1) != '\0')
 				{
@@ -243,11 +247,16 @@ S32 ft_getopt_long(S32 argc, const_string *argv, const_string optstr, const t_lo
 				// Nothing found :(
 				else
 				{
-					if (ft_opterr)
-						ft_fprintf(ft_fstderr, "%s: option requires an argument -- '%c'\n", argv[0], ret);
-					nextchar++;
-					ft_optopt = ret;
-					FT_RET_OK(ft_optchr);
+					if (allow_optional)
+						ft_optarg = NULL;
+					else
+					{
+						if (ft_opterr)
+							ft_fprintf(ft_fstderr, "%s: option requires an argument -- '%c'\n", argv[0], ret);
+						nextchar++;
+						ft_optopt = ret;
+						FT_RET_OK(ft_optchr);
+					}
 				}
 			}
 			else
