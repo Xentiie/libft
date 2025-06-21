@@ -6,7 +6,7 @@
 /*   By: reclaire <reclaire@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 19:45:20 by reclaire          #+#    #+#             */
-/*   Updated: 2025/05/30 04:49:55 by reclaire         ###   ########.fr       */
+/*   Updated: 2025/06/17 18:38:02 by reclaire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -450,8 +450,11 @@ inline t_v4 ft_clip_rect_rect_flt(t_v4 rect, t_v4 bound) { return vec4(ft_fmax(r
 inline t_iv4 ft_offset_rect(t_iv4 rect, t_iv2 ofs) { return ivec4(rect.x + ofs.x, rect.y + ofs.y, rect.z + ofs.x, rect.w + ofs.y); }
 inline t_v4 ft_offset_rect_flt(t_v4 rect, t_v2 ofs) { return vec4(rect.x + ofs.x, rect.y + ofs.y, rect.z + ofs.x, rect.w + ofs.y); }
 
+//TODO: rename to ft_grow_rect
 inline ALWAYS_INLINE t_iv4 ft_resize_rect(t_iv4 rect, t_iv4 delta) { return ivec4(rect.x - delta.x, rect.y - delta.y, rect.z + delta.z, rect.w + delta.w); }
 inline t_v4 ft_resize_rect_flt(t_v4 rect, t_v4 delta) { return vec4(rect.x - delta.x, rect.y - delta.y, rect.z + delta.z, rect.w + delta.w); }
+
+//TODO: ft_shrink_rect
 
 extern t_v4 ft_plane_eq(t_v3 p1, t_v3 p2, t_v3 p3);
 
